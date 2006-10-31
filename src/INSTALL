@@ -1,0 +1,29 @@
+Gimmix 0.1b
+
+==> Requirements:
+
+Gimmix requires the following pacakges to be installed before compiling.
+* Gtk+-2.10 or higher
+* libglade-2.6.0 or higher
+* libmpd-0.12.0 or higher
+* libnotify-0.4.x or higher
+* libconfuse
+
+==> Installation procedure:
+
+Installing gimmix is very simple for now. Before installing, make sure 
+your system has all the required packages. After you unpack the source,
+just follow these steps to install gimmix.
+
+cd gimmix-0.1b
+make
+make install (as root)
+
+Now, you can start gimmix by simply typing
+gimmix
+
+Note: gimmix stores its configuration settings in ~/.gimmixrc
+
+It should not be a problem to install gimmix. However, if you encounter
+any problem, please mail the author at priyankmg@gmail.com with
+a detailed description of the problem.

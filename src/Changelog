@@ -1,0 +1,12 @@
+0.1x
+* Applied a patch to fix the hardcoded CFLAGS. Gimmix can now be built with x86_64 flags. (Patch by Alex Smith)
+* Fixed a LOT of bugs and memory leaks.
+* Gimmix now also displays the bitrate of the currently playing song in info window.
+* Added support for "Repeat" and "Shuffle"
+* Playlist items can now be removed or cleared
+* Added a new first run dialog which is displayed when gimmix is run for the first time
+* Improved cpu and memory usage
+* Lots of small fixes
+
+0.1-beta (27-10-2006)
+* Initial public release

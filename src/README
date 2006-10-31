@@ -1,0 +1,11 @@
+Gimmix is a GUI MPD Client written in C.
+
+Please note that Gimmix is still in its early development stage. If you
+encounter any bug(s), please e-mail the authour at priyankmg@gmail.com
+with a detailed description and steps to reproduce the bug. It would be
+good if you mention your version of linux, gtk, libmpd etc.
+
+Gimmix stores its configuration settings in ~/.gimmixrc
+
+Please read the INSTALL file for details on requirements and
+installation procedure.
