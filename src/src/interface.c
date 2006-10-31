@@ -162,7 +162,7 @@ gimmix_timer (void)
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), "Stopped");
 			gimmix_show_ver_info ();
 		}
-		return;
+		return TRUE;
 	}
 	else
 	{
@@ -182,7 +182,7 @@ gimmix_timer (void)
 			button = glade_xml_get_widget (xml, "play_button");
 			gtk_button_set_image (GTK_BUTTON(button), image);
 		}
-		return;
+		return TRUE;
 	}
 }
 
