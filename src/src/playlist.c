@@ -83,9 +83,17 @@ gimmix_update_current_playlist (void)
 
 	while (data != NULL)
 	{
-		gchar 	*title;
-
-		title = data->song->title ? data->song->title : g_path_get_basename(data->song->file);
+		gchar 	title[80];
+		
+		if (data->song->title && data->song->artist)
+		{
+			snprintf (title, 80, "%s - %s", data->song->artist, data->song->title);
+		}
+		else
+		{
+			snprintf (title, 80, "%s", g_path_get_basename (data->song->file));
+		}
+		
 		gtk_list_store_append (current_playlist_store, &current_playlist_iter);
 		gtk_list_store_set (current_playlist_store, 
 							&current_playlist_iter,
