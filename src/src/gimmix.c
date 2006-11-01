@@ -157,10 +157,12 @@ main (int argc, char *argv[])
 	
 	path = g_strdup_printf ("%s%s", PREFIX, GLADE_FILE);
 	xml = glade_xml_new (path, NULL, NULL);
+	g_free (path);
+	
 	if (!xml)
 		exit_cleanup ();
+	
 	glade_xml_signal_autoconnect (xml);
-	g_free (path);
 	
 	if (gimmix_config_exists())
 	{
@@ -201,7 +203,6 @@ void exit_cleanup ()
 	if (pub->conf!=NULL)
 		gimmix_config_free (pub->conf);
 	g_free (pub);
-	exit (0);
 
-	return;
+	exit (0);
 }

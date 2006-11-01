@@ -1,5 +1,5 @@
 # Makefile for gimmix
-# gimmix-0.1beta2
+# gimmix-0.1 svn
 
 # Installation directory
 PREFIX=$(DESTDIR)/usr
