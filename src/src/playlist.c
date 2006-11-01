@@ -71,8 +71,8 @@ void
 gimmix_update_current_playlist (void)
 {
 	GtkTreeIter			current_playlist_iter;
-	MpdData 			*data;
 	gint 				new;
+	MpdData 			*data;
 
 	new = mpd_playlist_get_playlist_id (pub->gmo);
 	data = mpd_playlist_get_changes (pub->gmo, 0);
