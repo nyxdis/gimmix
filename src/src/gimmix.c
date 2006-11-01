@@ -52,7 +52,6 @@ gimmix_connect_error (void)
 {
 	GtkWidget 	*error_dialog;
 	GtkWidget	*error_label;
-	GtkWidget	*window;
 	gchar 		*error_markup;
 
 	gchar *error = "ERROR: Couldn't connect to mpd. Check whether mpd is running.\nAlso check that you have specified the proper hostname, port \nand password in ~/.gimmixrc";
@@ -60,9 +59,8 @@ gimmix_connect_error (void)
 	error_label = gtk_label_new (NULL);
 	gtk_label_set_markup (GTK_LABEL(error_label), error_markup);
 	g_free (error_markup);
-	window = glade_xml_get_widget (xml, "main_window");
-	error_dialog = gtk_dialog_new_with_buttons ("Gimmx Error",
-												GTK_WINDOW(window),
+	error_dialog = gtk_dialog_new_with_buttons ("Error",
+												NULL,
 												GTK_DIALOG_DESTROY_WITH_PARENT,
 												GTK_STOCK_OK,
 												GTK_RESPONSE_ACCEPT,
@@ -159,6 +157,8 @@ main (int argc, char *argv[])
 	
 	path = g_strdup_printf ("%s%s", PREFIX, GLADE_FILE);
 	xml = glade_xml_new (path, NULL, NULL);
+	if (!xml)
+		exit_cleanup ();
 	glade_xml_signal_autoconnect (xml);
 	g_free (path);
 	
@@ -201,6 +201,7 @@ void exit_cleanup ()
 	if (pub->conf!=NULL)
 		gimmix_config_free (pub->conf);
 	g_free (pub);
+	exit (0);
 
 	return;
 }
