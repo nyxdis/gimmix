@@ -47,6 +47,7 @@ gimmix_config_init (void)
 	cfg = cfg_init (opts, 0);
 	rcfile = cfg_tilde_expand ("~/.gimmixrc");
 	ret = cfg_parse (cfg, rcfile);
+	free (rcfile);
 	
 	if (ret == CFG_PARSE_ERROR)
 	{
