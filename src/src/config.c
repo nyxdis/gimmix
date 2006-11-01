@@ -47,6 +47,12 @@ gimmix_config_init (void)
 	cfg = cfg_init (opts, 0);
 	rcfile = cfg_tilde_expand ("~/.gimmixrc");
 	ret = cfg_parse (cfg, rcfile);
+	
+	if (ret == CFG_PARSE_ERROR)
+	{
+		free (conf);
+		return NULL;
+	}
 
 	if (!conf->hostname)
 		conf->hostname = NULL;
@@ -59,7 +65,9 @@ gimmix_config_init (void)
 	
 	/* Free the memory */
 	cfg_free_value (opts);
-	cfg_free (cfg);
+	
+	if (cfg)
+		cfg_free (cfg);
 	
 	return conf;
 }

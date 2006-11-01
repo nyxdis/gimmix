@@ -192,7 +192,6 @@ main (int argc, char *argv[])
 	}
 	
 	gtk_main ();
-	g_print ("\nexiting...");
 	exit_cleanup ();
 }
 
