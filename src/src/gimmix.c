@@ -97,7 +97,6 @@ on_fr_close_clicked (GtkWidget *widget, gpointer data)
 	
 	if (!pub->conf)
 	{
-		exit_cleanup ();
 		gtk_main_quit ();
 	}
 	else
@@ -197,8 +196,10 @@ main (int argc, char *argv[])
 
 void exit_cleanup ()
 {
-	gimmix_disconnect (pub->gmo);
-	gimmix_config_free (pub->conf);
+	if (pub->gmo!=NULL)
+		gimmix_disconnect (pub->gmo);
+	if (pub->conf!=NULL)
+		gimmix_config_free (pub->conf);
 	g_free (pub);
 
 	return;
