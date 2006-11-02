@@ -37,7 +37,6 @@ static int status;
 GtkWidget *progress;
 GtkWidget *progressbox;
 
-static GtkWidget* 	get_image (const gchar *, GtkIconSize);
 static gboolean 	gimmix_timer (void);
 static void 		gimmix_about_show (void);
 static void 		gimmix_show_ver_info (void);
@@ -46,6 +45,7 @@ static void 		gimmix_systray_popup_menu (void);
 static void 		gimmix_update_volume (void);
 static void			gimmix_systray_icon_create (void);
 static void 		gimmix_window_visible (void);
+static GtkWidget* 	get_image (const gchar *, GtkIconSize);
 
 /* Callbacks */
 static void			cb_play_button_clicked 	(GtkWidget *widget, gpointer data);

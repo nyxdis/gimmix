@@ -28,9 +28,14 @@
 
 #define GLADE_FILE "/share/gimmix/gimmix.glade"
 
+static bool gimmix_connect (void);
 static void gimmix_connect_error (void);
 
-bool
+static void error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog);
+static void on_fr_close_clicked (GtkWidget *widget, gpointer data);
+static void on_fr_apply_clicked (GtkWidget *widget, gpointer data);
+
+static bool
 gimmix_connect (void)
 {
 	MpdObj *mo;
@@ -78,7 +83,7 @@ gimmix_connect_error (void)
     gtk_widget_show_all (error_dialog);
 }
 
-void
+static void
 error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog)
 {
 	if (arg1 == GTK_RESPONSE_ACCEPT || arg1 == GTK_RESPONSE_DELETE_EVENT)
@@ -88,7 +93,7 @@ error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog)
 	}
 }
 
-void
+static void
 on_fr_close_clicked (GtkWidget *widget, gpointer data)
 {
 	gtk_widget_destroy (data);
@@ -113,7 +118,8 @@ on_fr_close_clicked (GtkWidget *widget, gpointer data)
 	}
 }
 
-void on_fr_apply_clicked (GtkWidget *widget, gpointer data)
+static void
+on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 {
 	GtkWidget 	*entry;
 	const gchar *host;
@@ -145,6 +151,7 @@ void on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 	gimmix_config_save (pub->conf);
 }
 
+int
 main (int argc, char *argv[])
 {
 	gchar 		*path;

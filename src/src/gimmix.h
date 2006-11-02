@@ -22,13 +22,6 @@ typedef struct Gimmix
 GM *pub;
 GladeXML *xml;
 
-bool gimmix_connect (void);
-
-/* Connection error dialog */
-void error_dialog_response ();
-void on_fr_close_clicked (GtkWidget *widget, gpointer data);
-void on_fr_apply_clicked (GtkWidget *widget, gpointer data);
-
 /* Finalize */
 void exit_cleanup (void);
 
