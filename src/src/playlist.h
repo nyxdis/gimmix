@@ -17,5 +17,5 @@ void gimmix_playlist_populate (void);
 void on_dir_activated (GtkTreeView *);
 void gimmix_current_playlist_play (GtkTreeView *);
 void gimmix_current_playlist_right_click (GtkTreeView *, GdkEventButton *);
-void gimmix_current_playlist_clear (void);
+
 #endif

@@ -42,6 +42,7 @@ GtkCellRenderer     *current_playlist_renderer;
 static void 	add_song (GtkTreeView *);
 static void 	gimmix_update_dir_song_treeview_with_dir (gchar *);
 static void 	gimmix_current_playlist_remove_song (void);
+static void		gimmix_current_playlist_clear (void);
 static void 	gimmix_playlist_popup_menu (void);
 static gchar* 	gimmix_path_get_parent_dir (gchar *);
 
@@ -407,7 +408,7 @@ gimmix_current_playlist_remove_song (void)
 	}
 }	
 
-void
+static void
 gimmix_current_playlist_clear (void)
 {
 	gtk_list_store_clear (GTK_LIST_STORE(current_playlist_store));
