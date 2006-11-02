@@ -37,6 +37,16 @@ static int status;
 GtkWidget *progress;
 GtkWidget *progressbox;
 
+static GtkWidget 	* get_image (const gchar *, GtkIconSize);
+static gboolean 	gimmix_timer (void);
+static void 		gimmix_about_show (void);
+static void 		gimmix_show_ver_info (void);
+static void 		gimmix_set_song_info (void);
+static void 		gimmix_systray_popup_menu (void);
+static void 		gimmix_update_volume (void);
+static void			gimmix_systray_icon_create (void);
+static void 		gimmix_window_visible (void);
+
 void
 gimmix_init (void)
 {
@@ -121,7 +131,7 @@ gimmix_init (void)
 	gimmix_update_current_playlist ();
 }
 
-gboolean
+static gboolean
 gimmix_timer (void)
 {
 	gchar time[15];
@@ -409,7 +419,7 @@ gimmix_scroll_volume_slider (GtkWidget *widget, GdkEventScroll *event)
 	}
 }
 
-void
+static void
 gimmix_update_volume ()
 {
 	gint 			volume;
@@ -441,7 +451,7 @@ gimmix_progress_seek (GtkWidget *progressbox, GdkEvent *event)
 	return;
 }
 
-void
+static void
 gimmix_window_visible (void)
 {
 	static int x;
@@ -471,7 +481,7 @@ get_image (const gchar *id, GtkIconSize size)
 	return image;
 }
 
-void
+static void
 gimmix_set_song_info (void)
 {
 	gchar 		*markup;
@@ -517,7 +527,7 @@ gimmix_set_song_info (void)
 	gimmix_free_song_info (song);
 }
 
-void
+static void
 gimmix_systray_icon_create (void)
 {
 	tray_icon = gtk_status_icon_new_from_stock("gtk-cdrom");
@@ -526,7 +536,7 @@ gimmix_systray_icon_create (void)
 	g_signal_connect (tray_icon, "activate", G_CALLBACK(gimmix_window_visible), NULL);
 }
 
-void
+static void
 gimmix_systray_popup_menu (void)
 {
 	GtkWidget *menu, *menu_item;
@@ -618,7 +628,7 @@ on_systray_checkbox_toggled (GtkWidget *widget, gpointer data)
 	return;
 }
 
-void
+static void
 gimmix_about_show (void)
 {
  	GdkPixbuf 	*about_pixbuf;
@@ -665,7 +675,7 @@ gimmix_about_show (void)
 	return;
 }
 
-void
+static void
 gimmix_show_ver_info (void)
 {
 	gchar 		*markup;

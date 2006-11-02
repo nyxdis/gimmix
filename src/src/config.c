@@ -116,7 +116,7 @@ gimmix_config_save (Conf *conf)
 
 	cfg_free_value (opts);
 	cfg_free (cfg);
-
+	
 	return;
 }
 

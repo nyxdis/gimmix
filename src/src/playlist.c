@@ -39,6 +39,12 @@ GtkTreeSelection	*current_playlist_selection;
 GtkListStore        *current_playlist_store;
 GtkCellRenderer     *current_playlist_renderer;
 
+static void add_song (GtkTreeView *);
+static void gimmix_update_dir_song_treeview_with_dir (gchar *);
+static void gimmix_current_playlist_remove_song (void);
+static void gimmix_playlist_popup_menu (void);
+static gchar * gimmix_path_get_parent_dir (gchar *);
+
 void
 gimmix_playlist_init (void)
 {
@@ -210,7 +216,7 @@ gimmix_playlist_populate (void)
 	return;
 }
 
-void
+static void
 add_song (GtkTreeView *treeview)
 {
 	GtkTreeSelection 	*selected;
@@ -269,7 +275,6 @@ gimmix_current_playlist_play (GtkTreeView *treeview)
 							-1);
 		mpd_player_play_id (pub->gmo, id);
 		mpd_status_update (pub->gmo);
-		gimmix_set_song_info (pub->gmo);
 	}
 	return;
 }
@@ -291,7 +296,7 @@ on_dir_activated (GtkTreeView *treeview)
 	return;
 }
 
-void
+static void
 gimmix_update_dir_song_treeview_with_dir (gchar *dir)
 {
 	GtkTreeModel		*songs_model;
@@ -378,7 +383,7 @@ gimmix_current_playlist_right_click (GtkTreeView *treeview, GdkEventButton *even
 	return;
 }
 
-void
+static void
 gimmix_current_playlist_remove_song (void)
 {
 	GtkTreeSelection	*selection;
@@ -412,7 +417,7 @@ gimmix_current_playlist_clear (void)
 	return;
 }
 
-void
+static void
 gimmix_playlist_popup_menu (void)
 {
 	GtkWidget *menu, *menu_item;
@@ -430,10 +435,16 @@ gimmix_playlist_popup_menu (void)
 	gtk_widget_show (menu_item);
 
 	gtk_widget_show (menu);
-	gtk_menu_popup (GTK_MENU(menu), NULL, NULL, NULL, NULL, 3,gtk_get_current_event_time());
+	gtk_menu_popup (GTK_MENU(menu),
+					NULL,
+					NULL,
+					NULL,
+					NULL,
+					3,
+					gtk_get_current_event_time());
 }
 
-gchar *
+static gchar *
 gimmix_path_get_parent_dir (gchar *path)
 {
 	gchar *p, buf[128];
@@ -450,4 +461,3 @@ gimmix_path_get_parent_dir (gchar *path)
  	else
  	return "/";
 }
-

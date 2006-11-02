@@ -33,7 +33,7 @@ gimmix_connect (void)
 {
 	MpdObj *mo;
 
-	mo = gimmix_mpd_connect(pub->conf);
+	mo = gimmix_mpd_connect (pub->conf);
 	
 	if (mo != NULL)
 	{	
