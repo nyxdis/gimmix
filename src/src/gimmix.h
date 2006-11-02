@@ -25,7 +25,6 @@ GladeXML *xml;
 bool gimmix_connect (void);
 
 /* Connection error dialog */
-void gimmix_connect_error (void);
 void error_dialog_response ();
 void on_fr_close_clicked (GtkWidget *widget, gpointer data);
 void on_fr_apply_clicked (GtkWidget *widget, gpointer data);

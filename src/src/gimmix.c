@@ -28,6 +28,8 @@
 
 #define GLADE_FILE "/share/gimmix/gimmix.glade"
 
+static void gimmix_connect_error (void);
+
 bool
 gimmix_connect (void)
 {
@@ -47,7 +49,7 @@ gimmix_connect (void)
 	}
 }
 
-void
+static void
 gimmix_connect_error (void)
 {
 	GtkWidget 	*error_dialog;
@@ -196,7 +198,8 @@ main (int argc, char *argv[])
 	exit_cleanup ();
 }
 
-void exit_cleanup ()
+void
+exit_cleanup ()
 {
 	if (pub->gmo!=NULL)
 		gimmix_disconnect (pub->gmo);

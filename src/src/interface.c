@@ -37,7 +37,7 @@ static int status;
 GtkWidget *progress;
 GtkWidget *progressbox;
 
-static GtkWidget 	* get_image (const gchar *, GtkIconSize);
+static GtkWidget* 	get_image (const gchar *, GtkIconSize);
 static gboolean 	gimmix_timer (void);
 static void 		gimmix_about_show (void);
 static void 		gimmix_show_ver_info (void);
@@ -46,6 +46,26 @@ static void 		gimmix_systray_popup_menu (void);
 static void 		gimmix_update_volume (void);
 static void			gimmix_systray_icon_create (void);
 static void 		gimmix_window_visible (void);
+
+/* Callbacks */
+static void			cb_play_button_clicked 	(GtkWidget *widget, gpointer data);
+static void			cb_stop_button_clicked 	(GtkWidget *widget, gpointer data);
+static void			cb_next_button_clicked 	(GtkWidget *widget, gpointer data);
+static void			cb_prev_button_clicked 	(GtkWidget *widget, gpointer data);
+static void 		cb_info_button_clicked 	(GtkWidget *widget, gpointer data);
+static void 		cb_pref_button_clicked 	(GtkWidget *widget, gpointer data);
+static void 		cb_repeat_button_toggled 	(GtkToggleButton *button, gpointer data);
+static void 		cb_shuffle_button_toggled 	(GtkToggleButton *button, gpointer data);
+
+static void 		cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
+
+static void 		cb_volume_scale_changed (GtkWidget *widget, gpointer data);
+static void			cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
+
+static void 		cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
+static void			cb_pref_systray_checkbox_toggled (GtkWidget *widget, gpointer data);
+
+
 
 void
 gimmix_init (void)
@@ -58,42 +78,42 @@ gimmix_init (void)
 	status = gimmix_get_status(pub->gmo);
 
 	widget = glade_xml_get_widget (xml, "prev_button");
-	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(on_prev_button_clicked), NULL);
+	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_prev_button_clicked), NULL);
 	
 	widget = glade_xml_get_widget (xml, "next_button");
-	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(on_next_button_clicked), NULL);
+	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_next_button_clicked), NULL);
 	
 	widget = glade_xml_get_widget (xml, "stop_button");
-	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(on_stop_button_clicked), NULL);
+	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_stop_button_clicked), NULL);
 	
 	widget = glade_xml_get_widget (xml, "pref_button");
-	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(on_prefs_button_clicked), NULL);
+	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_pref_button_clicked), NULL);
 	
 	widget = glade_xml_get_widget (xml, "repeat_toggle");
 	if (is_gimmix_repeat (pub->gmo))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
-	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(on_repeat_button_toggled), NULL);
+	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_repeat_button_toggled), NULL);
 	
 	widget = glade_xml_get_widget (xml, "shuffle_toggle");
 	if (is_gimmix_shuffle (pub->gmo))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
-	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(on_shuffle_button_toggled), NULL);
+	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_shuffle_button_toggled), NULL);
 
 	widget = glade_xml_get_widget (xml, "info_button");
-	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(on_info_button_clicked), NULL);
+	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_info_button_clicked), NULL);
 
 	widget = glade_xml_get_widget (xml, "volume_scale");
-	g_signal_connect(G_OBJECT(widget), "value_changed", G_CALLBACK(on_volume_scale_changed), NULL);
-	g_signal_connect (G_OBJECT(widget), "scroll_event", G_CALLBACK(gimmix_scroll_volume_slider), NULL);
+	g_signal_connect(G_OBJECT(widget), "value_changed", G_CALLBACK(cb_volume_scale_changed), NULL);
+	g_signal_connect (G_OBJECT(widget), "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
 	vol_adj = gtk_range_get_adjustment (GTK_RANGE(widget));
 	gtk_adjustment_set_value (GTK_ADJUSTMENT(vol_adj), gimmix_get_volume(pub->gmo));
 
 	progress = glade_xml_get_widget (xml,"progress");
 	progressbox = glade_xml_get_widget (xml,"progress_event_box");
-	g_signal_connect (G_OBJECT(progressbox), "button_press_event", G_CALLBACK(gimmix_progress_seek), NULL);
+	g_signal_connect (G_OBJECT(progressbox), "button_press_event", G_CALLBACK(cb_gimmix_progress_seek), NULL);
 	
 	widget = glade_xml_get_widget (xml, "play_button");
-	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(on_play_button_clicked), NULL);
+	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_play_button_clicked), NULL);
 
 	if (pub->conf->systray_enable == 1)
 	{	
@@ -134,9 +154,9 @@ gimmix_init (void)
 static gboolean
 gimmix_timer (void)
 {
-	gchar time[15];
-	int new_status;
-	float fraction;
+	gchar 	time[15];
+	int 	new_status;
+	float 	fraction;
 
 	new_status = gimmix_get_status (pub->gmo);
 
@@ -196,22 +216,22 @@ gimmix_timer (void)
 	}
 }
 
-void
-on_prev_button_clicked (GtkWidget *widget, gpointer data)
+static void
+cb_prev_button_clicked (GtkWidget *widget, gpointer data)
 {
 	if (gimmix_prev(pub->gmo))
 		gimmix_set_song_info();
 }
 
-void
-on_next_button_clicked (GtkWidget *widget, gpointer data)
+static void
+cb_next_button_clicked (GtkWidget *widget, gpointer data)
 {
 	if (gimmix_next(pub->gmo))
 		gimmix_set_song_info ();
 }
 
-void
-on_play_button_clicked (GtkWidget *widget, gpointer data)
+static void
+cb_play_button_clicked (GtkWidget *widget, gpointer data)
 {
 	GtkWidget	*image;
 	
@@ -228,8 +248,8 @@ on_play_button_clicked (GtkWidget *widget, gpointer data)
 	}
 }
 
-void
-on_stop_button_clicked (GtkWidget *widget, gpointer data)
+static void
+cb_stop_button_clicked (GtkWidget *widget, gpointer data)
 {
 	GtkWidget *image;
 	GtkWidget *play_button;
@@ -246,26 +266,26 @@ on_stop_button_clicked (GtkWidget *widget, gpointer data)
 	return;
 }
 
-void
-on_repeat_button_toggled (GtkToggleButton *button, gpointer data)
+static void
+cb_repeat_button_toggled (GtkToggleButton *button, gpointer data)
 {
 	gimmix_toggle_repeat (pub->gmo);
 	return;
 }
 
-void
-on_shuffle_button_toggled (GtkToggleButton *button, gpointer data)
+static void
+cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data)
 {
 	gimmix_toggle_shuffle (pub->gmo);
 	return;
 }
 		
-void
-on_prefs_button_clicked (GtkWidget *button, gpointer data)
+static void
+cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 {
 	gchar 		port[8];
 	gint 		systray_enable;
-	GtkWidget	*widget;
+	GtkWidget	*entry;
 	GtkWidget	*pref_window;
 	
 	pref_window = glade_xml_get_widget (xml, "prefs_window");
@@ -273,32 +293,32 @@ on_prefs_button_clicked (GtkWidget *button, gpointer data)
 	sprintf (port, "%d", pub->conf->port);
 	systray_enable = pub->conf->systray_enable;
 
-	widget = glade_xml_get_widget (xml,"host_entry");
-	gtk_entry_set_text (GTK_ENTRY(widget), pub->conf->hostname);
+	entry = glade_xml_get_widget (xml,"host_entry");
+	gtk_entry_set_text (GTK_ENTRY(entry), pub->conf->hostname);
 	
-	widget = glade_xml_get_widget (xml,"port_entry");
-	gtk_entry_set_text (GTK_ENTRY(widget), port);
+	entry = glade_xml_get_widget (xml,"port_entry");
+	gtk_entry_set_text (GTK_ENTRY(entry), port);
 	
 	if (pub->conf->password)
 	{
-		widget = glade_xml_get_widget (xml,"password_entry");
-		gtk_entry_set_text (GTK_ENTRY(widget), pub->conf->password);
+		entry = glade_xml_get_widget (xml,"password_entry");
+		gtk_entry_set_text (GTK_ENTRY(entry), pub->conf->password);
 	}
 	
-	widget = glade_xml_get_widget (xml, "systray_checkbutton");
+	entry = glade_xml_get_widget (xml, "systray_checkbutton");
 	if (systray_enable == 1)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(entry), TRUE);
 	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), FALSE);
-	g_signal_connect (G_OBJECT(widget), "toggled", G_CALLBACK(on_systray_checkbox_toggled), NULL);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(entry), FALSE);
+	g_signal_connect (G_OBJECT(entry), "toggled", G_CALLBACK(cb_pref_systray_checkbox_toggled), NULL);
 	
 	widget = glade_xml_get_widget (xml, "button_apply");
-	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(on_preferences_apply), NULL);
+	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_pref_apply_clicked), NULL);
 	gtk_widget_show (GTK_WIDGET(pref_window));
 }
 
-void
-on_preferences_apply (GtkWidget *widget, gpointer data)
+static void
+cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 {
 	const gchar *host;
 	const gchar *port;
@@ -322,11 +342,31 @@ on_preferences_apply (GtkWidget *widget, gpointer data)
 		pub->conf->systray_enable = 1;
 	else
 		pub->conf->systray_enable = 0;
+
 	gimmix_config_save (pub->conf);
 }
 
-void
-on_info_button_clicked (GtkWidget *widget, gpointer data)
+static void 
+cb_pref_systray_checkbox_toggled (GtkWidget *widget, gpointer data)
+{
+	if (pub->conf->systray_enable == 1)
+	{	
+		pub->conf->systray_enable = 0;
+		g_object_unref (G_OBJECT(notify));
+		g_object_unref (tray_icon);
+		return;
+	}
+	else
+	{
+		pub->conf->systray_enable = 1;
+		gimmix_systray_icon_create ();
+		notify = gimmix_notify_init (tray_icon);
+	}
+	return;
+}
+
+static void
+cb_info_button_clicked (GtkWidget *widget, gpointer data)
 {
 	gint state;
 
@@ -382,8 +422,8 @@ on_info_button_clicked (GtkWidget *widget, gpointer data)
 	}
 }
 
-void
-on_volume_scale_changed (GtkWidget *widget, gpointer data)
+static void
+cb_volume_scale_changed (GtkWidget *widget, gpointer data)
 {
 	GtkAdjustment *volume_adj;
 	gint value;
@@ -392,10 +432,12 @@ on_volume_scale_changed (GtkWidget *widget, gpointer data)
 
 	value = gtk_adjustment_get_value (GTK_ADJUSTMENT(volume_adj));
 	gimmix_set_volume (pub->gmo, value);
+	
+	return;
 }
 
-void
-gimmix_scroll_volume_slider (GtkWidget *widget, GdkEventScroll *event)
+static void
+cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event)
 {
 	gint volume;
 	GtkAdjustment *volume_adj;
@@ -435,7 +477,7 @@ gimmix_update_volume ()
 }
 
 void
-gimmix_progress_seek (GtkWidget *progressbox, GdkEvent *event)
+cb_gimmix_progress_seek (GtkWidget *progressbox, GdkEvent *event)
 {
 	GtkAllocation allocation;
 	gint x, newtime, totaltime;
@@ -448,6 +490,7 @@ gimmix_progress_seek (GtkWidget *progressbox, GdkEvent *event)
 	newtime = seektime * totaltime;
 	if (gimmix_seek(pub->gmo, newtime))
 		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), seektime);
+
 	return;
 }
 
@@ -469,15 +512,17 @@ gimmix_window_visible (void)
 		gtk_window_get_position (GTK_WINDOW(window), &x, &y);
 		gtk_widget_hide (GTK_WIDGET(window));
 	}
+
 	return;
 }
 
-GtkWidget *
+static GtkWidget *
 get_image (const gchar *id, GtkIconSize size)
 {
 	GtkWidget *image;
 
 	image = gtk_image_new_from_stock (id, size);
+
 	return image;
 }
 
@@ -555,28 +600,28 @@ gimmix_systray_popup_menu (void)
 	if (gimmix_get_status(pub->gmo) == PLAY)
 	{
 		menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_MEDIA_PAUSE, NULL);
-		g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (on_play_button_clicked), NULL);
+		g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_play_button_clicked), NULL);
 	}
 	else
 	{
 		menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_MEDIA_PLAY, NULL);
-		g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (on_play_button_clicked), NULL);
+		g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_play_button_clicked), NULL);
 	}
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 
 	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_MEDIA_STOP, NULL);
-	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (on_stop_button_clicked), NULL);
+	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_stop_button_clicked), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 
 	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_MEDIA_PREVIOUS, NULL);
-	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (on_prev_button_clicked), NULL);
+	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_prev_button_clicked), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 
 	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_MEDIA_NEXT, NULL);
-	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (on_next_button_clicked), NULL);
+	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_next_button_clicked), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 
@@ -607,25 +652,6 @@ gimmix_notify_init (GtkStatusIcon *status_icon)
 	notify_notification_set_timeout (notify, 1000);
 	//notify_notification_show(notify, NULL);
 	return notify;
-}
-
-void 
-on_systray_checkbox_toggled (GtkWidget *widget, gpointer data)
-{
-	if (pub->conf->systray_enable == 1)
-	{	
-		pub->conf->systray_enable = 0;
-		g_object_unref (G_OBJECT(notify));
-		g_object_unref (tray_icon);
-		return;
-	}
-	else
-	{
-		pub->conf->systray_enable = 1;
-		gimmix_systray_icon_create ();
-		notify = gimmix_notify_init (tray_icon);
-	}
-	return;
 }
 
 static void
