@@ -1215,7 +1215,7 @@ mpd user name and password and click on the Apply button.
             <property name="visible">True</property>
             <property name="layout_style">GTK_BUTTONBOX_EDGE</property>
             <child>
-              <widget class="GtkButton" id="button1">
+              <widget class="GtkButton" id="browser_close_button">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">gtk-close</property>
                 <property name="use_stock">True</property>
