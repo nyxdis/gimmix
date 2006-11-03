@@ -596,19 +596,12 @@
           <widget class="GtkVBox" id="vbox9">
             <property name="visible">True</property>
             <property name="border_width">2</property>
+            <property name="spacing">3</property>
             <child>
-              <widget class="GtkLabel" id="label2">
+              <widget class="GtkImage" id="image14">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">&lt;span size='xx-large'&gt;&lt;b&gt; Gimmix&lt;/b&gt;&lt;/span&gt;</property>
-                <property name="use_markup">True</property>
-                <property name="justify">GTK_JUSTIFY_CENTER</property>
-                <property name="ellipsize">PANGO_ELLIPSIZE_START</property>
-                <property name="max_width_chars">0</property>
+                <property name="pixbuf">gimmix_firstrun.png</property>
               </widget>
-              <packing>
-                <property name="expand">False</property>
-                <property name="padding">4</property>
-              </packing>
             </child>
             <child>
               <widget class="GtkLabel" id="label3">
