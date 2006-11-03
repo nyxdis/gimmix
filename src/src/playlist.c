@@ -39,6 +39,7 @@ GtkTreeSelection	*current_playlist_selection;
 GtkListStore        *current_playlist_store;
 GtkCellRenderer     *current_playlist_renderer;
 
+static void		gimmix_file_browser_populate (void);
 static void 	add_song (GtkTreeView *);
 static void 	gimmix_update_dir_song_treeview_with_dir (gchar *);
 static void 	gimmix_current_playlist_remove_song (void);
@@ -91,6 +92,9 @@ gimmix_playlist_init (void)
 	g_signal_connect (current_playlist_treeview, "button-release-event", G_CALLBACK (gimmix_current_playlist_right_click), NULL);
 	g_object_unref (current_playlist_model);
 	
+	/* populate the file browser */
+	gimmix_file_browser_populate ();
+	
 	return;
 }
 
@@ -138,8 +142,8 @@ gimmix_update_current_playlist (void)
 	return;
 }
 
-void
-gimmix_playlist_populate (void)
+static void
+gimmix_file_browser_populate (void)
 {
 	GtkTreeModel 		*dir_model;
 	GtkTreeModel		*song_model;

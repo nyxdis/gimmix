@@ -11,7 +11,6 @@
 
 void gimmix_playlist_init (void);
 void gimmix_update_current_playlist (void);
-void gimmix_playlist_populate (void);
 
 /* Callbacks */
 void on_dir_activated (GtkTreeView *);

@@ -147,7 +147,6 @@ gimmix_init (void)
 	g_timeout_add (300, (GSourceFunc)gimmix_timer, NULL);
 	
 	gimmix_playlist_init ();
-	gimmix_playlist_populate ();
 	gimmix_update_current_playlist ();
 }
 
