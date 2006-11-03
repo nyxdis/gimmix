@@ -484,6 +484,11 @@ gimmix_playlist_popup_menu (void)
 
 	menu = gtk_menu_new ();
 
+	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_ADD, NULL);
+	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_add_button_clicked), NULL);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
+	
 	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_REMOVE, NULL);
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_current_playlist_remove_song), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
