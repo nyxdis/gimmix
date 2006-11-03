@@ -75,7 +75,7 @@ gimmix_init (void)
 	GtkAdjustment	*vol_adj;
 	gint			state;
 	
-	status = gimmix_get_status(pub->gmo);
+	status = gimmix_get_status (pub->gmo);
 
 	widget = glade_xml_get_widget (xml, "prev_button");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_prev_button_clicked), NULL);

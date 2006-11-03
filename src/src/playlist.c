@@ -40,7 +40,6 @@ GtkListStore        *current_playlist_store;
 GtkCellRenderer     *current_playlist_renderer;
 
 static void		gimmix_file_browser_populate (void);
-static void 	add_song (GtkTreeView *);
 static void 	gimmix_update_dir_song_treeview_with_dir (gchar *);
 static void 	gimmix_current_playlist_remove_song (void);
 static void		gimmix_current_playlist_clear (void);
@@ -51,6 +50,7 @@ static void		cb_add_button_clicked (GtkWidget *widget, gpointer data);
 static void 	cb_remove_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_clear_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_file_browser_close_button_clicked (GtkWidget *widget, gpointer data);
+static void 	cb_file_browser_add_song (GtkTreeView *);
 
 void
 gimmix_playlist_init (void)
@@ -233,7 +233,7 @@ gimmix_file_browser_populate (void)
 
 	gtk_tree_view_set_model (GTK_TREE_VIEW (directory_treeview), dir_model);
 	gtk_tree_view_set_model (GTK_TREE_VIEW (songs_treeview), song_model);
-	g_signal_connect (songs_treeview, "row-activated", G_CALLBACK(add_song), NULL);
+	g_signal_connect (songs_treeview, "row-activated", G_CALLBACK(cb_file_browser_add_song), NULL);
 	g_signal_connect (directory_treeview, "row-activated", G_CALLBACK(on_dir_activated), NULL);
 	g_object_unref (dir_model);
 	g_object_unref (song_model);
@@ -251,12 +251,6 @@ cb_add_button_clicked (GtkWidget *widget, gpointer data)
 }
 
 static void
-cb_file_browser_close_button_clicked (GtkWidget *widget, gpointer data)
-{
-	gtk_widget_hide (GTK_WIDGET(data));
-}
-
-static void
 cb_remove_button_clicked (GtkWidget *widget, gpointer data)
 {
 	gimmix_current_playlist_remove_song ();
@@ -269,7 +263,7 @@ cb_clear_button_clicked (GtkWidget *widget, gpointer data)
 }
 
 static void
-add_song (GtkTreeView *treeview)
+cb_file_browser_add_song (GtkTreeView *treeview)
 {
 	GtkTreeSelection 	*selected;
 	GtkTreeIter			current_playlist_tree_iter;
@@ -302,6 +296,12 @@ add_song (GtkTreeView *treeview)
 	}
 
 	return;
+}
+
+static void
+cb_file_browser_close_button_clicked (GtkWidget *widget, gpointer data)
+{
+	gtk_widget_hide (GTK_WIDGET(data));
 }
 
 void
