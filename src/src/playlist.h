@@ -9,12 +9,10 @@
 #include <libmpd/libmpdclient.h>
 #include <gtk/gtk.h>
 
+/* Initialize the playlist interface, file browser and setup signals */
 void gimmix_playlist_init (void);
-void gimmix_update_current_playlist (void);
 
-/* Callbacks */
-void on_dir_activated (GtkTreeView *);
-void gimmix_current_playlist_play (GtkTreeView *);
-void gimmix_current_playlist_right_click (GtkTreeView *, GdkEventButton *);
+/* update current playlist depending on the mpd playlist */
+void gimmix_update_current_playlist (void);
 
 #endif

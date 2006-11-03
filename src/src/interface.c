@@ -66,7 +66,6 @@ static void 		cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
 static void			cb_pref_systray_checkbox_toggled (GtkWidget *widget, gpointer data);
 
 
-
 void
 gimmix_init (void)
 {
