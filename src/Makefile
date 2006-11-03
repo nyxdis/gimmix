@@ -14,7 +14,7 @@ GLADE_LIB=$(shell pkg-config libglade-2.0 --libs)
 MPD_CFLAGS=$(shell pkg-config libmpd --cflags)
 MPD_LIB=$(shell pkg-config libmpd --libs)
 
-CFLAGS += -fPIC -DPREFIX=\"$(PREFIX)\" $(NOTIFY_CFLAGS) $(GLADE_CFLAGS) $(MPD_CFLAGS) -I.
+CFLAGS += -g3 -fPIC -DPREFIX=\"$(PREFIX)\" $(NOTIFY_CFLAGS) $(GLADE_CFLAGS) $(MPD_CFLAGS) -I.
 LIBS=$(CONFUSE_LIB) $(NOTIFY_LIB) $(GLADE_LIB) $(MPD_LIB)
 
 OBJS = config.o gimmix-core.o playlist.o interface.o gimmix.o

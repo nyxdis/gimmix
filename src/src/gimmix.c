@@ -176,6 +176,7 @@ main (int argc, char *argv[])
 	if (gimmix_config_exists())
 	{
 		pub->conf = gimmix_config_init ();
+		
 		main_window = glade_xml_get_widget (xml, "main_window");
 		if (gimmix_connect())
 		{

@@ -46,9 +46,24 @@ static void		gimmix_current_playlist_clear (void);
 static void 	gimmix_playlist_popup_menu (void);
 static gchar* 	gimmix_path_get_parent_dir (gchar *);
 
+static void		cb_add_button_clicked (GtkWidget *widget, gpointer data);
+static void 	cb_remove_button_clicked (GtkWidget *widget, gpointer data);
+static void		cb_clear_button_clicked (GtkWidget *widget, gpointer data);
+
 void
 gimmix_playlist_init (void)
 {
+	GtkWidget *button;
+	
+	button = glade_xml_get_widget (xml, "add_button");
+	g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK (cb_add_button_clicked), NULL);
+	
+	button = glade_xml_get_widget (xml, "remove_button");
+	g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK (cb_remove_button_clicked), NULL);
+	
+	button = glade_xml_get_widget (xml, "clear_button");
+	g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK (cb_clear_button_clicked), NULL);
+	
 	directory_treeview = glade_xml_get_widget (xml, "album");
 	songs_treeview = glade_xml_get_widget (xml, "list");
 	current_playlist_treeview = glade_xml_get_widget (xml, "current_playlist_treeview");
@@ -218,6 +233,27 @@ gimmix_playlist_populate (void)
 }
 
 static void
+cb_add_button_clicked (GtkWidget *widget, gpointer data)
+{
+	GtkWidget *window;
+	
+	window = glade_xml_get_widget (xml, "playlist_browser");
+	gtk_widget_show (GTK_WIDGET(window));
+}
+
+static void
+cb_remove_button_clicked (GtkWidget *widget, gpointer data)
+{
+	gimmix_current_playlist_remove_song ();
+}
+
+static void
+cb_clear_button_clicked (GtkWidget *widget, gpointer data)
+{
+	gimmix_current_playlist_clear ();
+}
+
+static void
 add_song (GtkTreeView *treeview)
 {
 	GtkTreeSelection 	*selected;
@@ -276,6 +312,7 @@ gimmix_current_playlist_play (GtkTreeView *treeview)
 							-1);
 		mpd_player_play_id (pub->gmo, id);
 		mpd_status_update (pub->gmo);
+		song_is_changed = true;
 	}
 	return;
 }

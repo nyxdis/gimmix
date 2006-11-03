@@ -29,21 +29,24 @@
 Conf *
 gimmix_config_init (void)
 {
-	cfg_t 	*cfg;
+	cfg_t 	*cfg = NULL;
 	char	*rcfile;
 	Conf 	*conf;
 	int 	ret; 
 	
 	conf = (Conf*)malloc(sizeof(Conf));
+	conf->hostname = NULL;
+	conf->password = NULL;
+	
 	
 	cfg_opt_t opts[] = {
-		CFG_SIMPLE_INT ("mpd_port", &conf->port),
 		CFG_SIMPLE_STR ("mpd_hostname", &conf->hostname),
+		CFG_SIMPLE_INT ("mpd_port", &conf->port),
 		CFG_SIMPLE_STR ("mpd_password", &conf->password),
 		CFG_SIMPLE_INT ("enable_systray", &conf->systray_enable),
 		CFG_END()
 	};
-
+	
 	cfg = cfg_init (opts, 0);
 	rcfile = cfg_tilde_expand ("~/.gimmixrc");
 	ret = cfg_parse (cfg, rcfile);
