@@ -31,7 +31,6 @@ enum {
 };
 
 GtkWidget *current_playlist_treeview;
-GtkWidget *directory_treeview;
 GtkWidget *songs_treeview;
 
 GtkTreeModel        *current_playlist_model;
@@ -77,8 +76,7 @@ gimmix_playlist_init (void)
 	button = glade_xml_get_widget (xml, "clear_button");
 	g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK (cb_clear_button_clicked), NULL);
 	
-	directory_treeview = glade_xml_get_widget (xml, "album");
-	songs_treeview = glade_xml_get_widget (xml, "list");
+	
 	current_playlist_treeview = glade_xml_get_widget (xml, "current_playlist_treeview");
 		
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
@@ -152,6 +150,8 @@ gimmix_update_current_playlist (void)
 static void
 gimmix_file_browser_populate (void)
 {
+	GtkWidget			*directory_treeview;
+	GtkWidget			*songs_treeview;
 	GtkTreeModel 		*dir_model;
 	GtkTreeModel		*song_model;
 	GtkTreeIter  		dir_iter;
@@ -163,6 +163,9 @@ gimmix_file_browser_populate (void)
 	MpdData 			*data = NULL;
 	GdkPixbuf 			*dir_pixbuf;
 	GdkPixbuf			*song_pixbuf;
+	
+	directory_treeview = glade_xml_get_widget (xml, "album");
+	songs_treeview = glade_xml_get_widget (xml, "list");
 	
 	dir_renderer		= gtk_cell_renderer_pixbuf_new();
 	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (directory_treeview),
@@ -359,6 +362,8 @@ cb_file_browser_dir_activated (GtkTreeView *treeview)
 static void
 gimmix_update_dir_song_treeview_with_dir (gchar *dir)
 {
+	GtkWidget			*directory_treeview;
+	GtkWidget			*songs_treeview;
 	GtkTreeModel		*songs_model;
 	GtkTreeModel		*directory_model;
 	GtkListStore		*songs_store;
@@ -369,6 +374,9 @@ gimmix_update_dir_song_treeview_with_dir (gchar *dir)
 	GdkPixbuf			*song_pixbuf;
 	MpdData				*data;
 	gchar				*parent;
+	
+	directory_treeview = glade_xml_get_widget (xml, "album");
+	songs_treeview = glade_xml_get_widget (xml, "list");
 	
 	directory_model = gtk_tree_view_get_model (GTK_TREE_VIEW (directory_treeview));
 	songs_model		= gtk_tree_view_get_model (GTK_TREE_VIEW (songs_treeview));

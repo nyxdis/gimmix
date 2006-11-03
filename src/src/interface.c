@@ -687,7 +687,7 @@ gimmix_about_show (void)
                            "name", APPNAME,
                            "version", VERSION,
                            "copyright", "\xC2\xA9 2006 Priyank Gosalia  (GPL)",
-                           "comments", "Gimmix is a GUI MPD client written in C",
+                           "comments", "Gimmix is a graphical Music player daemon (MPD) client written in C",
                            "license", license,
                            "authors", authors,
                            "website", website,

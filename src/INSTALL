@@ -1,21 +1,21 @@
-Gimmix 0.1 SVN
+Gimmix 0.1
 
-==> Requirements:
+Requirements:
 
 Gimmix requires the following pacakges to be installed before compiling.
-* Gtk+-2.10 or higher
-* libglade-2.6.0 or higher
-* libmpd-0.12.0 or higher
-* libnotify-0.4.x or higher
-* libconfuse
+* gtk+-2.10.x
+* libglade-2.6.x
+* libmpd-0.12
+* libconfuse-2.5
+* libnotify-0.4.x
 
-==> Installation procedure:
+Installation procedure:
 
-Installing gimmix is very simple for now. Before installing, make sure 
+Installing gimmix is very simple. Before installing, make sure 
 your system has all the required packages. After you unpack the source,
 just follow these steps to install gimmix.
 
-cd gimmix-0.1b
+cd gimmix-0.1
 make
 make install (as root)
 

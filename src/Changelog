@@ -1,3 +1,9 @@
+0.1 (3-11-2006)
+* Made the ui more cleaner and compact.
+* File browser is now separated from the main playlist window.
+* Another bunch of bug fixes.
+* Fixed a random crash on x86_64 systems.
+
 0.1beta2 (31-10-2006)
 * Applied a patch to fix the hardcoded CFLAGS. Gimmix can now be built with x86_64 flags. (Patch by Alex Smith).
 * Fixed a LOT of bugs and memory leaks.
