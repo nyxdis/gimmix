@@ -92,6 +92,7 @@ gimmix_config_save (Conf *conf)
 
 	cfg = cfg_init(opts, 0);
     char *rcfile = cfg_tilde_expand ("~/.gimmixrc");
+	
 	if((fp = fopen(rcfile, "w")))
 	{	
 		if (conf->hostname)
@@ -100,7 +101,7 @@ gimmix_config_save (Conf *conf)
 		if (conf->port > 0)
 			cfg_setint(cfg, "mpd_port", conf->port);
 		else
-			cfg_setint(cfg, "mpd_port", -1);
+			cfg_setint(cfg, "mpd_port", 0);
 
 		if (conf->systray_enable == 1 || conf->systray_enable == 0)
 			cfg_setint(cfg, "enable_systray", conf->systray_enable);
@@ -128,6 +129,7 @@ gimmix_config_exists ()
 {
 	FILE *fp;
 	char *rcfile = cfg_tilde_expand ("~/.gimmixrc");
+	
 	if (fp = fopen(rcfile, "r"))
 	{
 		fclose (fp);

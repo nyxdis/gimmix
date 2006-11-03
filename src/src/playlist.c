@@ -334,7 +334,7 @@ cb_current_playlist_double_click (GtkTreeView *treeview)
 							-1);
 		mpd_player_play_id (pub->gmo, id);
 		mpd_status_update (pub->gmo);
-		song_is_changed = true;
+		gimmix_set_song_info ();
 	}
 	return;
 }

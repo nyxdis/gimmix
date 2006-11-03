@@ -40,7 +40,6 @@ GtkWidget *progressbox;
 static gboolean 	gimmix_timer (void);
 static void 		gimmix_about_show (void);
 static void 		gimmix_show_ver_info (void);
-static void 		gimmix_set_song_info (void);
 static void 		gimmix_systray_popup_menu (void);
 static void 		gimmix_update_volume (void);
 static void			gimmix_systray_icon_create (void);
@@ -524,7 +523,7 @@ get_image (const gchar *id, GtkIconSize size)
 	return image;
 }
 
-static void
+void
 gimmix_set_song_info (void)
 {
 	gchar 		*markup;
