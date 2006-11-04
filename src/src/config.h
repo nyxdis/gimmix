@@ -9,8 +9,8 @@ typedef struct
 {
 	int systray_enable;
 	int port;
-	char *hostname;
-	char *password;
+	char hostname[256];
+	char password[256];
 } Conf;
 
 /* Returns true if file exists otherwise false */

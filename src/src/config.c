@@ -35,14 +35,13 @@ gimmix_config_init (void)
 	int 	ret; 
 	
 	conf = (Conf*)malloc(sizeof(Conf));
-	conf->hostname = NULL;
-	conf->password = NULL;
-	
-	
+	char	*host = NULL;
+	char	*pass = NULL;
+
 	cfg_opt_t opts[] = {
-		CFG_SIMPLE_STR ("mpd_hostname", &conf->hostname),
+		CFG_SIMPLE_STR ("mpd_hostname", &host),
 		CFG_SIMPLE_INT ("mpd_port", &conf->port),
-		CFG_SIMPLE_STR ("mpd_password", &conf->password),
+		CFG_SIMPLE_STR ("mpd_password", &pass),
 		CFG_SIMPLE_INT ("enable_systray", &conf->systray_enable),
 		CFG_END()
 	};
@@ -57,10 +56,13 @@ gimmix_config_init (void)
 		free (conf);
 		return NULL;
 	}
-
-	if (!conf->hostname)
-		conf->hostname = NULL;
-		
+	
+	if (host != NULL)
+		strncpy (conf->hostname, host, 255);
+	
+	if (pass != NULL)	
+		strncpy (conf->password, pass, 255);
+	
 	if (!conf->port)
 		conf->port = 0;
 	
@@ -144,10 +146,6 @@ gimmix_config_free (Conf *conf)
 {
 	if (conf != NULL)
     {
-		if (conf->hostname)
-			free (conf->hostname);
-		if (conf->password)
-			free (conf->password);
 		free (conf);
     }
 	return;

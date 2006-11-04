@@ -138,9 +138,9 @@ on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 	password = gtk_entry_get_text (GTK_ENTRY(entry));
 
 	entry = glade_xml_get_widget (xml, "fr_systray_toggle");
-	
-	pub->conf->hostname = strdup(host);
-	pub->conf->password = strdup(password);
+
+	strncpy (pub->conf->hostname, host, 255);
+	strncpy (pub->conf->password, password, 255);
 	pub->conf->port = atoi(port);
 	
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(entry)))

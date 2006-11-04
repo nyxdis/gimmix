@@ -332,8 +332,10 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 	password = gtk_entry_get_text (GTK_ENTRY(pref_widget));
 
 	pref_widget = glade_xml_get_widget (xml, "systray_checkbutton");
-	pub->conf->hostname = strdup(host);
-	pub->conf->password = strdup(password);
+	
+	strncpy (pub->conf->hostname, host, 255);
+	strncpy (pub->conf->password, password, 255);
+	
 	pub->conf->port = atoi (port);
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(pref_widget)))
 		pub->conf->systray_enable = 1;
