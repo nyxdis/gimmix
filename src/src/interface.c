@@ -335,7 +335,6 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 	
 	strncpy (pub->conf->hostname, host, 255);
 	strncpy (pub->conf->password, password, 255);
-	
 	pub->conf->port = atoi (port);
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(pref_widget)))
 		pub->conf->systray_enable = 1;

@@ -36,7 +36,6 @@ GtkWidget *songs_treeview;
 GtkTreeModel        *current_playlist_model;
 GtkTreeSelection	*current_playlist_selection;
 GtkListStore        *current_playlist_store;
-GtkCellRenderer     *current_playlist_renderer;
 
 static void		gimmix_file_browser_populate (void);
 static void 	gimmix_update_dir_song_treeview_with_dir (gchar *);
@@ -61,8 +60,9 @@ static void 	cb_file_browser_add_song (GtkTreeView *);
 void
 gimmix_playlist_init (void)
 {
-	GtkWidget *button;
-	GtkWidget *window;
+	GtkWidget			*button;
+	GtkWidget 			*window;
+	GtkCellRenderer     *current_playlist_renderer;
 	
 	window = glade_xml_get_widget (xml, "playlist_browser");
 	button = glade_xml_get_widget (xml, "browser_close_button");

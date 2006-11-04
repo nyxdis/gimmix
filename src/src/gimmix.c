@@ -176,6 +176,8 @@ main (int argc, char *argv[])
 	if (gimmix_config_exists())
 	{
 		pub->conf = gimmix_config_init ();
+		if (!pub->conf)
+			gimmix_connect_error ();
 		
 		main_window = glade_xml_get_widget (xml, "main_window");
 		if (gimmix_connect())
@@ -209,9 +211,9 @@ main (int argc, char *argv[])
 void
 exit_cleanup ()
 {
-	if (pub->gmo!=NULL)
+	if (pub->gmo != NULL)
 		gimmix_disconnect (pub->gmo);
-	if (pub->conf!=NULL)
+	if (pub->conf != NULL)
 		gimmix_config_free (pub->conf);
 	g_free (pub);
 

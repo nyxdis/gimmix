@@ -93,7 +93,7 @@ gimmix_config_save (Conf *conf)
 	};
 
 	cfg = cfg_init(opts, 0);
-    char *rcfile = cfg_tilde_expand ("~/.gimmixrc");
+	char *rcfile = cfg_tilde_expand ("~/.gimmixrc");
 	
 	if((fp = fopen(rcfile, "w")))
 	{	
