@@ -30,12 +30,9 @@ enum {
 	PLAYLIST
 };
 
-GtkWidget *current_playlist_treeview;
-GtkWidget *songs_treeview;
-
-GtkTreeModel        *current_playlist_model;
+GtkWidget 			*songs_treeview;
+GtkWidget 			*current_playlist_treeview;
 GtkTreeSelection	*current_playlist_selection;
-GtkListStore        *current_playlist_store;
 
 static void		gimmix_file_browser_populate (void);
 static void 	gimmix_update_dir_song_treeview_with_dir (gchar *);
@@ -62,6 +59,8 @@ gimmix_playlist_init (void)
 {
 	GtkWidget			*button;
 	GtkWidget 			*window;
+	GtkTreeModel		*current_playlist_model;
+	GtkListStore		*current_playlist_store;
 	GtkCellRenderer     *current_playlist_renderer;
 	
 	window = glade_xml_get_widget (xml, "playlist_browser");
@@ -106,6 +105,8 @@ gimmix_playlist_init (void)
 void
 gimmix_update_current_playlist (void)
 {
+	GtkTreeModel		*current_playlist_model;
+	GtkListStore		*current_playlist_store;
 	GtkTreeIter			current_playlist_iter;
 	gint 				new;
 	MpdData 			*data;
@@ -454,12 +455,14 @@ cb_current_playlist_right_click (GtkTreeView *treeview, GdkEventButton *event)
 static void
 gimmix_current_playlist_remove_song (void)
 {
+	GtkTreeModel		*current_playlist_model;
 	GtkTreeSelection	*selection;
 	GtkTreeIter			iter;
 	gchar				*title;
 	gchar				*path;
 	gint				id;
 
+	current_playlist_model = gtk_tree_view_get_model (GTK_TREE_VIEW(current_playlist_treeview));
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(current_playlist_treeview));
 	
 	if ( gtk_tree_selection_get_selected (selection, &current_playlist_model, &iter) )
@@ -478,6 +481,9 @@ gimmix_current_playlist_remove_song (void)
 static void
 gimmix_current_playlist_clear (void)
 {
+	GtkListStore	*current_playlist_store;
+	
+	current_playlist_store = GTK_LIST_STORE(gtk_tree_view_get_model (GTK_TREE_VIEW(current_playlist_treeview)));
 	gtk_list_store_clear (GTK_LIST_STORE(current_playlist_store));
 	mpd_playlist_clear (pub->gmo);
 	mpd_status_update (pub->gmo);
