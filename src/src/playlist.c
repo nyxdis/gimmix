@@ -30,29 +30,29 @@ enum {
 	PLAYLIST
 };
 
-GtkWidget 			*songs_treeview;
-GtkWidget 			*current_playlist_treeview;
+GtkWidget			*songs_treeview;
+GtkWidget			*current_playlist_treeview;
 GtkTreeSelection	*current_playlist_selection;
 
 static void		gimmix_file_browser_populate (void);
-static void 	gimmix_update_dir_song_treeview_with_dir (gchar *);
-static void 	gimmix_playlist_popup_menu (void);
-static gchar* 	gimmix_path_get_parent_dir (gchar *);
+static void		gimmix_update_dir_song_treeview_with_dir (gchar *);
+static void		gimmix_playlist_popup_menu (void);
+static gchar*	gimmix_path_get_parent_dir (gchar *);
 
 /* Callbacks */
 /* Current playlist callbacks */
 static void		cb_add_button_clicked (GtkWidget *widget, gpointer data);
-static void 	cb_remove_button_clicked (GtkWidget *widget, gpointer data);
+static void		cb_remove_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_clear_button_clicked (GtkWidget *widget, gpointer data);
-static void 	cb_current_playlist_double_click (GtkTreeView *);
+static void		cb_current_playlist_double_click (GtkTreeView *);
 static void		cb_current_playlist_right_click (GtkTreeView *treeview, GdkEventButton *event);
-static void 	gimmix_current_playlist_remove_song (void);
+static void		gimmix_current_playlist_remove_song (void);
 static void		gimmix_current_playlist_clear (void);
 
 /* File browser callbacks */
 static void		cb_file_browser_close_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_file_browser_dir_activated (GtkTreeView *);
-static void 	cb_file_browser_add_song (GtkTreeView *);
+static void		cb_file_browser_add_song (GtkTreeView *);
 
 void
 gimmix_playlist_init (void)

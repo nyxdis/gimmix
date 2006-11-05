@@ -113,10 +113,12 @@ gimmix_init (void)
 	widget = glade_xml_get_widget (xml, "play_button");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_play_button_clicked), NULL);
 
-	if (pub->conf->systray_enable == 1)
+	gimmix_systray_icon_create ();
+	
+    if (pub->conf->systray_enable != 1)
 	{	
-		gimmix_systray_icon_create ();
 		//notify = gimmix_notify_init (tray_icon);
+        gtk_status_icon_set_visible (tray_icon, FALSE);
 	}
 
 	if (status == PLAY)
@@ -350,14 +352,15 @@ cb_pref_systray_checkbox_toggled (GtkWidget *widget, gpointer data)
 	if (pub->conf->systray_enable == 1)
 	{	
 		pub->conf->systray_enable = 0;
-		g_object_unref (G_OBJECT(notify));
-		g_object_unref (tray_icon);
+		//g_object_unref (G_OBJECT(notify));
+		gtk_status_icon_set_visible (tray_icon, FALSE);
 		return;
 	}
 	else
 	{
 		pub->conf->systray_enable = 1;
-		gimmix_systray_icon_create ();
+		//gimmix_systray_icon_create ();
+		gtk_status_icon_set_visible (tray_icon, TRUE);
 		notify = gimmix_notify_init (tray_icon);
 	}
 	return;
