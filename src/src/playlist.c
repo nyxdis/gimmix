@@ -41,7 +41,6 @@ static void		gimmix_file_browser_add_song (GtkTreeView *);
 
 /* Callbacks */
 /* Current playlist callbacks */
-static void		cb_add_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_remove_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_clear_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_current_playlist_double_click (GtkTreeView *);
@@ -212,15 +211,6 @@ gimmix_file_browser_populate (void)
 	g_object_unref (dir_model);
 
 	return;
-}
-
-static void
-cb_add_button_clicked (GtkWidget *widget, gpointer data)
-{
-	GtkWidget *window;
-	
-	window = glade_xml_get_widget (xml, "playlist_browser");
-	gtk_widget_show (GTK_WIDGET(window));
 }
 
 static void
@@ -455,11 +445,6 @@ gimmix_playlist_popup_menu (void)
 	GtkWidget *menu, *menu_item;
 
 	menu = gtk_menu_new ();
-
-	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_ADD, NULL);
-	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_add_button_clicked), NULL);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	gtk_widget_show (menu_item);
 	
 	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_REMOVE, NULL);
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_current_playlist_remove_song), NULL);
