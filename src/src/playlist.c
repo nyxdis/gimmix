@@ -352,7 +352,7 @@ gimmix_update_dir_song_treeview_with_dir (gchar *dir)
 										GTK_ICON_SIZE_SMALL_TOOLBAR,
 										NULL);
 	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
-	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 16, 16, NULL);
+	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
 	g_free (path);
 	
 	parent = gimmix_path_get_parent_dir (dir);
