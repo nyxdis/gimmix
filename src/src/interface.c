@@ -576,7 +576,11 @@ gimmix_set_song_info (void)
 static void
 gimmix_systray_icon_create (void)
 {
-	tray_icon = gtk_status_icon_new_from_stock("gtk-cdrom");
+	gchar *icon;
+	
+	icon = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
+	tray_icon = gtk_status_icon_new_from_file(icon);
+	g_free (icon);
 	gtk_status_icon_set_tooltip(tray_icon, "Gimmix");
 	g_signal_connect (tray_icon, "popup-menu", G_CALLBACK (gimmix_systray_popup_menu), NULL);
 	g_signal_connect (tray_icon, "activate", G_CALLBACK(gimmix_window_visible), NULL);

@@ -198,6 +198,7 @@ main (int argc, char *argv[])
 		window = glade_xml_get_widget (xml, "first_run_dialog");
 		button = glade_xml_get_widget (xml, "fr_apply");
 		g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK(on_fr_apply_clicked), NULL);
+		g_signal_connect (G_OBJECT(window), "delete_event", G_CALLBACK(gtk_main_quit), NULL);
 		button = glade_xml_get_widget (xml, "fr_close");
 		g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK(on_fr_close_clicked), window);
 		
