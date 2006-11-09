@@ -64,6 +64,9 @@ static void			cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event)
 static void 		cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
 static void			cb_pref_systray_checkbox_toggled (GtkWidget *widget, gpointer data);
 
+/*
+static void			cb_window_expanded (GObject *object, GParamSpec *pspec, gpointer data);
+*/
 
 void
 gimmix_init (void)
@@ -71,10 +74,19 @@ gimmix_init (void)
 	GtkWidget 		*widget;
 	GtkWidget		*image;
 	GtkAdjustment	*vol_adj;
+	GdkPixbuf		*icon;
+	gchar			*path;
 	gint			state;
 	
 	status = gimmix_get_status (pub->gmo);
 
+	/* Set the application icon */
+	widget = glade_xml_get_widget (xml, "main_window");
+	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
+    icon = gdk_pixbuf_new_from_file (path, NULL);
+    gtk_window_set_icon (GTK_WINDOW(widget), icon);
+    g_free (path);
+	
 	widget = glade_xml_get_widget (xml, "prev_button");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_prev_button_clicked), NULL);
 	
@@ -109,6 +121,9 @@ gimmix_init (void)
 	progress = glade_xml_get_widget (xml,"progress");
 	progressbox = glade_xml_get_widget (xml,"progress_event_box");
 	g_signal_connect (G_OBJECT(progressbox), "button_press_event", G_CALLBACK(cb_gimmix_progress_seek), NULL);
+	
+	/*widget = glade_xml_get_widget (xml, "playlist_expander");
+	g_signal_connect (G_OBJECT(widget), "notify::expanded", G_CALLBACK(cb_window_expanded), NULL);*/
 	
 	widget = glade_xml_get_widget (xml, "play_button");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_play_button_clicked), NULL);
@@ -214,6 +229,44 @@ gimmix_timer (void)
 		return TRUE;
 	}
 }
+
+/*
+static void
+cb_window_expanded (GObject *object, GParamSpec *pspec, gpointer data)
+{
+	GtkWidget 		*window;
+	GtkExpander 	*expander;
+	GtkWidget		*notebook;
+	static gint 	new_width;
+	static gint		new_height;
+
+	window = glade_xml_get_widget (xml, "main_window");
+	notebook = glade_xml_get_widget (xml, "playlist_notebook");
+	expander = GTK_EXPANDER (object);
+	
+	if (!width || !height)
+		gtk_window_get_size (window, &width, &height);
+	
+	if ((width != new_width) || (height != new_height))
+	{
+		gtk_window_get_size (window, &new_width, &new_height);
+		width = new_width;
+		height = new_height;
+	}
+		
+	if (gtk_expander_get_expanded (expander))
+	{	
+		gtk_widget_show (notebook);
+		gtk_window_resize (GTK_WINDOW(window), width, height);
+	}
+	else
+	{
+		gtk_widget_hide (notebook);
+		gtk_window_resize (GTK_WINDOW(window), width, 1);
+	}
+	
+	return;
+}*/
 
 static void
 cb_prev_button_clicked (GtkWidget *widget, gpointer data)

@@ -30,8 +30,6 @@ enum {
 	PLAYLIST
 };
 
-#define RETURN 0xff0d
-
 GtkWidget			*current_playlist_treeview;
 GtkTreeSelection	*current_playlist_selection;
 
@@ -255,10 +253,26 @@ gimmix_library_search (gint type, const gchar *text)
 	GtkTreeIter 	dir_iter;
 	gchar 			*path;
 
-	data = mpd_database_find (pub->gmo, type, text, FALSE);
-	
-	if (!data)
-		return;
+	switch (type)
+	{
+		/* Search by Artist */
+		case 0: data = mpd_database_find (pub->gmo, MPD_TABLE_ARTIST, text, FALSE);
+				break;
+		
+		/* Search by Album */
+		case 1: data = mpd_database_find (pub->gmo, MPD_TABLE_ALBUM, text, FALSE);
+				break;
+		
+		/* Search by Title */
+		case 2: data = mpd_database_find (pub->gmo, MPD_TABLE_TITLE, text, FALSE);
+				break;
+		
+		/* Search by File name */
+		case 3: data = mpd_database_find (pub->gmo, MPD_TABLE_FILENAME, text, FALSE);
+				break;
+				
+		default: return;
+	}
 	
 	directory_treeview = glade_xml_get_widget (xml, "album");
 	directory_model = gtk_tree_view_get_model (GTK_TREE_VIEW (directory_treeview));
@@ -266,6 +280,21 @@ gimmix_library_search (gint type, const gchar *text)
 
 	/* Clear the stores */
 	gtk_list_store_clear (dir_store);
+	
+	if (!data)
+	{
+		gtk_list_store_append (dir_store, &dir_iter);
+		gtk_list_store_set (dir_store, &dir_iter,
+								0, NULL,
+								1, "No Result",
+								2, NULL,
+								3, 0,
+								-1);
+		directory_model = GTK_TREE_MODEL (dir_store);
+		gtk_tree_view_set_model (GTK_TREE_VIEW(directory_treeview), directory_model);
+		return;
+	}
+
 
 	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
@@ -300,19 +329,23 @@ gimmix_library_search (gint type, const gchar *text)
 static void
 cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event->keyval != RETURN)
-		return;
-	
 	GtkWidget	*entry;
 	GtkWidget	*combo;
 	gint		index;
 	gchar		*text;
 	
 	entry = glade_xml_get_widget (xml, "search_entry");
-	combo = glade_xml_get_widget (xml, "search_combo");
-	index = gtk_combo_box_get_active (GTK_COMBO_BOX(combo));
 	text = gtk_entry_get_text (GTK_ENTRY(entry));
 	
+	if ( (strlen (text)) <= 1 )
+	{
+		gimmix_update_dir_song_treeview_with_dir ("/");
+		return;
+	}
+	
+	combo = glade_xml_get_widget (xml, "search_combo");
+	index = gtk_combo_box_get_active (GTK_COMBO_BOX(combo));
+
 	gimmix_library_search (index, text);
 }
 
@@ -435,8 +468,8 @@ gimmix_update_dir_song_treeview_with_dir (gchar *dir)
 	directory_model = gtk_tree_view_get_model (GTK_TREE_VIEW (directory_treeview));
 	dir_store 	= GTK_LIST_STORE (directory_model);
 
-	if (!dir)
-		return;
+	if (!strlen(dir))
+		dir = "/";
 
 	/* Clear the stores */
 	gtk_list_store_clear (dir_store);
@@ -448,15 +481,18 @@ gimmix_update_dir_song_treeview_with_dir (gchar *dir)
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
 	g_free (path);
 	
-	parent = gimmix_path_get_parent_dir (dir);
-	
-	gtk_list_store_append (dir_store, &dir_iter);
-	gtk_list_store_set (dir_store, &dir_iter,
+	if (dir != "/")
+	{	
+		parent = gimmix_path_get_parent_dir (dir);
+		gtk_list_store_append (dir_store, &dir_iter);
+		gtk_list_store_set (dir_store, &dir_iter,
 								0, dir_pixbuf,
 								1, "..",
 								2, parent,
 								3, DIR,
 								-1);
+	}
+	
 	for (data = mpd_database_get_directory(pub->gmo, dir); data != NULL; data = mpd_data_get_next(data))
 	{
 		gtk_list_store_append (dir_store, &dir_iter);

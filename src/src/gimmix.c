@@ -182,6 +182,7 @@ main (int argc, char *argv[])
 		main_window = glade_xml_get_widget (xml, "main_window");
 		if (gimmix_connect())
 		{
+		//	gtk_widget_set_size_request (main_window, 340, 145);
 			gtk_widget_show (main_window);
 			gimmix_init ();
 		}
