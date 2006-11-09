@@ -30,9 +30,13 @@ enum {
 	PLAYLIST
 };
 
+#define RETURN 0xff0d
+
 GtkWidget			*current_playlist_treeview;
 GtkTreeSelection	*current_playlist_selection;
 
+static void		gimmix_search_init (void);
+static void		gimmix_library_search (gint, const gchar *);
 static void		gimmix_file_browser_populate (void);
 static void		gimmix_update_dir_song_treeview_with_dir (gchar *);
 static void		gimmix_current_playlist_popup_menu (void);
@@ -47,6 +51,7 @@ static void		cb_clear_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_current_playlist_double_click (GtkTreeView *);
 static void		cb_current_playlist_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event);
+static void		cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data);
 static void		gimmix_current_playlist_remove_song (void);
 static void		gimmix_current_playlist_clear (void);
 static void		gimmix_library_update (GtkWidget *widget, gpointer data);
@@ -86,6 +91,25 @@ gimmix_playlist_init (void)
 	
 	/* populate the file browser */
 	gimmix_file_browser_populate ();
+	
+	/* Initialize playlist search */
+	gimmix_search_init ();
+	
+	return;
+}
+
+static void
+gimmix_search_init (void)
+{
+
+	GtkWidget 	*search_combo;
+	GtkWidget	*search_entry;
+	
+	search_combo = glade_xml_get_widget (xml, "search_combo");
+	search_entry = glade_xml_get_widget (xml, "search_entry");
+	
+	gtk_combo_box_set_active (GTK_COMBO_BOX(search_combo), 0);
+	g_signal_connect (G_OBJECT(search_entry), "key_release_event", G_CALLBACK(cb_search_keypress), NULL);
 	
 	return;
 }
@@ -215,6 +239,80 @@ gimmix_file_browser_populate (void)
 	g_object_unref (dir_model);
 
 	return;
+}
+
+static void
+gimmix_library_search (gint type, const gchar *text)
+{
+	if (!text || type)
+		return;
+
+	MpdData 		*data;
+	GtkTreeView		*directory_treeview;
+	GtkTreeModel	*directory_model;
+	GtkListStore	*dir_store;
+	GdkPixbuf 		*song_pixbuf;
+	GtkTreeIter 	dir_iter;
+	gchar 			*path;
+
+	data = mpd_database_find (pub->gmo, type, text, FALSE);
+	
+	if (!data)
+		return;
+	directory_treeview = glade_xml_get_widget (xml, "album");
+	directory_model = gtk_tree_view_get_model (GTK_TREE_VIEW (directory_treeview));
+	dir_store 	= GTK_LIST_STORE (directory_model);
+
+	/* Clear the stores */
+	gtk_list_store_clear (dir_store);
+
+	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
+	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
+	g_free (path);
+
+	for (data; data!=NULL; data = mpd_data_get_next (data))
+	{
+		if (data->type == MPD_DATA_TYPE_SONG)
+		{
+			gchar *title;
+			
+			title = data->song->title ? data->song->title : g_path_get_basename(data->song->file);
+			gtk_list_store_append (dir_store, &dir_iter);
+			gtk_list_store_set (dir_store, &dir_iter,
+								0, song_pixbuf,
+								1, title,
+								2, data->song->file,
+								3, SONG,
+								-1);
+		}
+	}
+	
+	mpd_data_free (data);
+
+	directory_model = GTK_TREE_MODEL (dir_store);
+
+	gtk_tree_view_set_model (GTK_TREE_VIEW(directory_treeview), directory_model);
+	
+	return;
+}
+
+static void
+cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+	if (event->keyval != RETURN)
+		return;
+	
+	GtkWidget	*entry;
+	GtkWidget	*combo;
+	gint		index;
+	gchar		*text;
+	
+	entry = glade_xml_get_widget (xml, "search_entry");
+	combo = glade_xml_get_widget (xml, "search_combo");
+	index = gtk_combo_box_get_active (GTK_COMBO_BOX(combo));
+	text = gtk_entry_get_text (GTK_ENTRY(entry));
+	
+	gimmix_library_search (index, text);
 }
 
 static void
