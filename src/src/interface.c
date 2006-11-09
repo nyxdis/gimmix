@@ -85,6 +85,7 @@ gimmix_init (void)
 	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
     icon = gdk_pixbuf_new_from_file (path, NULL);
     gtk_window_set_icon (GTK_WINDOW(widget), icon);
+    g_object_unref (icon);
     g_free (path);
 	
 	widget = glade_xml_get_widget (xml, "prev_button");
