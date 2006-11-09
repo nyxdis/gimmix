@@ -235,7 +235,9 @@ gimmix_file_browser_populate (void)
 	g_signal_connect (directory_treeview, "row-activated", G_CALLBACK(cb_file_browser_dir_activated), NULL);
 	g_signal_connect (directory_treeview, "button-release-event", G_CALLBACK(cb_library_right_click), NULL);
 	g_object_unref (dir_model);
-
+	g_object_unref (dir_pixbuf);
+	g_object_unref (song_pixbuf);
+	
 	return;
 }
 
@@ -295,6 +297,7 @@ gimmix_library_search (gint type, const gchar *text)
 								-1);
 		directory_model = GTK_TREE_MODEL (dir_store);
 		gtk_tree_view_set_model (GTK_TREE_VIEW(directory_treeview), directory_model);
+		g_object_unref (icon);
 		return;
 	}
 
@@ -324,6 +327,7 @@ gimmix_library_search (gint type, const gchar *text)
 
 	directory_model = GTK_TREE_MODEL (dir_store);
 	gtk_tree_view_set_model (GTK_TREE_VIEW(directory_treeview), directory_model);
+	g_object_unref (song_pixbuf);
 	
 	return;
 }
@@ -525,8 +529,10 @@ gimmix_update_dir_song_treeview_with_dir (gchar *dir)
 	mpd_data_free (data);
 
 	directory_model = GTK_TREE_MODEL (dir_store);
-
 	gtk_tree_view_set_model (GTK_TREE_VIEW(directory_treeview), directory_model);
+	
+	g_object_unref (dir_pixbuf);
+	g_object_unref (song_pixbuf);
 	
 	return;
 }
