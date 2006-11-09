@@ -283,10 +283,13 @@ gimmix_library_search (gint type, const gchar *text)
 	
 	if (!data)
 	{
+		GdkPixbuf *icon	= gtk_widget_render_icon (GTK_WIDGET(directory_treeview), 												"gtk-dialog-error",
+											GTK_ICON_SIZE_MENU,
+											NULL);
 		gtk_list_store_append (dir_store, &dir_iter);
 		gtk_list_store_set (dir_store, &dir_iter,
-								0, NULL,
-								1, "No Result",
+								0, icon,
+								1, "No Result.",
 								2, NULL,
 								3, 0,
 								-1);
@@ -320,7 +323,6 @@ gimmix_library_search (gint type, const gchar *text)
 	mpd_data_free (data);
 
 	directory_model = GTK_TREE_MODEL (dir_store);
-
 	gtk_tree_view_set_model (GTK_TREE_VIEW(directory_treeview), directory_model);
 	
 	return;
