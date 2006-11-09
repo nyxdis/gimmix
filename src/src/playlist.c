@@ -244,7 +244,7 @@ gimmix_file_browser_populate (void)
 static void
 gimmix_library_search (gint type, const gchar *text)
 {
-	if (!text || type)
+	if (!text)
 		return;
 
 	MpdData 		*data;
@@ -259,6 +259,7 @@ gimmix_library_search (gint type, const gchar *text)
 	
 	if (!data)
 		return;
+	
 	directory_treeview = glade_xml_get_widget (xml, "album");
 	directory_model = gtk_tree_view_get_model (GTK_TREE_VIEW (directory_treeview));
 	dir_store 	= GTK_LIST_STORE (directory_model);
