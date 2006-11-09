@@ -34,7 +34,7 @@ GtkWidget			*current_playlist_treeview;
 GtkTreeSelection	*current_playlist_selection;
 
 static void		gimmix_search_init (void);
-static void		gimmix_library_search (gint, const gchar *);
+static void		gimmix_library_search (gint, gchar *);
 static void		gimmix_file_browser_populate (void);
 static void		gimmix_update_dir_song_treeview_with_dir (gchar *);
 static void		gimmix_current_playlist_popup_menu (void);
@@ -134,11 +134,11 @@ gimmix_update_current_playlist (void)
 		
 		if (data->song->title && data->song->artist)
 		{
-			snprintf (title, 256, "%s - %s", data->song->artist, data->song->title);
+			snprintf (title, 255, "%s - %s", data->song->artist, data->song->title);
 		}
 		else
 		{
-			snprintf (title, 256, "%s", data->song->file);
+			snprintf (title, 255, "%s", data->song->file);
 		}
 		
 		gtk_list_store_append (current_playlist_store, &current_playlist_iter);
@@ -242,13 +242,13 @@ gimmix_file_browser_populate (void)
 }
 
 static void
-gimmix_library_search (gint type, const gchar *text)
+gimmix_library_search (gint type, gchar *text)
 {
 	if (!text)
 		return;
 
 	MpdData 		*data;
-	GtkTreeView		*directory_treeview;
+	GtkWidget		*directory_treeview;
 	GtkTreeModel	*directory_model;
 	GtkListStore	*dir_store;
 	GdkPixbuf 		*song_pixbuf;
@@ -338,10 +338,10 @@ cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data)
 	GtkWidget	*entry;
 	GtkWidget	*combo;
 	gint		index;
-	gchar		*text;
+	gchar		text[20];
 	
 	entry = glade_xml_get_widget (xml, "search_entry");
-	text = gtk_entry_get_text (GTK_ENTRY(entry));
+	strcpy (text, gtk_entry_get_text (GTK_ENTRY(entry)));
 	
 	if ( (strlen (text)) <= 1 )
 	{

@@ -757,6 +757,8 @@ gimmix_about_show (void)
                            "logo", about_pixbuf,
                            "wrap-license", true,
                            NULL);
+	g_object_unref (about_pixbuf);
+
 	return;
 }
 
