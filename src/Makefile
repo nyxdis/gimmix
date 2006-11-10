@@ -42,9 +42,10 @@ interface.o:		src/interface.c
 gimmix.o:		src/gimmix.c
 	$(CC) $(CFLAGS) -c src/gimmix.c
 	
-install:
+install: all
 	install -d $(PREFIX)/share/gimmix
 	install -D gimmix $(PREFIX)/bin/gimmix
 	install -D -m644 pixmaps/gimmix.png $(PREFIX)/share/pixmaps/gimmix.png
 	install -D -m644 pixmaps/gimmix_firstrun.png $(PREFIX)/share/gimmix/gimmix_firstrun.png
 	install -D -m644 glade/gimmix.glade $(PREFIX)/share/gimmix/gimmix.glade
+

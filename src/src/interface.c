@@ -400,6 +400,8 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 		pub->conf->systray_enable = 0;
 
 	gimmix_config_save (pub->conf);
+	
+	return;
 }
 
 static void 
@@ -419,6 +421,7 @@ cb_pref_systray_checkbox_toggled (GtkWidget *widget, gpointer data)
 		gtk_status_icon_set_visible (tray_icon, TRUE);
 		notify = gimmix_notify_init (tray_icon);
 	}
+
 	return;
 }
 
