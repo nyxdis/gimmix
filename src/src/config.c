@@ -32,7 +32,8 @@ gimmix_config_init (void)
 	cfg_t 	*cfg = NULL;
 	char	*rcfile;
 	Conf 	*conf;
-	int 	ret; 
+	int 	ret;
+	int		port;
 	
 	conf = (Conf*)malloc(sizeof(Conf));
 	char	*host = NULL;
@@ -40,7 +41,7 @@ gimmix_config_init (void)
 
 	cfg_opt_t opts[] = {
 		CFG_SIMPLE_STR ("mpd_hostname", &host),
-		CFG_SIMPLE_INT ("mpd_port", &conf->port),
+		CFG_SIMPLE_INT ("mpd_port", &port),
 		CFG_SIMPLE_STR ("mpd_password", &pass),
 		CFG_SIMPLE_INT ("enable_systray", &conf->systray_enable),
 		CFG_END()
@@ -63,8 +64,10 @@ gimmix_config_init (void)
 	if (pass != NULL)	
 		strncpy (conf->password, pass, 255);
 	
-	if (!conf->port)
+	if (!port)
 		conf->port = 0;
+	else
+		conf->port = port;
 	
 	if ((conf->systray_enable != 0) && (conf->systray_enable != 1))
 		conf->systray_enable = -1;
