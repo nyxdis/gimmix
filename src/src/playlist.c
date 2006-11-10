@@ -53,6 +53,7 @@ static void		cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer
 static void		gimmix_current_playlist_remove_song (void);
 static void		gimmix_current_playlist_clear (void);
 static void		gimmix_library_update (GtkWidget *widget, gpointer data);
+static gboolean	gimmix_update_player_status (gpointer data);
 
 /* File browser callbacks */
 static void		cb_file_browser_close_button_clicked (GtkWidget *widget, gpointer data);
@@ -626,10 +627,30 @@ gimmix_current_playlist_popup_menu (void)
 static void
 gimmix_library_update (GtkWidget *widget, gpointer data)
 {
+	GtkWidget *label;
+	
+	label = glade_xml_get_widget (xml, "gimmix_status");
 	mpd_database_update_dir (pub->gmo, "/");
-	gimmix_update_dir_song_treeview_with_dir ("/");
+	gtk_label_set_text (GTK_LABEL(label), "Updating Library...");
+	gtk_widget_show (label);
+	g_timeout_add (300, (GSourceFunc)gimmix_update_player_status, label);
 	
 	return;
+}
+
+static gboolean
+gimmix_update_player_status (gpointer data)
+{
+	if (mpd_status_db_is_updating (pub->gmo))
+		return TRUE;
+	else
+	{
+		gtk_widget_hide (GTK_WIDGET(data));
+		gimmix_update_dir_song_treeview_with_dir ("/");
+		return FALSE;
+	}
+	
+	return FALSE;
 }
 
 static void

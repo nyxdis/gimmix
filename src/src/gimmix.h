@@ -20,6 +20,7 @@ typedef struct Gimmix
 } GM;
 
 GM *pub;
+
 GladeXML *xml;
 
 /* Finalize */
