@@ -47,6 +47,7 @@ static void 		gimmix_window_visible (void);
 static GtkWidget* 	get_image (const gchar *, GtkIconSize);
 
 /* Callbacks */
+static int			cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data);
 static void			cb_play_button_clicked 	(GtkWidget *widget, gpointer data);
 static void			cb_stop_button_clicked 	(GtkWidget *widget, gpointer data);
 static void			cb_next_button_clicked 	(GtkWidget *widget, gpointer data);
@@ -82,6 +83,7 @@ gimmix_init (void)
 
 	/* Set the application icon */
 	widget = glade_xml_get_widget (xml, "main_window");
+	g_signal_connect (G_OBJECT(widget), "delete-event", G_CALLBACK(cb_gimmix_main_window_delete_event), NULL);
 	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
     icon = gdk_pixbuf_new_from_file (path, NULL);
     gtk_window_set_icon (GTK_WINDOW(widget), icon);
@@ -786,3 +788,17 @@ gimmix_show_ver_info (void)
 	g_free (markup);
 	g_free (appver);
 }
+
+static int
+cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data)
+{
+	if (pub->conf->systray_enable == 1)
+	{	
+		gimmix_window_visible ();
+		return 1;
+	}
+
+	return 0;
+}
+
+		

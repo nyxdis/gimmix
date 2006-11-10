@@ -51,8 +51,6 @@ static void		cb_clear_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_current_playlist_double_click (GtkTreeView *);
 static void		cb_current_playlist_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_current_playlist_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
-static void		cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event);
-static void		cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data);
 static void		gimmix_current_playlist_remove_song (void);
 static void		gimmix_current_playlist_clear (void);
 static void		gimmix_library_update (GtkWidget *widget, gpointer data);
@@ -61,6 +59,8 @@ static gboolean	gimmix_update_player_status (gpointer data);
 /* File browser callbacks */
 static void		cb_file_browser_close_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_file_browser_dir_activated (GtkTreeView *);
+static void		cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event);
+static void		cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 void
 gimmix_playlist_init (void)
@@ -375,18 +375,24 @@ static void
 cb_remove_button_clicked (GtkWidget *widget, gpointer data)
 {
 	gimmix_current_playlist_remove_song ();
+	
+	return;
 }
 
 static void
 cb_clear_button_clicked (GtkWidget *widget, gpointer data)
 {
 	gimmix_current_playlist_clear ();
+	
+	return;
 }
 
 static void
 cb_file_browser_close_button_clicked (GtkWidget *widget, gpointer data)
 {
 	gtk_widget_hide (GTK_WIDGET(data));
+	
+	return;
 }
 
 static void
@@ -414,6 +420,7 @@ cb_current_playlist_double_click (GtkTreeView *treeview)
 		mpd_status_update (pub->gmo);
 		gimmix_set_song_info ();
 	}
+	
 	return;
 }
 
