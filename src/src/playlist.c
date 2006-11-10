@@ -626,7 +626,8 @@ gimmix_current_playlist_popup_menu (void)
 static void
 gimmix_library_update (GtkWidget *widget, gpointer data)
 {
-	mpd_database_update_dir (pub->gmo, NULL);
+	mpd_database_update_dir (pub->gmo, "/");
+	gimmix_update_dir_song_treeview_with_dir ("/");
 	
 	return;
 }
