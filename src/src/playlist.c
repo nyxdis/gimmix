@@ -24,6 +24,8 @@
 #include <string.h>
 #include "playlist.h"
 
+#define DELETE_KEY 0xffff
+
 enum {
 	SONG = 1,
 	DIR,
@@ -48,6 +50,7 @@ static void		cb_remove_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_clear_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_current_playlist_double_click (GtkTreeView *);
 static void		cb_current_playlist_right_click (GtkTreeView *treeview, GdkEventButton *event);
+static void		cb_current_playlist_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
 static void		cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data);
 static void		gimmix_current_playlist_remove_song (void);
@@ -86,6 +89,7 @@ gimmix_playlist_init (void)
 	gtk_tree_view_set_model (GTK_TREE_VIEW (current_playlist_treeview), current_playlist_model);
 	g_signal_connect (current_playlist_treeview, "row-activated", G_CALLBACK(cb_current_playlist_double_click), NULL);
 	g_signal_connect (current_playlist_treeview, "button-release-event", G_CALLBACK (cb_current_playlist_right_click), NULL);
+	g_signal_connect (current_playlist_treeview, "key_release_event", G_CALLBACK (cb_current_playlist_delete_press), NULL);
 	g_object_unref (current_playlist_model);
 	
 	/* populate the file browser */
@@ -354,6 +358,17 @@ cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data)
 	index = gtk_combo_box_get_active (GTK_COMBO_BOX(combo));
 
 	gimmix_library_search (index, text);
+}
+
+static void
+cb_current_playlist_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+	if (event->keyval != DELETE_KEY)
+		return;
+	
+	gimmix_current_playlist_remove_song ();
+	
+	return;
 }
 
 static void
