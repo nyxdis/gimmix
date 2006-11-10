@@ -516,6 +516,8 @@ cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event)
 		default:
 			return;
 	}
+	
+	return;
 }
 
 static void
@@ -625,8 +627,9 @@ gimmix_set_song_info (void)
 		gtk_label_set_text (GTK_LABEL(album_label), NULL);
 
 	g_free (markup);
-
 	gimmix_free_song_info (song);
+	
+	return;
 }
 
 static void
@@ -640,6 +643,8 @@ gimmix_systray_icon_create (void)
 	gtk_status_icon_set_tooltip(tray_icon, "Gimmix");
 	g_signal_connect (tray_icon, "popup-menu", G_CALLBACK (gimmix_systray_popup_menu), NULL);
 	g_signal_connect (tray_icon, "activate", G_CALLBACK(gimmix_window_visible), NULL);
+	
+	return;
 }
 
 static void
@@ -697,6 +702,8 @@ gimmix_systray_popup_menu (void)
 
 	gtk_widget_show (menu);
 	gtk_menu_popup (GTK_MENU(menu), NULL, NULL, NULL, NULL, 1,gtk_get_current_event_time());
+	
+	return;
 }
 
 NotifyNotification *
@@ -712,6 +719,7 @@ gimmix_notify_init (GtkStatusIcon *status_icon)
 	
 	notify_notification_set_timeout (notify, 1000);
 	//notify_notification_show(notify, NULL);
+	
 	return notify;
 }
 
@@ -787,6 +795,8 @@ gimmix_show_ver_info (void)
 	gtk_window_set_title (GTK_WINDOW(window), APPNAME);
 	g_free (markup);
 	g_free (appver);
+	
+	return;
 }
 
 static int
