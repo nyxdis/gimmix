@@ -252,16 +252,14 @@ static void
 cb_prev_button_clicked (GtkWidget *widget, gpointer data)
 {
 	if (gimmix_prev(pub->gmo))
-	return;
-	//	gimmix_set_song_info();
+		gimmix_set_song_info();
 }
 
 static void
 cb_next_button_clicked (GtkWidget *widget, gpointer data)
 {
 	if (gimmix_next(pub->gmo))
-	return;
-	//	gimmix_set_song_info ();
+		gimmix_set_song_info ();
 }
 
 static void
@@ -273,7 +271,7 @@ cb_play_button_clicked (GtkWidget *widget, gpointer data)
 	{
 		image = get_image ("gtk-media-pause", GTK_ICON_SIZE_BUTTON);
 		gtk_button_set_image (GTK_BUTTON(widget), image);
-		//gimmix_set_song_info ();
+		gimmix_set_song_info ();
 	}
 	else
 	{
