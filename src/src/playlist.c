@@ -50,6 +50,8 @@ static void		cb_remove_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_clear_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_current_playlist_double_click (GtkTreeView *);
 static void		cb_current_playlist_right_click (GtkTreeView *treeview, GdkEventButton *event);
+static void cb_repeat_menu_toggled (GtkCheckMenuItem *item, gpointer data);
+static void cb_shuffle_menu_toggled (GtkCheckMenuItem *item, gpointer data);
 static void		cb_current_playlist_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
 static void		gimmix_current_playlist_remove_song (void);
 static void		gimmix_current_playlist_clear (void);
@@ -635,6 +637,24 @@ gimmix_current_playlist_popup_menu (void)
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_current_playlist_clear), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
+	
+	menu_item = gtk_separator_menu_item_new ();
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
+	
+	menu_item = gtk_check_menu_item_new_with_label ("Repeat");
+	g_signal_connect (G_OBJECT(menu_item), "toggled", G_CALLBACK(cb_repeat_menu_toggled), NULL);
+	if (is_gimmix_repeat(pub->gmo))
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
+	
+	menu_item = gtk_check_menu_item_new_with_label ("Shuffle");
+	g_signal_connect (G_OBJECT(menu_item), "toggled", G_CALLBACK(cb_shuffle_menu_toggled), NULL);
+	if (is_gimmix_shuffle(pub->gmo))
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
 
 	gtk_widget_show (menu);
 	gtk_menu_popup (GTK_MENU(menu),
@@ -644,6 +664,42 @@ gimmix_current_playlist_popup_menu (void)
 					NULL,
 					3,
 					gtk_get_current_event_time());
+}
+
+static void
+cb_repeat_menu_toggled (GtkCheckMenuItem *item, gpointer data)
+{
+	gboolean state;
+	
+	state = gtk_check_menu_item_get_active (item);
+	if (state == TRUE)
+	{
+		gimmix_repeat (pub->gmo, true);
+	}
+	else if (state == FALSE)
+	{
+		gimmix_repeat (pub->gmo, false);
+	}
+	
+	return;
+}
+
+static void
+cb_shuffle_menu_toggled (GtkCheckMenuItem *item, gpointer data)
+{
+	gboolean state;
+	
+	state = gtk_check_menu_item_get_active (item);
+	if (state == TRUE)
+	{
+		gimmix_shuffle (pub->gmo, true);
+	}
+	else if (state == FALSE)
+	{
+		gimmix_shuffle (pub->gmo, false);
+	}
+	
+	return;
 }
 
 static void

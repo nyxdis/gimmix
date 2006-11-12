@@ -68,10 +68,6 @@ static void 		cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
 static void			cb_pref_systray_checkbox_toggled (GtkWidget *widget, gpointer data);
 static void			cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data);
 
-/*
-static void			cb_window_expanded (GObject *object, GParamSpec *pspec, gpointer data);
-*/
-
 void
 gimmix_init (void)
 {
@@ -678,24 +674,6 @@ gimmix_systray_icon_create (void)
 }
 
 static void
-cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data)
-{
-	GtkWidget	*image;
-	
-	if (gimmix_play(pub->gmo))
-	{
-		image = get_image ("gtk-media-pause", GTK_ICON_SIZE_BUTTON);
-		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menuitem), image);
-		gimmix_set_song_info ();
-	}
-	else
-	{
-		image = get_image ("gtk-media-play", GTK_ICON_SIZE_BUTTON);
-		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menuitem), image);
-	}
-}
-
-static void
 gimmix_systray_popup_menu (void)
 {
 	GtkWidget *menu, *menu_item;
@@ -752,6 +730,25 @@ gimmix_systray_popup_menu (void)
 	gtk_menu_popup (GTK_MENU(menu), NULL, NULL, NULL, NULL, 1,gtk_get_current_event_time());
 	
 	return;
+}
+
+
+static void
+cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data)
+{
+	GtkWidget	*image;
+	
+	if (gimmix_play(pub->gmo))
+	{
+		image = get_image ("gtk-media-pause", GTK_ICON_SIZE_BUTTON);
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menuitem), image);
+		gimmix_set_song_info ();
+	}
+	else
+	{
+		image = get_image ("gtk-media-play", GTK_ICON_SIZE_BUTTON);
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menuitem), image);
+	}
 }
 
 NotifyNotification *
