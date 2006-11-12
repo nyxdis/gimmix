@@ -3,18 +3,18 @@
  *
  * Copyright (C) 2006 Priyank Gosalia
  *
- * This program is free software; you can redistribute it and/or
+ * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either
  * version 2 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * Gimmix is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
  *
  * You should have received a copy of the GNU General Public
- * License along with this library; if not, write to the
+ * License along with Gimmix; if not, write to the
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  *
@@ -67,10 +67,7 @@ static void			cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event)
 static void 		cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
 static void			cb_pref_systray_checkbox_toggled (GtkWidget *widget, gpointer data);
 static void			cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data);
-static void
-gimmix_update_and_display_notification (NotifyNotification *notify,
-										SongInfo *s,
-										gboolean display);
+static void			gimmix_update_and_display_notification (NotifyNotification *notify, SongInfo *s, gboolean display);
 void
 gimmix_init (void)
 {
@@ -176,9 +173,6 @@ gimmix_timer (void)
 
 	if (song_is_changed && new_status == PLAY)
 	{
-		//SongInfo *song = gimmix_get_song_info (pub->gmo);
-
-		//gimmix_free_song_info (song);
 		gimmix_set_song_info ();
 		song_is_changed = false;
 	}
@@ -775,12 +769,12 @@ gimmix_notify_init (GtkStatusIcon *status_icon)
 	
 	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
 	//pixbuf = gdk_pixbuf_new_from_file_at_size (path, 32, 32, NULL);
-	notify = notify_notification_new ("Gimmix version 0.1", "http://gimmix.berlios.de", NULL, NULL);
+	notify = notify_notification_new ("Gimmix version 0.2RC1", "http://gimmix.berlios.de", NULL, NULL);
 	notify_notification_set_category (notify, "information");
 	//notify_notification_set_icon_from_pixbuf (notify, pixbuf);
 	g_free (path);
 
-	notify_notification_set_timeout (notify, 2000);
+	notify_notification_set_timeout (notify, 1800);
 	gtk_status_icon_get_geometry (status_icon, &screen, &area, NULL);
 	notify_notification_set_geometry_hints (notify, screen, area.x, area.y);
 
@@ -878,7 +872,7 @@ gimmix_show_ver_info (void)
 	appver = g_strdup_printf ("%s %s", APPNAME, VERSION);
 	markup = g_markup_printf_escaped ("<span size=\"large\"weight=\"bold\">%s</span>", appver);
 	gtk_label_set_markup (GTK_LABEL(song_label), markup);
-	gtk_label_set_text (GTK_LABEL(artist_label), "http://priyank.one09.net/gimmix");
+	gtk_label_set_text (GTK_LABEL(artist_label), "http://gimmix.berlios.de");
 	gtk_label_set_text (GTK_LABEL(album_label), NULL);
 	gtk_window_set_title (GTK_WINDOW(window), APPNAME);
 	g_free (markup);
