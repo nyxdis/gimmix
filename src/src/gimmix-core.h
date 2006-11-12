@@ -27,6 +27,8 @@ typedef struct songinfo
 bool song_is_changed;
 bool playlist_is_changed;
 bool volume_is_changed;
+bool shuffle_is_changed;
+bool repeat_is_changed;
 
 /* create a mpd object and connect to mpd using the conf */
 MpdObj * gimmix_mpd_connect (Conf *);
@@ -38,8 +40,8 @@ bool gimmix_stop (MpdObj *);
 bool gimmix_prev (MpdObj *);
 bool gimmix_next (MpdObj *);
 bool gimmix_seek (MpdObj *, int);
-bool gimmix_toggle_repeat (MpdObj *);
-bool gimmix_toggle_shuffle (MpdObj *);
+void gimmix_repeat (MpdObj *, bool);
+void gimmix_shuffle (MpdObj *, bool);
 
 /* voulme control */
 int gimmix_get_volume (MpdObj *);

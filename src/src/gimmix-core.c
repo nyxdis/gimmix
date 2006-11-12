@@ -134,30 +134,26 @@ gimmix_next (MpdObj *mo)
 	return false;
 }
 
-bool
-gimmix_toggle_repeat (MpdObj *mo)
+void
+gimmix_repeat (MpdObj *mo, bool set)
 {
-	int state;
-	
 	if (!mo)
-		return FALSE;
-		
-	state = mpd_player_get_repeat (mo) ? 0 : 1;
-	mpd_player_set_repeat (mo, state);
-	return TRUE;
+		return;
+
+	mpd_player_set_repeat (mo, set);
+	
+	return;
 }
 
-bool
-gimmix_toggle_shuffle (MpdObj *mo)
+void
+gimmix_shuffle (MpdObj *mo, bool set)
 {
-	int state;
-
 	if (!mo)
-		return FALSE;
-		
-	state = mpd_player_get_random (mo) ? 0 : 1;
-	mpd_player_set_random (mo, state);
-	return TRUE;
+		return;
+
+	mpd_player_set_random (mo, set);
+	
+	return;
 }
 
 bool
@@ -340,6 +336,17 @@ song_changed (MpdObj *mo, ChangedStatusType id)
 		volume_is_changed = true;
 	else
 		volume_is_changed = false;
+	
+	if (id&MPD_CST_RANDOM)
+		shuffle_is_changed = true;
+	else
+		shuffle_is_changed = false;
+	
+	if (id&MPD_CST_REPEAT)
+		repeat_is_changed = true;
+	else
+		repeat_is_changed = false;
+	
 
 	return;
 }
