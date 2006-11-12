@@ -48,6 +48,7 @@ gimmix_mpd_connect (Conf *conf)
 		else
 		return NULL;
 	}
+	
 	return NULL;
 }
 
@@ -89,6 +90,7 @@ gimmix_play (MpdObj *mo)
 			return false;
 		}
 	}
+	
 	return false;
 }
 
@@ -103,6 +105,7 @@ gimmix_stop (MpdObj *mo)
 		mpd_player_stop (mo);
 		return true;
 	}
+	
 	return false;
 }
 
@@ -117,6 +120,7 @@ gimmix_prev (MpdObj *mo)
 	{
 		return true;
 	}
+	
 	return false;
 }
 
@@ -131,6 +135,7 @@ gimmix_next (MpdObj *mo)
 	{
 		return true;
 	}
+	
 	return false;
 }
 
@@ -347,7 +352,6 @@ song_changed (MpdObj *mo, ChangedStatusType id)
 	else
 		repeat_is_changed = false;
 	
-
 	return;
 }
 

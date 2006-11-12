@@ -67,7 +67,10 @@ static void			cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event)
 static void 		cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
 static void			cb_pref_systray_checkbox_toggled (GtkWidget *widget, gpointer data);
 static void			cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data);
-
+static void
+gimmix_update_and_display_notification (NotifyNotification *notify,
+										SongInfo *s,
+										gboolean display);
 void
 gimmix_init (void)
 {
@@ -126,15 +129,13 @@ gimmix_init (void)
 	
 	widget = glade_xml_get_widget (xml, "play_button");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_play_button_clicked), NULL);
-
-	gimmix_systray_icon_create ();
 	
-    if (pub->conf->systray_enable != 1)
+    if (pub->conf->systray_enable == 1)
 	{	
-		//notify = gimmix_notify_init (tray_icon);
-        gtk_status_icon_set_visible (tray_icon, FALSE);
+		gimmix_systray_icon_create ();
+		notify = gimmix_notify_init (tray_icon);
 	}
-
+	
 	if (status == PLAY)
 	{
 		gchar time[15];
@@ -175,6 +176,9 @@ gimmix_timer (void)
 
 	if (song_is_changed && new_status == PLAY)
 	{
+		//SongInfo *song = gimmix_get_song_info (pub->gmo);
+
+		//gimmix_free_song_info (song);
 		gimmix_set_song_info ();
 		song_is_changed = false;
 	}
@@ -248,14 +252,16 @@ static void
 cb_prev_button_clicked (GtkWidget *widget, gpointer data)
 {
 	if (gimmix_prev(pub->gmo))
-		gimmix_set_song_info();
+	return;
+	//	gimmix_set_song_info();
 }
 
 static void
 cb_next_button_clicked (GtkWidget *widget, gpointer data)
 {
 	if (gimmix_next(pub->gmo))
-		gimmix_set_song_info ();
+	return;
+	//	gimmix_set_song_info ();
 }
 
 static void
@@ -267,7 +273,7 @@ cb_play_button_clicked (GtkWidget *widget, gpointer data)
 	{
 		image = get_image ("gtk-media-pause", GTK_ICON_SIZE_BUTTON);
 		gtk_button_set_image (GTK_BUTTON(widget), image);
-		gimmix_set_song_info ();
+		//gimmix_set_song_info ();
 	}
 	else
 	{
@@ -653,6 +659,8 @@ gimmix_set_song_info (void)
 		gtk_label_set_text (GTK_LABEL(album_label), NULL);
 
 	g_free (markup);
+	if (pub->conf->systray_enable == 1)
+		gimmix_update_and_display_notification (notify, song, TRUE);
 	gimmix_free_song_info (song);
 	
 	return;
@@ -754,18 +762,55 @@ cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data)
 NotifyNotification *
 gimmix_notify_init (GtkStatusIcon *status_icon)
 {
-	NotifyNotification *notify;
-	
+	NotifyNotification 	*notify;
+	GdkRectangle 		area;
+	GdkScreen			*screen;
+	gchar				*path;
+	GdkPixbuf			*pixbuf;
+
+	if (!status_icon)
+		return NULL;
+
 	/* Initialize notify */
 	if(!notify_is_initted())
 		notify_init("Gimmix");
 	
-	notify = notify_notification_new_with_status_icon (APPNAME, APPNAME, "gtk-cdrom", status_icon);
-	
-	notify_notification_set_timeout (notify, 1000);
-	//notify_notification_show(notify, NULL);
+	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
+	//pixbuf = gdk_pixbuf_new_from_file_at_size (path, 32, 32, NULL);
+	notify = notify_notification_new ("Gimmix version 0.1", "http://gimmix.berlios.de", NULL, NULL);
+	notify_notification_set_category (notify, "information");
+	//notify_notification_set_icon_from_pixbuf (notify, pixbuf);
+	g_free (path);
+
+	notify_notification_set_timeout (notify, 2000);
+	gtk_status_icon_get_geometry (status_icon, &screen, &area, NULL);
+	notify_notification_set_geometry_hints (notify, screen, area.x, area.y);
+
+	//notify_notification_show (notify, NULL);
 	
 	return notify;
+}
+
+static void
+gimmix_update_and_display_notification (NotifyNotification *notify,
+										SongInfo *s,
+										gboolean display)
+{
+	const gchar *summary;
+	
+	if (!s->title && !s->artist)
+		summary = g_strdup_printf ("%s", g_path_get_basename(s->file));
+	else
+		summary = g_strdup_printf ("%s\n  %s", s->title, s->artist);
+	notify_notification_update (notify, summary, NULL, NULL);
+	
+	if (display)
+	{
+		notify_notification_close (notify, NULL);
+		notify_notification_show (notify, NULL);
+	}
+	
+	return;
 }
 
 static void
