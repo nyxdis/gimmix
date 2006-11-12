@@ -226,19 +226,22 @@ gimmix_timer (void)
 	{
 		GtkWidget *button;
 		GtkWidget *image;
-
+		GtkTooltips *tooltip;
+		
+		button = glade_xml_get_widget (xml, "play_button");
+		tooltip = gtk_tooltips_new ();
 		status = new_status;
 		if (status == PLAY)
 		{
 			image = get_image ("gtk-media-pause", GTK_ICON_SIZE_BUTTON);
-			button = glade_xml_get_widget (xml, "play_button");
 			gtk_button_set_image (GTK_BUTTON(button), image);
+			gtk_tooltips_set_tip (tooltip, button, "Pause", NULL);
 		}
 		else if (status == PAUSE || status == STOP)
 		{
 			image = get_image ("gtk-media-play", GTK_ICON_SIZE_BUTTON);
-			button = glade_xml_get_widget (xml, "play_button");
 			gtk_button_set_image (GTK_BUTTON(button), image);
+			gtk_tooltips_set_tip (tooltip, button, "Play", NULL);
 		}
 		return TRUE;
 	}
