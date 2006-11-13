@@ -830,7 +830,7 @@ gimmix_about_show (void)
     about_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
     g_free (path);
 
-	gchar *website = "http://priyank.one09.net/gimmix";
+	gchar *website = "http://gimmix.berlios.de/";
 	gchar *website_label = "http://priyank.one09.net/gimmix";
 	gchar *authors[] = 	{ "Priyank M. Gosalia <priyankmg@gmail.com>",
 						 "Part of the song seek code borrowed from Pygmy.",
