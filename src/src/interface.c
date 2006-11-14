@@ -784,18 +784,27 @@ gimmix_update_and_display_notification (NotifyNotification *notify,
 										SongInfo *s,
 										gboolean display)
 {
-	const gchar 	*summary;
+	gchar 	*summary;
 	GdkScreen 		*screen;
 	GdkRectangle 	area;
 	
 	if (pub->conf->notify_enable != 1)
 	return;
 	
-	if (!s->title && !s->artist)
-		summary = g_strdup_printf ("%s", g_path_get_basename(s->file));
+	if (s->title != NULL)
+	{
+		if (s->artist != NULL)
+			summary = g_strdup_printf ("%s\n  %s", s->title, s->artist);
+		else
+			summary = g_strdup_printf ("%s\n", s->title);
+	}
 	else
-		summary = g_strdup_printf ("%s\n  %s", s->title, s->artist);
+	{	
+		summary = g_strdup_printf ("%s", g_path_get_basename(s->file));
+	}
+	
 	notify_notification_update (notify, summary, NULL, NULL);
+	g_free (summary);
 	gtk_status_icon_get_geometry (icon, &screen, &area, NULL);
 	notify_notification_set_geometry_hints (notify, screen, area.x, area.y);
 	

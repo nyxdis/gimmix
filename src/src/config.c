@@ -148,8 +148,7 @@ gimmix_config_save (Conf *conf)
 			cfg_setint(cfg, "enable_notify", 1);
 		sopts = cfg_getopt (cfg, "enable_notify");
 		cfg_opt_print (sopts, fp);
-		
-		//cfg_print (cfg, fp);
+
         free (rcfile);
 		fclose (fp);
 	}
