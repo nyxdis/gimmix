@@ -68,8 +68,7 @@ static void			cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event)
 
 static void 		cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
 static void			cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data);
-static void
-cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data);
+static void			cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data);
 static void			cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data);
 static void			gimmix_update_and_display_notification (NotifyNotification *notify, SongInfo *s, gboolean display);
 
@@ -966,4 +965,16 @@ gimmix_create_notification (GtkStatusIcon *sicon)
 	notify_notification_set_geometry_hints (notif, screen, area.x, area.y);
 	
 	return notif;
+}
+
+void
+gimmix_interface_cleanup (void)
+{
+	if ( notify_is_initted() )
+		notify_uninit ();
+	
+	if (icon != NULL)
+		g_object_unref (icon);
+	
+	return;
 }

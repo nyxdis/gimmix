@@ -23,19 +23,15 @@
 
 #include <gtk/gtk.h>
 #include "gimmix.h"
+#include "firstrun.h"
 #include "interface.h"
 #include "playlist.h"
 
 #define GLADE_FILE "/share/gimmix/gimmix.glade"
 
-static bool gimmix_connect (void);
-static void gimmix_connect_error (void);
-
 static void error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog);
-static void on_fr_close_clicked (GtkWidget *widget, gpointer data);
-static void on_fr_apply_clicked (GtkWidget *widget, gpointer data);
 
-static bool
+bool
 gimmix_connect (void)
 {
 	MpdObj *mo;
@@ -54,7 +50,7 @@ gimmix_connect (void)
 	}
 }
 
-static void
+void
 gimmix_connect_error (void)
 {
 	GtkWidget 	*error_dialog;
@@ -91,72 +87,6 @@ error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog)
 		gtk_widget_destroy (GTK_WIDGET(dialog));
 		gtk_main_quit ();
 	}
-}
-
-static void
-on_fr_close_clicked (GtkWidget *widget, gpointer data)
-{
-	gtk_widget_destroy (data);
-	
-	GtkWidget *main_window = glade_xml_get_widget (xml, "main_window");
-	
-	if (!pub->conf)
-	{
-		gtk_main_quit ();
-	}
-	else
-	{
-		if (gimmix_connect())
-		{
-			gtk_widget_show (main_window);
-			gimmix_init ();
-			return;
-		}
-		else
-		{
-			gimmix_connect_error ();
-		}
-	}
-	return;
-}
-
-static void
-on_fr_apply_clicked (GtkWidget *widget, gpointer data)
-{
-	GtkWidget 	*entry;
-	const gchar *host;
-	const gchar *port;
-	const gchar *password;
-
-	pub->conf = (Conf*) malloc(sizeof(Conf));
-
-	entry = glade_xml_get_widget (xml,"fr_hostname");
-	host = gtk_entry_get_text (GTK_ENTRY(entry));
-	
-	entry = glade_xml_get_widget (xml,"fr_port");
-	port = gtk_entry_get_text (GTK_ENTRY(entry));
-	
-	entry = glade_xml_get_widget (xml,"fr_password");
-	password = gtk_entry_get_text (GTK_ENTRY(entry));
-
-	entry = glade_xml_get_widget (xml, "fr_systray_toggle");
-
-	strncpy (pub->conf->hostname, host, 255);
-	strncpy (pub->conf->password, password, 255);
-	pub->conf->port = atoi(port);
-	
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(entry)))
-		pub->conf->systray_enable = 1;
-	else
-		pub->conf->systray_enable = 0;
-	
-	entry = glade_xml_get_widget (xml, "fr_notify_toggle");
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(entry)))
-		pub->conf->notify_enable = 1;
-	else
-		pub->conf->notify_enable = 0;
-
-	gimmix_config_save (pub->conf);
 }
 
 int
@@ -202,17 +132,7 @@ main (int argc, char *argv[])
 	}
 	else
 	{
-		GtkWidget *window;
-		GtkWidget *button;
-
-		window = glade_xml_get_widget (xml, "first_run_dialog");
-		button = glade_xml_get_widget (xml, "fr_apply");
-		g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK(on_fr_apply_clicked), NULL);
-		g_signal_connect (G_OBJECT(window), "delete_event", G_CALLBACK(gtk_main_quit), NULL);
-		button = glade_xml_get_widget (xml, "fr_close");
-		g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK(on_fr_close_clicked), window);
-		
-		gtk_widget_show (window);
+		gimmix_show_firstrun_dialog ();
 	}
 	
 	gtk_main ();
@@ -222,6 +142,8 @@ main (int argc, char *argv[])
 void
 exit_cleanup ()
 {
+	gimmix_interface_cleanup ();
+	
 	if (pub->gmo != NULL)
 		gimmix_disconnect (pub->gmo);
 	if (pub->conf != NULL)

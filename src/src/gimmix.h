@@ -23,6 +23,12 @@ GM *pub;
 
 GladeXML *xml;
 
+/* main connect function */
+bool gimmix_connect (void);
+
+/* display connection error */
+void gimmix_connect_error (void);
+
 /* Finalize */
 void exit_cleanup (void);
 

@@ -13,7 +13,7 @@ void gimmix_init (void);
 /* Sets the song info labels to reflect the song status */
 void gimmix_set_song_info (void);
 
-/* notification init */
-NotifyNotification * gimmix_notify_init (GtkStatusIcon *);
+/* interface cleanup */
+void gimmix_interface_cleanup (void);
 
 #endif
