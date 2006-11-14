@@ -43,7 +43,7 @@ static gboolean 	gimmix_timer (void);
 static void 		gimmix_about_show (void);
 static void 		gimmix_show_ver_info (void);
 static void 		gimmix_systray_popup_menu (void);
-static void 		gimmix_update_volume (void);
+static void			gimmix_update_volume (void);
 static void			gimmix_update_repeat (void);
 static void			gimmix_update_shuffle (void);
 static void			gimmix_systray_icon_create (void);
@@ -73,7 +73,7 @@ static void			cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer dat
 static void			gimmix_update_and_display_notification (NotifyNotification *notify, SongInfo *s, gboolean display);
 
 static void			gimmix_create_systray_icon (gboolean notify_enable);
-static NotifyNotification *	gimmix_create_notification (GtkStatusIcon *sicon);
+static NotifyNotification *	gimmix_create_notification (void);
 static void			gimmix_disable_systray_icon (void);
 static void			gimmix_enable_systray_icon (void);
 
@@ -93,10 +93,10 @@ gimmix_init (void)
 	widget = glade_xml_get_widget (xml, "main_window");
 	g_signal_connect (G_OBJECT(widget), "delete-event", G_CALLBACK(cb_gimmix_main_window_delete_event), NULL);
 	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
-    app_icon = gdk_pixbuf_new_from_file (path, NULL);
-    gtk_window_set_icon (GTK_WINDOW(widget), app_icon);
-    g_object_unref (app_icon);
-    g_free (path);
+	app_icon = gdk_pixbuf_new_from_file (path, NULL);
+	gtk_window_set_icon (GTK_WINDOW(widget), app_icon);
+	g_object_unref (app_icon);
+	g_free (path);
 	
 	widget = glade_xml_get_widget (xml, "prev_button");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_prev_button_clicked), NULL);
@@ -136,17 +136,6 @@ gimmix_init (void)
 	widget = glade_xml_get_widget (xml, "play_button");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_play_button_clicked), NULL);
 
-	if (pub->conf->notify_enable == 1)
-		gimmix_create_systray_icon (TRUE);
-	else
-		gimmix_create_systray_icon (FALSE);
-	
-	if (pub->conf->systray_enable == 0)
-	{
-		g_print ("systray is invisible");
-		gtk_status_icon_set_visible (icon, FALSE);
-	}
-		
 	if (status == PLAY)
 	{
 		gchar time[15];
@@ -169,9 +158,19 @@ gimmix_init (void)
 		gimmix_show_ver_info();
 	}
 	
+	if (pub->conf->notify_enable == 1)
+		gimmix_create_systray_icon (TRUE);
+	else
+		gimmix_create_systray_icon (FALSE);
+
+	if (pub->conf->systray_enable == 0)
+	{
+		gtk_status_icon_set_visible (icon, FALSE);
+	}
+	
 	song_is_changed = false;
 	g_timeout_add (300, (GSourceFunc)gimmix_timer, NULL);
-	
+
 	gimmix_playlist_init ();
 	gimmix_update_current_playlist ();
 }
@@ -386,6 +385,8 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 	widget = glade_xml_get_widget (xml, "button_apply");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_pref_apply_clicked), NULL);
 	gtk_widget_show (GTK_WIDGET(pref_window));
+	
+	return;
 }
 
 static void
@@ -446,7 +447,7 @@ cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data)
 {
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{	
-		notify = gimmix_create_notification (icon);
+		notify = gimmix_create_notification ();
 		pub->conf->notify_enable = 1;
 	}
 	else
@@ -513,6 +514,8 @@ cb_info_button_clicked (GtkWidget *widget, gpointer data)
 
 		gtk_widget_show (GTK_WIDGET(window));
 	}
+	
+	return;
 }
 
 static void
@@ -691,7 +694,7 @@ gimmix_set_song_info (void)
 		gtk_label_set_text (GTK_LABEL(album_label), NULL);
 
 	g_free (markup);
-	if (pub->conf->systray_enable == 1)
+	if ((pub->conf->notify_enable == 1) && (notify!=NULL))
 		gimmix_update_and_display_notification (notify, song, TRUE);
 	gimmix_free_song_info (song);
 	
@@ -781,7 +784,9 @@ gimmix_update_and_display_notification (NotifyNotification *notify,
 										SongInfo *s,
 										gboolean display)
 {
-	const gchar *summary;
+	const gchar 	*summary;
+	GdkScreen 		*screen;
+	GdkRectangle 	area;
 	
 	if (pub->conf->notify_enable != 1)
 	return;
@@ -791,6 +796,8 @@ gimmix_update_and_display_notification (NotifyNotification *notify,
 	else
 		summary = g_strdup_printf ("%s\n  %s", s->title, s->artist);
 	notify_notification_update (notify, summary, NULL, NULL);
+	gtk_status_icon_get_geometry (icon, &screen, &area, NULL);
+	notify_notification_set_geometry_hints (notify, screen, area.x, area.y);
 	
 	if (display)
 	{
@@ -897,14 +904,14 @@ gimmix_create_systray_icon (gboolean notify_enable)
 	icon_file = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
 	icon = gtk_status_icon_new_from_file (icon_file);
 	g_free (icon_file);
-	gtk_status_icon_set_tooltip (icon, APPNAME);
 	gtk_status_icon_set_visible (icon, TRUE);
+	gtk_status_icon_set_tooltip (icon, APPNAME);
 	g_signal_connect (icon, "popup-menu", G_CALLBACK (gimmix_systray_popup_menu), NULL);
 	g_signal_connect (icon, "activate", G_CALLBACK(gimmix_window_visible), NULL);
 	
 	if (notify_enable == TRUE)
 	{
-		notify = gimmix_create_notification (icon);
+		notify = gimmix_create_notification ();
 	}
 	return;
 }
@@ -931,7 +938,7 @@ gimmix_enable_systray_icon (void)
 	gtk_status_icon_set_visible (icon, TRUE);
 	if (pub->conf->notify_enable == 1)
 	{	
-		notify = gimmix_create_notification (icon);
+		notify = gimmix_create_notification ();
 	}
 	else
 	notify = NULL;
@@ -940,7 +947,7 @@ gimmix_enable_systray_icon (void)
 }
 
 static NotifyNotification *
-gimmix_create_notification (GtkStatusIcon *sicon)
+gimmix_create_notification (void)
 {
 	NotifyNotification 	*notif;
 	GdkRectangle 		area;
@@ -948,21 +955,21 @@ gimmix_create_notification (GtkStatusIcon *sicon)
 	gchar				*path;
 	GdkPixbuf			*pixbuf;
 
-	if (!sicon)
+	if (!icon)
 		return NULL;
 
 	/* Initialize notify */
 	if(!notify_is_initted())
 		notify_init(APPNAME);
-	
 	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
 	notif = notify_notification_new ("Gimmix version 0.2RC2", "http://gimmix.berlios.de", NULL, NULL);
 	notify_notification_set_category (notif, "information");
 	g_free (path);
 
 	notify_notification_set_timeout (notif, 1800);
-	gtk_status_icon_get_geometry (sicon, &screen, &area, NULL);
+	gtk_status_icon_get_geometry (icon, &screen, &area, NULL);
 	notify_notification_set_geometry_hints (notif, screen, area.x, area.y);
+	printf ("x: %d, y:%d", area.x, area.y);
 	
 	return notif;
 }
@@ -970,7 +977,7 @@ gimmix_create_notification (GtkStatusIcon *sicon)
 void
 gimmix_interface_cleanup (void)
 {
-	if ( notify_is_initted() )
+	if (notify_is_initted())
 		notify_uninit ();
 	
 	if (icon != NULL)
