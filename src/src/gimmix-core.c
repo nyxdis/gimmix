@@ -35,6 +35,7 @@ gimmix_mpd_connect (Conf *conf)
 
 	if (conf)
 	{
+		
 		if ((conf->hostname!="") && (conf->port!=-1))
 		{
 			mo = mpd_new (conf->hostname, conf->port, conf->password);

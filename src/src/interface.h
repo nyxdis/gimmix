@@ -7,10 +7,6 @@
 #include <libnotify/notify.h>
 #include "gimmix-core.h"
 
-/* Main window widgets */
-GtkStatusIcon *tray_icon;
-NotifyNotification *notify;
-
 /* Initializes default interface signals */
 void gimmix_init (void);
 

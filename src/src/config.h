@@ -7,8 +7,9 @@
 
 typedef struct
 {
-	int systray_enable;
 	int port;
+	int systray_enable;
+	int	notify_enable;
 	char hostname[256];
 	char password[256];
 } Conf;

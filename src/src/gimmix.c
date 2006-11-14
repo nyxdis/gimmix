@@ -110,12 +110,14 @@ on_fr_close_clicked (GtkWidget *widget, gpointer data)
 		{
 			gtk_widget_show (main_window);
 			gimmix_init ();
+			return;
 		}
 		else
 		{
 			gimmix_connect_error ();
 		}
 	}
+	return;
 }
 
 static void
@@ -147,6 +149,12 @@ on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 		pub->conf->systray_enable = 1;
 	else
 		pub->conf->systray_enable = 0;
+	
+	entry = glade_xml_get_widget (xml, "fr_notify_toggle");
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(entry)))
+		pub->conf->notify_enable = 1;
+	else
+		pub->conf->notify_enable = 0;
 
 	gimmix_config_save (pub->conf);
 }
@@ -177,12 +185,13 @@ main (int argc, char *argv[])
 	{
 		pub->conf = gimmix_config_init ();
 		if (!pub->conf)
+		{
+			g_print ("config error");
 			gimmix_connect_error ();
-		
+		}
 		main_window = glade_xml_get_widget (xml, "main_window");
 		if (gimmix_connect())
 		{
-		//	gtk_widget_set_size_request (main_window, 340, 145);
 			gtk_widget_show (main_window);
 			gimmix_init ();
 		}
