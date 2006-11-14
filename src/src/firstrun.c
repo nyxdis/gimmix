@@ -35,6 +35,7 @@ gimmix_show_firstrun_dialog ()
 	GtkWidget *window;
 	GtkWidget *button;
 	GtkWidget *check;
+	GtkWidget *entry;
 
 	window = glade_xml_get_widget (xml, "first_run_dialog");
 	button = glade_xml_get_widget (xml, "fr_apply");
@@ -43,6 +44,10 @@ gimmix_show_firstrun_dialog ()
 	button = glade_xml_get_widget (xml, "fr_close");
 	g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK(on_fr_close_clicked), window);
 	
+	entry = glade_xml_get_widget (xml, "fr_password");
+	gtk_entry_set_visibility (GTK_ENTRY(entry), FALSE);
+	gtk_entry_set_invisible_char (GTK_ENTRY(entry), g_utf8_get_char("*"));
+
 	check = glade_xml_get_widget (xml, "fr_systray_toggle");
 	g_signal_connect (G_OBJECT(check), "toggled", G_CALLBACK(on_fr_systray_checkbox_toggled), NULL);
 		

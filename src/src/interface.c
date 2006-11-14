@@ -365,6 +365,8 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 	if (pub->conf->password)
 	{
 		entry = glade_xml_get_widget (xml,"password_entry");
+		gtk_entry_set_visibility (GTK_ENTRY(entry), FALSE);
+		gtk_entry_set_invisible_char (GTK_ENTRY(entry), g_utf8_get_char("*"));
 		gtk_entry_set_text (GTK_ENTRY(entry), pub->conf->password);
 	}
 
@@ -428,7 +430,6 @@ cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data)
 		gtk_widget_set_sensitive (notify_checkbutton, TRUE);
 		gimmix_enable_systray_icon ();
 		pub->conf->systray_enable = 1;
-		
 	}
 	else
 	if (gtk_toggle_button_get_active(button) == FALSE)
@@ -784,7 +785,7 @@ gimmix_update_and_display_notification (NotifyNotification *notify,
 										SongInfo *s,
 										gboolean display)
 {
-	gchar 	*summary;
+	gchar 			*summary;
 	GdkScreen 		*screen;
 	GdkRectangle 	area;
 	
@@ -978,7 +979,6 @@ gimmix_create_notification (void)
 	notify_notification_set_timeout (notif, 1800);
 	gtk_status_icon_get_geometry (icon, &screen, &area, NULL);
 	notify_notification_set_geometry_hints (notif, screen, area.x, area.y);
-	printf ("x: %d, y:%d", area.x, area.y);
 	
 	return notif;
 }
