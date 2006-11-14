@@ -11,7 +11,7 @@
 #include "config.h"
 
 #define APPNAME "Gimmix"
-#define VERSION "0.2RC1"
+#define VERSION "0.2RC2"
 
 typedef struct Gimmix
 {

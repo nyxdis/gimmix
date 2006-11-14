@@ -957,7 +957,7 @@ gimmix_create_notification (GtkStatusIcon *sicon)
 		notify_init(APPNAME);
 	
 	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
-	notif = notify_notification_new ("Gimmix version 0.2RC1", "http://gimmix.berlios.de", NULL, NULL);
+	notif = notify_notification_new ("Gimmix version 0.2RC2", "http://gimmix.berlios.de", NULL, NULL);
 	notify_notification_set_category (notif, "information");
 	g_free (path);
 
