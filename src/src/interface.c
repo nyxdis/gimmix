@@ -433,7 +433,7 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 	return;
 }
 
-static void 
+static void
 cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data)
 {
 	GtkWidget *notify_checkbutton;
@@ -993,7 +993,7 @@ gimmix_create_notification (void)
 		notify_init(APPNAME);
 
 	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
-	notif = notify_notification_new ("Gimmix version 0.2RC2", "http://gimmix.berlios.de", NULL, NULL);
+	notif = notify_notification_new ("Gimmix version 0.2", "http://gimmix.berlios.de", NULL, NULL);
 	notify_notification_set_category (notif, "information");
 	g_free (path);
 
