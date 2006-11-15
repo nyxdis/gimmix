@@ -33,9 +33,9 @@ gimmix_config_init (void)
 	char	*rcfile;
 	Conf 	*conf;
 	int 	ret;
-	int		port;
-	int		systray_enable;
-	int		notify_enable;
+	int	port = 1;
+	cfg_bool_t	systray_enable = true;
+	cfg_bool_t	notify_enable = true;
 	
 	conf = (Conf*)malloc(sizeof(Conf));
 	char	*host = NULL;
@@ -45,8 +45,8 @@ gimmix_config_init (void)
 		CFG_SIMPLE_STR ("mpd_hostname", &host),
 		CFG_SIMPLE_INT ("mpd_port", &port),
 		CFG_SIMPLE_STR ("mpd_password", &pass),
-		CFG_SIMPLE_INT ("enable_systray", &systray_enable),
-		CFG_SIMPLE_INT ("enable_notify", &notify_enable),
+		CFG_SIMPLE_BOOL ("enable_systray", &systray_enable),
+		CFG_SIMPLE_BOOL ("enable_notify", &notify_enable),
 		CFG_END()
 	};
 	
@@ -67,20 +67,17 @@ gimmix_config_init (void)
 	if (pass != NULL)	
 		strncpy (conf->password, pass, 255);
 	
-	if (!port)
-		conf->port = 0;
-	else
-		conf->port = port;
+	conf->port = port;
 	
-	if ((systray_enable != 0) && (systray_enable != 1))
+	if (systray_enable == true)
 		conf->systray_enable = 1;
 	else
-		conf->systray_enable = systray_enable;
+		conf->systray_enable = 0;
 		
-	if ((notify_enable != 0) && (notify_enable != 1))
+	if (notify_enable == true)
 		conf->notify_enable = 1;
 	else
-		conf->notify_enable = notify_enable;
+		conf->notify_enable = 0;
 	
 	/* Free the memory */
 	cfg_free_value (opts);
@@ -102,8 +99,8 @@ gimmix_config_save (Conf *conf)
 		CFG_SIMPLE_STR ("mpd_hostname", NULL),
 		CFG_SIMPLE_INT ("mpd_port", 0),
 		CFG_SIMPLE_STR ("mpd_password", NULL),
-		CFG_SIMPLE_INT ("enable_systray", 0),
-		CFG_SIMPLE_INT ("enable_notify", 0),
+		CFG_SIMPLE_BOOL ("enable_systray", false),
+		CFG_SIMPLE_BOOL ("enable_notify", false),
 		CFG_END()
 	};
 
@@ -134,18 +131,18 @@ gimmix_config_save (Conf *conf)
 		cfg_opt_print (sopts, fp);
 
 		fprintf (fp, "\n# Enable/Disable systray icon (1 = Enable, 0 = Disable) \n");
-		if (conf->systray_enable == 1 || conf->systray_enable == 0)
-			cfg_setint(cfg, "enable_systray", conf->systray_enable);
+		if (conf->systray_enable == 1)
+			cfg_setbool(cfg, "enable_systray", true);
 		else
-			cfg_setint(cfg, "enable_systray", 1);
+			cfg_setbool(cfg, "enable_systray", false);
 		sopts = cfg_getopt (cfg, "enable_systray");
 		cfg_opt_print (sopts, fp);
 		
 		fprintf (fp, "\n# Enable/Disable system tray notifications (1 = Enable, 0 = Disable) \n");
-		if (conf->notify_enable == 1 || conf->notify_enable == 0)
-			cfg_setint(cfg, "enable_notify", conf->notify_enable);
+		if (conf->notify_enable == 1)
+			cfg_setbool(cfg, "enable_notify", true);
 		else
-			cfg_setint(cfg, "enable_notify", 1);
+			cfg_setbool(cfg, "enable_notify", false);
 		sopts = cfg_getopt (cfg, "enable_notify");
 		cfg_opt_print (sopts, fp);
 

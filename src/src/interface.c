@@ -343,7 +343,7 @@ cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data)
 static void
 cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 {
-	gchar 		port[8];
+	gchar 		*port;
 	gint 		systray_enable;
 	gint		notify_enable;
 	gint		disable_notify;
@@ -351,8 +351,8 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 	GtkWidget	*pref_window;
 	
 	pref_window = glade_xml_get_widget (xml, "prefs_window");
-
-	snprintf (port, 8, "%d", pub->conf->port);
+	printf ("%d", pub->conf->port);
+	port = g_strdup_printf ("%d", pub->conf->port);
 	systray_enable = pub->conf->systray_enable;
 	notify_enable = pub->conf->notify_enable;
 
@@ -361,7 +361,8 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 	
 	entry = glade_xml_get_widget (xml,"port_entry");
 	gtk_entry_set_text (GTK_ENTRY(entry), port);
-	
+	g_free (port);
+
 	if (pub->conf->password)
 	{
 		entry = glade_xml_get_widget (xml,"password_entry");
