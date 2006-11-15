@@ -30,7 +30,7 @@ static void on_fr_apply_clicked (GtkWidget *widget, gpointer data);
 static void on_fr_systray_checkbox_toggled (GtkToggleButton *button, gpointer data);
 
 void
-gimmix_show_firstrun_dialog ()
+gimmix_show_firstrun_dialog (void)
 {
 	GtkWidget *window;
 	GtkWidget *button;
