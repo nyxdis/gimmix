@@ -57,8 +57,8 @@ static void		cb_next_button_clicked 	(GtkWidget *widget, gpointer data);
 static void		cb_prev_button_clicked 	(GtkWidget *widget, gpointer data);
 static void 		cb_info_button_clicked 	(GtkWidget *widget, gpointer data);
 static void 		cb_pref_button_clicked 	(GtkWidget *widget, gpointer data);
-static void 		cb_repeat_button_toggled 	(GtkToggleButton *button, gpointer data);
-static void 		cb_shuffle_button_toggled 	(GtkToggleButton *button, gpointer data);
+static void 		cb_repeat_button_toggled (GtkToggleButton *button, gpointer data);
+static void 		cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data);
 
 static void 		cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
 
@@ -445,6 +445,7 @@ cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data)
 			pub->conf->notify_enable = 0;
 	}
 	
+	gimmix_config_save (pub->conf);
 	return;
 }
 
@@ -909,7 +910,6 @@ cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data)
 		gimmix_window_visible ();
 		return 1;
 	}
-
 	return 0;
 }
 
@@ -969,9 +969,9 @@ gimmix_create_notification (void)
 {
 	NotifyNotification 	*notif;
 	GdkRectangle 		area;
-	GdkScreen			*screen;
-	gchar				*path;
-	GdkPixbuf			*pixbuf;
+	GdkScreen		*screen;
+	gchar			*path;
+	GdkPixbuf		*pixbuf;
 
 	if (!icon)
 		return NULL;
