@@ -130,7 +130,7 @@ gimmix_config_save (Conf *conf)
 		sopts = cfg_getopt (cfg, "mpd_password");
 		cfg_opt_print (sopts, fp);
 
-		fprintf (fp, "\n# Enable/Disable systray icon (1 = Enable, 0 = Disable) \n");
+		fprintf (fp, "\n# Enable/Disable systray icon (Enable = true, Disable = false)\n");
 		if (conf->systray_enable == 1)
 			cfg_setbool(cfg, "enable_systray", true);
 		else
@@ -138,7 +138,7 @@ gimmix_config_save (Conf *conf)
 		sopts = cfg_getopt (cfg, "enable_systray");
 		cfg_opt_print (sopts, fp);
 		
-		fprintf (fp, "\n# Enable/Disable system tray notifications (1 = Enable, 0 = Disable) \n");
+		fprintf (fp, "\n# Enable/Disable system tray notifications (Enable = true, Disable = false) \n");
 		if (conf->notify_enable == 1)
 			cfg_setbool(cfg, "enable_notify", true);
 		else
