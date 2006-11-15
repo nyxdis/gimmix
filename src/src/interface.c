@@ -46,7 +46,6 @@ static void 		gimmix_systray_popup_menu (void);
 static void			gimmix_update_volume (void);
 static void			gimmix_update_repeat (void);
 static void			gimmix_update_shuffle (void);
-static void			gimmix_systray_icon_create (void);
 static void 		gimmix_window_visible (void);
 static GtkWidget* 	get_image (const gchar *, GtkIconSize);
 
@@ -980,6 +979,7 @@ gimmix_create_notification (void)
 	/* Initialize notify */
 	if(!notify_is_initted())
 		notify_init(APPNAME);
+
 	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
 	notif = notify_notification_new ("Gimmix version 0.2RC2", "http://gimmix.berlios.de", NULL, NULL);
 	notify_notification_set_category (notif, "information");
