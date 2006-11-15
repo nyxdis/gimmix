@@ -29,11 +29,11 @@
 Conf *
 gimmix_config_init (void)
 {
-	cfg_t 	*cfg = NULL;
-	char	*rcfile;
-	Conf 	*conf;
-	int 	ret;
-	int	port = 1;
+	cfg_t 		*cfg = NULL;
+	char		*rcfile;
+	Conf 		*conf;
+	int 		ret;
+	int		port = 1;
 	cfg_bool_t	systray_enable = true;
 	cfg_bool_t	notify_enable = true;
 	
@@ -70,15 +70,23 @@ gimmix_config_init (void)
 	conf->port = port;
 	
 	if (systray_enable == true)
+	{	
 		conf->systray_enable = 1;
+	}
 	else
+	{	
 		conf->systray_enable = 0;
+	}
 		
 	if (notify_enable == true)
-		conf->notify_enable = 1;
+	{	
+		conf->notify_enable = 1
+	}
 	else
+	{
 		conf->notify_enable = 0;
-	
+	}
+
 	/* Free the memory */
 	cfg_free_value (opts);
 	
@@ -146,11 +154,13 @@ gimmix_config_save (Conf *conf)
 		sopts = cfg_getopt (cfg, "enable_notify");
 		cfg_opt_print (sopts, fp);
 
-        free (rcfile);
+		free (rcfile);
 		fclose (fp);
 	}
 	else
+	{	
 		fprintf (stderr, "Error while saving config.\n");
+	}
 
 	cfg_free_value (opts);
 	cfg_free (cfg);
@@ -177,8 +187,9 @@ void
 gimmix_config_free (Conf *conf)
 {
 	if (conf != NULL)
-    {
+	{
 		free (conf);
-    }
+	}
+
 	return;
 }

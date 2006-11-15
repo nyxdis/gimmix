@@ -29,9 +29,9 @@
 #include "gimmix.h"
 
 enum {	PLAY,
-		PAUSE,
-		STOP
-	};
+	PAUSE,
+	STOP
+};
 
 static int 			status;
 static GtkWidget 		*progress;
@@ -72,9 +72,9 @@ static void		cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data
 static void		gimmix_update_and_display_notification (NotifyNotification *notify, SongInfo *s, gboolean display);
 
 static void		gimmix_create_systray_icon (gboolean notify_enable);
-static NotifyNotification *	gimmix_create_notification (void);
 static void		gimmix_disable_systray_icon (void);
 static void		gimmix_enable_systray_icon (void);
+static NotifyNotification *	gimmix_create_notification (void);
 
 void
 gimmix_init (void)
@@ -172,6 +172,8 @@ gimmix_init (void)
 
 	gimmix_playlist_init ();
 	gimmix_update_current_playlist ();
+
+	return;
 }
 
 static gboolean
@@ -259,6 +261,8 @@ cb_prev_button_clicked (GtkWidget *widget, gpointer data)
 {
 	if (gimmix_prev(pub->gmo))
 		gimmix_set_song_info();
+
+	return;
 }
 
 static void
@@ -266,6 +270,8 @@ cb_next_button_clicked (GtkWidget *widget, gpointer data)
 {
 	if (gimmix_next(pub->gmo))
 		gimmix_set_song_info ();
+	
+	return;
 }
 
 static void
@@ -284,6 +290,8 @@ cb_play_button_clicked (GtkWidget *widget, gpointer data)
 		image = get_image ("gtk-media-play", GTK_ICON_SIZE_BUTTON);
 		gtk_button_set_image (GTK_BUTTON(widget), image);
 	}
+	
+	return;
 }
 
 static void
@@ -301,6 +309,7 @@ cb_stop_button_clicked (GtkWidget *widget, gpointer data)
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), "Stopped");
 		gimmix_show_ver_info ();
 	}
+
 	return;
 }
 
@@ -446,6 +455,7 @@ cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data)
 	}
 	
 	gimmix_config_save (pub->conf);
+
 	return;
 }
 
@@ -599,7 +609,7 @@ gimmix_update_volume ()
 {
 	gint 			volume;
 	GtkWidget		*widget;
-	GtkAdjustment	*volume_adj;
+	GtkAdjustment		*volume_adj;
 	
 	widget = glade_xml_get_widget (xml, "volume_scale");
 	volume_adj = gtk_range_get_adjustment (GTK_RANGE(widget));
@@ -670,11 +680,11 @@ gimmix_set_song_info (void)
 	GtkWidget	*album_label;
 	GtkWidget	*song_label;
 	
-	song = gimmix_get_song_info (pub->gmo);
-	window = glade_xml_get_widget (xml, "main_window");
-	song_label = glade_xml_get_widget (xml,"song_label");
-	artist_label = glade_xml_get_widget (xml,"artist_label");
-	album_label = glade_xml_get_widget (xml,"album_label");
+	song 		= gimmix_get_song_info (pub->gmo);
+	window 		= glade_xml_get_widget (xml, "main_window");
+	song_label 	= glade_xml_get_widget (xml,"song_label");
+	artist_label 	= glade_xml_get_widget (xml,"artist_label");
+	album_label 	= glade_xml_get_widget (xml,"album_label");
 		
 	if (song->title)
 	{
@@ -703,6 +713,7 @@ gimmix_set_song_info (void)
 	g_free (markup);
 	if ((pub->conf->notify_enable == 1) && (notify!=NULL))
 		gimmix_update_and_display_notification (notify, song, TRUE);
+	
 	gimmix_free_song_info (song);
 	
 	return;
@@ -790,8 +801,8 @@ cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data)
 
 static void
 gimmix_update_and_display_notification (NotifyNotification *notify,
-										SongInfo *s,
-										gboolean display)
+					SongInfo *s,
+					gboolean display)
 {
 	gchar 			*summary;
 	GdkScreen 		*screen;
@@ -832,31 +843,31 @@ gimmix_about_show (void)
  	GdkPixbuf 	*about_pixbuf;
 	gchar		*path;
 	gchar 		*license = 
-      ("Gimmix is free software; you can redistribute it and/or "
-	  "modify it under the terms of the GNU General Public Licence as "
-	  "published by the Free Software Foundation; either version 2 of the "
-	  "Licence, or (at your option) any later version.\n"
-	  "\n"
-	  "Gimmix is distributed in the hope that it will be useful, "
-	  "but WITHOUT ANY WARRANTY; without even the implied warranty of "
-	  "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU "
-	  "General Public Licence for more details.\n"
-	  "\n"
-	  "You should have received a copy of the GNU General Public Licence "
-	  "along with Gimmix; if not, write to the Free Software "
-	  "Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, "
-	  "MA  02110-1301  USA");
+	("Gimmix is free software; you can redistribute it and/or "
+	"modify it under the terms of the GNU General Public Licence as "
+	"published by the Free Software Foundation; either version 2 of the "
+	"Licence, or (at your option) any later version.\n"
+	"\n"
+	"Gimmix is distributed in the hope that it will be useful, "
+	"but WITHOUT ANY WARRANTY; without even the implied warranty of "
+	"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU "
+	"General Public Licence for more details.\n"
+	"\n"
+	"You should have received a copy of the GNU General Public Licence "
+	"along with Gimmix; if not, write to the Free Software "
+	"Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, "
+	"MA  02110-1301  USA");
 	
 	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
-    about_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
-    g_free (path);
+	about_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+	g_free (path);
 
 	gchar *website = "http://gimmix.berlios.de/";
 	gchar *website_label = "http://priyank.one09.net/gimmix";
 	gchar *authors[] = 	{ "Priyank M. Gosalia <priyankmg@gmail.com>",
-						 "Part of the song seek code borrowed from Pygmy.",
-						 NULL
-						};
+				 "Part of the song seek code borrowed from Pygmy.",
+				 NULL
+				};
 	
 	gtk_show_about_dialog (NULL,
                            "name", APPNAME,
@@ -910,13 +921,14 @@ cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data)
 		gimmix_window_visible ();
 		return 1;
 	}
+
 	return 0;
 }
 
 static void
 gimmix_create_systray_icon (gboolean notify_enable)
 {
-	gchar 				*icon_file;
+	gchar 	*icon_file;
 	
 	icon_file = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
 	icon = gtk_status_icon_new_from_file (icon_file);
@@ -967,11 +979,11 @@ gimmix_enable_systray_icon (void)
 static NotifyNotification *
 gimmix_create_notification (void)
 {
-	NotifyNotification 	*notif;
 	GdkRectangle 		area;
 	GdkScreen		*screen;
 	gchar			*path;
 	GdkPixbuf		*pixbuf;
+	NotifyNotification 	*notif;
 
 	if (!icon)
 		return NULL;
