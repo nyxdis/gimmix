@@ -80,7 +80,7 @@ gimmix_config_init (void)
 		
 	if (notify_enable == true)
 	{	
-		conf->notify_enable = 1
+		conf->notify_enable = 1;
 	}
 	else
 	{
