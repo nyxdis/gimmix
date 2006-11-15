@@ -33,9 +33,9 @@ enum {	PLAY,
 		STOP
 	};
 
-static int 					status;
-static GtkWidget 			*progress;
-static GtkWidget 			*progressbox;
+static int 			status;
+static GtkWidget 		*progress;
+static GtkWidget 		*progressbox;
 static GtkStatusIcon 		*icon;
 static NotifyNotification 	*notify;
 
@@ -43,18 +43,18 @@ static gboolean 	gimmix_timer (void);
 static void 		gimmix_about_show (void);
 static void 		gimmix_show_ver_info (void);
 static void 		gimmix_systray_popup_menu (void);
-static void			gimmix_update_volume (void);
-static void			gimmix_update_repeat (void);
-static void			gimmix_update_shuffle (void);
+static void		gimmix_update_volume (void);
+static void		gimmix_update_repeat (void);
+static void		gimmix_update_shuffle (void);
 static void 		gimmix_window_visible (void);
 static GtkWidget* 	get_image (const gchar *, GtkIconSize);
 
 /* Callbacks */
-static int			cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data);
-static void			cb_play_button_clicked 	(GtkWidget *widget, gpointer data);
-static void			cb_stop_button_clicked 	(GtkWidget *widget, gpointer data);
-static void			cb_next_button_clicked 	(GtkWidget *widget, gpointer data);
-static void			cb_prev_button_clicked 	(GtkWidget *widget, gpointer data);
+static int		cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data);
+static void		cb_play_button_clicked 	(GtkWidget *widget, gpointer data);
+static void		cb_stop_button_clicked 	(GtkWidget *widget, gpointer data);
+static void		cb_next_button_clicked 	(GtkWidget *widget, gpointer data);
+static void		cb_prev_button_clicked 	(GtkWidget *widget, gpointer data);
 static void 		cb_info_button_clicked 	(GtkWidget *widget, gpointer data);
 static void 		cb_pref_button_clicked 	(GtkWidget *widget, gpointer data);
 static void 		cb_repeat_button_toggled 	(GtkToggleButton *button, gpointer data);
@@ -63,25 +63,25 @@ static void 		cb_shuffle_button_toggled 	(GtkToggleButton *button, gpointer data
 static void 		cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
 
 static void 		cb_volume_scale_changed (GtkWidget *widget, gpointer data);
-static void			cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
+static void		cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
 
 static void 		cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
-static void			cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data);
-static void			cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data);
-static void			cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data);
-static void			gimmix_update_and_display_notification (NotifyNotification *notify, SongInfo *s, gboolean display);
+static void		cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data);
+static void		cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data);
+static void		cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data);
+static void		gimmix_update_and_display_notification (NotifyNotification *notify, SongInfo *s, gboolean display);
 
-static void			gimmix_create_systray_icon (gboolean notify_enable);
+static void		gimmix_create_systray_icon (gboolean notify_enable);
 static NotifyNotification *	gimmix_create_notification (void);
-static void			gimmix_disable_systray_icon (void);
-static void			gimmix_enable_systray_icon (void);
+static void		gimmix_disable_systray_icon (void);
+static void		gimmix_enable_systray_icon (void);
 
 void
 gimmix_init (void)
 {
 	GtkWidget 		*widget;
 	GtkWidget		*image;
-	GtkAdjustment	*vol_adj;
+	GtkAdjustment		*vol_adj;
 	GdkPixbuf		*app_icon;
 	gchar			*path;
 	gint			state;
@@ -351,7 +351,6 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 	GtkWidget	*pref_window;
 	
 	pref_window = glade_xml_get_widget (xml, "prefs_window");
-	printf ("%d", pub->conf->port);
 	port = g_strdup_printf ("%d", pub->conf->port);
 	systray_enable = pub->conf->systray_enable;
 	notify_enable = pub->conf->notify_enable;
