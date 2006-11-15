@@ -49,6 +49,7 @@ gimmix_show_firstrun_dialog ()
 	gtk_entry_set_invisible_char (GTK_ENTRY(entry), g_utf8_get_char("*"));
 
 	check = glade_xml_get_widget (xml, "fr_systray_toggle");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(check), TRUE);
 	g_signal_connect (G_OBJECT(check), "toggled", G_CALLBACK(on_fr_systray_checkbox_toggled), NULL);
 		
 	gtk_widget_show (window);

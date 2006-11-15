@@ -347,12 +347,13 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 	gchar 		port[8];
 	gint 		systray_enable;
 	gint		notify_enable;
+	gint		disable_notify;
 	GtkWidget	*entry;
 	GtkWidget	*pref_window;
 	
 	pref_window = glade_xml_get_widget (xml, "prefs_window");
 
-	sprintf (port, "%d", pub->conf->port);
+	snprintf (port, 8, "%d", pub->conf->port);
 	systray_enable = pub->conf->systray_enable;
 	notify_enable = pub->conf->notify_enable;
 
@@ -374,7 +375,10 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 	if (systray_enable == 1)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(entry), TRUE);
 	else
+	{
+		disable_notify = 1;
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(entry), FALSE);
+	}
 	g_signal_connect (G_OBJECT(entry), "toggled", G_CALLBACK(cb_pref_systray_checkbox_toggled), NULL);
 	
 	entry = glade_xml_get_widget (xml, "notify_checkbutton");
@@ -382,6 +386,8 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(entry), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(entry), FALSE);
+	if (disable_notify == 1)
+		gtk_widget_set_sensitive (entry, FALSE);
 	g_signal_connect (G_OBJECT(entry), "toggled", G_CALLBACK(cb_pref_notify_checkbox_toggled), NULL);
 	
 	widget = glade_xml_get_widget (xml, "button_apply");
@@ -778,6 +784,8 @@ cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data)
 		image = get_image ("gtk-media-play", GTK_ICON_SIZE_BUTTON);
 		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menuitem), image);
 	}
+	
+	return;
 }
 
 static void
@@ -923,6 +931,7 @@ gimmix_create_systray_icon (gboolean notify_enable)
 	{
 		notify = gimmix_create_notification ();
 	}
+	
 	return;
 }
 
