@@ -12,11 +12,11 @@
 /* the SongInfo structure */
 typedef struct songinfo
 {
-	char *title;
-	char *artist;
-	char *album;
-	char *genre;
-	char *file;
+	char title[255];
+	char artist[255];
+	char album[255];
+	char genre[255];
+	char file[255];
 	int length;
 	int bitrate;
 	int id;

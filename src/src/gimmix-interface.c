@@ -81,7 +81,7 @@ gimmix_init (void)
 {
 	GtkWidget 		*widget;
 	GtkWidget		*image;
-	GtkAdjustment		*vol_adj;
+	GtkAdjustment	*vol_adj;
 	GdkPixbuf		*app_icon;
 	gchar			*path;
 	gint			state;
@@ -554,7 +554,6 @@ cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event)
 {
 	gint volume;
 	GtkAdjustment *volume_adj;
-	g_print ("scrolled");
 	if (event->type != GDK_SCROLL)
 		return;
 	

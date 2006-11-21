@@ -232,17 +232,29 @@ gimmix_get_song_info (MpdObj *mo)
 	
 	mpd_status_update(mo);
 	ms = mpd_playlist_get_current_song(mo);
-	s->file 	= (ms->file) 	? strdup (ms->file) : NULL;
-	s->title 	= (ms->title) 	? strdup (ms->title) : NULL;
-	s->artist 	= (ms->artist) 	? strdup (ms->artist) : NULL;
-	s->album 	= (ms->album) 	? strdup (ms->album) : NULL;
-	s->genre 	= (ms->genre) 	? strdup (ms->genre) : NULL;
+	
+	if(ms->file != NULL)
+		strncpy (s->file, ms->file, 255);
+	
+	if(ms->title != NULL)
+		strncpy (s->title, ms->title, 255);
+
+	if(ms->artist != NULL)
+		strncpy (s->artist, ms->artist, 255);
+
+	if(ms->album != NULL)
+		strncpy (s->album, ms->album, 255);
+
+	if(ms->genre != NULL)
+		strncpy (s->genre, ms->genre, 255);
+
 	s->length 	= ms->time;
 	if (gimmix_get_status(mo) == PLAY)
 		s->bitrate 	= mpd_status_get_bitrate (mo);
 	else
 		s->bitrate 	= -1;
 	
+//	mpd_freeSong (ms);
 	return s;
 }
 
@@ -276,19 +288,6 @@ gimmix_free_song_info (SongInfo *si)
 {
 	if (si != NULL)
 	{
-		if (si->title)
-			free (si->title);
-		if (si->artist)
-			free (si->artist);
-		if (si->album)
-			free (si->album);
-		if (si->file)
-			free (si->file);
-		if (si->genre)
-			free (si->genre);
-		si->length = -1;
-		si->pos = -1;
-		si->id = -1;
 		free (si);
 	}
 	return;
