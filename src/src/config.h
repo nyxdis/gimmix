@@ -1,5 +1,5 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef GIMMIX_CONFIG_H
+#define GIMMIX_CONFIG_H
 
 #include <stdio.h>
 #include <stdbool.h>

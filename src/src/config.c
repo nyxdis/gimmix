@@ -1,5 +1,5 @@
 /*
- * config.c
+ * gimmix-config.c
  *
  * Copyright (C) 2006 Priyank Gosalia
  *
@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <confuse.h>
-#include "config.h"
+#include "gimmix-config.h"
 
 Conf *
 gimmix_config_init (void)
