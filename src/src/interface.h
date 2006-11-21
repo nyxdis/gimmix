@@ -1,5 +1,5 @@
-#ifndef INTERFACE_H
-#define INTERFACE_H
+#ifndef GIMMIX_INTERFACE_H
+#define GIMMIX_INTERFACE_H
 
 #include <gtk/gtk.h>
 #include <stdio.h>

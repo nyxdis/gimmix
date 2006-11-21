@@ -24,8 +24,8 @@
 #include <glib.h>
 #include <libnotify/notify.h>
 #include <glade/glade.h>
-#include "interface.h"
-#include "playlist.h"
+#include "gimmix-interface.h"
+#include "gimmix-playlist.h"
 #include "gimmix.h"
 
 enum {	PLAY,
@@ -42,7 +42,7 @@ static NotifyNotification 	*notify;
 static gboolean 	gimmix_timer (void);
 static void 		gimmix_about_show (void);
 static void 		gimmix_show_ver_info (void);
-static void 		gimmix_systray_popup_menu (void);
+static void 		gimmix_systray_popup_menu (GtkStatusIcon *sicon, guint button);
 static void		gimmix_update_volume (void);
 static void		gimmix_update_repeat (void);
 static void		gimmix_update_shuffle (void);
@@ -554,7 +554,7 @@ cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event)
 {
 	gint volume;
 	GtkAdjustment *volume_adj;
-
+	g_print ("scrolled");
 	if (event->type != GDK_SCROLL)
 		return;
 	
@@ -720,7 +720,7 @@ gimmix_set_song_info (void)
 }
 
 static void
-gimmix_systray_popup_menu (void)
+gimmix_systray_popup_menu (GtkStatusIcon *sicon, guint button)
 {
 	GtkWidget *menu, *menu_item;
 
@@ -806,7 +806,7 @@ gimmix_update_and_display_notification (NotifyNotification *notify,
 {
 	gchar 			*summary;
 	GdkScreen 		*screen;
-	GdkRectangle 	area;
+	GdkRectangle 		area;
 	
 	if (pub->conf->notify_enable != 1)
 	return;
@@ -873,7 +873,7 @@ gimmix_about_show (void)
                            "name", APPNAME,
                            "version", VERSION,
                            "copyright", "\xC2\xA9 2006 Priyank Gosalia  (GPL)",
-                           "comments", "Gimmix is a graphical Music player daemon (MPD) client written in C",
+                           "comments", "Gimmix is a graphical music player daemon (MPD) client written in C.",
                            "license", license,
                            "authors", authors,
                            "website", website,
@@ -928,16 +928,23 @@ cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data)
 static void
 gimmix_create_systray_icon (gboolean notify_enable)
 {
-	gchar 	*icon_file;
+	gchar 		*icon_file;
+	GtkWidget	*systray_eventbox;
 	
 	icon_file = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
 	icon = gtk_status_icon_new_from_file (icon_file);
 	g_free (icon_file);
+	systray_eventbox = gtk_event_box_new ();
+	//gtk_container_add (GTK_CONTAINER(systray_eventbox), GTK_WIDGET(icon));
+	gtk_event_box_set_above_child (GTK_EVENT_BOX(systray_eventbox), TRUE);
+	g_object_set_data (G_OBJECT(systray_eventbox), "data", icon);
+	gtk_widget_show (GTK_WIDGET(systray_eventbox));
 	gtk_status_icon_set_visible (icon, TRUE);
 	gtk_status_icon_set_tooltip (icon, APPNAME);
 	g_signal_connect (icon, "popup-menu", G_CALLBACK (gimmix_systray_popup_menu), NULL);
 	g_signal_connect (icon, "activate", G_CALLBACK(gimmix_window_visible), NULL);
-	
+	g_signal_connect (systray_eventbox, "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
+
 	if (notify_enable == TRUE)
 	{
 		notify = gimmix_create_notification ();

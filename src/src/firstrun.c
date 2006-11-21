@@ -1,5 +1,5 @@
 /*
- * firstrun.c
+ * gimmix-firstrun.c
  *
  * Copyright (C) 2006 Priyank Gosalia
  *
@@ -22,7 +22,7 @@
  */
  
 #include <gtk/gtk.h>
-#include "firstrun.h"
+#include "gimmix-firstrun.h"
 #include "gimmix.h"
 
 static void on_fr_close_clicked (GtkWidget *widget, gpointer data);

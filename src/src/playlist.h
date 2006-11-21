@@ -1,5 +1,5 @@
-#ifndef PLAYLIST_H
-#define PLAYLIST_H
+#ifndef GIMMIX_PLAYLIST_H
+#define GIMMIX_PLAYLIST_H
 
 #include "gimmix-core.h"
 #include "gimmix.h"

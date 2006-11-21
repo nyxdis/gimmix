@@ -1,5 +1,5 @@
 /*
- * playlist.c
+ * gimmix-playlist.c
  *
  * Copyright (C) 2006 Priyank Gosalia
  *
@@ -22,7 +22,7 @@
  */
 
 #include <string.h>
-#include "playlist.h"
+#include "gimmix-playlist.h"
 
 #define DELETE_KEY 0xffff
 
