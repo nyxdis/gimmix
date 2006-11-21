@@ -23,9 +23,9 @@
 
 #include <gtk/gtk.h>
 #include "gimmix.h"
-#include "firstrun.h"
-#include "interface.h"
-#include "playlist.h"
+#include "gimmix-firstrun.h"
+#include "gimmix-interface.h"
+#include "gimmix-playlist.h"
 
 #define GLADE_FILE "/share/gimmix/gimmix.glade"
 

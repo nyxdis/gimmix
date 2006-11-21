@@ -8,7 +8,7 @@
 #include <libmpd/libmpd.h>
 #include <libmpd/libmpdclient.h>
 #include <glade/glade.h>
-#include "config.h"
+#include "gimmix-config.h"
 
 #define APPNAME "Gimmix"
 #define VERSION "0.2"

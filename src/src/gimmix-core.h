@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <libmpd/libmpd.h>
 #include <libmpd/libmpdclient.h>
-#include "config.h"
+#include "gimmix-config.h"
 
 /* the SongInfo structure */
 typedef struct songinfo

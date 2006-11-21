@@ -17,7 +17,7 @@ MPD_LIB=$(shell pkg-config libmpd --libs)
 CFLAGS += -fPIC -DPREFIX=\"$(PREFIX)\" $(NOTIFY_CFLAGS) $(GLADE_CFLAGS) $(MPD_CFLAGS) -I.
 LIBS=$(CONFUSE_LIB) $(NOTIFY_LIB) $(GLADE_LIB) $(MPD_LIB)
 
-OBJS = config.o gimmix-core.o playlist.o interface.o firstrun.o gimmix.o
+OBJS = gimmix-config.o gimmix-core.o gimmix-playlist.o gimmix-interface.o gimmix-firstrun.o gimmix.o
 
 CC=gcc
 
@@ -31,16 +31,16 @@ gimmix: $(OBJS)
 clean:
 	rm -f *.o core *.so* *.bak *~ src/*~ gimmix
 
-config.o:		src/config.c
-	$(CC) $(CFLAGS) -c src/config.c
+gimmix-config.o:		src/gimmix-config.c
+	$(CC) $(CFLAGS) -c src/gimmix-config.c
 gimmix-core.o:	src/gimmix-core.c
 	$(CC) $(CFLAGS) -c src/gimmix-core.c
-firstrun.o:		src/firstrun.c
-	$(CC) $(CFLAGS) -c src/firstrun.c
-playlist.o:		src/playlist.c
-	$(CC) $(CFLAGS) -c src/playlist.c
-interface.o:		src/interface.c
-	$(CC) $(CFLAGS) -c src/interface.c
+gimmix-firstrun.o:		src/gimmix-firstrun.c
+	$(CC) $(CFLAGS) -c src/gimmix-firstrun.c
+gimmix-playlist.o:		src/gimmix-playlist.c
+	$(CC) $(CFLAGS) -c src/gimmix-playlist.c
+gimmix-interface.o:		src/gimmix-interface.c
+	$(CC) $(CFLAGS) -c src/gimmix-interface.c
 gimmix.o:		src/gimmix.c
 	$(CC) $(CFLAGS) -c src/gimmix.c
 	
