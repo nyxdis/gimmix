@@ -183,6 +183,7 @@ gimmix_timer (void)
 	gchar 	time[15];
 	int 	new_status;
 	float 	fraction;
+	static	gboolean stop;
 
 	new_status = gimmix_get_status (pub->gmo);
 
@@ -226,9 +227,13 @@ gimmix_timer (void)
 		}
 		else if (status == STOP)
 		{
-			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
-			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), "Stopped");
-			gimmix_show_ver_info ();
+			if (stop == true)
+			{
+				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
+				gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), "Stopped");
+				gimmix_show_ver_info ();
+				stop = false;
+			}
 		}
 		return TRUE;
 	}
@@ -246,6 +251,7 @@ gimmix_timer (void)
 			image = get_image ("gtk-media-pause", GTK_ICON_SIZE_BUTTON);
 			gtk_button_set_image (GTK_BUTTON(button), image);
 			gtk_tooltips_set_tip (tooltip, button, "Pause", NULL);
+			stop = true;
 		}
 		else if (status == PAUSE || status == STOP)
 		{
@@ -484,6 +490,7 @@ cb_info_button_clicked (GtkWidget *widget, gpointer data)
 	GtkWidget	*window;
 	SongInfo	*info;
 	gchar		song[255];
+	
 	state = gimmix_get_status (pub->gmo);
 	window = glade_xml_get_widget (xml, "info_window");
 	
@@ -897,16 +904,16 @@ gimmix_create_systray_icon (gboolean notify_enable)
 	icon_file = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
 	icon = gtk_status_icon_new_from_file (icon_file);
 	g_free (icon_file);
-	systray_eventbox = gtk_event_box_new ();
+	//systray_eventbox = gtk_event_box_new ();
 	//gtk_container_add (GTK_CONTAINER(systray_eventbox), GTK_WIDGET(icon));
-	gtk_event_box_set_above_child (GTK_EVENT_BOX(systray_eventbox), TRUE);
-	g_object_set_data (G_OBJECT(systray_eventbox), "data", icon);
-	gtk_widget_show (GTK_WIDGET(systray_eventbox));
+	//gtk_event_box_set_above_child (GTK_EVENT_BOX(systray_eventbox), TRUE);
+	//g_object_set_data (G_OBJECT(systray_eventbox), "data", icon);
+	//gtk_widget_show (GTK_WIDGET(systray_eventbox));
 	gtk_status_icon_set_visible (icon, TRUE);
 	gtk_status_icon_set_tooltip (icon, APPNAME);
 	g_signal_connect (icon, "popup-menu", G_CALLBACK (gimmix_systray_popup_menu), NULL);
 	g_signal_connect (icon, "activate", G_CALLBACK(gimmix_window_visible), NULL);
-	g_signal_connect (systray_eventbox, "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
+	//g_signal_connect (systray_eventbox, "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
 
 	if (notify_enable == TRUE)
 	{

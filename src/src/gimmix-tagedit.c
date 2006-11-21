@@ -29,8 +29,6 @@
 TagLib_File *file;
 TagLib_Tag 	*tag;
 
-/* Functions */
-
 void
 gimmix_populate_tag_editor (const char *song)
 {
@@ -51,21 +49,21 @@ gimmix_populate_tag_editor (const char *song)
 	taglib_set_strings_unicode(FALSE);
 	tag = taglib_file_tag (file);
 	properties = taglib_file_audioproperties(file);
-	
-	widget = glade_xml_get_widget (xml, "info_file");
+
+	widget = glade_xml_get_widget (xml, "entry_file");
 	gtk_entry_set_text (GTK_ENTRY(widget), song);
 
-	widget = glade_xml_get_widget (xml,"info_title");
-	gtk_label_set_text (GTK_LABEL(widget), taglib_tag_title(tag));
-		
-	widget = glade_xml_get_widget (xml,"info_artist");
-	gtk_label_set_text (GTK_LABEL(widget), taglib_tag_artist(tag));
-		
-	widget = glade_xml_get_widget (xml,"info_album");
-	gtk_label_set_text (GTK_LABEL(widget), taglib_tag_album(tag));
-		
-	widget = glade_xml_get_widget (xml,"info_genre");
-	gtk_label_set_text (GTK_LABEL(widget), taglib_tag_genre(tag));
+	widget = glade_xml_get_widget (xml,"entry_title");
+	gtk_entry_set_text (GTK_ENTRY(widget), taglib_tag_title(tag));
+
+	widget = glade_xml_get_widget (xml,"entry_artist");
+	gtk_entry_set_text (GTK_ENTRY(widget), taglib_tag_artist(tag));
+
+	widget = glade_xml_get_widget (xml,"entry_album");
+	gtk_entry_set_text (GTK_ENTRY(widget), taglib_tag_album(tag));
+
+	widget = glade_xml_get_widget (xml,"entry_genre");
+	gtk_entry_set_text (GTK_ENTRY(widget), taglib_tag_genre(tag));
 
 	widget = glade_xml_get_widget (xml, "info_length");
 	sec = taglib_audioproperties_length(properties) % 60;
@@ -76,9 +74,9 @@ gimmix_populate_tag_editor (const char *song)
 	widget = glade_xml_get_widget (xml, "info_bitrate");
 	snprintf (bitrate, 10, "%i Kbps", taglib_audioproperties_bitrate(properties));
 	gtk_label_set_text (GTK_LABEL(widget), bitrate);
-	
-	taglib_tag_free_strings();
-    taglib_file_free(file);
+
+	taglib_tag_free_strings ();
+    taglib_file_free (file);
 	
 	return;
 }
