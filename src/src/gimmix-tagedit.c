@@ -47,8 +47,7 @@ gimmix_populate_tag_editor (const char *song)
 	file = taglib_file_new (song);
 	if(file == NULL)
 		return;
-	
-	
+
 	taglib_set_strings_unicode(FALSE);
 	tag = taglib_file_tag (file);
 	properties = taglib_file_audioproperties(file);
