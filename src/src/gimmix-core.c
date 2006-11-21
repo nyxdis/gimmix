@@ -230,22 +230,22 @@ gimmix_get_song_info (MpdObj *mo)
 	mpd_Song *ms;
 	SongInfo *s = (SongInfo *)malloc(sizeof(SongInfo));
 	
-	mpd_status_update(mo);
-	ms = mpd_playlist_get_current_song(mo);
+	mpd_status_update (mo);
+	ms = mpd_playlist_get_current_song (mo);
 	
-	if(ms->file != NULL)
+	if (ms->file != NULL)
 		strncpy (s->file, ms->file, 255);
 	
-	if(ms->title != NULL)
+	if (ms->title != NULL)
 		strncpy (s->title, ms->title, 255);
 
-	if(ms->artist != NULL)
+	if (ms->artist != NULL)
 		strncpy (s->artist, ms->artist, 255);
 
-	if(ms->album != NULL)
+	if (ms->album != NULL)
 		strncpy (s->album, ms->album, 255);
 
-	if(ms->genre != NULL)
+	if (ms->genre != NULL)
 		strncpy (s->genre, ms->genre, 255);
 
 	s->length 	= ms->time;

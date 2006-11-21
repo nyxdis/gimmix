@@ -13,11 +13,13 @@ GLADE_CFLAGS=$(shell pkg-config libglade-2.0 --cflags)
 GLADE_LIB=$(shell pkg-config libglade-2.0 --libs)
 MPD_CFLAGS=$(shell pkg-config libmpd --cflags)
 MPD_LIB=$(shell pkg-config libmpd --libs)
+TAG_CFLAGS=$(shell pkg-config taglib --cflags)
+TAG_LIB=$(shell pkg-config taglib --libs)
 
-CFLAGS += -fPIC -DPREFIX=\"$(PREFIX)\" $(NOTIFY_CFLAGS) $(GLADE_CFLAGS) $(MPD_CFLAGS) -I.
-LIBS=$(CONFUSE_LIB) $(NOTIFY_LIB) $(GLADE_LIB) $(MPD_LIB)
+CFLAGS += -fPIC -DPREFIX=\"$(PREFIX)\" $(NOTIFY_CFLAGS) $(GLADE_CFLAGS) $(MPD_CFLAGS) $(TAG_CFLAGS) -I.
+LIBS=$(CONFUSE_LIB) $(NOTIFY_LIB) $(GLADE_LIB) $(MPD_LIB) $(TAG_LIB) -ltag_c
 
-OBJS = gimmix-config.o gimmix-core.o gimmix-playlist.o gimmix-interface.o gimmix-firstrun.o gimmix.o
+OBJS = gimmix-config.o gimmix-core.o gimmix-playlist.o gimmix-interface.o gimmix-firstrun.o gimmix-tagedit.o gimmix.o
 
 CC=gcc
 
@@ -33,17 +35,26 @@ clean:
 
 gimmix-config.o:		src/gimmix-config.c
 	$(CC) $(CFLAGS) -c src/gimmix-config.c
-gimmix-core.o:	src/gimmix-core.c
+
+gimmix-core.o:			src/gimmix-core.c
 	$(CC) $(CFLAGS) -c src/gimmix-core.c
+
 gimmix-firstrun.o:		src/gimmix-firstrun.c
 	$(CC) $(CFLAGS) -c src/gimmix-firstrun.c
+
 gimmix-playlist.o:		src/gimmix-playlist.c
 	$(CC) $(CFLAGS) -c src/gimmix-playlist.c
+
 gimmix-interface.o:		src/gimmix-interface.c
 	$(CC) $(CFLAGS) -c src/gimmix-interface.c
-gimmix.o:		src/gimmix.c
+
+gimmix-tagedit.o:		src/gimmix-tagedit.c
+	$(CC) $(CFLAGS) -c src/gimmix-tagedit.c
+
+gimmix.o:				src/gimmix.c
 	$(CC) $(CFLAGS) -c src/gimmix.c
-	
+
+
 install: all
 	install -d $(PREFIX)/share/gimmix
 	install -D gimmix $(PREFIX)/bin/gimmix

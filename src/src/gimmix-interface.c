@@ -26,6 +26,7 @@
 #include <glade/glade.h>
 #include "gimmix-interface.h"
 #include "gimmix-playlist.h"
+#include "gimmix-tagedit.h"
 #include "gimmix.h"
 
 enum {	PLAY,
@@ -479,56 +480,19 @@ cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data)
 static void
 cb_info_button_clicked (GtkWidget *widget, gpointer data)
 {
-	gint state;
-
+	gint 		state;
+	GtkWidget	*window;
+	SongInfo	*info;
+	gchar		song[255];
 	state = gimmix_get_status (pub->gmo);
+	window = glade_xml_get_widget (xml, "info_window");
 	
 	if (state == PLAY || state == PAUSE)
 	{
-		SongInfo 	*info = NULL;
-		GtkWidget 	*widget;
-		GtkWidget	*window;
-		gchar 		*length;
-		gchar 		*bitrate;
-		
 		info = gimmix_get_song_info (pub->gmo);
-		window = glade_xml_get_widget (xml, "info_window");
-
-		widget = glade_xml_get_widget (xml, "info_file");
-		gtk_entry_set_text (GTK_ENTRY(widget), info->file ? info->file : NULL);
-
-		widget = glade_xml_get_widget (xml,"info_title");
-		gtk_label_set_text (GTK_LABEL(widget), info->title ? info->title : NULL);
-		
-		widget = glade_xml_get_widget (xml,"info_artist");
-		gtk_label_set_text (GTK_LABEL(widget), info->artist ? info->artist : NULL);
-		
-		widget = glade_xml_get_widget (xml,"info_album");
-		gtk_label_set_text (GTK_LABEL(widget), info->album ? info->album : NULL);
-		
-		widget = glade_xml_get_widget (xml,"info_genre");
-		gtk_label_set_text (GTK_LABEL(widget), info->genre ? info->genre : NULL);
-		
-		widget = glade_xml_get_widget (xml, "info_length");
-		length = gimmix_get_song_length (info);
-		if (length)
-		{
-			gtk_label_set_text (GTK_LABEL(widget), length);
-			g_free (length);
-		}
-
-		widget = glade_xml_get_widget (xml, "info_bitrate");
-		bitrate = gimmix_get_song_bitrate (info);
-		if (bitrate)
-		{
-			gtk_label_set_text (GTK_LABEL(widget), bitrate);
-			g_free (bitrate);
-		}
-		else
-			gtk_label_set_text (GTK_LABEL(widget), "(only available while playing)");
-
+		snprintf (song, 255, "%s/%s", "/mnt/music", info->file);
+		gimmix_populate_tag_editor (song);
 		gimmix_free_song_info (info);
-
 		gtk_widget_show (GTK_WIDGET(window));
 	}
 	
