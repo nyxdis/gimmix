@@ -32,11 +32,15 @@ TagLib_Tag 	*tag;
 void
 gimmix_populate_tag_editor (const char *song)
 {
-	GtkWidget *widget;
-	char length[6];
-	char bitrate[6];
-	int min;
-	int sec;
+	GtkWidget 		*widget;
+	GtkTreeModel 	*genre_model;
+	GtkListStore 	*genre_store;
+	GtkTreeIter 	iter;
+	gchar 			length[6];
+	gchar 			bitrate[6];
+	gint 			min;
+	gint			sec;
+	gint 			n;
 	const TagLib_AudioProperties *properties;
 	
 	if(!song)
@@ -50,8 +54,8 @@ gimmix_populate_tag_editor (const char *song)
 	tag = taglib_file_tag (file);
 	properties = taglib_file_audioproperties(file);
 
-	widget = glade_xml_get_widget (xml, "entry_file");
-	gtk_entry_set_text (GTK_ENTRY(widget), song);
+	//widget = glade_xml_get_widget (xml, "entry_file");
+	//gtk_entry_set_text (GTK_ENTRY(widget), song);
 
 	widget = glade_xml_get_widget (xml,"entry_title");
 	gtk_entry_set_text (GTK_ENTRY(widget), taglib_tag_title(tag));
@@ -62,9 +66,16 @@ gimmix_populate_tag_editor (const char *song)
 	widget = glade_xml_get_widget (xml,"entry_album");
 	gtk_entry_set_text (GTK_ENTRY(widget), taglib_tag_album(tag));
 
-	widget = glade_xml_get_widget (xml,"entry_genre");
-	gtk_entry_set_text (GTK_ENTRY(widget), taglib_tag_genre(tag));
-
+	widget = glade_xml_get_widget (xml,"combo_genre");
+	gtk_combo_box_append_text (GTK_COMBO_BOX(widget), taglib_tag_genre(tag));
+	
+	widget = glade_xml_get_widget (xml, "entry_comment");
+	gtk_entry_set_text (GTK_ENTRY(widget), taglib_tag_comment(tag));
+	
+	genre_model = gtk_combo_box_get_model (GTK_COMBO_BOX(widget));
+	n = gtk_tree_model_iter_n_children (genre_model, NULL);
+	gtk_combo_box_set_active (GTK_COMBO_BOX(widget), n-1);
+    
 	widget = glade_xml_get_widget (xml, "info_length");
 	sec = taglib_audioproperties_length(properties) % 60;
     min = (taglib_audioproperties_length(properties) - sec) / 60;

@@ -492,7 +492,7 @@ cb_info_button_clicked (GtkWidget *widget, gpointer data)
 	gchar		song[255];
 	
 	state = gimmix_get_status (pub->gmo);
-	window = glade_xml_get_widget (xml, "info_window");
+	window = glade_xml_get_widget (xml, "tag_editor_window");
 	
 	if (state == PLAY || state == PAUSE)
 	{

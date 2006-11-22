@@ -244,6 +244,8 @@ gimmix_get_song_info (MpdObj *mo)
 
 	if (ms->album != NULL)
 		strncpy (s->album, ms->album, 255);
+	else
+		strncpy (s->album, "", 255);
 
 	if (ms->genre != NULL)
 		strncpy (s->genre, ms->genre, 255);
