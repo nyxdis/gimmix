@@ -18,7 +18,7 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  *
- * Author: Priyank Gosalia <priyankmgg@gmail.com>
+ * Author: Priyank Gosalia <priyankmg@gmail.com>
  */
 
 #include <string.h>

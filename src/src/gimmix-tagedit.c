@@ -18,7 +18,7 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  *
- * Author: Priyank Gosalia <priyankmgg@gmail.com>
+ * Author: Priyank Gosalia <priyankmg@gmail.com>
  */
 
 #include <tag_c.h>
@@ -116,9 +116,10 @@ static void
 gimmix_tag_editor_close (GtkWidget *widget, gpointer data)
 {
 	GtkWidget *window;
+    window = glade_xml_get_widget (xml, "tag_editor_window");
 	taglib_tag_free_strings ();
     taglib_file_free (file);
-    window = glade_xml_get_widget (xml, "tag_editor_window");
+    
     gtk_widget_hide (window);
     
     return;
