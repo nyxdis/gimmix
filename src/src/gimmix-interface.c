@@ -620,6 +620,7 @@ gimmix_window_visible (void)
 	{	
 		gtk_window_move (GTK_WINDOW(window), x, y);
 		gtk_widget_show (GTK_WIDGET(window));
+		gtk_window_present (GTK_WINDOW(window));
 	}
 	else
 	{	
