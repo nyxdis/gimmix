@@ -68,6 +68,7 @@ gimmix_tag_editor_populate (const char *song)
 		return;
 
 	taglib_set_strings_unicode (FALSE);
+	
 	tag = taglib_file_tag (file);
 	properties = taglib_file_audioproperties (file);
 
@@ -112,6 +113,8 @@ gimmix_tag_editor_populate (const char *song)
 	widget = glade_xml_get_widget (xml, "info_channels");
 	snprintf (info, 10, "%i", taglib_audioproperties_channels(properties));
 	gtk_label_set_text (GTK_LABEL(widget), info);
+	
+	taglib_tag_free_strings ();
 	
 	return;
 }
@@ -169,7 +172,8 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 	taglib_tag_set_album (tag, album);
 	taglib_tag_set_comment (tag, comment);
 	taglib_tag_set_genre (tag, genre);
-
+	
+	taglib_tag_free_strings ();
 	taglib_file_save (file);
 
 	return;
