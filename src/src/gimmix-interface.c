@@ -172,6 +172,7 @@ gimmix_init (void)
 	g_timeout_add (300, (GSourceFunc)gimmix_timer, NULL);
 
 	gimmix_playlist_init ();
+	gimmix_tag_editor_init ();
 	gimmix_update_current_playlist ();
 
 	return;
@@ -498,7 +499,7 @@ cb_info_button_clicked (GtkWidget *widget, gpointer data)
 	{
 		info = gimmix_get_song_info (pub->gmo);
 		snprintf (song, 255, "%s/%s", "/mnt/music", info->file);
-		gimmix_populate_tag_editor (song);
+		gimmix_tag_editor_populate (song);
 		gimmix_free_song_info (info);
 		gtk_widget_show (GTK_WIDGET(window));
 	}

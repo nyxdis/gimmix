@@ -4,6 +4,8 @@
 #include <gtk/gtk.h>
 #include <tag_c.h>
 
-void gimmix_fill_tag_editor (const char *);
+void gimmix_tag_editor_init (void);
+
+void gimmix_tag_editor_populate (const char *);
 
 #endif

@@ -25,17 +25,35 @@
 #include "gimmix.h"
 #include "gimmix-tagedit.h"
 
-/* Globals */
-TagLib_File *file;
-TagLib_Tag 	*tag;
+TagLib_File 	*file;
+TagLib_Tag 		*tag;
+	
+/* Save action */
+static void	gimmix_tag_editor_save (GtkWidget *button, gpointer data);
+
+/* Close action */
+static void gimmix_tag_editor_close (GtkWidget *widget, gpointer data);
 
 void
-gimmix_populate_tag_editor (const char *song)
+gimmix_tag_editor_init (void)
+{
+	GtkWidget *widget;
+	
+	widget = glade_xml_get_widget (xml, "tag_editor_save");
+	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(gimmix_tag_editor_save), NULL);
+	
+	widget = glade_xml_get_widget (xml, "tag_editor_close");
+	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(gimmix_tag_editor_close), NULL);
+	
+	return;
+}
+
+/* Load the tag editor */
+void
+gimmix_tag_editor_populate (const char *song)
 {
 	GtkWidget 		*widget;
 	GtkTreeModel 	*genre_model;
-	GtkListStore 	*genre_store;
-	GtkTreeIter 	iter;
 	gchar 			length[6];
 	gchar 			bitrate[6];
 	gint 			min;
@@ -50,9 +68,9 @@ gimmix_populate_tag_editor (const char *song)
 	if(file == NULL)
 		return;
 
-	taglib_set_strings_unicode(FALSE);
+	taglib_set_strings_unicode (FALSE);
 	tag = taglib_file_tag (file);
-	properties = taglib_file_audioproperties(file);
+	properties = taglib_file_audioproperties (file);
 
 	//widget = glade_xml_get_widget (xml, "entry_file");
 	//gtk_entry_set_text (GTK_ENTRY(widget), song);
@@ -90,9 +108,61 @@ gimmix_populate_tag_editor (const char *song)
 	widget = glade_xml_get_widget (xml, "info_bitrate");
 	snprintf (bitrate, 10, "%i Kbps", taglib_audioproperties_bitrate(properties));
 	gtk_label_set_text (GTK_LABEL(widget), bitrate);
+	
+	return;
+}
 
+static void
+gimmix_tag_editor_close (GtkWidget *widget, gpointer data)
+{
+	GtkWidget *window;
 	taglib_tag_free_strings ();
     taglib_file_free (file);
+    window = glade_xml_get_widget (xml, "tag_editor_window");
+    gtk_widget_hide (window);
+    
+    return;
+}
+
+static void
+gimmix_tag_editor_save (GtkWidget *button, gpointer data)
+{
+	GtkWidget 	*widget;
+	gint		year;
+	gint		track;
 	
+	const gchar *title;
+	const gchar *artist;
+	const gchar *album;
+	const gchar *comment;
+		
+	widget = glade_xml_get_widget (xml, "tag_year");
+	year = gtk_spin_button_get_value (GTK_SPIN_BUTTON(widget));
+	taglib_tag_set_year (tag, year);
+	
+	widget = glade_xml_get_widget (xml, "tag_track");
+	track = gtk_spin_button_get_value (GTK_SPIN_BUTTON(widget));
+	taglib_tag_set_track (tag, year);
+	
+	widget = glade_xml_get_widget (xml, "entry_title");
+	title = gtk_entry_get_text (GTK_ENTRY(widget));
+	
+	widget = glade_xml_get_widget (xml, "entry_artist");
+	artist = gtk_entry_get_text (GTK_ENTRY(widget));
+	
+	widget = glade_xml_get_widget (xml, "entry_album");
+	album = gtk_entry_get_text (GTK_ENTRY(widget));
+	
+	widget = glade_xml_get_widget (xml, "entry_comment");
+	comment = gtk_entry_get_text (GTK_ENTRY(widget));
+			
+	taglib_tag_set_title (tag, title);
+	taglib_tag_set_artist (tag, artist);
+	taglib_tag_set_album (tag, album);
+	taglib_tag_set_comment (tag, comment);
+	
+	taglib_file_save (file);
+	g_print ("Hello");
+
 	return;
 }
