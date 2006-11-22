@@ -130,19 +130,19 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 	GtkWidget 	*widget;
 	gint		year;
 	gint		track;
-	
+	gchar		*genre;
 	const gchar *title;
 	const gchar *artist;
 	const gchar *album;
 	const gchar *comment;
-		
+	
 	widget = glade_xml_get_widget (xml, "tag_year");
 	year = gtk_spin_button_get_value (GTK_SPIN_BUTTON(widget));
 	taglib_tag_set_year (tag, year);
 	
 	widget = glade_xml_get_widget (xml, "tag_track");
 	track = gtk_spin_button_get_value (GTK_SPIN_BUTTON(widget));
-	taglib_tag_set_track (tag, year);
+	taglib_tag_set_track (tag, track);
 	
 	widget = glade_xml_get_widget (xml, "entry_title");
 	title = gtk_entry_get_text (GTK_ENTRY(widget));
@@ -155,14 +155,17 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 	
 	widget = glade_xml_get_widget (xml, "entry_comment");
 	comment = gtk_entry_get_text (GTK_ENTRY(widget));
-			
+	
+	widget = glade_xml_get_widget (xml,"combo_genre");
+	genre = gtk_combo_box_get_active_text (GTK_COMBO_BOX(widget));
+	
 	taglib_tag_set_title (tag, title);
 	taglib_tag_set_artist (tag, artist);
 	taglib_tag_set_album (tag, album);
 	taglib_tag_set_comment (tag, comment);
-	
+	taglib_tag_set_genre (tag, genre);
+
 	taglib_file_save (file);
-	g_print ("Hello");
 
 	return;
 }
