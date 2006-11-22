@@ -14,10 +14,10 @@ GLADE_LIB=$(shell pkg-config libglade-2.0 --libs)
 MPD_CFLAGS=$(shell pkg-config libmpd --cflags)
 MPD_LIB=$(shell pkg-config libmpd --libs)
 TAG_CFLAGS=$(shell pkg-config taglib --cflags)
-TAG_LIB=$(shell pkg-config taglib --libs)
+#TAG_LIB=$(shell pkg-config taglib --libs)
 
 CFLAGS += -fPIC -DPREFIX=\"$(PREFIX)\" $(NOTIFY_CFLAGS) $(GLADE_CFLAGS) $(MPD_CFLAGS) $(TAG_CFLAGS) -I.
-LIBS=$(CONFUSE_LIB) $(NOTIFY_LIB) $(GLADE_LIB) $(MPD_LIB) $(TAG_LIB) -ltag_c
+LIBS=$(CONFUSE_LIB) $(NOTIFY_LIB) $(GLADE_LIB) $(MPD_LIB) -ltag_c
 
 OBJS = gimmix-config.o gimmix-core.o gimmix-playlist.o gimmix-interface.o gimmix-firstrun.o gimmix-tagedit.o gimmix.o
 

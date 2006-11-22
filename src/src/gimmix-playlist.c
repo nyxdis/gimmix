@@ -23,6 +23,7 @@
 
 #include <string.h>
 #include "gimmix-playlist.h"
+#include "gimmix-tagedit.h"
 
 #define DELETE_KEY 0xffff
 
@@ -54,6 +55,7 @@ static void		cb_repeat_menu_toggled (GtkCheckMenuItem *item, gpointer data);
 static void		cb_shuffle_menu_toggled (GtkCheckMenuItem *item, gpointer data);
 static void		cb_current_playlist_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
 static void		gimmix_current_playlist_remove_song (void);
+static void		gimmix_current_playlist_song_info (void);
 static void		gimmix_current_playlist_clear (void);
 static void		gimmix_library_update (GtkWidget *widget, gpointer data);
 static gboolean	gimmix_update_player_status (gpointer data);
@@ -583,6 +585,33 @@ cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event)
 }
 
 static void
+gimmix_current_playlist_song_info (void)
+{
+	GtkTreeModel		*current_playlist_model;
+	GtkTreeSelection	*selection;
+	GtkTreeIter			iter;
+	GtkWidget			*info_window;
+	gchar				*path;
+	gchar				song_path[255];
+
+	current_playlist_model = gtk_tree_view_get_model (GTK_TREE_VIEW(current_playlist_treeview));
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(current_playlist_treeview));
+	
+	if ( gtk_tree_selection_get_selected (selection, &current_playlist_model, &iter) )
+	{
+		gtk_tree_model_get (current_playlist_model, &iter,
+							1, &path,
+							-1);
+		snprintf (song_path, 255, "%s/%s", "/mnt/music", path);
+		gimmix_tag_editor_populate (song_path);
+		info_window = glade_xml_get_widget (xml, "tag_editor_window");
+		gtk_widget_show (info_window);
+	}
+	
+	return;
+}
+
+static void
 gimmix_current_playlist_remove_song (void)
 {
 	GtkTreeModel		*current_playlist_model;
@@ -630,6 +659,15 @@ gimmix_current_playlist_popup_menu (void)
 	
 	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_REMOVE, NULL);
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_current_playlist_remove_song), NULL);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
+	
+	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_INFO, NULL);
+	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_current_playlist_song_info), NULL);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
+	
+	menu_item = gtk_separator_menu_item_new ();
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
