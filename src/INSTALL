@@ -8,6 +8,7 @@ Gimmix requires the following pacakges to be installed before compiling.
 * libmpd-0.12
 * libconfuse-2.5
 * libnotify-0.4.x
+* taglib-1.4 (C bindings)
 
 Installation procedure:
 

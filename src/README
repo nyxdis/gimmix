@@ -18,6 +18,7 @@ Requirements:
 * libmpd-0.12
 * libconfuse-2.5
 * libnotify-0.4.x
+* taglib-1.4 (C bindings)
 
 Installation:
 Read the INSTALL file for details on installation procedure.
