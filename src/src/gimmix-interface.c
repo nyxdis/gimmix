@@ -133,13 +133,6 @@ gimmix_init (void)
 
 	if (status == PLAY)
 	{
-		//gchar time[15];
-		//float fraction;
-		//image = get_image ("gtk-media-pause", GTK_ICON_SIZE_BUTTON);
-	//	gtk_button_set_image (GTK_BUTTON(widget), image);
-	//	gimmix_get_progress_status (pub->gmo, &fraction, time);
-	//	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), fraction);
-	//	gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), time);
 		gimmix_set_song_info ();
 		status = -1;
 		song_is_changed = true;
@@ -147,8 +140,6 @@ gimmix_init (void)
 	
 	else if (status == PAUSE)
 	{
-	//	image = get_image ("gtk-media-play", GTK_ICON_SIZE_BUTTON);
-	//	gtk_button_set_image (GTK_BUTTON(widget), image);
 		gimmix_set_song_info ();
 	}
 	else if (status == STOP)

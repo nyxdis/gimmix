@@ -74,9 +74,6 @@ gimmix_tag_editor_populate (const char *song)
 	
 	tag = taglib_file_tag (file);
 	properties = taglib_file_audioproperties (file);
-
-	//widget = glade_xml_get_widget (xml, "entry_file");
-	//gtk_entry_set_text (GTK_ENTRY(widget), song);
 	
 	widget = glade_xml_get_widget (xml, "tag_year");
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON(widget), taglib_tag_year(tag));
