@@ -33,13 +33,14 @@ gimmix_config_init (void)
 	char		*rcfile;
 	Conf 		*conf;
 	int 		ret;
-	int		port = 1;
+	int			port = 1;
 	cfg_bool_t	systray_enable = true;
 	cfg_bool_t	notify_enable = true;
 	
 	conf = (Conf*)malloc(sizeof(Conf));
 	char	*host = NULL;
 	char	*pass = NULL;
+	char	*musicdir = NULL;
 
 	cfg_opt_t opts[] = {
 		CFG_SIMPLE_STR ("mpd_hostname", &host),
@@ -47,6 +48,7 @@ gimmix_config_init (void)
 		CFG_SIMPLE_STR ("mpd_password", &pass),
 		CFG_SIMPLE_BOOL ("enable_systray", &systray_enable),
 		CFG_SIMPLE_BOOL ("enable_notify", &notify_enable),
+		CFG_SIMPLE_STR ("music_directory", &musicdir),
 		CFG_END()
 	};
 	
@@ -66,6 +68,9 @@ gimmix_config_init (void)
 	
 	if (pass != NULL)	
 		strncpy (conf->password, pass, 255);
+		
+	if (musicdir != NULL)
+		strncpy (conf->musicdir, musicdir, 255);
 	
 	conf->port = port;
 	
@@ -109,6 +114,7 @@ gimmix_config_save (Conf *conf)
 		CFG_SIMPLE_STR ("mpd_password", NULL),
 		CFG_SIMPLE_BOOL ("enable_systray", false),
 		CFG_SIMPLE_BOOL ("enable_notify", false),
+		CFG_SIMPLE_STR ("music_directory", NULL),
 		CFG_END()
 	};
 
@@ -153,7 +159,13 @@ gimmix_config_save (Conf *conf)
 			cfg_setbool(cfg, "enable_notify", false);
 		sopts = cfg_getopt (cfg, "enable_notify");
 		cfg_opt_print (sopts, fp);
-
+		
+		fprintf (fp, "\n# Music directory (should be same as mpd's music_directory) \n# This is rquired for editing ID3 tags\n");
+		if (conf->musicdir)
+			cfg_setstr(cfg, "music_directory", conf->musicdir);
+		sopts = cfg_getopt (cfg, "music_directory");
+		cfg_opt_print (sopts, fp);
+		
 		free (rcfile);
 		fclose (fp);
 	}

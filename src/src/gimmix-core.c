@@ -232,18 +232,18 @@ gimmix_get_song_info (MpdObj *mo)
 		strncpy (s->file, ms->file, 255);
 	
 	if (ms->title != NULL)
-		strncpy (s->title, ms->title, 255);
+		strncpy (s->title, ms->title, 80);
 
 	if (ms->artist != NULL)
-		strncpy (s->artist, ms->artist, 255);
+		strncpy (s->artist, ms->artist, 80);
 
 	if (ms->album != NULL)
-		strncpy (s->album, ms->album, 255);
+		strncpy (s->album, ms->album, 80);
 	else
-		strncpy (s->album, "", 255);
+		strncpy (s->album, "", 80);
 
 	if (ms->genre != NULL)
-		strncpy (s->genre, ms->genre, 255);
+		strncpy (s->genre, ms->genre, 80);
 
 	s->length 	= ms->time;
 	if (gimmix_get_status(mo) == PLAY)

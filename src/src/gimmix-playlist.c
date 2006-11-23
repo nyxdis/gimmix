@@ -602,7 +602,7 @@ gimmix_current_playlist_song_info (void)
 		gtk_tree_model_get (current_playlist_model, &iter,
 							1, &path,
 							-1);
-		snprintf (song_path, 255, "%s/%s", "/mnt/music", path);
+		snprintf (song_path, 255, "%s/%s", pub->conf->musicdir, path);
 		gimmix_tag_editor_populate (song_path);
 		info_window = glade_xml_get_widget (xml, "tag_editor_window");
 		gtk_widget_show (info_window);

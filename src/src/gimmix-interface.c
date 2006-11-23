@@ -385,6 +385,9 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 		gtk_entry_set_text (GTK_ENTRY(entry), pub->conf->password);
 	}
 
+	entry = glade_xml_get_widget (xml, "conf_dir_chooser");
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER(entry), pub->conf->musicdir);
+	
 	entry = glade_xml_get_widget (xml, "systray_checkbutton");
 	if (systray_enable == 1)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(entry), TRUE);
@@ -417,6 +420,7 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 	const gchar *host;
 	const gchar *port;
 	const gchar *password;
+	const gchar *dir;
 	GtkWidget *pref_widget;
 
 	pref_widget = glade_xml_get_widget (xml,"host_entry");
@@ -428,8 +432,10 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 	pref_widget = glade_xml_get_widget (xml,"password_entry");
 	password = gtk_entry_get_text (GTK_ENTRY(pref_widget));
 
-	pref_widget = glade_xml_get_widget (xml, "systray_checkbutton");
+	pref_widget = glade_xml_get_widget (xml, "conf_dir_chooser");
+	dir = gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER(pref_widget));
 	
+	strncpy (pub->conf->musicdir, dir, 255);
 	strncpy (pub->conf->hostname, host, 255);
 	strncpy (pub->conf->password, password, 255);
 	pub->conf->port = atoi (port);
@@ -496,7 +502,7 @@ cb_info_button_clicked (GtkWidget *widget, gpointer data)
 	if (status == PLAY || status == PAUSE)
 	{
 		info = gimmix_get_song_info (pub->gmo);
-		snprintf (song, 255, "%s/%s", "/mnt/music", info->file);
+		snprintf (song, 255, "%s/%s", pub->conf->musicdir, info->file);
 		gimmix_tag_editor_populate (song);
 		gimmix_free_song_info (info);
 		gtk_widget_show (GTK_WIDGET(window));
@@ -650,9 +656,9 @@ gimmix_set_song_info (void)
 	GtkWidget	*album_label;
 	GtkWidget	*song_label;
 	
-	song 		= gimmix_get_song_info (pub->gmo);
-	window 		= glade_xml_get_widget (xml, "main_window");
-	song_label 	= glade_xml_get_widget (xml,"song_label");
+	song 			= gimmix_get_song_info (pub->gmo);
+	window 			= glade_xml_get_widget (xml, "main_window");
+	song_label 		= glade_xml_get_widget (xml,"song_label");
 	artist_label 	= glade_xml_get_widget (xml,"artist_label");
 	album_label 	= glade_xml_get_widget (xml,"album_label");
 		
@@ -668,7 +674,7 @@ gimmix_set_song_info (void)
 	{
 		markup = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\"><i>%s</i></span>", g_path_get_basename(song->file));
 		gtk_label_set_markup (GTK_LABEL(song_label), markup);
-		gtk_window_set_title (GTK_WINDOW(window), "Gimmix");
+		gtk_window_set_title (GTK_WINDOW(window), APPNAME);
 	}
 
 	if (song->artist)

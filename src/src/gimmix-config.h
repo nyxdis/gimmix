@@ -12,6 +12,7 @@ typedef struct
 	int	notify_enable;
 	char hostname[256];
 	char password[256];
+	char musicdir[256];
 } Conf;
 
 /* Returns true if file exists otherwise false */
