@@ -22,6 +22,7 @@
  */
 
 #include "gimmix.h"
+#include "gimmix-core.h"
 #include "gimmix-tagedit.h"
 
 TagLib_File 	*file;
@@ -184,16 +185,21 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 	/* free the strings */
 	taglib_tag_free_strings ();
 	taglib_file_save (file);
-
 	return;
 }
 
 static gboolean
 gimmix_update_song_info (gpointer data)
 {
+	GimmixStatus status;
+	
 	if (mpd_status_db_is_updating (pub->gmo))
 		return TRUE;
 	
-	gimmix_set_song_info ();
+	/* Set the new song info */
+	status = gimmix_get_status (pub->gmo);
+	if (status == PLAY || status == PAUSE)
+		gimmix_set_song_info ();
+
 	return FALSE;
 }

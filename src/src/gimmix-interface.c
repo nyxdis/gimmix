@@ -29,11 +29,6 @@
 #include "gimmix-tagedit.h"
 #include "gimmix.h"
 
-enum {	PLAY,
-	PAUSE,
-	STOP
-};
-
 static int 			status;
 static GtkWidget 		*progress;
 static GtkWidget 		*progressbox;
@@ -56,17 +51,17 @@ static void		cb_play_button_clicked 	(GtkWidget *widget, gpointer data);
 static void		cb_stop_button_clicked 	(GtkWidget *widget, gpointer data);
 static void		cb_next_button_clicked 	(GtkWidget *widget, gpointer data);
 static void		cb_prev_button_clicked 	(GtkWidget *widget, gpointer data);
-static void 		cb_info_button_clicked 	(GtkWidget *widget, gpointer data);
-static void 		cb_pref_button_clicked 	(GtkWidget *widget, gpointer data);
-static void 		cb_repeat_button_toggled (GtkToggleButton *button, gpointer data);
+static void 	cb_info_button_clicked 	(GtkWidget *widget, gpointer data);
+static void 	cb_pref_button_clicked 	(GtkWidget *widget, gpointer data);
+static void 	cb_repeat_button_toggled (GtkToggleButton *button, gpointer data);
 static void 		cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data);
 
-static void 		cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
+static void 	cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
 
-static void 		cb_volume_scale_changed (GtkWidget *widget, gpointer data);
+static void 	cb_volume_scale_changed (GtkWidget *widget, gpointer data);
 static void		cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
 
-static void 		cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
+static void 	cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
 static void		cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data);
 static void		cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data);
 static void		cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data);

@@ -23,11 +23,6 @@
 
 #include "gimmix-core.h"
 
-enum { 	PLAY,
-		PAUSE,
-		STOP
-	};
-
 MpdObj *
 gimmix_mpd_connect (Conf *conf)
 {
@@ -52,7 +47,7 @@ gimmix_mpd_connect (Conf *conf)
 	return NULL;
 }
 
-int
+GimmixStatus
 gimmix_get_status (MpdObj *mo)
 {
 	int status;

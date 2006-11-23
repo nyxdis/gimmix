@@ -23,6 +23,11 @@ typedef struct songinfo
 	int pos;
 } SongInfo;
 
+typedef enum { 	PLAY,
+				PAUSE,
+				STOP
+} GimmixStatus;
+	
 /* some status flags */
 bool song_is_changed;
 bool playlist_is_changed;
@@ -59,7 +64,7 @@ char * gimmix_get_song_length (SongInfo *);
 char * gimmix_get_song_bitrate (SongInfo *);
 
 /* Check mpd status for PLAY/PAUSE/STOP */
-int gimmix_get_status (MpdObj *);
+GimmixStatus gimmix_get_status (MpdObj *);
 
 /* repeat / shuffle status functions */
 bool is_gimmix_repeat (MpdObj *);
