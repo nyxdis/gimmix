@@ -93,6 +93,7 @@ on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 	const gchar *host;
 	const gchar *port;
 	const gchar *password;
+	const gchar *dir;
 
 	pub->conf = (Conf*) malloc(sizeof(Conf));
 
@@ -104,12 +105,16 @@ on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 	
 	entry = glade_xml_get_widget (xml,"fr_password");
 	password = gtk_entry_get_text (GTK_ENTRY(entry));
-
+	
+	entry = glade_xml_get_widget (xml, "fst_music_dir");
+	dir = gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER(entry));
+	
 	s_checkbox = glade_xml_get_widget (xml, "fr_systray_toggle");
 	n_checkbox = glade_xml_get_widget (xml, "fr_notify_toggle");
 
 	strncpy (pub->conf->hostname, host, 255);
 	strncpy (pub->conf->password, password, 255);
+	strncpy (pub->conf->musicdir, dir, 255);
 	pub->conf->port = atoi(port);
 	
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(s_checkbox)))
