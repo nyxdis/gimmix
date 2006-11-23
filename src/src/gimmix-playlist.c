@@ -740,7 +740,7 @@ cb_shuffle_menu_toggled (GtkCheckMenuItem *item, gpointer data)
 	return;
 }
 
-static void
+void
 gimmix_library_update (GtkWidget *widget, gpointer data)
 {
 	GtkWidget *label;

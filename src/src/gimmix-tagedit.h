@@ -3,6 +3,8 @@
 
 #include <gtk/gtk.h>
 #include <tag_c.h>
+#include <libmpd/libmpd.h>
+#include <libmpd/libmpdclient.h>
 
 /* Initialize the tag editor signals */
 void gimmix_tag_editor_init (void);

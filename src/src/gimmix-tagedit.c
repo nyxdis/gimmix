@@ -21,7 +21,6 @@
  * Author: Priyank Gosalia <priyankmg@gmail.com>
  */
 
-#include <tag_c.h>
 #include "gimmix.h"
 #include "gimmix-tagedit.h"
 
@@ -33,6 +32,9 @@ static void	gimmix_tag_editor_save (GtkWidget *button, gpointer data);
 
 /* Close action */
 static void gimmix_tag_editor_close (GtkWidget *widget, gpointer data);
+
+/* Update action */
+static gboolean	gimmix_update_song_info (gpointer data);
 
 void
 gimmix_tag_editor_init (void)
@@ -173,8 +175,25 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 	taglib_tag_set_comment (tag, comment);
 	taglib_tag_set_genre (tag, genre);
 	
+	/* update the mpd database */
+	mpd_database_update_dir (pub->gmo, "/");
+	
+	/* set the song info a few seconds after update */
+	g_timeout_add (300, (GSourceFunc)gimmix_update_song_info, NULL);
+	
+	/* free the strings */
 	taglib_tag_free_strings ();
 	taglib_file_save (file);
 
 	return;
+}
+
+static gboolean
+gimmix_update_song_info (gpointer data)
+{
+	if (mpd_status_db_is_updating (pub->gmo))
+		return TRUE;
+	
+	gimmix_set_song_info ();
+	return FALSE;
 }
