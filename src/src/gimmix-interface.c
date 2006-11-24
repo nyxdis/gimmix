@@ -482,22 +482,7 @@ cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data)
 static void
 cb_info_button_clicked (GtkWidget *widget, gpointer data)
 {
-	GimmixStatus 	status;
-	GtkWidget		*window;
-	SongInfo		*info;
-	gchar			song[255];
-	
-	status = gimmix_get_status (pub->gmo);
-	window = glade_xml_get_widget (xml, "tag_editor_window");
-	
-	if (status == PLAY || status == PAUSE)
-	{
-		info = gimmix_get_song_info (pub->gmo);
-		snprintf (song, 255, "%s/%s", pub->conf->musicdir, info->file);
-		gimmix_tag_editor_populate (song);
-		gimmix_free_song_info (info);
-		gtk_widget_show (GTK_WIDGET(window));
-	}
+	gimmix_tag_editor_show ();
 	
 	return;
 }

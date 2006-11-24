@@ -9,7 +9,7 @@
 /* Initialize the tag editor signals */
 void gimmix_tag_editor_init (void);
 
-/* Populate the tag editor window */
-void gimmix_tag_editor_populate (const char *);
+/* Display the tag editor window */
+void gimmix_tag_editor_show (void);
 
 #endif

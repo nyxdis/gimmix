@@ -27,7 +27,10 @@
 
 TagLib_File 	*file;
 TagLib_Tag 		*tag;
-	
+
+/* Populate the tag editor */
+static gboolean gimmix_tag_editor_populate (const char *);
+
 /* Save action */
 static void	gimmix_tag_editor_save (GtkWidget *button, gpointer data);
 
@@ -52,7 +55,7 @@ gimmix_tag_editor_init (void)
 }
 
 /* Load the tag editor */
-void
+static gboolean
 gimmix_tag_editor_populate (const char *song)
 {
 	GtkWidget 		*widget;
@@ -64,11 +67,14 @@ gimmix_tag_editor_populate (const char *song)
 	const TagLib_AudioProperties *properties;
 	
 	if(!song)
-		return;
+		return FALSE;
 	
+	if (!g_file_test (song, G_FILE_TEST_EXISTS))
+		return FALSE;
+		
 	file = taglib_file_new (song);
 	if(file == NULL)
-		return;
+		return FALSE;
 
 	taglib_set_strings_unicode (FALSE);
 	
@@ -116,7 +122,7 @@ gimmix_tag_editor_populate (const char *song)
 	
 	taglib_tag_free_strings ();
 	
-	return;
+	return TRUE;
 }
 
 static void
@@ -199,4 +205,29 @@ gimmix_update_song_info (gpointer data)
 		gimmix_set_song_info ();
 
 	return FALSE;
+}
+
+void
+gimmix_tag_editor_show (void)
+{
+	GimmixStatus 	status;
+	GtkWidget		*window;
+	SongInfo		*info;
+	gchar			song[255];
+	
+	status = gimmix_get_status (pub->gmo);
+	window = glade_xml_get_widget (xml, "tag_editor_window");
+	
+	if (status == PLAY || status == PAUSE)
+	{
+		info = gimmix_get_song_info (pub->gmo);
+		snprintf (song, 255, "%s/%s", pub->conf->musicdir, info->file);
+		if (gimmix_tag_editor_populate (song))
+			gtk_widget_show (GTK_WIDGET(window));
+		else
+			g_print ("Error. you specified an invalid music directory\n");
+		gimmix_free_song_info (info);
+	}
+	
+	return;
 }
