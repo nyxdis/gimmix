@@ -66,7 +66,7 @@ gimmix_config_init (void)
 	if (host != NULL)
 		strncpy (conf->hostname, host, 255);
 	
-	if (pass != NULL)	
+	if (pass != NULL)
 		strncpy (conf->password, pass, 255);
 		
 	if (musicdir != NULL)

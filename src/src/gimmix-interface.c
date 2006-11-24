@@ -363,17 +363,22 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 
 	entry = glade_xml_get_widget (xml,"host_entry");
 	gtk_entry_set_text (GTK_ENTRY(entry), pub->conf->hostname);
-	
+
 	entry = glade_xml_get_widget (xml,"port_entry");
 	gtk_entry_set_text (GTK_ENTRY(entry), port);
 	g_free (port);
-
-	if (pub->conf->password)
-	{
-		entry = glade_xml_get_widget (xml,"password_entry");
-		gtk_entry_set_visibility (GTK_ENTRY(entry), FALSE);
-		gtk_entry_set_invisible_char (GTK_ENTRY(entry), g_utf8_get_char("*"));
+	
+	entry = glade_xml_get_widget (xml,"password_entry");
+	gtk_entry_set_visibility (GTK_ENTRY(entry), FALSE);
+	gtk_entry_set_invisible_char (GTK_ENTRY(entry), g_utf8_get_char("*"));
+		
+	if (strlen(pub->conf->password)>1)
+	{	
 		gtk_entry_set_text (GTK_ENTRY(entry), pub->conf->password);
+	}
+	else
+	{
+		gtk_entry_set_text (GTK_ENTRY(entry), NULL);
 	}
 
 	entry = glade_xml_get_widget (xml, "conf_dir_chooser");

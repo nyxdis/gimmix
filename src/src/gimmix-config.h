@@ -10,9 +10,9 @@ typedef struct
 	int port;
 	int systray_enable;
 	int	notify_enable;
-	char hostname[256];
-	char password[256];
-	char musicdir[256];
+	char hostname[255];
+	char password[255];
+	char musicdir[255];
 } Conf;
 
 /* Returns true if file exists otherwise false */
