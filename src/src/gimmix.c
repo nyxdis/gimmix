@@ -57,7 +57,7 @@ gimmix_connect_error (void)
 	GtkWidget	*error_label;
 	gchar 		*error_markup;
 
-	gchar *error = "ERROR: Couldn't connect to mpd. Check whether mpd is running.\nAlso check that you have specified the proper hostname, port \nand password in ~/.gimmixrc";
+	static gchar *error = "ERROR: Couldn't connect to mpd. Check whether mpd is running.\nAlso check that you have specified the proper hostname, port \nand password in ~/.gimmixrc";
 	error_markup = g_markup_printf_escaped ("<span size=\"larger\">%s</span>", error);
 	error_label = gtk_label_new (NULL);
 	gtk_label_set_markup (GTK_LABEL(error_label), error_markup);
