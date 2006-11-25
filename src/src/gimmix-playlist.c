@@ -193,6 +193,7 @@ gimmix_library_and_playlists_populate (void)
 	MpdData 			*data = NULL;
 	GdkPixbuf 			*dir_pixbuf;
 	GdkPixbuf			*song_pixbuf;
+	GdkPixbuf			*pls_pixbuf;
 	gchar				*path;
 	
 	directory_treeview = glade_xml_get_widget (xml, "album");
@@ -236,15 +237,15 @@ gimmix_library_and_playlists_populate (void)
 								G_TYPE_STRING,		/* path */
 								G_TYPE_INT);		/* type DIR/SONG */
 	
-	pls_store 	= gtk_list_store_new (3, 
+	pls_store 	= gtk_list_store_new (2, 
 								GDK_TYPE_PIXBUF, 	/* icon */
-								G_TYPE_STRING, 		/* name */
-								G_TYPE_STRING);		/* path */
+								G_TYPE_STRING);		/* name */
 	
 	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
 	g_free (path);
 	dir_pixbuf 	    = gtk_widget_render_icon (GTK_WIDGET(directory_treeview), GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_SMALL_TOOLBAR, NULL);
+	pls_pixbuf		= gtk_widget_render_icon (GTK_WIDGET(playlists_treeview), GTK_STOCK_FILE, GTK_ICON_SIZE_SMALL_TOOLBAR, NULL);
 	
 	for (data = mpd_database_get_directory(pub->gmo, NULL); data != NULL; data = mpd_data_get_next(data))
 	{
@@ -298,6 +299,7 @@ gimmix_library_and_playlists_populate (void)
 	g_object_unref (dir_model);
 	g_object_unref (dir_pixbuf);
 	g_object_unref (song_pixbuf);
+	g_object_unref (pls_pixbuf);
 	
 	return;
 }
