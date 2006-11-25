@@ -17,10 +17,6 @@ typedef struct songinfo
 	char album[80];
 	char genre[80];
 	char file[255];
-	int length;
-	int bitrate;
-	int id;
-	int pos;
 } SongInfo;
 
 typedef enum { 	PLAY,
@@ -67,8 +63,6 @@ void gimmix_free_song_info (SongInfo *);
 
 void gimmix_get_progress_status (MpdObj *, float *, char *);
 int gimmix_get_total_song_time (MpdObj *);
-char * gimmix_get_song_length (SongInfo *);
-char * gimmix_get_song_bitrate (SongInfo *);
 
 /* Check mpd status for PLAY/PAUSE/STOP */
 GimmixStatus gimmix_get_status (MpdObj *);

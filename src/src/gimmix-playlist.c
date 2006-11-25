@@ -163,6 +163,7 @@ gimmix_update_current_playlist (void)
 							2, data->song->id,
 							-1);
 		data = mpd_data_get_next (data);
+		
 	}
 	
 	gtk_tree_view_set_model (GTK_TREE_VIEW (current_playlist_treeview), current_playlist_model);
@@ -299,9 +300,9 @@ gimmix_library_search (gint type, gchar *text)
 	
 	if (!data)
 	{
-		GdkPixbuf *icon	= gtk_widget_render_icon (GTK_WIDGET(directory_treeview), 												"gtk-dialog-error",
-											GTK_ICON_SIZE_MENU,
-											NULL);
+		GdkPixbuf *icon	= gtk_widget_render_icon (GTK_WIDGET(directory_treeview), "gtk-dialog-error",
+						GTK_ICON_SIZE_MENU,
+						NULL);
 		gtk_list_store_append (dir_store, &dir_iter);
 		gtk_list_store_set (dir_store, &dir_iter,
 								0, icon,
@@ -457,6 +458,14 @@ gimmix_file_browser_add_song (GtkTreeView *treeview)
 							-1);
 		mpd_playlist_add (pub->gmo, path);
 		data = mpd_playlist_get_changes (pub->gmo, mpd_playlist_get_playlist_id(pub->gmo));
+		
+		/* check whether the newly added song is to be played immediately */
+		if (pub->conf->play_immediate == 1)
+		{
+			id = data->song->id;
+			mpd_player_play_id (pub->gmo, data->song->id);
+			gimmix_set_song_info ();
+		}
 		mpd_status_update (pub->gmo);
 		mpd_data_free (data);
 		

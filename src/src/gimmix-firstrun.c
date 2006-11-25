@@ -127,6 +127,7 @@ on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 	else
 		pub->conf->notify_enable = 0;
 
+	pub->conf->play_immediate = 0;
 	gimmix_config_save (pub->conf);
 }
 

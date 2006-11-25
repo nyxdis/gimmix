@@ -355,6 +355,7 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 	gint 		systray_enable;
 	gint		notify_enable;
 	gint		disable_notify;
+	gint		play_immediate;
 	GtkWidget	*entry;
 	GtkWidget	*pref_window;
 	
@@ -362,6 +363,7 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 	port = g_strdup_printf ("%d", pub->conf->port);
 	systray_enable = pub->conf->systray_enable;
 	notify_enable = pub->conf->notify_enable;
+	play_immediate = pub->conf->play_immediate;
 
 	entry = glade_xml_get_widget (xml,"host_entry");
 	gtk_entry_set_text (GTK_ENTRY(entry), pub->conf->hostname);
@@ -377,10 +379,6 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 	if (strlen(pub->conf->password)>1)
 	{	
 		gtk_entry_set_text (GTK_ENTRY(entry), pub->conf->password);
-	}
-	else
-	{
-		gtk_entry_set_text (GTK_ENTRY(entry), NULL);
 	}
 
 	entry = glade_xml_get_widget (xml, "conf_dir_chooser");
@@ -404,6 +402,12 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 	if (disable_notify == 1)
 		gtk_widget_set_sensitive (entry, FALSE);
 	g_signal_connect (G_OBJECT(entry), "toggled", G_CALLBACK(cb_pref_notify_checkbox_toggled), NULL);
+	
+	widget = glade_xml_get_widget (xml, "pref_play_immediate");
+	if (play_immediate == 1)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
+	else
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), FALSE);
 	
 	widget = glade_xml_get_widget (xml, "button_apply");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_pref_apply_clicked), NULL);
@@ -432,6 +436,12 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 
 	pref_widget = glade_xml_get_widget (xml, "conf_dir_chooser");
 	dir = gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER(pref_widget));
+	
+	pref_widget = glade_xml_get_widget (xml, "pref_play_immediate");
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pref_widget)))
+		pub->conf->play_immediate = 1;
+	else
+		pub->conf->play_immediate = 0;
 	
 	strncpy (pub->conf->musicdir, dir, 255);
 	strncpy (pub->conf->hostname, host, 255);

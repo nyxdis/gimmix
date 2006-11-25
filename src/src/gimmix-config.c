@@ -24,7 +24,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <confuse.h>
+#include <gtk/gtk.h>
 #include "gimmix-config.h"
+
+#define CONFIG_FILE "~/.gimmixrc"
 
 Conf *
 gimmix_config_init (void)
@@ -36,6 +39,7 @@ gimmix_config_init (void)
 	int			port = 1;
 	cfg_bool_t	systray_enable = true;
 	cfg_bool_t	notify_enable = true;
+	cfg_bool_t	play_song_on_add = false;
 	
 	conf = (Conf*)malloc(sizeof(Conf));
 	char	*host = NULL;
@@ -49,11 +53,12 @@ gimmix_config_init (void)
 		CFG_SIMPLE_BOOL ("enable_systray", &systray_enable),
 		CFG_SIMPLE_BOOL ("enable_notify", &notify_enable),
 		CFG_SIMPLE_STR ("music_directory", &musicdir),
+		CFG_SIMPLE_BOOL ("play_immediately_on_add", &play_song_on_add),
 		CFG_END()
 	};
 	
 	cfg = cfg_init (opts, 0);
-	rcfile = cfg_tilde_expand ("~/.gimmixrc");
+	rcfile = cfg_tilde_expand (CONFIG_FILE);
 	ret = cfg_parse (cfg, rcfile);
 	free (rcfile);
 	
@@ -92,6 +97,11 @@ gimmix_config_init (void)
 		conf->notify_enable = 0;
 	}
 
+	if (play_song_on_add == true)
+		conf->play_immediate = 1;
+	else
+		conf->play_immediate = 0;
+	
 	/* Free the memory */
 	cfg_free_value (opts);
 	
@@ -115,55 +125,64 @@ gimmix_config_save (Conf *conf)
 		CFG_SIMPLE_BOOL ("enable_systray", false),
 		CFG_SIMPLE_BOOL ("enable_notify", false),
 		CFG_SIMPLE_STR ("music_directory", NULL),
+		CFG_SIMPLE_BOOL ("play_immediately_on_add", false),
 		CFG_END()
 	};
 
 	cfg = cfg_init(opts, 0);
-	char *rcfile = cfg_tilde_expand ("~/.gimmixrc");
+	char *rcfile = cfg_tilde_expand (CONFIG_FILE);
 	
 	if((fp = fopen(rcfile, "w")))
 	{	
 		fprintf (fp, "# Gimmix configuration\n");
 		fprintf (fp, "\n# MPD hostname (default: localhost)\n");
 		if (conf->hostname)
-			cfg_setstr(cfg, "mpd_hostname", conf->hostname);
+			cfg_setstr (cfg, "mpd_hostname", conf->hostname);
 		sopts = cfg_getopt (cfg, "mpd_hostname");
 		cfg_opt_print (sopts, fp);
 
 		fprintf (fp, "\n# MPD port (default: 6600)\n");
 		if (conf->port > 0)
-			cfg_setint(cfg, "mpd_port", conf->port);
+			cfg_setint (cfg, "mpd_port", conf->port);
 		else
-			cfg_setint(cfg, "mpd_port", 0);
+			cfg_setint (cfg, "mpd_port", 0);
 		sopts = cfg_getopt (cfg, "mpd_port");
 		cfg_opt_print (sopts, fp);
 		
 		fprintf (fp, "\n# MPD password (leave blank for no password) \n");
 		if (conf->password)
-			cfg_setstr(cfg, "mpd_password", conf->password);
+			cfg_setstr (cfg, "mpd_password", conf->password);
 		sopts = cfg_getopt (cfg, "mpd_password");
 		cfg_opt_print (sopts, fp);
 
 		fprintf (fp, "\n# Enable/Disable systray icon (Enable = true, Disable = false)\n");
 		if (conf->systray_enable == 1)
-			cfg_setbool(cfg, "enable_systray", true);
+			cfg_setbool (cfg, "enable_systray", true);
 		else
-			cfg_setbool(cfg, "enable_systray", false);
+			cfg_setbool (cfg, "enable_systray", false);
 		sopts = cfg_getopt (cfg, "enable_systray");
 		cfg_opt_print (sopts, fp);
 		
 		fprintf (fp, "\n# Enable/Disable system tray notifications (Enable = true, Disable = false) \n");
 		if (conf->notify_enable == 1)
-			cfg_setbool(cfg, "enable_notify", true);
+			cfg_setbool (cfg, "enable_notify", true);
 		else
-			cfg_setbool(cfg, "enable_notify", false);
+			cfg_setbool (cfg, "enable_notify", false);
 		sopts = cfg_getopt (cfg, "enable_notify");
 		cfg_opt_print (sopts, fp);
 		
 		fprintf (fp, "\n# Music directory (should be same as mpd's music_directory) \n# This is rquired for editing ID3 tags\n");
 		if (conf->musicdir)
-			cfg_setstr(cfg, "music_directory", conf->musicdir);
+			cfg_setstr (cfg, "music_directory", conf->musicdir);
 		sopts = cfg_getopt (cfg, "music_directory");
+		cfg_opt_print (sopts, fp);
+		
+		fprintf (fp, "\n# Play the song immediately when added to playlist\n");
+		if (conf->play_immediate == 1)
+			cfg_setbool (cfg, "play_immediately_on_add", true);
+		else
+			cfg_setbool (cfg, "play_immediately_on_add", false);
+		sopts = cfg_getopt (cfg, "play_immediately_on_add");
 		cfg_opt_print (sopts, fp);
 		
 		free (rcfile);
@@ -181,18 +200,19 @@ gimmix_config_save (Conf *conf)
 }
 
 bool
-gimmix_config_exists ()
+gimmix_config_exists (void)
 {
-	FILE *fp;
-	char *rcfile = cfg_tilde_expand ("~/.gimmixrc");
+	char *config_file;
+	bool status;
 	
-	if (fp = fopen(rcfile, "r"))
-	{
-		fclose (fp);
-		return true;
-	}
-	
-	return false;
+	config_file = cfg_tilde_expand (CONFIG_FILE);
+	if (g_file_test(config_file, G_FILE_TEST_EXISTS))
+		status = true;
+	else
+		status = false;
+
+	free (config_file);
+	return status;
 }
 
 void
