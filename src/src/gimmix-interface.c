@@ -29,6 +29,8 @@
 #include "gimmix-tagedit.h"
 #include "gimmix.h"
 
+#define GIMMIX_ICON "/share/pixmaps/gimmix.png"
+
 static GimmixStatus 		status;
 static GtkWidget 			*progress;
 static GtkWidget 			*progressbox;
@@ -87,7 +89,7 @@ gimmix_init (void)
 	/* Set the application icon */
 	widget = glade_xml_get_widget (xml, "main_window");
 	g_signal_connect (G_OBJECT(widget), "delete-event", G_CALLBACK(cb_gimmix_main_window_delete_event), NULL);
-	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
+	path = g_strdup_printf ("%s%s", PREFIX, GIMMIX_ICON);
 	app_icon = gdk_pixbuf_new_from_file (path, NULL);
 	gtk_window_set_icon (GTK_WINDOW(widget), app_icon);
 	g_object_unref (app_icon);
@@ -417,7 +419,7 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 	const gchar *port;
 	const gchar *password;
 	const gchar *dir;
-	GtkWidget *pref_widget;
+	GtkWidget 	*pref_widget;
 
 	pref_widget = glade_xml_get_widget (xml,"host_entry");
 	host = gtk_entry_get_text (GTK_ENTRY(pref_widget));
@@ -815,7 +817,7 @@ gimmix_about_show (void)
 	"Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, "
 	"MA  02110-1301  USA");
 	
-	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
+	path = g_strdup_printf ("%s%s", PREFIX, GIMMIX_ICON);
 	about_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
 	g_free (path);
 
@@ -888,19 +890,13 @@ gimmix_create_systray_icon (gboolean notify_enable)
 	gchar 		*icon_file;
 	GtkWidget	*systray_eventbox;
 	
-	icon_file = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
+	icon_file = g_strdup_printf ("%s%s", PREFIX, GIMMIX_ICON);
 	icon = gtk_status_icon_new_from_file (icon_file);
 	g_free (icon_file);
-	//systray_eventbox = gtk_event_box_new ();
-	//gtk_container_add (GTK_CONTAINER(systray_eventbox), GTK_WIDGET(icon));
-	//gtk_event_box_set_above_child (GTK_EVENT_BOX(systray_eventbox), TRUE);
-	//g_object_set_data (G_OBJECT(systray_eventbox), "data", icon);
-	//gtk_widget_show (GTK_WIDGET(systray_eventbox));
 	gtk_status_icon_set_visible (icon, TRUE);
 	gtk_status_icon_set_tooltip (icon, APPNAME);
 	g_signal_connect (icon, "popup-menu", G_CALLBACK (gimmix_systray_popup_menu), NULL);
 	g_signal_connect (icon, "activate", G_CALLBACK(gimmix_window_visible), NULL);
-	//g_signal_connect (systray_eventbox, "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
 
 	if (notify_enable == TRUE)
 	{
@@ -956,7 +952,7 @@ gimmix_create_notification (void)
 	if(!notify_is_initted())
 		notify_init(APPNAME);
 
-	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
+	path = g_strdup_printf ("%s%s", PREFIX, GIMMIX_ICON);
 	notif = notify_notification_new ("Gimmix version 0.2", "http://gimmix.berlios.de", NULL, NULL);
 	notify_notification_set_category (notif, "information");
 	g_free (path);

@@ -1,3 +1,2 @@
 * Make the window resizable by user.
 * Add support for managing playlists.
-* Add support for editing ID3 tags using taglib. (in progress)

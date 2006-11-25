@@ -28,10 +28,17 @@ typedef enum { 	PLAY,
 				STOP
 } GimmixStatus;
 	
-/* some status flags */
+/* status flags */
+/* set when song is changed */
 bool song_is_changed;
+
+/* set when playlist is changed */
 bool playlist_is_changed;
+
+/* set when voulume is changed */
 bool volume_is_changed;
+
+/* set when shuffle/repeat is toggled */
 bool shuffle_is_changed;
 bool repeat_is_changed;
 

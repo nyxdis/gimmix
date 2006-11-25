@@ -27,11 +27,11 @@
 
 #define DELETE_KEY 0xffff
 
-enum {
+typedef enum {
 	SONG = 1,
 	DIR,
 	PLAYLIST
-};
+} GimmixFileType;
 
 static gchar *dir_error = "ERROR: You have specified an invalid music directory.\nPlease specify the correct music directory in the preferences.";
 
