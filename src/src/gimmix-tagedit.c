@@ -28,9 +28,6 @@
 TagLib_File 	*file;
 TagLib_Tag 		*tag;
 
-/* Populate the tag editor */
-static gboolean gimmix_tag_editor_populate (const char *);
-
 /* Save action */
 static void	gimmix_tag_editor_save (GtkWidget *button, gpointer data);
 
@@ -39,9 +36,6 @@ static void gimmix_tag_editor_close (GtkWidget *widget, gpointer data);
 
 /* Update action */
 static gboolean	gimmix_update_song_info (gpointer data);
-
-/* Display an error */
-static void	gimmix_tag_editor_error (const gchar *);
 
 static gchar *dir_error = "ERROR: You have specified an invalid music directory.\nPlease specify the correct music directory in the preferences.";
 	
@@ -60,8 +54,8 @@ gimmix_tag_editor_init (void)
 }
 
 /* Load the tag editor */
-static gboolean
-gimmix_tag_editor_populate (const char *song)
+gboolean
+gimmix_tag_editor_populate (const gchar *song)
 {
 	GtkWidget 		*widget;
 	GtkTreeModel 	*genre_model;
@@ -241,7 +235,7 @@ gimmix_tag_editor_show (void)
 	return;
 }
 
-static void
+void
 gimmix_tag_editor_error (const gchar *error_text)
 {
 	GtkWidget 	*error_dialog;

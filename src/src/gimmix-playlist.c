@@ -33,6 +33,8 @@ enum {
 	PLAYLIST
 };
 
+static gchar *dir_error = "ERROR: You have specified an invalid music directory.\nPlease specify the correct music directory in the preferences.";
+
 GtkWidget			*current_playlist_treeview;
 GtkTreeSelection	*current_playlist_selection;
 
@@ -606,9 +608,13 @@ gimmix_current_playlist_song_info (void)
 							1, &path,
 							-1);
 		snprintf (song_path, 255, "%s/%s", pub->conf->musicdir, path);
-		//gimmix_tag_editor_populate (song_path);
-		info_window = glade_xml_get_widget (xml, "tag_editor_window");
-		gtk_widget_show (info_window);
+		if(gimmix_tag_editor_populate (song_path))
+		{	
+			info_window = glade_xml_get_widget (xml, "tag_editor_window");
+			gtk_widget_show (info_window);
+		}
+		else
+			gimmix_tag_editor_error (dir_error);
 	}
 	
 	return;
