@@ -297,6 +297,7 @@ gimmix_library_and_playlists_populate (void)
 	g_signal_connect (playlists_treeview, "row-activated", G_CALLBACK(cb_playlist_activated), NULL);
 	g_signal_connect (directory_treeview, "button-release-event", G_CALLBACK(cb_library_right_click), NULL);
 	g_object_unref (dir_model);
+	g_object_unref (pls_model);
 	g_object_unref (dir_pixbuf);
 	g_object_unref (song_pixbuf);
 	g_object_unref (pls_pixbuf);
@@ -561,6 +562,7 @@ cb_playlist_activated (GtkTreeView *treeview)
 		gtk_tree_model_get (model, &iter, 1, &pl_name, -1);
 	
 	mpd_playlist_queue_load (pub->gmo, pl_name);
+	gimmix_current_playlist_clear ();
 	mpd_playlist_queue_commit (pub->gmo);
 	
 	return;
