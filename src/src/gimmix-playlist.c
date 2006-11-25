@@ -38,6 +38,8 @@ static gchar *dir_error = "ERROR: You have specified an invalid music directory.
 GtkWidget			*current_playlist_treeview;
 GtkTreeSelection	*current_playlist_selection;
 
+static gchar*	loaded;
+
 static void		gimmix_search_init (void);
 static void		gimmix_library_search (gint, gchar *);
 static void		gimmix_library_and_playlists_populate (void);
