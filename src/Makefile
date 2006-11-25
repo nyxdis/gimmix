@@ -19,7 +19,7 @@ TAG_CFLAGS=$(shell pkg-config taglib --cflags)
 CFLAGS += -fPIC -DPREFIX=\"$(PREFIX)\" $(NOTIFY_CFLAGS) $(GLADE_CFLAGS) $(MPD_CFLAGS) $(TAG_CFLAGS) -I.
 LIBS=$(CONFUSE_LIB) $(NOTIFY_LIB) $(GLADE_LIB) $(MPD_LIB) -ltag_c
 
-OBJS = gimmix-config.o gimmix-core.o gimmix-playlist.o gimmix-interface.o gimmix-firstrun.o gimmix-tagedit.o gimmix.o
+OBJS = gimmix-config.o gimmix-core.o gimmix-playlist.o gimmix-prefs.o gimmix-interface.o gimmix-firstrun.o gimmix-tagedit.o gimmix.o
 
 CC=gcc
 
@@ -44,6 +44,9 @@ gimmix-firstrun.o:		src/gimmix-firstrun.c
 
 gimmix-playlist.o:		src/gimmix-playlist.c
 	$(CC) $(CFLAGS) -c src/gimmix-playlist.c
+
+gimmix-prefs.o:			src/gimmix-prefs.c
+	$(CC) $(CFLAGS) -c src/gimmix-prefs.c
 
 gimmix-interface.o:		src/gimmix-interface.c
 	$(CC) $(CFLAGS) -c src/gimmix-interface.c

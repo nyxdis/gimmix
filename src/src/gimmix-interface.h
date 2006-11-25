@@ -16,4 +16,15 @@ void gimmix_set_song_info (void);
 /* interface cleanup */
 void gimmix_interface_cleanup (void);
 
+NotifyNotification 	*notify;
+
+/* create a new notification */
+NotifyNotification *gimmix_create_notification (void);
+
+/* Disable system tray icon */
+void gimmix_disable_systray_icon (void);
+
+/* Enable system tray icon */
+void gimmix_enable_systray_icon (void);
+
 #endif
