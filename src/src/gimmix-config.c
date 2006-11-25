@@ -40,6 +40,7 @@ gimmix_config_init (void)
 	cfg_bool_t	systray_enable = true;
 	cfg_bool_t	notify_enable = true;
 	cfg_bool_t	play_song_on_add = false;
+	cfg_bool_t 	stop_on_exit = false;
 	
 	conf = (Conf*)malloc(sizeof(Conf));
 	char	*host = NULL;
@@ -54,6 +55,7 @@ gimmix_config_init (void)
 		CFG_SIMPLE_BOOL ("enable_notify", &notify_enable),
 		CFG_SIMPLE_STR ("music_directory", &musicdir),
 		CFG_SIMPLE_BOOL ("play_immediately_on_add", &play_song_on_add),
+		CFG_SIMPLE_BOOL ("stop_playback_on_exit", &stop_on_exit),
 		CFG_END()
 	};
 	
@@ -102,6 +104,11 @@ gimmix_config_init (void)
 	else
 		conf->play_immediate = 0;
 	
+	if (stop_on_exit == true)
+		conf->stop_on_exit = 1;
+	else
+		conf->stop_on_exit = 0;
+		
 	/* Free the memory */
 	cfg_free_value (opts);
 	
@@ -126,6 +133,7 @@ gimmix_config_save (Conf *conf)
 		CFG_SIMPLE_BOOL ("enable_notify", false),
 		CFG_SIMPLE_STR ("music_directory", NULL),
 		CFG_SIMPLE_BOOL ("play_immediately_on_add", false),
+		CFG_SIMPLE_BOOL ("stop_playback_on_exit", false),
 		CFG_END()
 	};
 
@@ -183,6 +191,14 @@ gimmix_config_save (Conf *conf)
 		else
 			cfg_setbool (cfg, "play_immediately_on_add", false);
 		sopts = cfg_getopt (cfg, "play_immediately_on_add");
+		cfg_opt_print (sopts, fp);
+		
+		fprintf (fp, "\n# Stop playback when gimmix exits\n");
+		if (conf->stop_on_exit == 1)
+			cfg_setbool (cfg, "stop_playback_on_exit", true);
+		else
+			cfg_setbool (cfg, "stop_playback_on_exit", false);
+		sopts = cfg_getopt (cfg, "stop_playback_on_exit");
 		cfg_opt_print (sopts, fp);
 		
 		free (rcfile);

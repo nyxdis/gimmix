@@ -356,6 +356,7 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 	gint		notify_enable;
 	gint		disable_notify;
 	gint		play_immediate;
+	gint		stop_on_exit;
 	GtkWidget	*entry;
 	GtkWidget	*pref_window;
 	
@@ -364,6 +365,7 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 	systray_enable = pub->conf->systray_enable;
 	notify_enable = pub->conf->notify_enable;
 	play_immediate = pub->conf->play_immediate;
+	stop_on_exit = pub->conf->stop_on_exit;
 
 	entry = glade_xml_get_widget (xml,"host_entry");
 	gtk_entry_set_text (GTK_ENTRY(entry), pub->conf->hostname);
@@ -408,6 +410,12 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), FALSE);
+		
+	widget = glade_xml_get_widget (xml, "pref_stop_on_exit");
+	if (stop_on_exit == 1)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
+	else
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), FALSE);
 	
 	widget = glade_xml_get_widget (xml, "button_apply");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_pref_apply_clicked), NULL);
@@ -442,6 +450,12 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 		pub->conf->play_immediate = 1;
 	else
 		pub->conf->play_immediate = 0;
+		
+	pref_widget = glade_xml_get_widget (xml, "pref_stop_on_exit");
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pref_widget)))
+		pub->conf->stop_on_exit = 1;
+	else
+		pub->conf->stop_on_exit = 0;
 	
 	strncpy (pub->conf->musicdir, dir, 255);
 	strncpy (pub->conf->hostname, host, 255);

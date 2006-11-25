@@ -9,6 +9,7 @@ Features:
 * System tray icon support.
 * Playlist browser.
 * Playlist search.
+* ID3v2 tag editing support.
 * Notification support (Display the currently playing song in systray).
 * Small memory footprint.
 
