@@ -236,6 +236,8 @@ gimmix_get_song_info (MpdObj *mo)
 
 	if (ms->artist != NULL)
 		strncpy (s->artist, ms->artist, 80);
+	else
+		strncpy (s->artist, "", 80);
 
 	if (ms->album != NULL)
 		strncpy (s->album, ms->album, 80);

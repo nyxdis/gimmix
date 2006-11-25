@@ -146,9 +146,12 @@ gimmix_update_current_playlist (void)
 	{
 		gchar 	title[256];
 		
-		if (data->song->title && data->song->artist)
+		if (data->song->title)
 		{
-			snprintf (title, 255, "%s - %s", data->song->artist, data->song->title);
+			if (data->song->artist)
+				snprintf (title, 255, "%s - %s", data->song->artist, data->song->title);
+			else
+				snprintf (title, 255, "%s", data->song->title);
 		}
 		else
 		{
