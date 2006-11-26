@@ -247,6 +247,7 @@ gimmix_tag_editor_error (const gchar *error_text)
 												"<b>%s: </b><span size=\"large\">%s</span>",
 												"ERROR",
 												error_text);
+	gtk_window_set_resizable (GTK_WINDOW(error_dialog), FALSE);
     g_signal_connect (error_dialog,
 					"response",
 					G_CALLBACK (gtk_widget_destroy),

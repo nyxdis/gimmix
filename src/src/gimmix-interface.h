@@ -27,4 +27,7 @@ void gimmix_disable_systray_icon (void);
 /* Enable system tray icon */
 void gimmix_enable_systray_icon (void);
 
+/* Returns an image from stock id */
+GtkWidget	*get_image (const gchar *, GtkIconSize);
+
 #endif

@@ -45,7 +45,6 @@ static void			gimmix_update_volume (void);
 static void			gimmix_update_repeat (void);
 static void			gimmix_update_shuffle (void);
 static void 		gimmix_window_visible (void);
-static GtkWidget* 	get_image (const gchar *, GtkIconSize);
 
 /* Callbacks */
 static int		cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data);
@@ -482,7 +481,7 @@ gimmix_window_visible (void)
 	return;
 }
 
-static GtkWidget *
+GtkWidget *
 get_image (const gchar *id, GtkIconSize size)
 {
 	GtkWidget *image;
