@@ -1,5 +1,5 @@
 # Makefile for gimmix
-# gimmix-0.2
+# gimmix-0.2.1-RC1
 
 # Installation directory
 PREFIX=$(DESTDIR)/usr
