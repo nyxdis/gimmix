@@ -54,39 +54,32 @@ void
 gimmix_connect_error (void)
 {
 	GtkWidget 	*error_dialog;
-	GtkWidget	*error_label;
-	gchar 		*error_markup;
-
-	static gchar *error = "ERROR: Couldn't connect to mpd. Check whether mpd is running.\nAlso check that you have specified the proper hostname, port \nand password in ~/.gimmixrc";
-	error_markup = g_markup_printf_escaped ("<span size=\"larger\">%s</span>", error);
-	error_label = gtk_label_new (NULL);
-	gtk_label_set_markup (GTK_LABEL(error_label), error_markup);
-	g_free (error_markup);
-	error_dialog = gtk_dialog_new_with_buttons ("Error",
-												NULL,
+	static gchar *error = "Gimmix couldn't connect to mpd. Check whether mpd is running.\nAlso check that you have specified the proper hostname, port and password in ~/.gimmixrc";
+	
+	error_dialog = gtk_message_dialog_new_with_markup (NULL,
 												GTK_DIALOG_DESTROY_WITH_PARENT,
-												GTK_STOCK_OK,
-												GTK_RESPONSE_ACCEPT,
-												NULL);
-	gtk_misc_set_padding (GTK_MISC(error_label), 5, 5);
-	gtk_container_set_border_width (GTK_CONTAINER(GTK_DIALOG(error_dialog)->vbox), 2);
+												GTK_MESSAGE_ERROR,
+												GTK_BUTTONS_OK,
+												"<b>%s: </b><span size=\"large\">%s</span>",
+												"ERROR",
+												error);
     g_signal_connect (error_dialog,
 					"response",
 					G_CALLBACK (error_dialog_response),
 					(gpointer)error_dialog);
 	
-	gtk_container_add (GTK_CONTAINER(GTK_DIALOG(error_dialog)->vbox), error_label);
     gtk_widget_show_all (error_dialog);
+    
+    return;
 }
 
 static void
 error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog)
 {
-	if (arg1 == GTK_RESPONSE_ACCEPT || arg1 == GTK_RESPONSE_DELETE_EVENT)
-	{
-		gtk_widget_destroy (GTK_WIDGET(dialog));
-		gtk_main_quit ();
-	}
+	gtk_widget_destroy (GTK_WIDGET(dialog));
+	gtk_main_quit ();
+	
+	return;
 }
 
 int

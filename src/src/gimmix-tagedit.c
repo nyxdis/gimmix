@@ -37,7 +37,7 @@ static void gimmix_tag_editor_close (GtkWidget *widget, gpointer data);
 /* Update action */
 static gboolean	gimmix_update_song_info (gpointer data);
 
-static gchar *dir_error = "ERROR: You have specified an invalid music directory.\nPlease specify the correct music directory in the preferences.";
+static gchar *dir_error = "You have specified an invalid music directory. Please specify the correct music directory in the preferences.";
 	
 void
 gimmix_tag_editor_init (void)
@@ -65,14 +65,14 @@ gimmix_tag_editor_populate (const gchar *song)
 	gint 			n;
 	const TagLib_AudioProperties *properties;
 	
-	if(!song)
+	if (!song)
 		return FALSE;
 	
 	if (!g_file_test (song, G_FILE_TEST_EXISTS))
 		return FALSE;
 		
 	file = taglib_file_new (song);
-	if(file == NULL)
+	if (file == NULL)
 		return FALSE;
 
 	taglib_set_strings_unicode (FALSE);
@@ -239,27 +239,19 @@ void
 gimmix_tag_editor_error (const gchar *error_text)
 {
 	GtkWidget 	*error_dialog;
-	GtkWidget	*error_label;
-	gchar 		*error_markup;
 
-	error_markup = g_markup_printf_escaped ("<span size=\"large\">%s</span>", error_text);
-	error_label = gtk_label_new (NULL);
-	gtk_label_set_markup (GTK_LABEL(error_label), error_markup);
-	g_free (error_markup);
-	error_dialog = gtk_dialog_new_with_buttons ("Error",
-												NULL,
+	error_dialog = gtk_message_dialog_new_with_markup (NULL,
 												GTK_DIALOG_DESTROY_WITH_PARENT,
-												GTK_STOCK_OK,
-												GTK_RESPONSE_ACCEPT,
-												NULL);
-	gtk_misc_set_padding (GTK_MISC(error_label), 5, 5);
-	gtk_container_set_border_width (GTK_CONTAINER(GTK_DIALOG(error_dialog)->vbox), 2);
+												GTK_MESSAGE_ERROR,
+												GTK_BUTTONS_OK,
+												"<b>%s: </b><span size=\"large\">%s</span>",
+												"ERROR",
+												error_text);
     g_signal_connect (error_dialog,
 					"response",
 					G_CALLBACK (gtk_widget_destroy),
 					(gpointer)error_dialog);
 	
-	gtk_container_add (GTK_CONTAINER(GTK_DIALOG(error_dialog)->vbox), error_label);
     gtk_widget_show_all (error_dialog);
     
     return;

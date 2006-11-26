@@ -26,6 +26,7 @@
 #include "gimmix-tagedit.h"
 
 #define DELETE_KEY 0xffff
+#define GIMMIX_ICON "/share/pixmaps/gimmix.png"
 
 typedef enum {
 	SONG = 1,
@@ -33,12 +34,12 @@ typedef enum {
 	PLAYLIST
 } GimmixFileType;
 
-static gchar *dir_error = "ERROR: You have specified an invalid music directory.\nPlease specify the correct music directory in the preferences.";
+static gchar *dir_error = "You have specified an invalid music directory. Please specify the correct music directory in the preferences.";
 
 GtkWidget			*current_playlist_treeview;
 GtkTreeSelection	*current_playlist_selection;
 
-static gchar*	loaded;
+static gchar	*loaded_playlist;
 
 static void		gimmix_search_init (void);
 static void		gimmix_library_search (gint, gchar *);
@@ -62,7 +63,9 @@ static void		gimmix_current_playlist_remove_song (void);
 static void		gimmix_current_playlist_song_info (void);
 static void		gimmix_current_playlist_clear (void);
 static void		gimmix_library_update (GtkWidget *widget, gpointer data);
+static void		gimmix_current_playlist_save (void);
 static gboolean	gimmix_update_player_status (gpointer data);
+static void 	gimmix_load_playlist (gchar *);
 
 /* File browser callbacks */
 static void		cb_file_browser_close_button_clicked (GtkWidget *widget, gpointer data);
@@ -110,6 +113,7 @@ gimmix_playlist_init (void)
 	/* Initialize playlist search */
 	gimmix_search_init ();
 	
+	loaded_playlist = NULL;
 	return;
 }
 
@@ -243,7 +247,7 @@ gimmix_library_and_playlists_populate (void)
 								GDK_TYPE_PIXBUF, 	/* icon */
 								G_TYPE_STRING);		/* name */
 	
-	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
+	path = g_strdup_printf ("%s%s", PREFIX, GIMMIX_ICON);
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
 	g_free (path);
 	dir_pixbuf 	    = gtk_widget_render_icon (GTK_WIDGET(directory_treeview), GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_SMALL_TOOLBAR, NULL);
@@ -368,7 +372,7 @@ gimmix_library_search (gint type, gchar *text)
 	}
 
 
-	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
+	path = g_strdup_printf ("%s%s", PREFIX, GIMMIX_ICON);
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
 	g_free (path);
 
@@ -567,8 +571,23 @@ cb_playlist_activated (GtkTreeView *treeview)
 	gimmix_current_playlist_clear ();
 	mpd_playlist_queue_commit (pub->gmo);
 	
+	gimmix_load_playlist (pl_name);
+}
+
+static void
+gimmix_load_playlist (gchar *pls)
+{
+	/* unload the old playlist */
+	if (loaded_playlist != NULL)
+		g_free (loaded_playlist);
+	
+	/* load the new playlist*/
+	loaded_playlist = strdup (pls);
+	g_print (loaded_playlist);
+	
 	return;
 }
+
 
 static void
 gimmix_update_dir_song_treeview_with_dir (gchar *dir)
@@ -593,10 +612,11 @@ gimmix_update_dir_song_treeview_with_dir (gchar *dir)
 	/* Clear the stores */
 	gtk_list_store_clear (dir_store);
 
-	dir_pixbuf 	= gtk_widget_render_icon (GTK_WIDGET(directory_treeview), 											GTK_STOCK_DIRECTORY,
+	dir_pixbuf 	= gtk_widget_render_icon (GTK_WIDGET(directory_treeview),
+										GTK_STOCK_DIRECTORY,
 										GTK_ICON_SIZE_SMALL_TOOLBAR,
 										NULL);
-	path = g_strdup_printf ("%s%s", PREFIX, "/share/pixmaps/gimmix.png");
+	path = g_strdup_printf ("%s%s", PREFIX, GIMMIX_ICON);
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
 	g_free (path);
 	
@@ -702,6 +722,19 @@ gimmix_current_playlist_song_info (void)
 }
 
 static void
+gimmix_current_playlist_save (void)
+{
+	if (loaded_playlist != NULL)
+	{	
+		g_print ("saving\n");
+		if ((mpd_database_save_playlist (pub->gmo, loaded_playlist)) == MPD_DATABASE_PLAYLIST_EXIST)
+			g_print ("playlist already exists...\n");
+	}
+	
+	return;
+}
+
+static void
 gimmix_current_playlist_remove_song (void)
 {
 	GtkTreeModel		*current_playlist_model;
@@ -781,6 +814,15 @@ gimmix_current_playlist_popup_menu (void)
 	g_signal_connect (G_OBJECT(menu_item), "toggled", G_CALLBACK(cb_shuffle_menu_toggled), NULL);
 	if (is_gimmix_shuffle(pub->gmo))
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
+	
+	menu_item = gtk_separator_menu_item_new ();
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
+	
+	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_SAVE, NULL);
+	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_current_playlist_save), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 
