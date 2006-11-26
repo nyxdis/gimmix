@@ -592,7 +592,6 @@ gimmix_load_playlist (gchar *pls)
 	
 	/* load the new playlist*/
 	loaded_playlist = strdup (pls);
-	g_print (loaded_playlist);
 	
 	return;
 }
@@ -1117,6 +1116,10 @@ cb_gimmix_playlist_remove ()
 		mpd_database_delete_playlist (pub->gmo, path);
 	}
 	
+	if (strcmp (path, loaded_playlist) == 0)
+		gimmix_current_playlist_clear ();
+		
 	gimmix_update_playlists_treeview ();
+	
 	return;
 }
