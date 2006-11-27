@@ -16,7 +16,7 @@ Installing gimmix is very simple. Before installing, make sure
 your system has all the required packages. After you unpack the source,
 just follow these steps to install gimmix.
 
-cd gimmix-0.2
+cd gimmix-0.2.1
 make
 make install (as root)
 
