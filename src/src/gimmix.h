@@ -10,8 +10,9 @@
 #include <glade/glade.h>
 #include "gimmix-config.h"
 
-#define APPNAME "Gimmix"
-#define VERSION "0.2.1-RC1"
+#define APPNAME 		"Gimmix"
+#define VERSION 		"0.2.1-RC1"
+#define APPURL			"http://gimmix.berlios.de/"
 
 typedef struct Gimmix
 {

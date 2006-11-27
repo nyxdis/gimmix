@@ -31,10 +31,6 @@
 #include "gimmix.h"
 
 #define GIMMIX_ICON  	"/share/pixmaps/gimmix.png"
-#define GIMMIX_URL		"http://gimmix.berlios.de/"
-
-/* Time in milliseconds for which the notification popup is displayed */
-#define NOTIFY_TIMEOUT 	1800
 
 static GimmixStatus 		status;
 static GtkWidget 			*progress;
@@ -699,8 +695,8 @@ gimmix_about_show (void)
                            "comments", "Gimmix is a graphical music player daemon (MPD) client written in C.",
                            "license", license,
                            "authors", authors,
-                           "website", GIMMIX_URL,
-                           "website-label", GIMMIX_URL,
+                           "website", APPURL,
+                           "website-label", APPURL,
                            "logo", about_pixbuf,
                            "wrap-license", true,
                            NULL);
@@ -727,7 +723,7 @@ gimmix_show_ver_info (void)
 	appver = g_strdup_printf ("%s %s", APPNAME, VERSION);
 	markup = g_markup_printf_escaped ("<span size=\"large\"weight=\"bold\">%s</span>", appver);
 	gtk_label_set_markup (GTK_LABEL(song_label), markup);
-	gtk_label_set_text (GTK_LABEL(artist_label), GIMMIX_URL);
+	gtk_label_set_text (GTK_LABEL(artist_label), APPURL);
 	gtk_label_set_text (GTK_LABEL(album_label), NULL);
 	gtk_window_set_title (GTK_WINDOW(window), APPNAME);
 	g_free (markup);
@@ -817,7 +813,7 @@ gimmix_create_notification (void)
 		notify_init(APPNAME);
 
 	path = g_strdup_printf ("%s%s", PREFIX, GIMMIX_ICON);
-	notif = notify_notification_new ("Gimmix version 0.2-RC1", GIMMIX_URL, NULL, NULL);
+	notif = notify_notification_new (APPNAME, APPURL, NULL, NULL);
 	notify_notification_set_category (notif, "information");
 	g_free (path);
 
