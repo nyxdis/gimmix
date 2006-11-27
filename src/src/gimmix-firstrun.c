@@ -129,6 +129,7 @@ on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 
 	pub->conf->play_immediate = 0;
 	pub->conf->stop_on_exit = 0;
+	pub->conf->notify_timeout = 3;
 	gimmix_config_save (pub->conf);
 }
 

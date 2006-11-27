@@ -109,7 +109,6 @@ main (int argc, char *argv[])
 		pub->conf = gimmix_config_init ();
 		if (!pub->conf)
 		{
-			g_print ("config error");
 			gimmix_connect_error ();
 		}
 		main_window = glade_xml_get_widget (xml, "main_window");

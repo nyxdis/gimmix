@@ -38,6 +38,7 @@ gimmix_prefs_dialog_show (void)
 	gint		disable_notify;
 	gint		play_immediate;
 	gint		stop_on_exit;
+	gint		notify_timeout;
 	GtkWidget	*entry;
 	GtkWidget	*widget;
 	GtkWidget	*pref_window;
@@ -48,6 +49,7 @@ gimmix_prefs_dialog_show (void)
 	notify_enable = pub->conf->notify_enable;
 	play_immediate = pub->conf->play_immediate;
 	stop_on_exit = pub->conf->stop_on_exit;
+	notify_timeout = pub->conf->notify_timeout;
 
 	entry = glade_xml_get_widget (xml,"host_entry");
 	gtk_entry_set_text (GTK_ENTRY(entry), pub->conf->hostname);
@@ -87,6 +89,13 @@ gimmix_prefs_dialog_show (void)
 		gtk_widget_set_sensitive (entry, FALSE);
 	g_signal_connect (G_OBJECT(entry), "toggled", G_CALLBACK(cb_pref_notify_checkbox_toggled), NULL);
 	
+	entry = glade_xml_get_widget (xml, "notify_timeout_spin");
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON(entry), notify_timeout);
+	if (notify_enable == 0)
+		gtk_widget_set_sensitive (entry, FALSE);
+	else
+		gtk_widget_set_sensitive (entry, TRUE);
+	
 	widget = glade_xml_get_widget (xml, "pref_play_immediate");
 	if (play_immediate == 1)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
@@ -113,6 +122,7 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 	const gchar *port;
 	const gchar *password;
 	const gchar *dir;
+	gint		val;
 	GtkWidget 	*pref_widget;
 
 	pref_widget = glade_xml_get_widget (xml,"host_entry");
@@ -138,11 +148,15 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 		pub->conf->stop_on_exit = 1;
 	else
 		pub->conf->stop_on_exit = 0;
+		
+	pref_widget = glade_xml_get_widget (xml, "notify_timeout_spin");
+	val = gtk_spin_button_get_value (GTK_SPIN_BUTTON(pref_widget));
 	
 	strncpy (pub->conf->musicdir, dir, 255);
 	strncpy (pub->conf->hostname, host, 255);
 	strncpy (pub->conf->password, password, 255);
 	pub->conf->port = atoi (port);
+	pub->conf->notify_timeout = val;
 
 	gimmix_config_save (pub->conf);
 	
@@ -178,15 +192,20 @@ cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data)
 static void
 cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data)
 {
+	GtkWidget *widget;
+	
+	widget = glade_xml_get_widget (xml, "notify_timeout_spin");
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{	
 		notify = gimmix_create_notification ();
 		pub->conf->notify_enable = 1;
+		gtk_widget_set_sensitive (widget, TRUE);
 	}
 	else
 	if (gtk_toggle_button_get_active(button) == FALSE)
 	{
 		pub->conf->notify_enable = 0;
+		gtk_widget_set_sensitive (widget, FALSE);
 	}
 	
 	gimmix_config_save (pub->conf);

@@ -821,7 +821,7 @@ gimmix_create_notification (void)
 	notify_notification_set_category (notif, "information");
 	g_free (path);
 
-	notify_notification_set_timeout (notif, NOTIFY_TIMEOUT);
+	notify_notification_set_timeout (notif, pub->conf->notify_timeout*1000);
 	gtk_status_icon_get_geometry (icon, &screen, &area, NULL);
 	notify_notification_set_geometry_hints (notif, screen, area.x, area.y);
 	
