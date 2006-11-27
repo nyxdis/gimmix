@@ -818,7 +818,13 @@ gimmix_current_playlist_clear (void)
 	gtk_list_store_clear (GTK_LIST_STORE(current_playlist_store));
 	mpd_playlist_clear (pub->gmo);
 	mpd_status_update (pub->gmo);
-
+	
+	if (loaded_playlist != NULL)
+	{
+		g_free (loaded_playlist);
+		loaded_playlist = NULL;
+	}
+	
 	return;
 }
 
