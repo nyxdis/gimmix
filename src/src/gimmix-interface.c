@@ -30,8 +30,10 @@
 #include "gimmix-prefs.h"
 #include "gimmix.h"
 
-#define GIMMIX_ICON  "/share/pixmaps/gimmix.png"
-#define GIMMIX_URL	"http://gimmix.berlios.de/"
+#define GIMMIX_ICON  	"/share/pixmaps/gimmix.png"
+#define GIMMIX_URL		"http://gimmix.berlios.de/"
+
+#define NOTIFY_TIMEOUT 	1800
 
 static GimmixStatus 		status;
 static GtkWidget 			*progress;
@@ -819,7 +821,7 @@ gimmix_create_notification (void)
 	notify_notification_set_category (notif, "information");
 	g_free (path);
 
-	notify_notification_set_timeout (notif, 1800);
+	notify_notification_set_timeout (notif, NOTIFY_TIMEOUT);
 	gtk_status_icon_get_geometry (icon, &screen, &area, NULL);
 	notify_notification_set_geometry_hints (notif, screen, area.x, area.y);
 	
