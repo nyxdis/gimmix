@@ -266,11 +266,10 @@ gimmix_library_and_playlists_populate (void)
 	pls_pixbuf		= gtk_widget_render_icon (GTK_WIDGET(playlists_treeview), GTK_STOCK_FILE, GTK_ICON_SIZE_MENU, NULL);
 	
 	for (data = mpd_database_get_directory(pub->gmo, NULL); data != NULL; data = mpd_data_get_next(data))
-	{
-		gtk_list_store_append (dir_store, &dir_iter);
-		
+	{	
 		if(data->type == MPD_DATA_TYPE_DIRECTORY)
 		{
+			gtk_list_store_append (dir_store, &dir_iter);
 			gtk_list_store_set (dir_store, &dir_iter,
 								0, dir_pixbuf,
 								1, g_path_get_basename(data->directory),
@@ -282,6 +281,7 @@ gimmix_library_and_playlists_populate (void)
 		{
 			gchar *title;
 
+			gtk_list_store_append (dir_store, &dir_iter);
 			title = data->song->title ? data->song->title : data->song->file;
 			gtk_list_store_set (dir_store, &dir_iter,
 								0, song_pixbuf,
@@ -680,11 +680,10 @@ gimmix_update_dir_song_treeview_with_dir (gchar *dir)
 	}
 	
 	for (data = mpd_database_get_directory(pub->gmo, dir); data != NULL; data = mpd_data_get_next(data))
-	{
-		gtk_list_store_append (dir_store, &dir_iter);
-		
+	{	
 		if (data->type == MPD_DATA_TYPE_DIRECTORY)
 		{
+			gtk_list_store_append (dir_store, &dir_iter);
 			gtk_list_store_set (dir_store, &dir_iter,
 								0, dir_pixbuf,
 								1, g_path_get_basename(data->directory),
@@ -696,6 +695,7 @@ gimmix_update_dir_song_treeview_with_dir (gchar *dir)
 		{
 			gchar *title;
 			
+			gtk_list_store_append (dir_store, &dir_iter);
 			title = data->song->title ? data->song->title : g_path_get_basename(data->song->file);
 			gtk_list_store_set (dir_store, &dir_iter,
 								0, song_pixbuf,

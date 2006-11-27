@@ -33,6 +33,7 @@
 #define GIMMIX_ICON  	"/share/pixmaps/gimmix.png"
 #define GIMMIX_URL		"http://gimmix.berlios.de/"
 
+/* Time in milliseconds for which the notification popup is displayed */
 #define NOTIFY_TIMEOUT 	1800
 
 static GimmixStatus 		status;
@@ -155,7 +156,6 @@ gimmix_init (void)
 		gtk_status_icon_set_visible (icon, FALSE);
 	}
 	
-	//song_is_changed = false;
 	g_timeout_add (300, (GSourceFunc)gimmix_timer, NULL);
 
 	gimmix_playlist_init ();
