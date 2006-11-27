@@ -348,7 +348,7 @@
 	      <child>
 		<widget class="GtkLabel" id="label51">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">&lt;b&gt;PLaylist&lt;/b&gt;</property>
+		  <property name="label" translatable="yes">&lt;b&gt;Player&lt;/b&gt;</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">True</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -647,7 +647,7 @@ If you're not sure, check your mpd configuration file (/etc/mpd.conf on most sys
 		  <child>
 		    <widget class="GtkLabel" id="label14">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">&lt;b&gt;Other settings&lt;/b&gt;</property>
+		      <property name="label" translatable="yes">&lt;b&gt;System tray&lt;/b&gt;</property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">True</property>
 		      <property name="justify">GTK_JUSTIFY_LEFT</property>
