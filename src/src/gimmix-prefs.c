@@ -167,11 +167,14 @@ static void
 cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data)
 {
 	GtkWidget *notify_checkbutton;
+	GtkWidget *notify_spinbutton;
 	notify_checkbutton = glade_xml_get_widget (xml, "notify_checkbutton");
+	notify_spinbutton = glade_xml_get_widget (xml, "notify_timeout_spin");
 	
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{
 		gtk_widget_set_sensitive (notify_checkbutton, TRUE);
+		//gtk_widget_set_sensitive (notify_spinbutton, TRUE);
 		gimmix_enable_systray_icon ();
 		pub->conf->systray_enable = 1;
 	}
@@ -179,6 +182,7 @@ cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data)
 	if (gtk_toggle_button_get_active(button) == FALSE)
 	{
 			gtk_widget_set_sensitive (notify_checkbutton, FALSE);
+			gtk_widget_set_sensitive (notify_spinbutton, FALSE);
 			gimmix_disable_systray_icon ();
 			pub->conf->systray_enable = 0;
 			pub->conf->notify_enable = 0;
