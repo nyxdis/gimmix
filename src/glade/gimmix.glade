@@ -4,13 +4,13 @@
 <glade-interface>
 
 <widget class="GtkWindow" id="prefs_window">
-  <property name="width_request">419</property>
+  <property name="width_request">500</property>
   <property name="height_request">298</property>
   <property name="title" translatable="yes">Preferences</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
   <property name="modal">True</property>
-  <property name="resizable">False</property>
+  <property name="resizable">True</property>
   <property name="destroy_with_parent">True</property>
   <property name="icon_name">gtk-preferences</property>
   <property name="decorated">True</property>
