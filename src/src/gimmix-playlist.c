@@ -50,6 +50,7 @@ static void		gimmix_library_popup_menu (void);
 static void		gimmix_playlists_popup_menu (void);
 static gchar*	gimmix_path_get_parent_dir (gchar *);
 static void		gimmix_file_browser_add_song (GtkTreeView *);
+static void 	gimmix_load_playlist (gchar *);
 
 /* Callbacks */
 /* Current playlist callbacks */
@@ -66,20 +67,21 @@ static void		gimmix_current_playlist_clear (void);
 static void		gimmix_library_update (GtkWidget *widget, gpointer data);
 static void		gimmix_current_playlist_save (void);
 static gboolean	gimmix_update_player_status (gpointer data);
-static void 	gimmix_load_playlist (gchar *);
 
-/* File browser callbacks */
-static void		cb_file_browser_close_button_clicked (GtkWidget *widget, gpointer data);
-static void		cb_file_browser_dir_activated (GtkTreeView *);
+/* Library browser callbacks */
+static void		cb_library_dir_activated (GtkTreeView *);
 static void 	cb_playlist_activated (GtkTreeView *);
 static void		cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data);
 
+/* Playlist browser callbacks */
 static void		gimmix_update_playlists_treeview (void);
 static void		gimmix_playlist_save_dialog_show (void);
 static void 	cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog);
 static void		cb_playlists_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static void 	cb_gimmix_playlist_remove ();
+static void		cb_gimmix_playlist_load ();
+static void		cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 void
 gimmix_playlist_init (void)
@@ -115,6 +117,7 @@ gimmix_playlist_init (void)
 	g_signal_connect (current_playlist_treeview, "key_release_event", G_CALLBACK (cb_current_playlist_delete_press), NULL);
 	g_object_unref (current_playlist_model);
 	g_signal_connect (pls_treeview, "button-release-event", G_CALLBACK (cb_playlists_right_click), NULL);
+	g_signal_connect (pls_treeview, "key_release_event", G_CALLBACK (cb_playlists_delete_press), NULL);
 	
 	/* populate the file browser */
 	gimmix_library_and_playlists_populate ();
@@ -259,7 +262,7 @@ gimmix_library_and_playlists_populate (void)
 	path = g_strdup_printf ("%s%s", PREFIX, GIMMIX_ICON);
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
 	g_free (path);
-	dir_pixbuf 	    = gtk_widget_render_icon (GTK_WIDGET(directory_treeview), GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_SMALL_TOOLBAR, NULL);
+	dir_pixbuf 	    = gtk_widget_render_icon (GTK_WIDGET(directory_treeview), GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_MENU, NULL);
 	pls_pixbuf		= gtk_widget_render_icon (GTK_WIDGET(playlists_treeview), GTK_STOCK_FILE, GTK_ICON_SIZE_MENU, NULL);
 	
 	for (data = mpd_database_get_directory(pub->gmo, NULL); data != NULL; data = mpd_data_get_next(data))
@@ -308,7 +311,7 @@ gimmix_library_and_playlists_populate (void)
 	pls_model 	= GTK_TREE_MODEL (pls_store);
 	gtk_tree_view_set_model (GTK_TREE_VIEW (playlists_treeview), pls_model);
 	
-	g_signal_connect (directory_treeview, "row-activated", G_CALLBACK(cb_file_browser_dir_activated), NULL);
+	g_signal_connect (directory_treeview, "row-activated", G_CALLBACK(cb_library_dir_activated), NULL);
 	g_signal_connect (playlists_treeview, "row-activated", G_CALLBACK(cb_playlist_activated), NULL);
 	g_signal_connect (directory_treeview, "button-release-event", G_CALLBACK(cb_library_right_click), NULL);
 	g_object_unref (dir_model);
@@ -462,14 +465,6 @@ cb_clear_button_clicked (GtkWidget *widget, gpointer data)
 }
 
 static void
-cb_file_browser_close_button_clicked (GtkWidget *widget, gpointer data)
-{
-	gtk_widget_hide (GTK_WIDGET(data));
-	
-	return;
-}
-
-static void
 cb_current_playlist_double_click (GtkTreeView *treeview)
 {
 	GtkTreeModel 		*model;
@@ -540,7 +535,7 @@ gimmix_file_browser_add_song (GtkTreeView *treeview)
 }
 
 static void
-cb_file_browser_dir_activated (GtkTreeView *treeview)
+cb_library_dir_activated (GtkTreeView *treeview)
 {
 	GtkTreeModel 		*model;
 	GtkTreeSelection 	*selection;
@@ -774,7 +769,7 @@ gimmix_current_playlist_song_info (void)
 							1, &path,
 							-1);
 		snprintf (song_path, 255, "%s/%s", pub->conf->musicdir, path);
-		if(gimmix_tag_editor_populate (song_path))
+		if (gimmix_tag_editor_populate (song_path))
 		{	
 			info_window = glade_xml_get_widget (xml, "tag_editor_window");
 			gtk_widget_show (info_window);
@@ -810,6 +805,8 @@ gimmix_current_playlist_remove_song (void)
 		mpd_status_update (pub->gmo);
 		gtk_list_store_remove (GTK_LIST_STORE (current_playlist_model), &iter);	
 	}
+	
+	return;
 }	
 
 static void
@@ -875,8 +872,7 @@ gimmix_current_playlist_popup_menu (void)
 	gtk_widget_show (menu_item);
 	
 	menu_item = gtk_image_menu_item_new_with_label ("Save Playlist");
-	image = get_image ("gtk-save", GTK_ICON_SIZE_MENU);
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), image);
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), GTK_WIDGET(get_image ("gtk-save", GTK_ICON_SIZE_MENU)));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_playlist_save_dialog_show), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
@@ -889,6 +885,8 @@ gimmix_current_playlist_popup_menu (void)
 					NULL,
 					3,
 					gtk_get_current_event_time());
+	
+	return;
 }
 
 static void
@@ -899,7 +897,14 @@ gimmix_playlists_popup_menu (void)
 
 	menu = gtk_menu_new ();
 	
-	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_DELETE, NULL);
+	menu_item = gtk_image_menu_item_new_with_label ("Load Playlist");
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), GTK_WIDGET(get_image ("gtk-open", GTK_ICON_SIZE_MENU)));
+	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_gimmix_playlist_load), NULL);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
+	
+	menu_item = gtk_image_menu_item_new_with_label ("Delete Playlist");
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), GTK_WIDGET(get_image ("gtk-delete", GTK_ICON_SIZE_MENU)));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_gimmix_playlist_remove), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
@@ -1081,11 +1086,11 @@ cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog)
 			widget_list = gtk_container_get_children (GTK_CONTAINER(GTK_DIALOG(dialog)->vbox));
 			widget_list = widget_list->next;
 			text = gtk_entry_get_text (GTK_ENTRY(widget_list->data));
-			g_print (text);
-			if ((mpd_database_save_playlist (pub->gmo, text)) == MPD_DATABASE_PLAYLIST_EXIST)
+			if ((mpd_database_save_playlist (pub->gmo, (char*)text)) == MPD_DATABASE_PLAYLIST_EXIST)
 				g_print ("playlist already exists.\n");
 			
 			g_list_free (widget_list);
+			gimmix_load_playlist ((char*)text);
 		}
 		gimmix_update_playlists_treeview ();
 	}	
@@ -1107,7 +1112,7 @@ cb_gimmix_playlist_remove ()
 	pls_treeview = glade_xml_get_widget (xml, "playlists_treeview");
 	pls_treemodel = gtk_tree_view_get_model (GTK_TREE_VIEW(pls_treeview));
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(pls_treeview));
-	
+		
 	if ( gtk_tree_selection_get_selected (selection, &pls_treemodel, &iter) )
 	{
 		gtk_tree_model_get (pls_treemodel, &iter,
@@ -1116,10 +1121,53 @@ cb_gimmix_playlist_remove ()
 		mpd_database_delete_playlist (pub->gmo, path);
 	}
 	
-	if (strcmp (path, loaded_playlist) == 0)
-		gimmix_current_playlist_clear ();
-		
+	if (loaded_playlist != NULL)
+		if (strcmp (path, loaded_playlist) == 0)
+		{
+			gimmix_current_playlist_clear ();
+		}
+	
 	gimmix_update_playlists_treeview ();
+	
+	return;
+}
+
+static void
+cb_gimmix_playlist_load ()
+{	
+	GtkWidget			*pls_treeview;
+	GtkTreeModel		*pls_treemodel;
+	GtkTreeSelection	*selection;
+	GtkTreeIter			iter;
+	gchar				*path;
+
+	pls_treeview = glade_xml_get_widget (xml, "playlists_treeview");
+	pls_treemodel = gtk_tree_view_get_model (GTK_TREE_VIEW(pls_treeview));
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(pls_treeview));
+	
+	if ( gtk_tree_selection_get_selected (selection, &pls_treemodel, &iter) )
+	{
+		gtk_tree_model_get (pls_treemodel, &iter,
+							1, &path,
+							-1);
+	}
+	
+	mpd_playlist_queue_load (pub->gmo, path);
+	gimmix_current_playlist_clear ();
+	mpd_playlist_queue_commit (pub->gmo);
+	
+	gimmix_load_playlist (path);
+	
+	return;
+}
+
+static void
+cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+	if (event->keyval != DELETE_KEY)
+		return;
+	
+	cb_gimmix_playlist_remove ();
 	
 	return;
 }

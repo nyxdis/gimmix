@@ -54,7 +54,7 @@ void
 gimmix_connect_error (void)
 {
 	GtkWidget 	*error_dialog;
-	static gchar *error = "Gimmix couldn't connect to mpd. Check whether mpd is running.\nAlso check that you have specified the proper hostname, port and password in ~/.gimmixrc";
+	static gchar *error = "Gimmix couldn't connect to mpd. \n\nCheck whether mpd is running.\nAlso check that you have specified the proper hostname, port and password in ~/.gimmixrc";
 	
 	error_dialog = gtk_message_dialog_new_with_markup (NULL,
 												GTK_DIALOG_DESTROY_WITH_PARENT,
