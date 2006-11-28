@@ -203,7 +203,7 @@ cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data)
 	widget = glade_xml_get_widget (xml, "notify_timeout_spin");
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{	
-		notify = gimmix_create_notification ();
+		gimmix_create_notification ();
 		pub->conf->notify_enable = 1;
 		gtk_widget_set_sensitive (widget, TRUE);
 	}
@@ -228,7 +228,7 @@ cb_pref_notify_timeout_spin_change (GtkSpinButton *button, gpointer data)
 	value = gtk_spin_button_get_value (GTK_SPIN_BUTTON(button));
 	pub->conf->notify_timeout = value;
 	gimmix_destroy_notification ();
-	notify = gimmix_create_notification ();
+	gimmix_create_notification ();
 	gimmix_config_save (pub->conf);
 	
 	return;

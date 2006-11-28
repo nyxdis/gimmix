@@ -34,8 +34,8 @@
 
 static GimmixStatus 		status;
 static GtkWidget 			*progress;
-static GtkWidget 			*progressbox;
 static GtkStatusIcon 		*icon;
+static NotifyNotification 	*notify;
 
 static gboolean 	gimmix_timer (void);
 static void 		gimmix_about_show (void);
@@ -72,13 +72,12 @@ gimmix_init (void)
 {
 	GtkWidget 		*widget;
 	GtkWidget		*image;
+	GtkWidget		*progressbox;
 	GtkAdjustment	*vol_adj;
 	GdkPixbuf		*app_icon;
 	gchar			*path;
 	gint			state;
 	
-	status = gimmix_get_status (pub->gmo);
-
 	/* Set the application icon */
 	widget = glade_xml_get_widget (xml, "main_window");
 	g_signal_connect (G_OBJECT(widget), "delete-event", G_CALLBACK(cb_gimmix_main_window_delete_event), NULL);
@@ -117,7 +116,7 @@ gimmix_init (void)
 	g_signal_connect(G_OBJECT(widget), "value_changed", G_CALLBACK(cb_volume_scale_changed), NULL);
 	g_signal_connect (G_OBJECT(widget), "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
 	vol_adj = gtk_range_get_adjustment (GTK_RANGE(widget));
-	gtk_adjustment_set_value (GTK_ADJUSTMENT(vol_adj), gimmix_get_volume(pub->gmo));
+	gtk_adjustment_set_value (GTK_ADJUSTMENT(vol_adj), mpd_status_get_volume (pub->gmo));
 
 	progress = glade_xml_get_widget (xml,"progress");
 	progressbox = glade_xml_get_widget (xml,"progress_event_box");
@@ -126,13 +125,14 @@ gimmix_init (void)
 	widget = glade_xml_get_widget (xml, "play_button");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_play_button_clicked), NULL);
 
+	status = gimmix_get_status (pub->gmo);
+	
 	if (status == PLAY)
 	{
 		gimmix_set_song_info ();
 		status = -1;
 		song_is_changed = true;
 	}
-	
 	else if (status == PAUSE)
 	{
 		gimmix_set_song_info ();
@@ -170,7 +170,7 @@ gimmix_timer (void)
 	static	gboolean stop;
 
 	new_status = gimmix_get_status (pub->gmo);
-
+	
 	if (song_is_changed == true && new_status == PLAY)
 	{
 		gimmix_set_song_info ();
@@ -243,6 +243,7 @@ gimmix_timer (void)
 			gtk_button_set_image (GTK_BUTTON(button), image);
 			gtk_tooltips_set_tip (tooltip, button, "Play", NULL);
 		}
+
 		return TRUE;
 	}
 }
@@ -273,14 +274,14 @@ cb_play_button_clicked (GtkWidget *widget, gpointer data)
 	if (gimmix_play(pub->gmo))
 	{
 		image = get_image ("gtk-media-pause", GTK_ICON_SIZE_BUTTON);
-		gtk_button_set_image (GTK_BUTTON(widget), image);
 		gimmix_set_song_info ();
 	}
 	else
 	{
 		image = get_image ("gtk-media-play", GTK_ICON_SIZE_BUTTON);
-		gtk_button_set_image (GTK_BUTTON(widget), image);
 	}
+	
+	gtk_button_set_image (GTK_BUTTON(widget), image);
 	
 	return;
 }
@@ -288,19 +289,13 @@ cb_play_button_clicked (GtkWidget *widget, gpointer data)
 static void
 cb_stop_button_clicked (GtkWidget *widget, gpointer data)
 {
-	GtkWidget *image;
-	GtkWidget *play_button;
-
 	if (gimmix_stop(pub->gmo))
 	{
-		play_button = glade_xml_get_widget (xml, "play_button");
-		image = get_image ("gtk-media-play", GTK_ICON_SIZE_BUTTON);
-		gtk_button_set_image (GTK_BUTTON(play_button), image);
 		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), "Stopped");
 		gimmix_show_ver_info ();
 	}
-
+	
 	return;
 }
 
@@ -365,7 +360,7 @@ cb_volume_scale_changed (GtkWidget *widget, gpointer data)
 	volume_adj = gtk_range_get_adjustment (GTK_RANGE(widget));
 
 	value = gtk_adjustment_get_value (GTK_ADJUSTMENT(volume_adj));
-	gimmix_set_volume (pub->gmo, value);
+	mpd_status_set_volume (pub->gmo, value);
 	
 	return;
 }
@@ -433,7 +428,7 @@ gimmix_update_volume ()
 	
 	widget = glade_xml_get_widget (xml, "volume_scale");
 	volume_adj = gtk_range_get_adjustment (GTK_RANGE(widget));
-	volume = gimmix_get_volume (pub->gmo);
+	volume = mpd_status_get_volume (pub->gmo);
 	gtk_adjustment_set_value (GTK_ADJUSTMENT(volume_adj), volume);
 	
 	return;
@@ -448,7 +443,7 @@ cb_gimmix_progress_seek (GtkWidget *progressbox, GdkEvent *event)
 
 	x = event->button.x;
 	allocation = GTK_WIDGET (progressbox)->allocation;
-	totaltime = gimmix_get_total_song_time (pub->gmo);
+	totaltime = mpd_status_get_total_song_time (pub->gmo);
 	seektime = (gdouble)x/allocation.width;
 	newtime = seektime * totaltime;
 	if (gimmix_seek(pub->gmo, newtime))
@@ -608,15 +603,14 @@ cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data)
 	if (gimmix_play(pub->gmo))
 	{
 		image = get_image ("gtk-media-pause", GTK_ICON_SIZE_BUTTON);
-		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menuitem), image);
 		gimmix_set_song_info ();
 	}
 	else
 	{
 		image = get_image ("gtk-media-play", GTK_ICON_SIZE_BUTTON);
-		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menuitem), image);
 	}
-	
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menuitem), image);
+			
 	return;
 }
 
@@ -627,7 +621,7 @@ gimmix_update_and_display_notification (NotifyNotification *notify,
 {
 	gchar 			*summary;
 	GdkScreen 		*screen;
-	GdkRectangle 		area;
+	GdkRectangle 	area;
 	
 	if (pub->conf->notify_enable != 1)
 	return;
@@ -661,9 +655,9 @@ gimmix_update_and_display_notification (NotifyNotification *notify,
 static void
 gimmix_about_show (void)
 {
- 	GdkPixbuf 	*about_pixbuf;
-	gchar		*path;
-	gchar 		*license = 
+ 	GdkPixbuf 			*about_pixbuf;
+	gchar				*path;
+	static gchar 		*license = 
 	("Gimmix is free software; you can redistribute it and/or "
 	"modify it under the terms of the GNU General Public Licence as "
 	"published by the Free Software Foundation; either version 2 of the "
@@ -760,7 +754,7 @@ gimmix_create_systray_icon (gboolean notify_enable)
 
 	if (notify_enable == TRUE)
 	{
-		notify = gimmix_create_notification ();
+		gimmix_create_notification ();
 	}
 	
 	return;
@@ -784,7 +778,7 @@ gimmix_enable_systray_icon (void)
 	gtk_status_icon_set_visible (icon, TRUE);
 	if (pub->conf->notify_enable == 1)
 	{	
-		notify = gimmix_create_notification ();
+		gimmix_create_notification ();
 	}
 	else
 	notify = NULL;
@@ -792,38 +786,37 @@ gimmix_enable_systray_icon (void)
 	return;
 }
 
-NotifyNotification *
+void
 gimmix_create_notification (void)
 {
 	GdkRectangle 		area;
 	GdkScreen			*screen;
 	GdkPixbuf			*pixbuf;
-	NotifyNotification 	*notif;
 	gchar				*path;
 
 	if (!icon)
-		return NULL;
+		return;
 
 	/* Initialize notify */
 	if (!notify_is_initted())
 		notify_init(APPNAME);
 
 	path = g_strdup_printf ("%s%s", PREFIX, GIMMIX_ICON);
-	notif = notify_notification_new (APPNAME, APPURL, NULL, NULL);
-	notify_notification_set_category (notif, "information");
+	notify = notify_notification_new (APPNAME, APPURL, NULL, NULL);
+	notify_notification_set_category (notify, "information");
 	g_free (path);
 
-	notify_notification_set_timeout (notif, pub->conf->notify_timeout*1000);
+	notify_notification_set_timeout (notify, pub->conf->notify_timeout*1000);
 	gtk_status_icon_get_geometry (icon, &screen, &area, NULL);
-	notify_notification_set_geometry_hints (notif, screen, area.x, area.y);
+	notify_notification_set_geometry_hints (notify, screen, area.x, area.y);
 	
-	return notif;
+	return;
 }
 
 void
 gimmix_destroy_notification (void)
 {
-	if (notify)
+	if (notify != NULL)
 	{
 		g_object_unref (notify);
 		notify = NULL;

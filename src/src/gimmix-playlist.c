@@ -265,7 +265,7 @@ gimmix_library_and_playlists_populate (void)
 	
 	for (data = mpd_database_get_directory(pub->gmo, NULL); data != NULL; data = mpd_data_get_next(data))
 	{	
-		if(data->type == MPD_DATA_TYPE_DIRECTORY)
+		if (data->type == MPD_DATA_TYPE_DIRECTORY)
 		{
 			gtk_list_store_append (dir_store, &dir_iter);
 			gtk_list_store_set (dir_store, &dir_iter,

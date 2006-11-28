@@ -16,10 +16,8 @@ void gimmix_set_song_info (void);
 /* interface cleanup */
 void gimmix_interface_cleanup (void);
 
-NotifyNotification 	*notify;
-
 /* create a new notification */
-NotifyNotification *gimmix_create_notification (void);
+void gimmix_create_notification (void);
 
 /* destroy notification */
 void gimmix_destroy_notification (void);

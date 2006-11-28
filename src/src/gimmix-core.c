@@ -36,8 +36,8 @@ gimmix_mpd_connect (Conf *conf)
 			mpd_connect (mo);
 			if (mpd_check_connected (mo))
 			{
-				mpd_signal_connect_status_changed (mo, (StatusChangedCallback)song_changed, NULL);
-			return mo;
+				mpd_signal_connect_status_changed (mo, (StatusChangedCallback)gimmix_status_changed, NULL);
+				return mo;
 			}
 		}
 		else
@@ -186,37 +186,13 @@ gimmix_seek (MpdObj *mo, int seektime)
 	int state;
 	state = gimmix_get_status (mo);
 
-	if(state == PLAY || state == PAUSE)
+	if (state == PLAY || state == PAUSE)
 	{
 		mpd_player_seek(mo, seektime);
 		return true;
 	}
 
 	return false;
-}
-
-void
-gimmix_set_volume (MpdObj *mo, int vol)
-{
-	mpd_status_set_volume(mo, vol);
-}
-
-int
-gimmix_get_volume (MpdObj *mo)
-{
-	int volume;
-
-	volume = mpd_status_get_volume (mo);
-	return volume;
-}
-
-int
-gimmix_get_total_song_time (MpdObj *mo)
-{
-	int time;
-
-	time = mpd_status_get_total_song_time (mo);
-	return time;
 }
 
 SongInfo *
@@ -291,7 +267,18 @@ gimmix_get_progress_status (MpdObj *mo, float *fraction, char *time)
 }
 
 void
-song_changed (MpdObj *mo, ChangedStatusType id)
+gimmix_disconnect (MpdObj *mo)
+{
+	if (mo != NULL || mpd_check_connected(mo))
+	{
+		mpd_free (mo);
+	}
+	
+	return;
+}
+
+void
+gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 {
 	if (id&MPD_CST_SONGID)
 		song_is_changed = true;
@@ -321,13 +308,3 @@ song_changed (MpdObj *mo, ChangedStatusType id)
 	return;
 }
 
-void
-gimmix_disconnect (MpdObj *mo)
-{
-	if (mo != NULL || mpd_check_connected(mo))
-	{
-		mpd_free (mo);
-	}
-	
-	return;
-}

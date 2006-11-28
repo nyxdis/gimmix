@@ -19,7 +19,7 @@ typedef struct songinfo
 	char file[255];
 } SongInfo;
 
-typedef enum { 	PLAY,
+typedef enum { 	PLAY = 1,
 				PAUSE,
 				STOP
 } GimmixStatus;
@@ -51,10 +51,6 @@ bool gimmix_seek (MpdObj *, int);
 void gimmix_repeat (MpdObj *, bool);
 void gimmix_shuffle (MpdObj *, bool);
 
-/* voulme control */
-int gimmix_get_volume (MpdObj *);
-void gimmix_set_volume (MpdObj *, int);
-
 /* Gets the information of currently playing song (artist, title, genre.etc)*/
 SongInfo * gimmix_get_song_info (MpdObj *);
 
@@ -62,7 +58,6 @@ SongInfo * gimmix_get_song_info (MpdObj *);
 void gimmix_free_song_info (SongInfo *);
 
 void gimmix_get_progress_status (MpdObj *, float *, char *);
-int gimmix_get_total_song_time (MpdObj *);
 
 /* Check mpd status for PLAY/PAUSE/STOP */
 GimmixStatus gimmix_get_status (MpdObj *);
@@ -73,6 +68,6 @@ bool is_gimmix_shuffle (MpdObj *);
 
 /* Status changed callback */
 /* Monitors song, volume, and playlist changes */
-void song_changed (MpdObj *, ChangedStatusType);
+void gimmix_status_changed (MpdObj *, ChangedStatusType);
 
 #endif

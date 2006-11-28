@@ -130,6 +130,7 @@ gimmix_tag_editor_close (GtkWidget *widget, gpointer data)
 	GtkWidget *window;
     window = glade_xml_get_widget (xml, "tag_editor_window");
 	taglib_tag_free_strings ();
+    if (file)
     taglib_file_free (file);
     
     gtk_widget_hide (window);
