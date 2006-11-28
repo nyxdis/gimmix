@@ -429,7 +429,7 @@ gimmix_update_volume ()
 {
 	gint 			volume;
 	GtkWidget		*widget;
-	GtkAdjustment		*volume_adj;
+	GtkAdjustment	*volume_adj;
 	
 	widget = glade_xml_get_widget (xml, "volume_scale");
 	volume_adj = gtk_range_get_adjustment (GTK_RANGE(widget));
@@ -770,11 +770,7 @@ void
 gimmix_disable_systray_icon (void)
 {
 	gtk_status_icon_set_visible (icon, FALSE);
-	if (notify)
-	{	
-		g_object_unref (notify);
-		notify = NULL;
-	}
+	gimmix_destroy_notification ();
 	
 	pub->conf->notify_enable = 0;
 	pub->conf->systray_enable = 0;
@@ -839,12 +835,18 @@ gimmix_destroy_notification (void)
 void
 gimmix_interface_cleanup (void)
 {
+	/* stop playback on exit */
 	if (pub->conf->stop_on_exit == 1)
 		gimmix_stop (pub->gmo);
 	
+	/* destroy notification */
 	if (notify_is_initted())
+	{	
+		gimmix_destroy_notification ();	
 		notify_uninit ();
+	}
 	
+	/* destroy system tray icon */
 	if (icon != NULL)
 		g_object_unref (icon);
 	
