@@ -307,11 +307,11 @@ cb_repeat_button_toggled (GtkToggleButton *button, gpointer data)
 	state = gtk_toggle_button_get_active (button);
 	if (state == TRUE)
 	{
-		gimmix_repeat (pub->gmo, true);
+		mpd_player_set_repeat (pub->gmo, true);
 	}
 	else if (state == FALSE)
 	{
-		gimmix_repeat (pub->gmo, false);
+		mpd_player_set_repeat (pub->gmo, false);
 	}
 	
 	return;
@@ -325,11 +325,11 @@ cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data)
 	state = gtk_toggle_button_get_active (button);
 	if (state == TRUE)
 	{
-		gimmix_shuffle (pub->gmo, true);
+		mpd_player_set_random (pub->gmo, true);
 	}
 	else if (state == FALSE)
 	{
-		gimmix_shuffle (pub->gmo, false);
+		mpd_player_set_random (pub->gmo, false);
 	}
 	
 	return;

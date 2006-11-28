@@ -933,11 +933,11 @@ cb_repeat_menu_toggled (GtkCheckMenuItem *item, gpointer data)
 	state = gtk_check_menu_item_get_active (item);
 	if (state == TRUE)
 	{
-		gimmix_repeat (pub->gmo, true);
+		mpd_player_set_repeat (pub->gmo, true);
 	}
 	else if (state == FALSE)
 	{
-		gimmix_repeat (pub->gmo, false);
+		mpd_player_set_repeat (pub->gmo, false);
 	}
 	
 	return;
@@ -951,11 +951,11 @@ cb_shuffle_menu_toggled (GtkCheckMenuItem *item, gpointer data)
 	state = gtk_check_menu_item_get_active (item);
 	if (state == TRUE)
 	{
-		gimmix_shuffle (pub->gmo, true);
+		mpd_player_set_random (pub->gmo, true);
 	}
 	else if (state == FALSE)
 	{
-		gimmix_shuffle (pub->gmo, false);
+		mpd_player_set_random (pub->gmo, false);
 	}
 	
 	return;

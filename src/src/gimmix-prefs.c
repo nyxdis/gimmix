@@ -176,7 +176,6 @@ cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data)
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{
 		gtk_widget_set_sensitive (notify_checkbutton, TRUE);
-		//gtk_widget_set_sensitive (notify_spinbutton, TRUE);
 		gimmix_enable_systray_icon ();
 		pub->conf->systray_enable = 1;
 	}

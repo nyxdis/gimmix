@@ -48,8 +48,6 @@ bool gimmix_stop (MpdObj *);
 bool gimmix_prev (MpdObj *);
 bool gimmix_next (MpdObj *);
 bool gimmix_seek (MpdObj *, int);
-void gimmix_repeat (MpdObj *, bool);
-void gimmix_shuffle (MpdObj *, bool);
 
 /* Gets the information of currently playing song (artist, title, genre.etc)*/
 SongInfo * gimmix_get_song_info (MpdObj *);

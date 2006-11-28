@@ -134,28 +134,6 @@ gimmix_next (MpdObj *mo)
 	return false;
 }
 
-void
-gimmix_repeat (MpdObj *mo, bool set)
-{
-	if (!mo)
-		return;
-
-	mpd_player_set_repeat (mo, set);
-	
-	return;
-}
-
-void
-gimmix_shuffle (MpdObj *mo, bool set)
-{
-	if (!mo)
-		return;
-
-	mpd_player_set_random (mo, set);
-	
-	return;
-}
-
 bool
 is_gimmix_repeat (MpdObj *mo)
 {
