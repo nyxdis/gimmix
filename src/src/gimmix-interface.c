@@ -151,13 +151,13 @@ gimmix_init (void)
 	{
 		gtk_status_icon_set_visible (icon, FALSE);
 	}
-	
-	g_timeout_add (300, (GSourceFunc)gimmix_timer, NULL);
 
 	gimmix_playlist_init ();
 	gimmix_tag_editor_init ();
 	gimmix_update_current_playlist ();
 
+	g_timeout_add (400, (GSourceFunc)gimmix_timer, NULL);
+	
 	return;
 }
 

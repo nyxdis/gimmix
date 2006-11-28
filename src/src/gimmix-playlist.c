@@ -110,8 +110,6 @@ gimmix_playlist_init (void)
 	current_playlist_model	= GTK_TREE_MODEL (current_playlist_store);
 
 	gtk_tree_view_set_model (GTK_TREE_VIEW (current_playlist_treeview), current_playlist_model);
-	//current_playlist_selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(current_playlist_treeview));
-	//gtk_tree_selection_set_mode (current_playlist_selection, GTK_SELECTION_MULTIPLE);
 	g_signal_connect (current_playlist_treeview, "row-activated", G_CALLBACK(cb_current_playlist_double_click), NULL);
 	g_signal_connect (current_playlist_treeview, "button-release-event", G_CALLBACK (cb_current_playlist_right_click), NULL);
 	g_signal_connect (current_playlist_treeview, "key_release_event", G_CALLBACK (cb_current_playlist_delete_press), NULL);
