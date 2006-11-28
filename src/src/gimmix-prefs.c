@@ -28,6 +28,7 @@
 static void 	cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
 static void		cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data);
 static void		cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data);
+static void		cb_pref_notify_timeout_spin_change (GtkSpinButton *button, gpointer data);
 
 void
 gimmix_prefs_dialog_show (void)
@@ -95,6 +96,7 @@ gimmix_prefs_dialog_show (void)
 		gtk_widget_set_sensitive (entry, FALSE);
 	else
 		gtk_widget_set_sensitive (entry, TRUE);
+	g_signal_connect (G_OBJECT(entry), "value-changed", G_CALLBACK(cb_pref_notify_timeout_spin_change), NULL);
 	
 	widget = glade_xml_get_widget (xml, "pref_play_immediate");
 	if (play_immediate == 1)
@@ -208,10 +210,25 @@ cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data)
 	else
 	if (gtk_toggle_button_get_active(button) == FALSE)
 	{
+		gimmix_destroy_notification ();
 		pub->conf->notify_enable = 0;
 		gtk_widget_set_sensitive (widget, FALSE);
 	}
 	
+	gimmix_config_save (pub->conf);
+	
+	return;
+}
+
+static void
+cb_pref_notify_timeout_spin_change (GtkSpinButton *button, gpointer data)
+{
+	gint value;
+	
+	value = gtk_spin_button_get_value (GTK_SPIN_BUTTON(button));
+	pub->conf->notify_timeout = value;
+	gimmix_destroy_notification ();
+	notify = gimmix_create_notification ();
 	gimmix_config_save (pub->conf);
 	
 	return;

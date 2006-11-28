@@ -825,6 +825,18 @@ gimmix_create_notification (void)
 }
 
 void
+gimmix_destroy_notification (void)
+{
+	if (notify)
+	{
+		g_object_unref (notify);
+		notify = NULL;
+	}
+	
+	return;
+}
+
+void
 gimmix_interface_cleanup (void)
 {
 	if (pub->conf->stop_on_exit == 1)

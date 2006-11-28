@@ -21,6 +21,9 @@ NotifyNotification 	*notify;
 /* create a new notification */
 NotifyNotification *gimmix_create_notification (void);
 
+/* destroy notification */
+void gimmix_destroy_notification (void);
+
 /* Disable system tray icon */
 void gimmix_disable_systray_icon (void);
 
