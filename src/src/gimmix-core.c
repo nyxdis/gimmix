@@ -66,7 +66,7 @@ gimmix_get_status (MpdObj *mo)
 bool
 gimmix_play (MpdObj *mo)
 {
-	mpd_status_update (mo);
+	//mpd_status_update (mo);
 	if (mpd_playlist_get_playlist_length (mo))
 	{
 		int state;
@@ -166,7 +166,7 @@ gimmix_seek (MpdObj *mo, int seektime)
 
 	if (state == PLAY || state == PAUSE)
 	{
-		mpd_player_seek(mo, seektime);
+		mpd_player_seek (mo, seektime);
 		return true;
 	}
 
@@ -183,23 +183,29 @@ gimmix_get_song_info (MpdObj *mo)
 	ms = mpd_playlist_get_current_song (mo);
 	
 	if (ms->file != NULL)
-		strncpy (s->file, ms->file, 255);
+		s->file = strdup (ms->file);
+	else
+		s->file = NULL;
 	
 	if (ms->title != NULL)
-		strncpy (s->title, ms->title, 80);
-
-	if (ms->artist != NULL)
-		strncpy (s->artist, ms->artist, 80);
+		s->title = strdup (ms->title);
 	else
-		strncpy (s->artist, "", 80);
+		s->title = NULL;
+	
+	if (ms->artist != NULL)
+		s->artist = strdup (ms->artist);
+	else
+		s->artist = NULL;
 
 	if (ms->album != NULL)
-		strncpy (s->album, ms->album, 80);
+		s->album = strdup (ms->album);
 	else
-		strncpy (s->album, "", 80);
+		s->album = NULL;
 
 	if (ms->genre != NULL)
-		strncpy (s->genre, ms->genre, 80);
+		s->genre = strdup (ms->genre);
+	else
+		s->genre = NULL;
 
 	return s;
 }
@@ -209,6 +215,16 @@ gimmix_free_song_info (SongInfo *si)
 {
 	if (si != NULL)
 	{
+		if (si->title)
+			free (si->title);
+		if (si->file)
+			free (si->file);
+		if (si->artist)
+			free (si->artist);
+		if (si->album)
+			free (si->album);
+		if (si->genre)
+			free (si->genre);
 		free (si);
 	}
 	return;
@@ -286,3 +302,12 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 	return;
 }
 
+char *
+gimmix_get_full_image_path (const char *image_name)
+{
+	char *full_path;
+	
+	full_path = g_strdup_printf ("%s%s%s", PREFIX, "/share/pixmaps/", image_name);
+	
+	return full_path;
+}

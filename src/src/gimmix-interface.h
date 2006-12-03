@@ -4,7 +4,6 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <libnotify/notify.h>
 #include "gimmix-core.h"
 
 /* Initializes default interface signals */
@@ -13,20 +12,11 @@ void gimmix_init (void);
 /* Sets the song info labels to reflect the song status */
 void gimmix_set_song_info (void);
 
+/* Toggles visibility of main window */
+void gimmix_window_visible_toggle (void);
+
 /* interface cleanup */
 void gimmix_interface_cleanup (void);
-
-/* create a new notification */
-void gimmix_create_notification (void);
-
-/* destroy notification */
-void gimmix_destroy_notification (void);
-
-/* Disable system tray icon */
-void gimmix_disable_systray_icon (void);
-
-/* Enable system tray icon */
-void gimmix_enable_systray_icon (void);
 
 /* Returns an image from stock id */
 GtkWidget	*get_image (const gchar *, GtkIconSize);

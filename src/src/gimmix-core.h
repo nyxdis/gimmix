@@ -12,11 +12,11 @@
 /* the SongInfo structure */
 typedef struct songinfo
 {
-	char title[80];
-	char artist[80];
-	char album[80];
-	char genre[80];
-	char file[255];
+	char *title;
+	char *artist;
+	char *album;
+	char *genre;
+	char *file;
 } SongInfo;
 
 typedef enum { 	PLAY = 1,
@@ -48,6 +48,9 @@ bool gimmix_stop (MpdObj *);
 bool gimmix_prev (MpdObj *);
 bool gimmix_next (MpdObj *);
 bool gimmix_seek (MpdObj *, int);
+
+/* get full image path */
+char *gimmix_get_full_image_path (const char *);
 
 /* Gets the information of currently playing song (artist, title, genre.etc)*/
 SongInfo * gimmix_get_song_info (MpdObj *);

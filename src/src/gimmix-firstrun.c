@@ -27,7 +27,6 @@
 
 static void on_fr_close_clicked (GtkWidget *widget, gpointer data);
 static void on_fr_apply_clicked (GtkWidget *widget, gpointer data);
-static void on_fr_systray_checkbox_toggled (GtkToggleButton *button, gpointer data);
 
 void
 gimmix_show_firstrun_dialog (void)
@@ -50,7 +49,6 @@ gimmix_show_firstrun_dialog (void)
 
 	check = glade_xml_get_widget (xml, "fr_systray_toggle");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(check), TRUE);
-	g_signal_connect (G_OBJECT(check), "toggled", G_CALLBACK(on_fr_systray_checkbox_toggled), NULL);
 		
 	gtk_widget_show (window);
 		
@@ -89,7 +87,6 @@ on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 {
 	GtkWidget 	*entry;
 	GtkWidget	*s_checkbox;
-	GtkWidget	*n_checkbox;
 	const gchar *host;
 	const gchar *port;
 	const gchar *password;
@@ -110,7 +107,6 @@ on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 	dir = gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER(entry));
 	
 	s_checkbox = glade_xml_get_widget (xml, "fr_systray_toggle");
-	n_checkbox = glade_xml_get_widget (xml, "fr_notify_toggle");
 
 	strncpy (pub->conf->hostname, host, 255);
 	strncpy (pub->conf->password, password, 255);
@@ -122,27 +118,7 @@ on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 	else
 		pub->conf->systray_enable = 0;
 	
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(n_checkbox)))
-		pub->conf->notify_enable = 1;
-	else
-		pub->conf->notify_enable = 0;
-
 	pub->conf->play_immediate = 0;
 	pub->conf->stop_on_exit = 0;
-	pub->conf->notify_timeout = 3;
 	gimmix_config_save (pub->conf);
-}
-
-static void
-on_fr_systray_checkbox_toggled (GtkToggleButton *button, gpointer data)
-{
-	GtkWidget *notify_checkbox;
-	
-	notify_checkbox = glade_xml_get_widget (xml, "fr_notify_toggle");
-	if (gtk_toggle_button_get_active(button) == TRUE)
-		gtk_widget_set_sensitive (notify_checkbox, TRUE);
-	else
-		gtk_widget_set_sensitive (notify_checkbox, FALSE);
-	
-	return;
 }

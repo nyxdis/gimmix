@@ -59,7 +59,7 @@ gimmix_tag_editor_populate (const gchar *song)
 {
 	GtkWidget 		*widget;
 	GtkTreeModel 	*genre_model;
-	gchar 			info[10];
+	gchar 			*info;
 	gint 			min;
 	gint			sec;
 	gint 			n;
@@ -80,44 +80,36 @@ gimmix_tag_editor_populate (const gchar *song)
 	tag = taglib_file_tag (file);
 	properties = taglib_file_audioproperties (file);
 	
-	widget = glade_xml_get_widget (xml, "tag_year");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON(widget), taglib_tag_year(tag));
-	
-	widget = glade_xml_get_widget (xml, "tag_track");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON(widget), taglib_tag_track(tag));
-
-	widget = glade_xml_get_widget (xml,"entry_title");
-	gtk_entry_set_text (GTK_ENTRY(widget), taglib_tag_title(tag));
-
-	widget = glade_xml_get_widget (xml,"entry_artist");
-	gtk_entry_set_text (GTK_ENTRY(widget), taglib_tag_artist(tag));
-
-	widget = glade_xml_get_widget (xml,"entry_album");
-	gtk_entry_set_text (GTK_ENTRY(widget), taglib_tag_album(tag));
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON(glade_xml_get_widget (xml, "tag_year")), taglib_tag_year(tag));
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON(glade_xml_get_widget (xml, "tag_track")), taglib_tag_track(tag));
+	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget (xml,"entry_title")), taglib_tag_title(tag));
+	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget (xml,"entry_artist")), taglib_tag_artist(tag));
+	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget (xml,"entry_album")), taglib_tag_album(tag));
+	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget (xml, "entry_comment")), taglib_tag_comment(tag));
 
 	widget = glade_xml_get_widget (xml,"combo_genre");
 	gtk_combo_box_append_text (GTK_COMBO_BOX(widget), taglib_tag_genre(tag));
 	genre_model = gtk_combo_box_get_model (GTK_COMBO_BOX(widget));
 	n = gtk_tree_model_iter_n_children (genre_model, NULL);
 	gtk_combo_box_set_active (GTK_COMBO_BOX(widget), n-1);
-    
-    widget = glade_xml_get_widget (xml, "entry_comment");
-	gtk_entry_set_text (GTK_ENTRY(widget), taglib_tag_comment(tag));
-	
+
 	/* Audio Information */
 	widget = glade_xml_get_widget (xml, "info_length");
 	sec = taglib_audioproperties_length(properties) % 60;
     min = (taglib_audioproperties_length(properties) - sec) / 60;
-	snprintf (info, 10, "%02i:%02i", min, sec);
+	info = g_strdup_printf ("%02i:%02i", min, sec);
 	gtk_label_set_text (GTK_LABEL(widget), info);
+	g_free (info);
 
 	widget = glade_xml_get_widget (xml, "info_bitrate");
-	snprintf (info, 10, "%i Kbps", taglib_audioproperties_bitrate(properties));
+	info = g_strdup_printf ("%i Kbps", taglib_audioproperties_bitrate(properties));
 	gtk_label_set_text (GTK_LABEL(widget), info);
+	g_free (info);
 	
 	widget = glade_xml_get_widget (xml, "info_channels");
-	snprintf (info, 10, "%i", taglib_audioproperties_channels(properties));
+	info = g_strdup_printf ("%i", taglib_audioproperties_channels(properties));
 	gtk_label_set_text (GTK_LABEL(widget), info);
+	g_free (info);
 	
 	taglib_tag_free_strings ();
 	
@@ -198,6 +190,8 @@ gimmix_update_song_info (gpointer data)
 	
 	if (mpd_status_db_is_updating (pub->gmo))
 		return TRUE;
+	else
+		return FALSE;
 	
 	/* Set the new song info */
 	status = gimmix_get_status (pub->gmo);
@@ -213,7 +207,7 @@ gimmix_tag_editor_show (void)
 	GimmixStatus 	status;
 	GtkWidget		*window;
 	SongInfo		*info;
-	gchar			song[255];
+	gchar			*song;
 	
 	status = gimmix_get_status (pub->gmo);
 	window = glade_xml_get_widget (xml, "tag_editor_window");
@@ -221,15 +215,16 @@ gimmix_tag_editor_show (void)
 	if (status == PLAY || status == PAUSE)
 	{
 		info = gimmix_get_song_info (pub->gmo);
-		snprintf (song, 255, "%s/%s", pub->conf->musicdir, info->file);
+		song = g_strdup_printf ("%s/%s", pub->conf->musicdir, info->file);
 		if (gimmix_tag_editor_populate (song))
 			gtk_widget_show (GTK_WIDGET(window));
 		else
 		{	
-			g_print ("Error: Invalid music directory.\n");
+			g_warning (_("Invalid music directory."));
 			gimmix_tag_editor_error (dir_error);
 		}	
 		gimmix_free_song_info (info);
+		g_free (song);
 	}
 	
 	return;
@@ -245,7 +240,7 @@ gimmix_tag_editor_error (const gchar *error_text)
 												GTK_MESSAGE_ERROR,
 												GTK_BUTTONS_OK,
 												"<b>%s: </b><span size=\"large\">%s</span>",
-												"ERROR",
+												_("ERROR"),
 												error_text);
 	gtk_window_set_resizable (GTK_WINDOW(error_dialog), FALSE);
     g_signal_connect (error_dialog,

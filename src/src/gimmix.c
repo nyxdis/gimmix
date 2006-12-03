@@ -28,6 +28,7 @@
 #include "gimmix-playlist.h"
 
 #define GLADE_FILE "/share/gimmix/gimmix.glade"
+#define GIMMIX_ICON "gimmix.png"
 
 static void error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog);
 
@@ -61,7 +62,7 @@ gimmix_connect_error (void)
 												GTK_MESSAGE_ERROR,
 												GTK_BUTTONS_OK,
 												"<b>%s: </b><span size=\"large\">%s</span>",
-												"ERROR",
+												_("ERROR"),
 												error);
     g_signal_connect (error_dialog,
 					"response",
@@ -82,6 +83,53 @@ error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog)
 	return;
 }
 
+void
+gimmix_about_show (void)
+{
+ 	GdkPixbuf 			*about_pixbuf;
+	gchar				*path;
+	static gchar 		*license = 
+	("Gimmix is free software; you can redistribute it and/or "
+	"modify it under the terms of the GNU General Public Licence as "
+	"published by the Free Software Foundation; either version 2 of the "
+	"Licence, or (at your option) any later version.\n"
+	"\n"
+	"Gimmix is distributed in the hope that it will be useful, "
+	"but WITHOUT ANY WARRANTY; without even the implied warranty of "
+	"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU "
+	"General Public Licence for more details.\n"
+	"\n"
+	"You should have received a copy of the GNU General Public Licence "
+	"along with Gimmix; if not, write to the Free Software "
+	"Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, "
+	"MA  02110-1301  USA");
+	
+	path = gimmix_get_full_image_path (GIMMIX_ICON);
+	about_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+	g_free (path);
+
+	gchar *authors[] = 	{ "Priyank M. Gosalia <priyankmg@gmail.com>",
+				 _("A part of the song seek code borrowed from Pygmy."),
+				 NULL
+				};
+	
+	gtk_show_about_dialog (NULL,
+                           "name", APPNAME,
+                           "version", VERSION,
+                           "copyright", _("\xC2\xA9 2006 Priyank Gosalia  (GPL)"),
+                           "comments", _("Gimmix is a graphical music player daemon (MPD) client written in C."),
+                           "license", license,
+                           "authors", authors,
+                           "website", APPURL,
+                           "website-label", APPURL,
+                           "logo", about_pixbuf,
+                           "wrap-license", true,
+                           NULL);
+	g_object_unref (about_pixbuf);
+
+	return;
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -99,8 +147,11 @@ main (int argc, char *argv[])
 	xml = glade_xml_new (path, NULL, NULL);
 	g_free (path);
 	
-	if (!xml)
+	if (xml == NULL)
+	{	
+		g_error (_("Failed to initialize interface."));
 		exit_cleanup ();
+	}
 	
 	glade_xml_signal_autoconnect (xml);
 	
@@ -111,10 +162,8 @@ main (int argc, char *argv[])
 		{
 			gimmix_connect_error ();
 		}
-		main_window = glade_xml_get_widget (xml, "main_window");
 		if (gimmix_connect())
 		{
-			gtk_widget_show (main_window);
 			gimmix_init ();
 		}
 		else
@@ -135,7 +184,7 @@ void
 exit_cleanup ()
 {
 	gimmix_interface_cleanup ();
-	
+	g_object_unref (xml);
 	if (pub->gmo != NULL)
 		gimmix_disconnect (pub->gmo);
 	if (pub->conf != NULL)

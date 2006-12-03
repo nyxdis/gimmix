@@ -25,6 +25,7 @@
 #include <string.h>
 #include <confuse.h>
 #include <gtk/gtk.h>
+#include "gimmix.h"
 #include "gimmix-config.h"
 
 #define CONFIG_FILE "~/.gimmixrc"
@@ -37,9 +38,7 @@ gimmix_config_init (void)
 	Conf 		*conf;
 	int 		ret;
 	int			port = 1;
-	int			notify_timeout;
 	cfg_bool_t	systray_enable = true;
-	cfg_bool_t	notify_enable = true;
 	cfg_bool_t	play_song_on_add = false;
 	cfg_bool_t 	stop_on_exit = false;
 	
@@ -53,8 +52,6 @@ gimmix_config_init (void)
 		CFG_SIMPLE_INT ("mpd_port", &port),
 		CFG_SIMPLE_STR ("mpd_password", &pass),
 		CFG_SIMPLE_BOOL ("enable_systray", &systray_enable),
-		CFG_SIMPLE_BOOL ("enable_notify", &notify_enable),
-		CFG_SIMPLE_INT ("notify_timeout", &notify_timeout),
 		CFG_SIMPLE_STR ("music_directory", &musicdir),
 		CFG_SIMPLE_BOOL ("play_immediately_on_add", &play_song_on_add),
 		CFG_SIMPLE_BOOL ("stop_playback_on_exit", &stop_on_exit),
@@ -91,19 +88,6 @@ gimmix_config_init (void)
 	{	
 		conf->systray_enable = 0;
 	}
-		
-	if (notify_enable == true)
-	{	
-		conf->notify_enable = 1;
-	}
-	else
-	{
-		conf->notify_enable = 0;
-	}
-
-	conf->notify_timeout = notify_timeout;
-	if (conf->notify_timeout > 60)
-		conf->notify_timeout = 3;
 	
 	if (play_song_on_add == true)
 		conf->play_immediate = 1;
@@ -136,8 +120,6 @@ gimmix_config_save (Conf *conf)
 		CFG_SIMPLE_INT ("mpd_port", 0),
 		CFG_SIMPLE_STR ("mpd_password", NULL),
 		CFG_SIMPLE_BOOL ("enable_systray", false),
-		CFG_SIMPLE_BOOL ("enable_notify", false),
-		CFG_SIMPLE_INT ("notify_timeout", 0),
 		CFG_SIMPLE_STR ("music_directory", NULL),
 		CFG_SIMPLE_BOOL ("play_immediately_on_add", false),
 		CFG_SIMPLE_BOOL ("stop_playback_on_exit", false),
@@ -178,19 +160,6 @@ gimmix_config_save (Conf *conf)
 		sopts = cfg_getopt (cfg, "enable_systray");
 		cfg_opt_print (sopts, fp);
 		
-		fprintf (fp, "\n# Enable/Disable system tray notifications (Enable = true, Disable = false) \n");
-		if (conf->notify_enable == 1)
-			cfg_setbool (cfg, "enable_notify", true);
-		else
-			cfg_setbool (cfg, "enable_notify", false);
-		sopts = cfg_getopt (cfg, "enable_notify");
-		cfg_opt_print (sopts, fp);
-		
-		fprintf (fp, "\n# Notification timeout (Time (in seconds) for which notification popup is displayed. max value is 60.) \n");
-		cfg_setint (cfg, "notify_timeout", conf->notify_timeout);
-		sopts = cfg_getopt (cfg, "notify_timeout");
-		cfg_opt_print (sopts, fp);
-		
 		fprintf (fp, "\n# Music directory (should be same as mpd's music_directory) \n# This is rquired for editing ID3 tags\n");
 		if (conf->musicdir)
 			cfg_setstr (cfg, "music_directory", conf->musicdir);
@@ -218,7 +187,7 @@ gimmix_config_save (Conf *conf)
 	}
 	else
 	{	
-		fprintf (stderr, "Error while saving config.\n");
+		g_error (_("Error while saving configuration."));
 	}
 
 	cfg_free_value (opts);

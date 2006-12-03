@@ -9,10 +9,8 @@ typedef struct
 {
 	int port;
 	int systray_enable;
-	int	notify_enable;
 	int play_immediate;
 	int stop_on_exit;
-	int notify_timeout;
 	char hostname[255];
 	char password[255];
 	char musicdir[255];
