@@ -40,9 +40,6 @@ gimmix-core.o:			src/gimmix-core.c
 gimmix-firstrun.o:		src/gimmix-firstrun.c
 	$(CC) $(CFLAGS) -c src/gimmix-firstrun.c
 
-eggtrayicon.o:			src/eggtrayicon.c
-	$(CC) $(CFLAGS) -c src/eggtrayicon.c
-	
 gimmix-playlist.o:		src/gimmix-playlist.c
 	$(CC) $(CFLAGS) -c src/gimmix-playlist.c
 
