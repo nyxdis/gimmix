@@ -7,8 +7,6 @@ PREFIX=$(DESTDIR)/usr
 ALLFILES=*.c
 
 CONFUSE_LIB=$(shell pkg-config libconfuse --libs)
-NOTIFY_CFLAGS=$(shell pkg-config libnotify --cflags)
-NOTIFY_LIB=$(shell pkg-config libnotify --libs)
 GLADE_CFLAGS=$(shell pkg-config libglade-2.0 --cflags)
 GLADE_LIB=$(shell pkg-config libglade-2.0 --libs)
 MPD_CFLAGS=$(shell pkg-config libmpd --cflags)
@@ -16,10 +14,10 @@ MPD_LIB=$(shell pkg-config libmpd --libs)
 TAG_CFLAGS=$(shell pkg-config taglib --cflags)
 #TAG_LIB=$(shell pkg-config taglib --libs)
 
-CFLAGS += -fPIC -DPREFIX=\"$(PREFIX)\" $(NOTIFY_CFLAGS) $(GLADE_CFLAGS) $(MPD_CFLAGS) $(TAG_CFLAGS) -I.
-LIBS=$(CONFUSE_LIB) $(NOTIFY_LIB) $(GLADE_LIB) $(MPD_LIB) -ltag_c
+CFLAGS += -fPIC -DPREFIX=\"$(PREFIX)\" $(GLADE_CFLAGS) $(MPD_CFLAGS) $(TAG_CFLAGS) -I.
+LIBS=$(CONFUSE_LIB) $(GLADE_LIB) $(MPD_LIB) -ltag_c
 
-OBJS = gimmix-config.o gimmix-core.o gimmix-playlist.o gimmix-prefs.o gimmix-interface.o gimmix-firstrun.o gimmix-tagedit.o gimmix.o
+OBJS = gimmix-config.o gimmix-core.o gimmix-playlist.o gimmix-systray.o gimmix-prefs.o gimmix-interface.o gimmix-firstrun.o gimmix-tagedit.o gimmix.o
 
 CC=gcc
 
@@ -42,9 +40,15 @@ gimmix-core.o:			src/gimmix-core.c
 gimmix-firstrun.o:		src/gimmix-firstrun.c
 	$(CC) $(CFLAGS) -c src/gimmix-firstrun.c
 
+eggtrayicon.o:			src/eggtrayicon.c
+	$(CC) $(CFLAGS) -c src/eggtrayicon.c
+	
 gimmix-playlist.o:		src/gimmix-playlist.c
 	$(CC) $(CFLAGS) -c src/gimmix-playlist.c
 
+gimmix-systray.o:		src/gimmix-systray.c
+	$(CC) $(CFLAGS) -c src/gimmix-systray.c
+	
 gimmix-prefs.o:			src/gimmix-prefs.c
 	$(CC) $(CFLAGS) -c src/gimmix-prefs.c
 
@@ -62,6 +66,7 @@ install: all
 	install -d $(PREFIX)/share/gimmix
 	install -D gimmix $(PREFIX)/bin/gimmix
 	install -D -m644 data/gimmix.png $(PREFIX)/share/pixmaps/gimmix.png
+	install -D -m644 data/gimmix_logo_small.png $(PREFIX)/share/pixmaps/gimmix_logo_small.png
 	install -D -m644 data/gimmix_firstrun.png $(PREFIX)/share/gimmix/gimmix_firstrun.png
 	install -D -m644 data/gimmix.desktop $(PREFIX)/share/applications/gimmix.desktop
 	install -D -m644 glade/gimmix.glade $(PREFIX)/share/gimmix/gimmix.glade
