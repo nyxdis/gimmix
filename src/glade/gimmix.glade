@@ -617,81 +617,11 @@ If you're not sure, check your mpd configuration file (/etc/mpd.conf on most sys
 			  </child>
 
 			  <child>
-			    <widget class="GtkCheckButton" id="notify_checkbutton">
-			      <property name="border_width">6</property>
-			      <property name="visible">True</property>
-			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">Enable system tray notifications</property>
-			      <property name="use_underline">True</property>
-			      <property name="relief">GTK_RELIEF_NORMAL</property>
-			      <property name="focus_on_click">True</property>
-			      <property name="active">False</property>
-			      <property name="inconsistent">False</property>
-			      <property name="draw_indicator">True</property>
-			    </widget>
-			    <packing>
-			      <property name="padding">0</property>
-			      <property name="expand">False</property>
-			      <property name="fill">False</property>
-			    </packing>
+			    <placeholder/>
 			  </child>
 
 			  <child>
-			    <widget class="GtkHBox" id="hbox20">
-			      <property name="border_width">10</property>
-			      <property name="visible">True</property>
-			      <property name="homogeneous">False</property>
-			      <property name="spacing">0</property>
-
-			      <child>
-				<widget class="GtkLabel" id="label53">
-				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">Timeout    </property>
-				  <property name="use_underline">False</property>
-				  <property name="use_markup">False</property>
-				  <property name="justify">GTK_JUSTIFY_LEFT</property>
-				  <property name="wrap">False</property>
-				  <property name="selectable">False</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-				  <property name="width_chars">-1</property>
-				  <property name="single_line_mode">False</property>
-				  <property name="angle">0</property>
-				</widget>
-				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">False</property>
-				  <property name="fill">False</property>
-				</packing>
-			      </child>
-
-			      <child>
-				<widget class="GtkSpinButton" id="notify_timeout_spin">
-				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="climb_rate">1</property>
-				  <property name="digits">0</property>
-				  <property name="numeric">False</property>
-				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
-				  <property name="snap_to_ticks">False</property>
-				  <property name="wrap">False</property>
-				  <property name="adjustment">1 3 60 1 10 10</property>
-				</widget>
-				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">False</property>
-				  <property name="fill">True</property>
-				</packing>
-			      </child>
-			    </widget>
-			    <packing>
-			      <property name="padding">0</property>
-			      <property name="expand">False</property>
-			      <property name="fill">True</property>
-			    </packing>
+			    <placeholder/>
 			  </child>
 
 			  <child>
@@ -2141,7 +2071,6 @@ mpd user name and password and click on the Apply button.
 	  <child>
 	    <widget class="GtkCheckButton" id="fr_notify_toggle">
 	      <property name="border_width">5</property>
-	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label" translatable="yes">Enable system tray notifications</property>
 	      <property name="use_underline">True</property>
@@ -2459,10 +2388,8 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			      <property name="focus_on_click">True</property>
 
 			      <child>
-				<widget class="GtkImage" id="image2">
+				<widget class="GtkImage" id="image_prev">
 				  <property name="visible">True</property>
-				  <property name="stock">gtk-media-previous</property>
-				  <property name="icon_size">4</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
@@ -2486,10 +2413,8 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			      <property name="focus_on_click">True</property>
 
 			      <child>
-				<widget class="GtkImage" id="image3">
+				<widget class="GtkImage" id="image_play">
 				  <property name="visible">True</property>
-				  <property name="stock">gtk-media-play</property>
-				  <property name="icon_size">4</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
@@ -2513,10 +2438,8 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			      <property name="focus_on_click">True</property>
 
 			      <child>
-				<widget class="GtkImage" id="image4">
+				<widget class="GtkImage" id="image_stop">
 				  <property name="visible">True</property>
-				  <property name="stock">gtk-media-stop</property>
-				  <property name="icon_size">4</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
@@ -2540,10 +2463,8 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			      <property name="focus_on_click">True</property>
 
 			      <child>
-				<widget class="GtkImage" id="image5">
+				<widget class="GtkImage" id="image_next">
 				  <property name="visible">True</property>
-				  <property name="stock">gtk-media-next</property>
-				  <property name="icon_size">4</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
@@ -2567,10 +2488,8 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			      <property name="focus_on_click">True</property>
 
 			      <child>
-				<widget class="GtkImage" id="image7">
+				<widget class="GtkImage" id="image_info">
 				  <property name="visible">True</property>
-				  <property name="stock">gtk-info</property>
-				  <property name="icon_size">4</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
@@ -2595,7 +2514,7 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			      <property name="inconsistent">False</property>
 
 			      <child>
-				<widget class="GtkImage" id="image1">
+				<widget class="GtkImage" id="image_repeat">
 				  <property name="visible">True</property>
 				  <property name="icon_size">4</property>
 				  <property name="icon_name">stock_repeat</property>
@@ -2623,7 +2542,7 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			      <property name="inconsistent">False</property>
 
 			      <child>
-				<widget class="GtkImage" id="image10">
+				<widget class="GtkImage" id="image16">
 				  <property name="visible">True</property>
 				  <property name="icon_size">4</property>
 				  <property name="icon_name">stock_shuffle</property>
@@ -2637,7 +2556,7 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			    <packing>
 			      <property name="padding">0</property>
 			      <property name="expand">False</property>
-			      <property name="fill">True</property>
+			      <property name="fill">False</property>
 			    </packing>
 			  </child>
 
@@ -2650,10 +2569,8 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			      <property name="focus_on_click">True</property>
 
 			      <child>
-				<widget class="GtkImage" id="image6">
+				<widget class="GtkImage" id="image_pref">
 				  <property name="visible">True</property>
-				  <property name="stock">gtk-preferences</property>
-				  <property name="icon_size">4</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
