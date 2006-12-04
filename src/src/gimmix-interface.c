@@ -288,13 +288,13 @@ gimmix_timer (void)
 		if (status == PLAY)
 		{
 			gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_play")), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
-			gtk_tooltips_set_tip (play_button_tooltip, button, _("Pause"), NULL);
+			gtk_tooltips_set_tip (play_button_tooltip, button, _("Pause <x or c>"), NULL);
 			stop = true;
 		}
 		else if (status == PAUSE || status == STOP)
 		{
 			gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_play")), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
-			gtk_tooltips_set_tip (play_button_tooltip, button, _("Play"), NULL);
+			gtk_tooltips_set_tip (play_button_tooltip, button, _("Play <x or c>"), NULL);
 		}
 		
 		g_object_ref_sink (play_button_tooltip);
