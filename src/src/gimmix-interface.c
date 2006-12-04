@@ -23,6 +23,7 @@
 
 #include <glib.h>
 #include <glade/glade.h>
+#include <gdk/gdkkeysyms.h>
 #include "gimmix-interface.h"
 #include "gimmix-playlist.h"
 #include "gimmix-tagedit.h"
@@ -36,7 +37,6 @@ GtkWidget 			*progress = NULL;
 GtkTooltips 		*play_button_tooltip = NULL;
 
 static gboolean 	gimmix_timer (void);
-static void 		gimmix_show_ver_info (void);
 static void			gimmix_update_volume (void);
 static void			gimmix_update_repeat (void);
 static void			gimmix_update_shuffle (void);
@@ -53,9 +53,9 @@ static void 	cb_repeat_button_toggled (GtkToggleButton *button, gpointer data);
 static void 	cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data);
 
 static void 	cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
-
 static void 	cb_volume_scale_changed (GtkWidget *widget, gpointer data);
 static void		cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
+static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata);
 
 void
 gimmix_init (void)
@@ -77,6 +77,9 @@ gimmix_init (void)
 	gtk_window_set_icon (GTK_WINDOW(main_window), app_icon);
 	g_object_unref (app_icon);
 	g_free (path);
+	
+	/* connect the key press signal */
+	g_signal_connect(G_OBJECT(main_window), "key-press-event", G_CALLBACK(cb_gimmix_key_press), NULL);
 	
 	/* set icons for buttons */
 	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_prev")), "gtk-media-previous", GTK_ICON_SIZE_BUTTON);
@@ -153,6 +156,44 @@ gimmix_init (void)
 	gtk_widget_show (main_window);
 	
 	return;
+}
+
+static gboolean
+cb_gimmix_key_press (GtkWidget   *widget,
+					GdkEventKey *event,
+					gpointer     userdata)
+{
+	gboolean result = FALSE;
+
+	if (event->type == GDK_KEY_PRESS) {
+		switch (event->keyval) {
+			case GDK_b: /* NEXT */
+				cb_next_button_clicked (NULL, NULL);
+				result = TRUE;
+				break;
+			case GDK_v: /* STOP */
+				cb_stop_button_clicked (NULL, NULL);
+				result = TRUE;
+				break;
+			case GDK_c: /* PLAY/PAUSE */
+				cb_play_button_clicked (NULL, NULL);
+				result = TRUE;
+				break;
+			case GDK_x: /* PLAY/PAUSE */
+				cb_play_button_clicked (NULL, NULL);
+				result = TRUE;
+				break;
+			case GDK_z: /* PREV */
+				cb_prev_button_clicked (NULL, NULL);
+				result = TRUE;
+				break;
+			case GDK_i: /* INFO */
+				cb_info_button_clicked (NULL, NULL);
+				result = TRUE;
+				break;
+		}
+	}
+	return result;
 }
 
 static gboolean
@@ -514,7 +555,7 @@ gimmix_set_song_info (void)
 	return;
 }
 
-static void
+void
 gimmix_show_ver_info (void)
 {
 	gchar 		*markup;

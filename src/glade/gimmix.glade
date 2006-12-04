@@ -2382,7 +2382,7 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			  <child>
 			    <widget class="GtkButton" id="prev_button">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Previous</property>
+			      <property name="tooltip" translatable="yes">Previous &lt;z&gt;</property>
 			      <property name="can_focus">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
@@ -2407,7 +2407,7 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			  <child>
 			    <widget class="GtkButton" id="play_button">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Play</property>
+			      <property name="tooltip" translatable="yes">Play &lt;x or c&gt;</property>
 			      <property name="can_focus">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
@@ -2432,7 +2432,7 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			  <child>
 			    <widget class="GtkButton" id="stop_button">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Stop</property>
+			      <property name="tooltip" translatable="yes">Stop &lt;v&gt;</property>
 			      <property name="can_focus">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
@@ -2457,7 +2457,7 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			  <child>
 			    <widget class="GtkButton" id="next_button">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Next</property>
+			      <property name="tooltip" translatable="yes">Next &lt;b&gt;</property>
 			      <property name="can_focus">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
@@ -2482,7 +2482,7 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			  <child>
 			    <widget class="GtkButton" id="info_button">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Info</property>
+			      <property name="tooltip" translatable="yes">Info &lt;i&gt;</property>
 			      <property name="can_focus">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
@@ -2563,7 +2563,7 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			  <child>
 			    <widget class="GtkButton" id="pref_button">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Preferences</property>
+			      <property name="tooltip" translatable="yes">Configure gimmix</property>
 			      <property name="can_focus">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>

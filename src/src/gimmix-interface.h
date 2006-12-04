@@ -19,6 +19,9 @@ void gimmix_window_visible_toggle (void);
 void gimmix_interface_cleanup (void);
 
 /* Returns an image from stock id */
-GtkWidget	*get_image (const gchar *, GtkIconSize);
+GtkWidget *get_image (const gchar *, GtkIconSize);
+
+/* Display version info */
+void gimmix_show_ver_info (void);
 
 #endif
