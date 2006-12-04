@@ -34,6 +34,9 @@ typedef enum {
 	PLAYLIST
 } GimmixFileType;
 
+extern GM 			*pub;
+extern GladeXML 	*xml;
+
 static gchar *dir_error = "You have specified an invalid music directory. Please specify the correct music directory in the preferences.";
 
 GtkWidget			*current_playlist_treeview;

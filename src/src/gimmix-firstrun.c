@@ -25,6 +25,9 @@
 #include "gimmix-firstrun.h"
 #include "gimmix.h"
 
+extern GM 			*pub;
+extern GladeXML 	*xml;
+
 static void on_fr_close_clicked (GtkWidget *widget, gpointer data);
 static void on_fr_apply_clicked (GtkWidget *widget, gpointer data);
 

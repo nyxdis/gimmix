@@ -28,6 +28,8 @@
 
 GtkStatusIcon		*icon = NULL;
 extern GtkWidget 	*progress;
+extern GM 			*pub;
+extern GladeXML 	*xml;
 
 static void 	cb_gimmix_systray_icon_popup (GtkStatusIcon *sicon, guint button, guint time, gpointer data);
 static void		cb_gimmix_systray_icon_activate (GtkStatusIcon *sicon, gpointer data);

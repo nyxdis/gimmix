@@ -26,6 +26,9 @@
 #include "gimmix-interface.h"
 #include "gimmix.h"
 
+extern GM 			*pub;
+extern GladeXML 	*xml;
+
 static void 	cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
 static void		cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data);
 static void		cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data);

@@ -2507,7 +2507,7 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			  <child>
 			    <widget class="GtkToggleButton" id="repeat_toggle">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Repeat</property>
+			      <property name="tooltip" translatable="yes">Repeat &lt;r&gt;</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
 			      <property name="active">False</property>
@@ -2535,7 +2535,7 @@ Note: The directory should be same as what you specified in your mpd settings. I
 			  <child>
 			    <widget class="GtkToggleButton" id="shuffle_toggle">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Shuffle</property>
+			      <property name="tooltip" translatable="yes">Shuffle &lt;s&gt;</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
 			      <property name="active">False</property>

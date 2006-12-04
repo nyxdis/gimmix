@@ -36,6 +36,9 @@ GimmixStatus 		status;
 GtkWidget 			*progress = NULL;
 GtkTooltips 		*play_button_tooltip = NULL;
 
+extern GM 			*pub;
+extern GladeXML 	*xml;
+
 static gboolean 	gimmix_timer (void);
 static void			gimmix_update_volume (void);
 static void			gimmix_update_repeat (void);
@@ -164,6 +167,8 @@ cb_gimmix_key_press (GtkWidget   *widget,
 					gpointer     userdata)
 {
 	gboolean result = FALSE;
+	GtkWidget *button;
+	gint state;
 
 	if (event->type == GDK_KEY_PRESS) {
 		switch (event->keyval) {
@@ -189,6 +194,24 @@ cb_gimmix_key_press (GtkWidget   *widget,
 				break;
 			case GDK_i: /* INFO */
 				cb_info_button_clicked (NULL, NULL);
+				result = TRUE;
+				break;
+			case GDK_r: /* REPEAT */
+				button = glade_xml_get_widget(xml, "repeat_toggle");
+				state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(button));
+				if (state == TRUE)
+					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), FALSE);
+				else
+					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), TRUE);
+				result = TRUE;
+				break;
+			case GDK_s: /* SHUFFLE */
+				button = glade_xml_get_widget(xml, "shuffle_toggle");
+				state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(button));
+				if (state == TRUE)
+					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), FALSE);
+				else
+					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), TRUE);
 				result = TRUE;
 				break;
 		}

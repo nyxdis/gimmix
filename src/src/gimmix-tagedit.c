@@ -25,6 +25,9 @@
 #include "gimmix-core.h"
 #include "gimmix-tagedit.h"
 
+extern GM 			*pub;
+extern GladeXML 	*xml;
+
 TagLib_File 	*file;
 TagLib_Tag 		*tag;
 
