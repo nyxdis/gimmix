@@ -46,7 +46,6 @@ void
 gimmix_create_systray_icon (void)
 {
 	gchar 		*icon_file;
-	GtkWidget	*icon_image;
 	
 	icon_file = gimmix_get_full_image_path (GIMMIX_ICON);
 	
@@ -188,7 +187,6 @@ gimmix_disable_systray_icon (void)
 		return;
 	
 	gtk_status_icon_set_visible (icon, FALSE);
-	//pub->conf->systray_enable = 0;
 	cfg_add_key (&conf, "enable_systray", "false");
 	
 	return;
@@ -200,7 +198,6 @@ gimmix_enable_systray_icon (void)
 	if (icon == NULL)
 	{	
 		gimmix_create_systray_icon ();
-		//pub->conf->systray_enable = 1;
 		cfg_add_key (&conf, "enable_systray", "true");
 	}
 	else
