@@ -39,18 +39,12 @@ void
 gimmix_prefs_dialog_show (void)
 {
 	gchar 		*port;
-	gint 		systray_enable;
-	gint		play_immediate;
-	gint		stop_on_exit;
 	GtkWidget	*entry;
 	GtkWidget	*widget;
 	GtkWidget	*pref_window;
 	
 	pref_window = glade_xml_get_widget (xml, "prefs_window");
 	port = g_strdup_printf ("%s", cfg_get_key_value (conf, "mpd_port"));
-	//systray_enable = pub->conf->systray_enable;
-	//play_immediate = pub->conf->play_immediate;
-	//stop_on_exit = pub->conf->stop_on_exit;
 
 	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget (xml,"host_entry")), cfg_get_key_value (conf, "mpd_hostname"));
 
