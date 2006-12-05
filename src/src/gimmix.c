@@ -184,8 +184,7 @@ exit_cleanup ()
 	g_object_unref (xml);
 	if (pub->gmo != NULL)
 		gimmix_disconnect (pub->gmo);
-	//if (pub->conf != NULL)
-	//	gimmix_config_free (pub->conf);
+	gimmix_config_free ();
 	g_free (pub);
 
 	exit (0);
