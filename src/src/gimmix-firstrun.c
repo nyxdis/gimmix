@@ -102,6 +102,8 @@ on_fr_close_clicked (GtkWidget *widget, gpointer data)
 			gimmix_connect_error ();
 		}
 	}
+	else
+	exit (0);
 	return;
 }
 

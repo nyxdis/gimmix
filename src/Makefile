@@ -17,7 +17,7 @@ TAG_CFLAGS=$(shell pkg-config taglib --cflags)
 CFLAGS += -fPIC -DPREFIX=\"$(PREFIX)\" $(GLADE_CFLAGS) $(MPD_CFLAGS) $(TAG_CFLAGS) -I.
 LIBS=$(CONFUSE_LIB) $(GLADE_LIB) $(MPD_LIB) -ltag_c
 
-OBJS = gimmix-config.o gimmix-core.o gimmix-playlist.o gimmix-systray.o gimmix-prefs.o gimmix-interface.o gimmix-firstrun.o gimmix-tagedit.o gimmix.o
+OBJS = wejpconfig.o gimmix-config.o gimmix-core.o gimmix-playlist.o gimmix-systray.o gimmix-prefs.o gimmix-interface.o gimmix-firstrun.o gimmix-tagedit.o gimmix.o
 
 CC=gcc
 
@@ -30,6 +30,9 @@ gimmix: $(OBJS)
 
 clean:
 	rm -f *.o core *.so* *.bak *~ src/*~ gimmix
+
+wejpconfig.o:			src/wejpconfig.c
+	$(CC) $(CFLAGS) -c src/wejpconfig.c
 
 gimmix-config.o:		src/gimmix-config.c
 	$(CC) $(CFLAGS) -c src/gimmix-config.c
