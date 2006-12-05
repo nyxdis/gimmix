@@ -1190,3 +1190,4 @@ cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
 	
 	return;
 }
+
