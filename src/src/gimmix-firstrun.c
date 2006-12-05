@@ -83,12 +83,6 @@ on_fr_close_clicked (GtkWidget *widget, gpointer data)
 {
 	gtk_widget_destroy (data);
 	
-	/*
-	if (!pub->conf)
-	{
-		gtk_main_quit ();
-	}
-	*/
 	cfg_free_config_file_struct (&cf);
 	if (gimmix_config_exists())
 	{	

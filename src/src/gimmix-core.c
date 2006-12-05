@@ -313,3 +313,4 @@ gimmix_get_full_image_path (const char *image_name)
 	
 	return full_path;
 }
+

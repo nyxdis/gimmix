@@ -22,10 +22,10 @@
  */
 
 #include <string.h>
+#include <gdk/gdkkeysyms.h>
 #include "gimmix-playlist.h"
 #include "gimmix-tagedit.h"
 
-#define DELETE_KEY 0xffff
 #define GIMMIX_MEDIA_ICON "gimmix_logo_small.png"
 
 typedef enum {
@@ -444,7 +444,7 @@ cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data)
 static void
 cb_current_playlist_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event->keyval != DELETE_KEY)
+	if (event->keyval != GDK_Delete)
 		return;
 	
 	gimmix_current_playlist_remove_song ();
@@ -1183,7 +1183,7 @@ cb_gimmix_playlist_load ()
 static void
 cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event->keyval != DELETE_KEY)
+	if (event->keyval != GDK_Delete)
 		return;
 	
 	cb_gimmix_playlist_remove ();
