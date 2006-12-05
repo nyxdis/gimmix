@@ -49,7 +49,7 @@ bool gimmix_prev (MpdObj *);
 bool gimmix_next (MpdObj *);
 bool gimmix_seek (MpdObj *, int);
 
-/* get full image path */
+/* get full image path (returned string should be freed) */
 char *gimmix_get_full_image_path (const char *);
 
 /* Gets the information of currently playing song (artist, title, genre.etc)*/
