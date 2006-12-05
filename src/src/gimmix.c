@@ -40,10 +40,10 @@ gimmix_connect (void)
 {
 	MpdObj *mo;
 
-	mo = gimmix_mpd_connect (pub->conf);
+	mo = gimmix_mpd_connect ();
 	
 	if (mo != NULL)
-	{	
+	{
 		pub->gmo = mo;
 		return true;
 	}
@@ -137,11 +137,9 @@ int
 main (int argc, char *argv[])
 {
 	gchar 		*path;
-	Conf		*conf;
 	GtkWidget	*main_window;
 
 	pub = (GM *) malloc(sizeof(GM));
-	pub->conf = NULL;
 	pub->gmo = NULL;
 
 	gtk_init (&argc, &argv);
@@ -160,11 +158,7 @@ main (int argc, char *argv[])
 	
 	if (gimmix_config_exists())
 	{
-		pub->conf = gimmix_config_init ();
-		if (!pub->conf)
-		{
-			gimmix_connect_error ();
-		}
+		gimmix_config_init ();
 		if (gimmix_connect())
 		{
 			gimmix_init ();
@@ -190,8 +184,8 @@ exit_cleanup ()
 	g_object_unref (xml);
 	if (pub->gmo != NULL)
 		gimmix_disconnect (pub->gmo);
-	if (pub->conf != NULL)
-		gimmix_config_free (pub->conf);
+	//if (pub->conf != NULL)
+	//	gimmix_config_free (pub->conf);
 	g_free (pub);
 
 	exit (0);

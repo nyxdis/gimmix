@@ -36,6 +36,7 @@ typedef enum {
 
 extern GM 			*pub;
 extern GladeXML 	*xml;
+extern ConfigFile	conf;
 
 static gchar *dir_error = "You have specified an invalid music directory. Please specify the correct music directory in the preferences.";
 
@@ -517,7 +518,8 @@ gimmix_library_add_song (GtkTreeView *treeview)
 		g_free (path);
 		
 		/* check whether the newly added song is to be played immediately */
-		if (pub->conf->play_immediate == 1)
+		//if (pub->conf->play_immediate == 1)
+		if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
 		{
 			id = data->song->id;
 			mpd_player_play_id (pub->gmo, data->song->id);
@@ -775,7 +777,7 @@ gimmix_current_playlist_song_info (void)
 		gtk_tree_model_get (current_playlist_model, &iter,
 							1, &path,
 							-1);
-		song_path = g_strdup_printf ("%s/%s", pub->conf->musicdir, path);
+		song_path = g_strdup_printf ("%s/%s", cfg_get_key_value(conf, "music_directory"), path);
 		g_free (path);
 		if (gimmix_tag_editor_populate (song_path))
 		{	

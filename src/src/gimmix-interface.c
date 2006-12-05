@@ -38,6 +38,7 @@ GtkTooltips 		*play_button_tooltip = NULL;
 
 extern GM 			*pub;
 extern GladeXML 	*xml;
+extern ConfigFile	conf;
 
 static gboolean 	gimmix_timer (void);
 static void			gimmix_update_volume (void);
@@ -126,12 +127,14 @@ gimmix_init (void)
 	g_signal_connect (G_OBJECT(progressbox), "button_press_event", G_CALLBACK(cb_gimmix_progress_seek), NULL);
 	
 	play_button_tooltip = gtk_tooltips_new ();
-
-	if (pub->conf->systray_enable == 1)
-		gimmix_create_systray_icon ();
-		
-	status = gimmix_get_status (pub->gmo);
 	
+	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
+	{
+		gimmix_create_systray_icon ();
+	}
+
+	status = gimmix_get_status (pub->gmo);
+
 	if (status == PLAY)
 	{
 		gimmix_set_song_info ();
@@ -147,9 +150,9 @@ gimmix_init (void)
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
 		gimmix_show_ver_info ();
 	}
-	
+
 	g_timeout_add (300, (GSourceFunc)gimmix_timer, NULL);
-	
+
 	/* initialize playlist and tag editor */
 	gimmix_playlist_init ();
 	gimmix_tag_editor_init ();
@@ -570,7 +573,8 @@ gimmix_set_song_info (void)
 	gtk_label_set_text (GTK_LABEL(artist_label), song->artist);
 	gtk_label_set_text (GTK_LABEL(album_label), song->album);
 	g_free (markup);
-	if (pub->conf->systray_enable == 1)
+	//if (pub->conf->systray_enable == 1)
+	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
 		gimmix_update_systray_tooltip (song);
 	
 	gimmix_free_song_info (song);
@@ -609,7 +613,7 @@ gimmix_show_ver_info (void)
 static int
 cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data)
 {
-	if (pub->conf->systray_enable == 1)
+	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
 	{	
 		gimmix_window_visible_toggle ();
 		return 1;
@@ -622,7 +626,7 @@ void
 gimmix_interface_cleanup (void)
 {
 	/* stop playback on exit */
-	if (pub->conf->stop_on_exit == 1)
+	if (strncasecmp(cfg_get_key_value(conf, "stop_on_exit"), "true", 4) == 0)
 		gimmix_stop (pub->gmo);
 	
 	/* destroy the main window */

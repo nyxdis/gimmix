@@ -27,6 +27,7 @@
 
 extern GM 			*pub;
 extern GladeXML 	*xml;
+extern ConfigFile	conf;
 
 TagLib_File 	*file;
 TagLib_Tag 		*tag;
@@ -218,7 +219,7 @@ gimmix_tag_editor_show (void)
 	if (status == PLAY || status == PAUSE)
 	{
 		info = gimmix_get_song_info (pub->gmo);
-		song = g_strdup_printf ("%s/%s", pub->conf->musicdir, info->file);
+		song = g_strdup_printf ("%s/%s", cfg_get_key_value(conf, "music_directory"), info->file);
 		if (gimmix_tag_editor_populate (song))
 			gtk_widget_show (GTK_WIDGET(window));
 		else

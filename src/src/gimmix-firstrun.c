@@ -25,8 +25,13 @@
 #include "gimmix-firstrun.h"
 #include "gimmix.h"
 
+#define CONFIG_FILE ".gimmixrc"
+
 extern GM 			*pub;
 extern GladeXML 	*xml;
+
+/* config file object */
+ConfigFile	cf;
 
 static void on_fr_close_clicked (GtkWidget *widget, gpointer data);
 static void on_fr_apply_clicked (GtkWidget *widget, gpointer data);
@@ -39,12 +44,27 @@ gimmix_show_firstrun_dialog (void)
 	GtkWidget *check;
 	GtkWidget *entry;
 
+	char		*rcfile;
+
+	cfg_init_config_file_struct (&cf);
+	
+	cfg_add_key (&cf, "mpd_hostname",		"localhost");
+	cfg_add_key (&cf, "mpd_port", 			"6600");
+	cfg_add_key (&cf, "mpd_password",		"");
+	cfg_add_key (&cf, "music_directory",	"");
+	cfg_add_key (&cf, "enable_systray",		"true");
+	cfg_add_key (&cf, "play_on_add",		"false");
+	cfg_add_key (&cf, "stop_on_exit",		"false");
+	
 	window = glade_xml_get_widget (xml, "first_run_dialog");
 	button = glade_xml_get_widget (xml, "fr_apply");
 	g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK(on_fr_apply_clicked), NULL);
 	g_signal_connect (G_OBJECT(window), "delete_event", G_CALLBACK(gtk_main_quit), NULL);
 	button = glade_xml_get_widget (xml, "fr_close");
 	g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK(on_fr_close_clicked), window);
+	
+	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget(xml, "fr_hostname")), "localhost");
+	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget(xml, "fr_port")), "6600");
 	
 	entry = glade_xml_get_widget (xml, "fr_password");
 	gtk_entry_set_visibility (GTK_ENTRY(entry), FALSE);
@@ -63,19 +83,19 @@ on_fr_close_clicked (GtkWidget *widget, gpointer data)
 {
 	gtk_widget_destroy (data);
 	
-	GtkWidget *main_window = glade_xml_get_widget (xml, "main_window");
-	
+	/*
 	if (!pub->conf)
 	{
 		gtk_main_quit ();
 	}
-	else
-	{
+	*/
+	cfg_free_config_file_struct (&cf);
+	if (gimmix_config_exists())
+	{	
+		gimmix_config_init ();
 		if (gimmix_connect())
 		{
-			gtk_widget_show (main_window);
 			gimmix_init ();
-			return;
 		}
 		else
 		{
@@ -94,34 +114,34 @@ on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 	const gchar *port;
 	const gchar *password;
 	const gchar *dir;
-
-	pub->conf = (Conf*) malloc(sizeof(Conf));
-
+	gchar 		*rcfile;
+	
 	entry = glade_xml_get_widget (xml,"fr_hostname");
 	host = gtk_entry_get_text (GTK_ENTRY(entry));
+	cfg_add_key (&cf, "mpd_hostname", (char *)host);
 	
 	entry = glade_xml_get_widget (xml,"fr_port");
 	port = gtk_entry_get_text (GTK_ENTRY(entry));
+	cfg_add_key (&cf, "mpd_port", (char *)port);
 	
 	entry = glade_xml_get_widget (xml,"fr_password");
 	password = gtk_entry_get_text (GTK_ENTRY(entry));
+	cfg_add_key (&cf, "mpd_password", (char *)password);
 	
 	entry = glade_xml_get_widget (xml, "fst_music_dir");
 	dir = gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER(entry));
+	cfg_add_key (&cf, "music_directory", (char *)dir);
 	
 	s_checkbox = glade_xml_get_widget (xml, "fr_systray_toggle");
 
-	strncpy (pub->conf->hostname, host, 255);
-	strncpy (pub->conf->password, password, 255);
-	strncpy (pub->conf->musicdir, dir, 255);
-	pub->conf->port = atoi(port);
-	
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(s_checkbox)))
-		pub->conf->systray_enable = 1;
+	cfg_add_key (&cf, "enable_systray", "true");
 	else
-		pub->conf->systray_enable = 0;
+	cfg_add_key (&cf, "enable_systray", "false");
 	
-	pub->conf->play_immediate = 0;
-	pub->conf->stop_on_exit = 0;
-	gimmix_config_save (pub->conf);
+	rcfile = cfg_get_path_to_config_file (CONFIG_FILE);
+	cfg_write_config_file (&cf, rcfile);
+	g_free (rcfile);
+	
+	return;
 }

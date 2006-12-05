@@ -30,6 +30,7 @@ GtkStatusIcon		*icon = NULL;
 extern GtkWidget 	*progress;
 extern GM 			*pub;
 extern GladeXML 	*xml;
+extern ConfigFile	conf;
 
 static void 	cb_gimmix_systray_icon_popup (GtkStatusIcon *sicon, guint button, guint time, gpointer data);
 static void		cb_gimmix_systray_icon_activate (GtkStatusIcon *sicon, gpointer data);
@@ -187,7 +188,8 @@ gimmix_disable_systray_icon (void)
 		return;
 	
 	gtk_status_icon_set_visible (icon, FALSE);
-	pub->conf->systray_enable = 0;
+	//pub->conf->systray_enable = 0;
+	cfg_add_key (&conf, "enable_systray", "false");
 	
 	return;
 }
@@ -198,7 +200,8 @@ gimmix_enable_systray_icon (void)
 	if (icon == NULL)
 	{	
 		gimmix_create_systray_icon ();
-		pub->conf->systray_enable = 1;
+		//pub->conf->systray_enable = 1;
+		cfg_add_key (&conf, "enable_systray", "true");
 	}
 	else
 	{

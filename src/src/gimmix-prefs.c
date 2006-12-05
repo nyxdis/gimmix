@@ -28,6 +28,7 @@
 
 extern GM 			*pub;
 extern GladeXML 	*xml;
+extern ConfigFile	conf;
 
 static void 	cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
 static void		cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data);
@@ -46,12 +47,12 @@ gimmix_prefs_dialog_show (void)
 	GtkWidget	*pref_window;
 	
 	pref_window = glade_xml_get_widget (xml, "prefs_window");
-	port = g_strdup_printf ("%d", pub->conf->port);
-	systray_enable = pub->conf->systray_enable;
-	play_immediate = pub->conf->play_immediate;
-	stop_on_exit = pub->conf->stop_on_exit;
+	port = g_strdup_printf ("%s", cfg_get_key_value (conf, "mpd_port"));
+	//systray_enable = pub->conf->systray_enable;
+	//play_immediate = pub->conf->play_immediate;
+	//stop_on_exit = pub->conf->stop_on_exit;
 
-	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget (xml,"host_entry")), pub->conf->hostname);
+	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget (xml,"host_entry")), cfg_get_key_value (conf, "mpd_hostname"));
 
 	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget (xml,"port_entry")), port);
 	g_free (port);
@@ -60,15 +61,12 @@ gimmix_prefs_dialog_show (void)
 	gtk_entry_set_visibility (GTK_ENTRY(entry), FALSE);
 	gtk_entry_set_invisible_char (GTK_ENTRY(entry), g_utf8_get_char("*"));
 		
-	if (strlen(pub->conf->password)>1)
-	{	
-		gtk_entry_set_text (GTK_ENTRY(entry), pub->conf->password);
-	}
+	gtk_entry_set_text (GTK_ENTRY(entry), cfg_get_key_value (conf, "mpd_password"));
 
-	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER(glade_xml_get_widget (xml, "conf_dir_chooser")), pub->conf->musicdir);
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER(glade_xml_get_widget (xml, "conf_dir_chooser")), cfg_get_key_value(conf, "music_directory"));
 	
 	entry = glade_xml_get_widget (xml, "systray_checkbutton");
-	if (systray_enable == 1)
+	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(entry), TRUE);
 	else
 	{
@@ -77,13 +75,13 @@ gimmix_prefs_dialog_show (void)
 	g_signal_connect (G_OBJECT(entry), "toggled", G_CALLBACK(cb_pref_systray_checkbox_toggled), NULL);
 	
 	widget = glade_xml_get_widget (xml, "pref_play_immediate");
-	if (play_immediate == 1)
+	if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), FALSE);
 		
 	widget = glade_xml_get_widget (xml, "pref_stop_on_exit");
-	if (stop_on_exit == 1)
+	if (strncasecmp(cfg_get_key_value(conf, "stop_on_exit"), "true", 4) == 0)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), FALSE);
@@ -106,35 +104,34 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 
 	pref_widget = glade_xml_get_widget (xml,"host_entry");
 	host = gtk_entry_get_text (GTK_ENTRY(pref_widget));
+	cfg_add_key (&conf, "mpd_hostname", (char *)host);
 	
 	pref_widget = glade_xml_get_widget (xml,"port_entry");
 	port = gtk_entry_get_text (GTK_ENTRY(pref_widget));
+	cfg_add_key (&conf, "mpd_port", (char *)port);
 	
 	pref_widget = glade_xml_get_widget (xml,"password_entry");
 	password = gtk_entry_get_text (GTK_ENTRY(pref_widget));
-
+	cfg_add_key (&conf, "mpd_password", (char *)password);
+	
 	pref_widget = glade_xml_get_widget (xml, "conf_dir_chooser");
 	dir = gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER(pref_widget));
-	
+	cfg_add_key (&conf, "music_directory", (char *)dir);
+		
 	pref_widget = glade_xml_get_widget (xml, "pref_play_immediate");
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pref_widget)))
-		pub->conf->play_immediate = 1;
+		cfg_add_key (&conf, "play_on_add", "true");
 	else
-		pub->conf->play_immediate = 0;
+		cfg_add_key (&conf, "play_on_add", "false");
 		
 	pref_widget = glade_xml_get_widget (xml, "pref_stop_on_exit");
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pref_widget)))
-		pub->conf->stop_on_exit = 1;
+		cfg_add_key (&conf, "stop_on_exit", "true");
 	else
-		pub->conf->stop_on_exit = 0;
+		cfg_add_key (&conf, "stop_on_exit", "false");
 	
-	strncpy (pub->conf->musicdir, dir, 255);
-	strncpy (pub->conf->hostname, host, 255);
-	strncpy (pub->conf->password, password, 255);
-	pub->conf->port = atoi (port);
+	gimmix_config_save ();
 
-	gimmix_config_save (pub->conf);
-	
 	return;
 }
 
@@ -144,16 +141,16 @@ cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data)
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{
 		gimmix_enable_systray_icon ();
-		pub->conf->systray_enable = 1;
+		cfg_add_key (&conf, "enable_systray", "true");
 	}
 	else
 	if (gtk_toggle_button_get_active(button) == FALSE)
 	{
-			gimmix_disable_systray_icon ();
-			pub->conf->systray_enable = 0;
+		gimmix_disable_systray_icon ();
+		cfg_add_key (&conf, "enable_systray", "false");
 	}
 	
-	gimmix_config_save (pub->conf);
+	gimmix_config_save ();
 
 	return;
 }

@@ -23,25 +23,26 @@
 
 #include "gimmix-core.h"
 
-MpdObj *
-gimmix_mpd_connect (Conf *conf)
-{
-	MpdObj *mo;
+extern ConfigFile conf;
 
-	if (conf)
+MpdObj *
+gimmix_mpd_connect (void)
+{
+	MpdObj 	*mo;
+	char 	*host;
+	char	*pass;
+	int		port;
+
+	host = cfg_get_key_value (conf, "mpd_hostname");
+	pass = cfg_get_key_value (conf, "mpd_password");
+	port = atoi (cfg_get_key_value (conf, "mpd_port"));
+	mo = mpd_new (host, port, pass);
+	mpd_connect (mo);
+	
+	if (mpd_check_connected (mo))
 	{
-		if ((conf->hostname!="") && (conf->port!=-1))
-		{
-			mo = mpd_new (conf->hostname, conf->port, conf->password);
-			mpd_connect (mo);
-			if (mpd_check_connected (mo))
-			{
-				mpd_signal_connect_status_changed (mo, (StatusChangedCallback)gimmix_status_changed, NULL);
-				return mo;
-			}
-		}
-		else
-		return NULL;
+		mpd_signal_connect_status_changed (mo, (StatusChangedCallback)gimmix_status_changed, NULL);
+		return mo;
 	}
 	
 	return NULL;

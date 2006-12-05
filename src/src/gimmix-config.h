@@ -3,29 +3,18 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-#include <confuse.h>
-
-typedef struct
-{
-	int port;
-	int systray_enable;
-	int play_immediate;
-	int stop_on_exit;
-	char hostname[255];
-	char password[255];
-	char musicdir[255];
-} Conf;
+#include "wejpconfig.h"
 
 /* Returns true if file exists otherwise false */
 bool gimmix_config_exists (void);
 
 /* Parse config file and set the initial config values */
-Conf * gimmix_config_init (void);
+bool gimmix_config_init (void);
 
 /* Save current settings back to gimmixrc */
-void gimmix_config_save (Conf *);
+void gimmix_config_save (void);
 
 /* Free conf */
-void gimmix_config_free (Conf *);
+void gimmix_config_free (void);
 
 #endif

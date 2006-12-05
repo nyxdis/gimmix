@@ -39,7 +39,7 @@ bool shuffle_is_changed;
 bool repeat_is_changed;
 
 /* create a mpd object and connect to mpd using the conf */
-MpdObj * gimmix_mpd_connect (Conf *);
+MpdObj * gimmix_mpd_connect (void);
 void gimmix_disconnect (MpdObj *);
 
 /* playback control */
