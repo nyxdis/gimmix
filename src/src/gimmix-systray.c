@@ -24,7 +24,7 @@
 #include "gimmix-core.h"
 #include "gimmix-systray.h"
 
-#define GIMMIX_ICON  	"/share/pixmaps/gimmix_logo_small.png"
+#define GIMMIX_ICON  	"gimmix_logo_small.png"
 
 GtkStatusIcon		*icon = NULL;
 extern GtkWidget 	*progress;
@@ -48,7 +48,7 @@ gimmix_create_systray_icon (void)
 	gchar 		*icon_file;
 	GtkWidget	*icon_image;
 	
-	icon_file = g_strdup_printf ("%s%s", PREFIX, GIMMIX_ICON);
+	icon_file = gimmix_get_full_image_path (GIMMIX_ICON);
 	
 	/* create the tray icon */
 	icon = gtk_status_icon_new_from_file (icon_file);
