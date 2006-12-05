@@ -1,5 +1,5 @@
-Gimmix-0.2.1-RC1 README
-======================
+Gimmix-0.3 README
+==================
 
 Gimmix is a graphical Music player daemon (MPD) client written in C
 using Gtk+2.
@@ -16,10 +16,8 @@ Features:
 
 Requirements:
 * gtk+-2.10.x
-* libglade-2.6.x
 * libmpd-0.12
-* libconfuse-2.5
-* libnotify-0.4.x
+* libglade-2.6.x
 * taglib-1.4 (C bindings)
 
 Installation:
@@ -27,10 +25,10 @@ Read the INSTALL file for details on installation procedure.
 
 Configuration:
 Gimmix stores its configuration settings in ~/.gimmixrc
+NOTE: The configuration file layout has changed in gimmix-0.3, please
+delete your ~/.gimmixrc before running gimmix.
 
 Bugs:
-If you encounter any bug(s), please e-mail the authour at priyankmg@gmail.com
-with a detailed description and steps to reproduce the bug. It would be
-good if you mention your version of linux, gtk, libmpd etc.
-
-
+Report any bug(s) at the gimmix bug reports page at http://launchpad.net/products/gimmix
+with a detailed description and steps to reproduce the bug. Also mention
+your version of gtk+2, libmpd etc.

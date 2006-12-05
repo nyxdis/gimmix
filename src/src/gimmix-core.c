@@ -308,7 +308,8 @@ gimmix_get_full_image_path (const char *image_name)
 {
 	char *full_path;
 	
-	full_path = g_strdup_printf ("%s%s%s", PREFIX, "/share/pixmaps/", image_name);
+	full_path = (char*)malloc((strlen(PREFIX) + strlen(image_name) + 16) * sizeof(char));
+	sprintf (full_path, "%s%s%s", PREFIX, "/share/pixmaps/", image_name);
 	
 	return full_path;
 }
