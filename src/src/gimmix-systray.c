@@ -28,7 +28,8 @@
 
 GtkStatusIcon		*icon = NULL;
 extern GtkWidget 	*progress;
-extern GM 			*pub;
+
+extern MpdObj		*gmo;
 extern GladeXML 	*xml;
 extern ConfigFile	conf;
 
@@ -90,7 +91,7 @@ gimmix_systray_display_popup_menu (void)
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
-	if (gimmix_get_status(pub->gmo) == PLAY)
+	if (gimmix_get_status(gmo) == PLAY)
 	{
 		menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_MEDIA_PAUSE, NULL);
 	}
@@ -137,7 +138,7 @@ gimmix_systray_display_popup_menu (void)
 static void
 cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data)
 {
-	if (gimmix_play(pub->gmo))
+	if (gimmix_play(gmo))
 	{
 		gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_play")), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
 		gimmix_set_song_info ();
@@ -153,7 +154,7 @@ cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data)
 static void
 cb_systray_popup_stop_clicked (GtkMenuItem *menuitem, gpointer data)
 {
-	if (gimmix_stop(pub->gmo))
+	if (gimmix_stop(gmo))
 	{
 		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
@@ -166,7 +167,7 @@ cb_systray_popup_stop_clicked (GtkMenuItem *menuitem, gpointer data)
 static void
 cb_systray_popup_prev_clicked (GtkMenuItem *menuitem, gpointer data)
 {
-	if (gimmix_prev(pub->gmo))
+	if (gimmix_prev(gmo))
 		gimmix_set_song_info ();
 
 	return;
@@ -175,7 +176,7 @@ cb_systray_popup_prev_clicked (GtkMenuItem *menuitem, gpointer data)
 static void
 cb_systray_popup_next_clicked (GtkMenuItem *menuitem, gpointer data)
 {
-	if (gimmix_next(pub->gmo))
+	if (gimmix_next(gmo))
 		gimmix_set_song_info ();
 
 	return;

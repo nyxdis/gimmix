@@ -30,13 +30,13 @@
 #include "gimmix-prefs.h"
 #include "gimmix.h"
 
-#define GIMMIX_APP_ICON  	"/share/pixmaps/gimmix_logo_small.png"
+#define GIMMIX_APP_ICON  	"gimmix_logo_small.png"
 
 GimmixStatus 		status;
 GtkWidget 			*progress = NULL;
 GtkTooltips 		*play_button_tooltip = NULL;
 
-extern GM 			*pub;
+extern MpdObj 		*gmo;
 extern GladeXML 	*xml;
 extern ConfigFile	conf;
 
@@ -77,7 +77,7 @@ gimmix_init (void)
 	main_window = glade_xml_get_widget (xml, "main_window");
 	g_signal_connect (G_OBJECT(main_window), "delete-event", G_CALLBACK(cb_gimmix_main_window_delete_event), NULL);
 	gtk_window_move (GTK_WINDOW(main_window), atoi(cfg_get_key_value(conf, "window_xpos")), atoi(cfg_get_key_value(conf, "window_ypos")));
-	path = g_strdup_printf ("%s%s", PREFIX, GIMMIX_APP_ICON);
+	path = gimmix_get_full_image_path (GIMMIX_APP_ICON);
 	app_icon = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
 	gtk_window_set_icon (GTK_WINDOW(main_window), app_icon);
 	g_object_unref (app_icon);
@@ -105,12 +105,12 @@ gimmix_init (void)
 	g_signal_connect (G_OBJECT(glade_xml_get_widget (xml, "pref_button")), "clicked", G_CALLBACK(cb_pref_button_clicked), NULL);
 	
 	widget = glade_xml_get_widget (xml, "repeat_toggle");
-	if (is_gimmix_repeat (pub->gmo))
+	if (is_gimmix_repeat (gmo))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
 	g_signal_connect (G_OBJECT(widget), "toggled", G_CALLBACK(cb_repeat_button_toggled), NULL);
 	
 	widget = glade_xml_get_widget (xml, "shuffle_toggle");
-	if (is_gimmix_shuffle (pub->gmo))
+	if (is_gimmix_shuffle (gmo))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
 	g_signal_connect (G_OBJECT(widget), "toggled", G_CALLBACK(cb_shuffle_button_toggled), NULL);
 
@@ -121,7 +121,7 @@ gimmix_init (void)
 	g_signal_connect(G_OBJECT(widget), "value_changed", G_CALLBACK(cb_volume_scale_changed), NULL);
 	g_signal_connect (G_OBJECT(widget), "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
 	vol_adj = gtk_range_get_adjustment (GTK_RANGE(widget));
-	gtk_adjustment_set_value (GTK_ADJUSTMENT(vol_adj), mpd_status_get_volume (pub->gmo));
+	gtk_adjustment_set_value (GTK_ADJUSTMENT(vol_adj), mpd_status_get_volume (gmo));
 
 	progress = glade_xml_get_widget (xml,"progress");
 	progressbox = glade_xml_get_widget (xml,"progress_event_box");
@@ -134,7 +134,7 @@ gimmix_init (void)
 		gimmix_create_systray_icon ();
 	}
 
-	status = gimmix_get_status (pub->gmo);
+	status = gimmix_get_status (gmo);
 
 	if (status == PLAY)
 	{
@@ -231,7 +231,7 @@ gimmix_timer (void)
 	float 	fraction;
 	static	gboolean stop;
 
-	new_status = gimmix_get_status (pub->gmo);
+	new_status = gimmix_get_status (gmo);
 	
 	if (song_is_changed == true && new_status == PLAY)
 	{
@@ -267,7 +267,7 @@ gimmix_timer (void)
 	{
 		if (status == PLAY || status == PAUSE)
 		{
-			gimmix_get_progress_status (pub->gmo, &fraction, time);
+			gimmix_get_progress_status (gmo, &fraction, time);
 			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), fraction);
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), time);
 		}
@@ -309,7 +309,7 @@ gimmix_timer (void)
 static void
 cb_prev_button_clicked (GtkWidget *widget, gpointer data)
 {
-	if (gimmix_prev(pub->gmo))
+	if (gimmix_prev(gmo))
 		gimmix_set_song_info ();
 
 	return;
@@ -318,7 +318,7 @@ cb_prev_button_clicked (GtkWidget *widget, gpointer data)
 static void
 cb_next_button_clicked (GtkWidget *widget, gpointer data)
 {
-	if (gimmix_next(pub->gmo))
+	if (gimmix_next(gmo))
 		gimmix_set_song_info ();
 	
 	return;
@@ -327,7 +327,7 @@ cb_next_button_clicked (GtkWidget *widget, gpointer data)
 static void
 cb_play_button_clicked (GtkWidget *widget, gpointer data)
 {
-	if (gimmix_play(pub->gmo))
+	if (gimmix_play(gmo))
 	{
 		gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_play")), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
 		gimmix_set_song_info ();
@@ -343,7 +343,7 @@ cb_play_button_clicked (GtkWidget *widget, gpointer data)
 static void
 cb_stop_button_clicked (GtkWidget *widget, gpointer data)
 {
-	if (gimmix_stop(pub->gmo))
+	if (gimmix_stop(gmo))
 	{
 		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
@@ -361,11 +361,11 @@ cb_repeat_button_toggled (GtkToggleButton *button, gpointer data)
 	state = gtk_toggle_button_get_active (button);
 	if (state == TRUE)
 	{
-		mpd_player_set_repeat (pub->gmo, true);
+		mpd_player_set_repeat (gmo, true);
 	}
 	else if (state == FALSE)
 	{
-		mpd_player_set_repeat (pub->gmo, false);
+		mpd_player_set_repeat (gmo, false);
 	}
 	
 	return;
@@ -379,11 +379,11 @@ cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data)
 	state = gtk_toggle_button_get_active (button);
 	if (state == TRUE)
 	{
-		mpd_player_set_random (pub->gmo, true);
+		mpd_player_set_random (gmo, true);
 	}
 	else if (state == FALSE)
 	{
-		mpd_player_set_random (pub->gmo, false);
+		mpd_player_set_random (gmo, false);
 	}
 	
 	return;
@@ -414,7 +414,7 @@ cb_volume_scale_changed (GtkWidget *widget, gpointer data)
 	volume_adj = gtk_range_get_adjustment (GTK_RANGE(widget));
 
 	value = gtk_adjustment_get_value (GTK_ADJUSTMENT(volume_adj));
-	mpd_status_set_volume (pub->gmo, value);
+	mpd_status_set_volume (gmo, value);
 	
 	return;
 }
@@ -451,7 +451,7 @@ gimmix_update_repeat (void)
 	GtkWidget *button;
 	
 	button = glade_xml_get_widget (xml, "repeat_toggle");
-	if (is_gimmix_repeat (pub->gmo))
+	if (is_gimmix_repeat (gmo))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), FALSE);
@@ -465,7 +465,7 @@ gimmix_update_shuffle (void)
 	GtkWidget *button;
 	
 	button = glade_xml_get_widget (xml, "shuffle_toggle");
-	if (is_gimmix_shuffle (pub->gmo))
+	if (is_gimmix_shuffle (gmo))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), FALSE);
@@ -482,7 +482,7 @@ gimmix_update_volume ()
 	
 	widget = glade_xml_get_widget (xml, "volume_scale");
 	volume_adj = gtk_range_get_adjustment (GTK_RANGE(widget));
-	volume = mpd_status_get_volume (pub->gmo);
+	volume = mpd_status_get_volume (gmo);
 	gtk_adjustment_set_value (GTK_ADJUSTMENT(volume_adj), volume);
 	
 	return;
@@ -497,10 +497,10 @@ cb_gimmix_progress_seek (GtkWidget *progressbox, GdkEvent *event)
 
 	x = event->button.x;
 	allocation = GTK_WIDGET (progressbox)->allocation;
-	totaltime = mpd_status_get_total_song_time (pub->gmo);
+	totaltime = mpd_status_get_total_song_time (gmo);
 	seektime = (gdouble)x/allocation.width;
 	newtime = seektime * totaltime;
-	if (gimmix_seek(pub->gmo, newtime))
+	if (gimmix_seek(gmo, newtime))
 		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), seektime);
 
 	return;
@@ -550,7 +550,7 @@ gimmix_set_song_info (void)
 	GtkWidget	*album_label;
 	GtkWidget	*song_label;
 	
-	song 			= gimmix_get_song_info (pub->gmo);
+	song 			= gimmix_get_song_info (gmo);
 	window 			= glade_xml_get_widget (xml, "main_window");
 	song_label 		= glade_xml_get_widget (xml,"song_label");
 	artist_label 	= glade_xml_get_widget (xml,"artist_label");
@@ -622,7 +622,7 @@ cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data)
 	
 	/* stop playback on exit */
 	if (strncasecmp(cfg_get_key_value(conf, "stop_on_exit"), "true", 4) == 0)
-		gimmix_stop (pub->gmo);
+		gimmix_stop (gmo);
 		
 	/* save window position */
 	gimmix_save_window_pos ();

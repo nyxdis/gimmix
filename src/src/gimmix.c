@@ -30,7 +30,7 @@
 #define GLADE_FILE 		"/share/gimmix/gimmix.glade"
 #define GIMMIX_ICON 	"gimmix.png"
 
-GM 			*pub = NULL;
+MpdObj 		*gmo = NULL;
 GladeXML 	*xml = NULL;
 
 static void error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog);
@@ -44,12 +44,12 @@ gimmix_connect (void)
 	
 	if (mo != NULL)
 	{
-		pub->gmo = mo;
+		gmo = mo;
 		return true;
 	}
 	else
 	{
-		pub->gmo = NULL;
+		gmo = NULL;
 		return false;
 	}
 }
@@ -140,9 +140,6 @@ main (int argc, char *argv[])
 	gchar 		*path;
 	GtkWidget	*main_window;
 
-	pub = (GM *) malloc(sizeof(GM));
-	pub->gmo = NULL;
-
 	gtk_init (&argc, &argv);
 	
 	path = g_strdup_printf ("%s%s", PREFIX, GLADE_FILE);
@@ -183,10 +180,9 @@ exit_cleanup ()
 {
 	gimmix_interface_cleanup ();
 	g_object_unref (xml);
-	if (pub->gmo != NULL)
-		gimmix_disconnect (pub->gmo);
+	if (gmo != NULL)
+		gimmix_disconnect (gmo);
 	gimmix_config_free ();
-	g_free (pub);
 
 	exit (0);
 }

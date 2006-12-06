@@ -25,7 +25,7 @@
 #include "gimmix-core.h"
 #include "gimmix-tagedit.h"
 
-extern GM 			*pub;
+extern MpdObj 		*gmo;
 extern GladeXML 	*xml;
 extern ConfigFile	conf;
 
@@ -178,7 +178,7 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 	taglib_tag_set_genre (tag, genre);
 	
 	/* update the mpd database */
-	mpd_database_update_dir (pub->gmo, "/");
+	mpd_database_update_dir (gmo, "/");
 	
 	/* set the song info a few seconds after update */
 	g_timeout_add (300, (GSourceFunc)gimmix_update_song_info, NULL);
@@ -195,13 +195,13 @@ gimmix_update_song_info (gpointer data)
 {
 	GimmixStatus status;
 	
-	if (mpd_status_db_is_updating (pub->gmo))
+	if (mpd_status_db_is_updating (gmo))
 		return TRUE;
 	else
 		return FALSE;
 	
 	/* Set the new song info */
-	status = gimmix_get_status (pub->gmo);
+	status = gimmix_get_status (gmo);
 	if (status == PLAY || status == PAUSE)
 		gimmix_set_song_info ();
 
@@ -216,12 +216,12 @@ gimmix_tag_editor_show (void)
 	SongInfo		*info;
 	gchar			*song;
 	
-	status = gimmix_get_status (pub->gmo);
+	status = gimmix_get_status (gmo);
 	window = glade_xml_get_widget (xml, "tag_editor_window");
 	
 	if (status == PLAY || status == PAUSE)
 	{
-		info = gimmix_get_song_info (pub->gmo);
+		info = gimmix_get_song_info (gmo);
 		song = g_strdup_printf ("%s/%s", cfg_get_key_value(conf, "music_directory"), info->file);
 		if (gimmix_tag_editor_populate (song))
 			gtk_widget_show (GTK_WIDGET(window));

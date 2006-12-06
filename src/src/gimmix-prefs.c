@@ -26,7 +26,6 @@
 #include "gimmix-interface.h"
 #include "gimmix.h"
 
-extern GM 			*pub;
 extern GladeXML 	*xml;
 extern ConfigFile	conf;
 

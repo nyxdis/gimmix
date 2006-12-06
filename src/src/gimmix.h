@@ -21,11 +21,6 @@
 #define VERSION 		"0.3-RC1"
 #define APPURL			"http://gimmix.berlios.de/"
 
-typedef struct Gimmix
-{
-	MpdObj 	*gmo;
-} GM;
-
 /* main connect function */
 bool gimmix_connect (void);
 

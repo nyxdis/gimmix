@@ -27,7 +27,6 @@
 
 #define CONFIG_FILE ".gimmixrc"
 
-extern GM 			*pub;
 extern GladeXML 	*xml;
 
 /* config file object */

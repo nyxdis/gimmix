@@ -23,7 +23,7 @@
 
 #include "gimmix-core.h"
 
-extern ConfigFile conf;
+extern ConfigFile 	conf;
 
 MpdObj *
 gimmix_mpd_connect (void)

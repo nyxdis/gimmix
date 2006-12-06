@@ -34,7 +34,7 @@ typedef enum {
 	PLAYLIST
 } GimmixFileType;
 
-extern GM 			*pub;
+extern MpdObj		*gmo;
 extern GladeXML 	*xml;
 extern ConfigFile	conf;
 
@@ -156,8 +156,8 @@ gimmix_update_current_playlist (void)
 	gint 				new;
 	MpdData 			*data;
 
-	new = mpd_playlist_get_playlist_id (pub->gmo);
-	data = mpd_playlist_get_changes (pub->gmo, 0);
+	new = mpd_playlist_get_playlist_id (gmo);
+	data = mpd_playlist_get_changes (gmo, 0);
 
 	current_playlist_model = gtk_tree_view_get_model (GTK_TREE_VIEW(current_playlist_treeview));
 	current_playlist_store = GTK_LIST_STORE (current_playlist_model);
@@ -267,7 +267,7 @@ gimmix_library_and_playlists_populate (void)
 	dir_pixbuf 	    = gtk_widget_render_icon (GTK_WIDGET(directory_treeview), GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_MENU, NULL);
 	pls_pixbuf		= gtk_widget_render_icon (GTK_WIDGET(playlists_treeview), GTK_STOCK_FILE, GTK_ICON_SIZE_MENU, NULL);
 	
-	for (data = mpd_database_get_directory(pub->gmo, NULL); data != NULL; data = mpd_data_get_next(data))
+	for (data = mpd_database_get_directory(gmo, NULL); data != NULL; data = mpd_data_get_next(data))
 	{	
 		if (data->type == MPD_DATA_TYPE_DIRECTORY)
 		{
@@ -343,19 +343,19 @@ gimmix_library_search (gint type, gchar *text)
 	switch (type)
 	{
 		/* Search by Artist */
-		case 0: data = mpd_database_find (pub->gmo, MPD_TABLE_ARTIST, text, FALSE);
+		case 0: data = mpd_database_find (gmo, MPD_TABLE_ARTIST, text, FALSE);
 				break;
 		
 		/* Search by Album */
-		case 1: data = mpd_database_find (pub->gmo, MPD_TABLE_ALBUM, text, FALSE);
+		case 1: data = mpd_database_find (gmo, MPD_TABLE_ALBUM, text, FALSE);
 				break;
 		
 		/* Search by Title */
-		case 2: data = mpd_database_find (pub->gmo, MPD_TABLE_TITLE, text, FALSE);
+		case 2: data = mpd_database_find (gmo, MPD_TABLE_TITLE, text, FALSE);
 				break;
 		
 		/* Search by File name */
-		case 3: data = mpd_database_find (pub->gmo, MPD_TABLE_FILENAME, text, FALSE);
+		case 3: data = mpd_database_find (gmo, MPD_TABLE_FILENAME, text, FALSE);
 				break;
 				
 		default: return;
@@ -484,8 +484,8 @@ cb_current_playlist_double_click (GtkTreeView *treeview)
 		gtk_tree_model_get (model, &iter,
 							2, &id,
 							-1);
-		mpd_player_play_id (pub->gmo, id);
-		mpd_status_update (pub->gmo);
+		mpd_player_play_id (gmo, id);
+		mpd_status_update (gmo);
 		gimmix_set_song_info ();
 	}
 	
@@ -513,8 +513,8 @@ gimmix_library_add_song (GtkTreeView *treeview)
 							2, &path,
 							3, &id,
 							-1);
-		mpd_playlist_add (pub->gmo, path);
-		data = mpd_playlist_get_changes (pub->gmo, mpd_playlist_get_playlist_id(pub->gmo));
+		mpd_playlist_add (gmo, path);
+		data = mpd_playlist_get_changes (gmo, mpd_playlist_get_playlist_id(gmo));
 		g_free (path);
 		
 		/* check whether the newly added song is to be played immediately */
@@ -522,10 +522,10 @@ gimmix_library_add_song (GtkTreeView *treeview)
 		if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
 		{
 			id = data->song->id;
-			mpd_player_play_id (pub->gmo, data->song->id);
+			mpd_player_play_id (gmo, data->song->id);
 			gimmix_set_song_info ();
 		}
-		mpd_status_update (pub->gmo);
+		mpd_status_update (gmo);
 		mpd_data_free (data);
 		
 		gimmix_update_current_playlist ();
@@ -575,9 +575,9 @@ cb_playlist_activated (GtkTreeView *treeview)
 	if ( gtk_tree_selection_get_selected (selection, &model, &iter) )
 		gtk_tree_model_get (model, &iter, 1, &pl_name, -1);
 	
-	mpd_playlist_queue_load (pub->gmo, pl_name);
+	mpd_playlist_queue_load (gmo, pl_name);
 	gimmix_current_playlist_clear ();
-	mpd_playlist_queue_commit (pub->gmo);
+	mpd_playlist_queue_commit (gmo);
 	
 	gimmix_load_playlist (pl_name);
 	g_free (pl_name);
@@ -618,7 +618,7 @@ gimmix_update_playlists_treeview (void)
 										GTK_ICON_SIZE_MENU,
 										NULL);
 	
-	for (data = mpd_database_get_directory(pub->gmo, NULL); data != NULL; data = mpd_data_get_next(data))
+	for (data = mpd_database_get_directory(gmo, NULL); data != NULL; data = mpd_data_get_next(data))
 	{
 		if (data->type == MPD_DATA_TYPE_PLAYLIST)
 		{
@@ -685,7 +685,7 @@ gimmix_update_library_with_dir (gchar *dir)
 		g_free (parent);
 	}
 	
-	for (data = mpd_database_get_directory(pub->gmo, dir); data != NULL; data = mpd_data_get_next(data))
+	for (data = mpd_database_get_directory(gmo, dir); data != NULL; data = mpd_data_get_next(data))
 	{	
 		if (data->type == MPD_DATA_TYPE_DIRECTORY)
 		{
@@ -809,8 +809,8 @@ gimmix_current_playlist_remove_song (void)
 		gtk_tree_model_get (current_playlist_model, &iter,
 							2, &id,
 							-1);
-		mpd_playlist_delete_id (pub->gmo, id);
-		mpd_status_update (pub->gmo);
+		mpd_playlist_delete_id (gmo, id);
+		mpd_status_update (gmo);
 		gtk_list_store_remove (GTK_LIST_STORE (current_playlist_model), &iter);	
 	}
 	
@@ -824,8 +824,8 @@ gimmix_current_playlist_clear (void)
 	
 	current_playlist_store = GTK_LIST_STORE(gtk_tree_view_get_model (GTK_TREE_VIEW(current_playlist_treeview)));
 	gtk_list_store_clear (GTK_LIST_STORE(current_playlist_store));
-	mpd_playlist_clear (pub->gmo);
-	mpd_status_update (pub->gmo);
+	mpd_playlist_clear (gmo);
+	mpd_status_update (gmo);
 	
 	if (loaded_playlist != NULL)
 	{
@@ -869,14 +869,14 @@ gimmix_current_playlist_popup_menu (void)
 	
 	menu_item = gtk_check_menu_item_new_with_label ("Repeat");
 	g_signal_connect (G_OBJECT(menu_item), "toggled", G_CALLBACK(cb_repeat_menu_toggled), NULL);
-	if (is_gimmix_repeat(pub->gmo))
+	if (is_gimmix_repeat(gmo))
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
 	menu_item = gtk_check_menu_item_new_with_label ("Shuffle");
 	g_signal_connect (G_OBJECT(menu_item), "toggled", G_CALLBACK(cb_shuffle_menu_toggled), NULL);
-	if (is_gimmix_shuffle(pub->gmo))
+	if (is_gimmix_shuffle(gmo))
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
@@ -943,11 +943,11 @@ cb_repeat_menu_toggled (GtkCheckMenuItem *item, gpointer data)
 	state = gtk_check_menu_item_get_active (item);
 	if (state == TRUE)
 	{
-		mpd_player_set_repeat (pub->gmo, true);
+		mpd_player_set_repeat (gmo, true);
 	}
 	else if (state == FALSE)
 	{
-		mpd_player_set_repeat (pub->gmo, false);
+		mpd_player_set_repeat (gmo, false);
 	}
 	
 	return;
@@ -961,11 +961,11 @@ cb_shuffle_menu_toggled (GtkCheckMenuItem *item, gpointer data)
 	state = gtk_check_menu_item_get_active (item);
 	if (state == TRUE)
 	{
-		mpd_player_set_random (pub->gmo, true);
+		mpd_player_set_random (gmo, true);
 	}
 	else if (state == FALSE)
 	{
-		mpd_player_set_random (pub->gmo, false);
+		mpd_player_set_random (gmo, false);
 	}
 	
 	return;
@@ -977,7 +977,7 @@ gimmix_library_update (GtkWidget *widget, gpointer data)
 	GtkWidget *label;
 	
 	label = glade_xml_get_widget (xml, "gimmix_status");
-	mpd_database_update_dir (pub->gmo, "/");
+	mpd_database_update_dir (gmo, "/");
 	gtk_label_set_text (GTK_LABEL(label), _("Updating Library..."));
 	gtk_widget_show (label);
 	g_timeout_add (300, (GSourceFunc)gimmix_update_player_status, label);
@@ -988,7 +988,7 @@ gimmix_library_update (GtkWidget *widget, gpointer data)
 static gboolean
 gimmix_update_player_status (gpointer data)
 {
-	if (mpd_status_db_is_updating (pub->gmo))
+	if (mpd_status_db_is_updating (gmo))
 		return TRUE;
 	else
 	{
@@ -1091,8 +1091,8 @@ cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog)
 	{	
 		if (loaded_playlist != NULL)
 		{
-			mpd_database_delete_playlist (pub->gmo, loaded_playlist);
-			if ((mpd_database_save_playlist (pub->gmo, loaded_playlist)) == MPD_DATABASE_PLAYLIST_EXIST)
+			mpd_database_delete_playlist (gmo, loaded_playlist);
+			if ((mpd_database_save_playlist (gmo, loaded_playlist)) == MPD_DATABASE_PLAYLIST_EXIST)
 				g_print (_("playlist already exists.\n"));
 		}
 		else
@@ -1103,7 +1103,7 @@ cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog)
 			widget_list = gtk_container_get_children (GTK_CONTAINER(GTK_DIALOG(dialog)->vbox));
 			widget_list = widget_list->next;
 			text = gtk_entry_get_text (GTK_ENTRY(widget_list->data));
-			if ((mpd_database_save_playlist (pub->gmo, (char*)text)) == MPD_DATABASE_PLAYLIST_EXIST)
+			if ((mpd_database_save_playlist (gmo, (char*)text)) == MPD_DATABASE_PLAYLIST_EXIST)
 				g_print (_("playlist already exists.\n"));
 			
 			g_list_free (widget_list);
@@ -1135,7 +1135,7 @@ cb_gimmix_playlist_remove ()
 		gtk_tree_model_get (pls_treemodel, &iter,
 							1, &path,
 							-1);
-		mpd_database_delete_playlist (pub->gmo, path);
+		mpd_database_delete_playlist (gmo, path);
 	}
 	
 	if (loaded_playlist != NULL)
@@ -1170,9 +1170,9 @@ cb_gimmix_playlist_load ()
 							-1);
 	}
 	
-	mpd_playlist_queue_load (pub->gmo, path);
+	mpd_playlist_queue_load (gmo, path);
 	gimmix_current_playlist_clear ();
-	mpd_playlist_queue_commit (pub->gmo);
+	mpd_playlist_queue_commit (gmo);
 	
 	gimmix_load_playlist (path);
 	g_free (path);
