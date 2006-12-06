@@ -41,6 +41,7 @@ static void		cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data
 static void		cb_systray_popup_stop_clicked (GtkMenuItem *menuitem, gpointer data);
 static void		cb_systray_popup_next_clicked (GtkMenuItem *menuitem, gpointer data);
 static void		cb_systray_popup_prev_clicked (GtkMenuItem *menuitem, gpointer data);
+static void		cb_systray_popup_quit_clicked (GtkMenuItem *menuitem, gpointer data);
 
 void
 gimmix_create_systray_icon (void)
@@ -122,7 +123,7 @@ gimmix_systray_display_popup_menu (void)
 	gtk_widget_show (menu_item);
 
 	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_QUIT, NULL);
-	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gtk_main_quit), NULL);
+	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_systray_popup_quit_clicked), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 
@@ -178,6 +179,13 @@ cb_systray_popup_next_clicked (GtkMenuItem *menuitem, gpointer data)
 		gimmix_set_song_info ();
 
 	return;
+}
+
+static void
+cb_systray_popup_quit_clicked (GtkMenuItem *menuitem, gpointer data)
+{
+	gimmix_save_window_pos ();
+	gtk_main_quit ();
 }
 
 void

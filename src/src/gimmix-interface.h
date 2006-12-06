@@ -24,4 +24,7 @@ GtkWidget *get_image (const gchar *, GtkIconSize);
 /* Display version info */
 void gimmix_show_ver_info (void);
 
+/* Save window position */
+void gimmix_save_window_pos (void);
+
 #endif

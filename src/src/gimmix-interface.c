@@ -44,7 +44,6 @@ static gboolean 	gimmix_timer (void);
 static void			gimmix_update_volume (void);
 static void			gimmix_update_repeat (void);
 static void			gimmix_update_shuffle (void);
-static void			gimmix_save_window_pos (void);
 
 /* Callbacks */
 static int		cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data);
@@ -631,7 +630,7 @@ cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data)
 	return 0;
 }
 
-static void
+void
 gimmix_save_window_pos (void)
 {
 	GtkWidget *window;
