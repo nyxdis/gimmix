@@ -620,7 +620,14 @@ cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data)
 		gimmix_window_visible_toggle ();
 		return 1;
 	}
-
+	
+	/* stop playback on exit */
+	if (strncasecmp(cfg_get_key_value(conf, "stop_on_exit"), "true", 4) == 0)
+		gimmix_stop (pub->gmo);
+		
+	/* save window position */
+	gimmix_save_window_pos ();
+	
 	return 0;
 }
 
@@ -645,14 +652,7 @@ gimmix_save_window_pos (void)
 
 void
 gimmix_interface_cleanup (void)
-{
-	/* save window position */
-	gimmix_save_window_pos ();
-	
-	/* stop playback on exit */
-	if (strncasecmp(cfg_get_key_value(conf, "stop_on_exit"), "true", 4) == 0)
-		gimmix_stop (pub->gmo);
-	
+{	
 	/* destroy the main window */
 	GtkWidget *w = glade_xml_get_widget (xml, "main_window");
 	if (w)
