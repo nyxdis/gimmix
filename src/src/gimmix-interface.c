@@ -558,7 +558,7 @@ gimmix_set_song_info (void)
 		
 	if (song->title != NULL)
 	{
-		title = g_strdup_printf ("%s - %s", APPNAME, song->title);
+		title = g_strdup_printf ("%s - %s", "Gimmix", song->title);
 		gtk_window_set_title (GTK_WINDOW(window), title);
 		g_free (title);
 		markup = g_markup_printf_escaped ("<span size=\"large\"weight=\"bold\"><i>%s</i></span>", song->title);
@@ -568,7 +568,7 @@ gimmix_set_song_info (void)
 		title = g_path_get_basename (song->file);
 		markup = g_markup_printf_escaped ("<span size=\"large\"weight=\"bold\"><i>%s</i></span>", title);
 		g_free (title);
-		gtk_window_set_title (GTK_WINDOW(window), APPNAME);
+		gtk_window_set_title (GTK_WINDOW(window), "Gimmix");
 	}
 	gtk_label_set_markup (GTK_LABEL(song_label), markup);
 	gtk_label_set_text (GTK_LABEL(artist_label), song->artist);
