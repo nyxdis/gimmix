@@ -6,7 +6,6 @@ PREFIX=$(DESTDIR)/usr
 
 ALLFILES=*.c
 
-CONFUSE_LIB=$(shell pkg-config libconfuse --libs)
 GLADE_CFLAGS=$(shell pkg-config libglade-2.0 --cflags)
 GLADE_LIB=$(shell pkg-config libglade-2.0 --libs)
 MPD_CFLAGS=$(shell pkg-config libmpd --cflags)
@@ -15,7 +14,7 @@ TAG_CFLAGS=$(shell pkg-config taglib --cflags)
 #TAG_LIB=$(shell pkg-config taglib --libs)
 
 CFLAGS += -fPIC -DPREFIX=\"$(PREFIX)\" $(GLADE_CFLAGS) $(MPD_CFLAGS) $(TAG_CFLAGS) -I.
-LIBS=$(CONFUSE_LIB) $(GLADE_LIB) $(MPD_LIB) -ltag_c
+LIBS= $(GLADE_LIB) $(MPD_LIB) -ltag_c
 
 OBJS = wejpconfig.o gimmix-config.o gimmix-core.o gimmix-playlist.o gimmix-systray.o gimmix-prefs.o gimmix-interface.o gimmix-firstrun.o gimmix-tagedit.o gimmix.o
 

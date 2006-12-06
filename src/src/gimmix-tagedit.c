@@ -41,7 +41,9 @@ static void gimmix_tag_editor_close (GtkWidget *widget, gpointer data);
 /* Update action */
 static gboolean	gimmix_update_song_info (gpointer data);
 
-static gchar *dir_error = "You have specified an invalid music directory. Please specify the correct music directory in the preferences.";
+static void cb_gimmix_tag_editor_error_response (GtkDialog *dialog, gint arg1, gpointer data);
+
+static gchar *dir_error = "You have specified an invalid music directory. Do you want to specify the correct music directory ?";
 	
 void
 gimmix_tag_editor_init (void)
@@ -242,18 +244,34 @@ gimmix_tag_editor_error (const gchar *error_text)
 	error_dialog = gtk_message_dialog_new_with_markup (NULL,
 												GTK_DIALOG_DESTROY_WITH_PARENT,
 												GTK_MESSAGE_ERROR,
-												GTK_BUTTONS_OK,
+												GTK_BUTTONS_YES_NO,
 												"<b>%s: </b><span size=\"large\">%s</span>",
 												_("ERROR"),
 												error_text);
 	gtk_window_set_resizable (GTK_WINDOW(error_dialog), FALSE);
     g_signal_connect (error_dialog,
 					"response",
-					G_CALLBACK (gtk_widget_destroy),
-					(gpointer)error_dialog);
+					G_CALLBACK (cb_gimmix_tag_editor_error_response),
+					NULL);
 	
     gtk_widget_show_all (error_dialog);
     
     return;
+}
+
+static void
+cb_gimmix_tag_editor_error_response (GtkDialog *dialog, gint arg1, gpointer data)
+{
+	if (arg1 == GTK_RESPONSE_YES)
+	{
+		GtkWidget *notebook;
+		notebook = glade_xml_get_widget (xml, "pref_notebook");
+		gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 2);
+		gimmix_prefs_dialog_show ();
+	}
+	
+	gtk_widget_destroy (GTK_WIDGET(dialog));
+	
+	return;
 }
 
