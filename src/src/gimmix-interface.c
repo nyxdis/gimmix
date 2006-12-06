@@ -44,6 +44,7 @@ static gboolean 	gimmix_timer (void);
 static void			gimmix_update_volume (void);
 static void			gimmix_update_repeat (void);
 static void			gimmix_update_shuffle (void);
+static void			gimmix_save_window_pos (void);
 
 /* Callbacks */
 static int		cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data);
@@ -76,6 +77,7 @@ gimmix_init (void)
 	/* Set the application icon */
 	main_window = glade_xml_get_widget (xml, "main_window");
 	g_signal_connect (G_OBJECT(main_window), "delete-event", G_CALLBACK(cb_gimmix_main_window_delete_event), NULL);
+	gtk_window_move (GTK_WINDOW(main_window), atoi(cfg_get_key_value(conf, "window_xpos")), atoi(cfg_get_key_value(conf, "window_ypos")));
 	path = g_strdup_printf ("%s%s", PREFIX, GIMMIX_APP_ICON);
 	app_icon = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
 	gtk_window_set_icon (GTK_WINDOW(main_window), app_icon);
@@ -573,7 +575,7 @@ gimmix_set_song_info (void)
 	gtk_label_set_text (GTK_LABEL(artist_label), song->artist);
 	gtk_label_set_text (GTK_LABEL(album_label), song->album);
 	g_free (markup);
-	//if (pub->conf->systray_enable == 1)
+
 	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
 		gimmix_update_systray_tooltip (song);
 	
@@ -622,9 +624,31 @@ cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data)
 	return 0;
 }
 
+static void
+gimmix_save_window_pos (void)
+{
+	GtkWidget *window;
+	gint x,y;
+	gchar xpos[4];
+	gchar ypos[4];
+	
+	window = glade_xml_get_widget (xml, "main_window");
+	gtk_window_get_position (GTK_WINDOW(window), &x, &y);
+	sprintf (xpos, "%d", x);
+	sprintf (ypos, "%d", y);
+	cfg_add_key (&conf, "window_xpos", xpos);
+	cfg_add_key (&conf, "window_ypos", ypos);
+	gimmix_config_save ();
+	
+	return;
+}
+
 void
 gimmix_interface_cleanup (void)
 {
+	/* save window position */
+	gimmix_save_window_pos ();
+	
 	/* stop playback on exit */
 	if (strncasecmp(cfg_get_key_value(conf, "stop_on_exit"), "true", 4) == 0)
 		gimmix_stop (pub->gmo);

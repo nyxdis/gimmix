@@ -45,6 +45,8 @@ gimmix_config_init (void)
 	cfg_add_key (&conf, "enable_systray",	"true");
 	cfg_add_key (&conf, "play_on_add",		"false");
 	cfg_add_key (&conf, "stop_on_exit",		"false");
+	cfg_add_key (&conf, "window_xpos",		"200");
+	cfg_add_key (&conf, "window_ypos",		"300");
 	
 	rcfile = cfg_get_path_to_config_file (CONFIG_FILE);
 	
