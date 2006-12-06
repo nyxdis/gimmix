@@ -1,5 +1,5 @@
 # Makefile for gimmix
-# gimmix-0.2.1-RC1
+# gimmix-0.3
 
 # Installation directory
 PREFIX=$(DESTDIR)/usr
@@ -11,7 +11,6 @@ GLADE_LIB=$(shell pkg-config libglade-2.0 --libs)
 MPD_CFLAGS=$(shell pkg-config libmpd --cflags)
 MPD_LIB=$(shell pkg-config libmpd --libs)
 TAG_CFLAGS=$(shell pkg-config taglib --cflags)
-#TAG_LIB=$(shell pkg-config taglib --libs)
 
 CFLAGS += -fPIC -DPREFIX=\"$(PREFIX)\" $(GLADE_CFLAGS) $(MPD_CFLAGS) $(TAG_CFLAGS) -I.
 LIBS= $(GLADE_LIB) $(MPD_LIB) -ltag_c
@@ -57,7 +56,7 @@ gimmix-interface.o:		src/gimmix-interface.c
 gimmix-tagedit.o:		src/gimmix-tagedit.c
 	$(CC) $(CFLAGS) -c src/gimmix-tagedit.c
 
-gimmix.o:				src/gimmix.c
+gimmix.o:			src/gimmix.c
 	$(CC) $(CFLAGS) -c src/gimmix.c
 
 

@@ -29,8 +29,8 @@ extern GM 			*pub;
 extern GladeXML 	*xml;
 extern ConfigFile	conf;
 
-TagLib_File 	*file;
-TagLib_Tag 		*tag;
+TagLib_File 	*file = NULL;
+TagLib_Tag 		*tag = NULL;
 
 /* Save action */
 static void	gimmix_tag_editor_save (GtkWidget *button, gpointer data);
@@ -41,6 +41,7 @@ static void gimmix_tag_editor_close (GtkWidget *widget, gpointer data);
 /* Update action */
 static gboolean	gimmix_update_song_info (gpointer data);
 
+/* error dialog callback */
 static void cb_gimmix_tag_editor_error_response (GtkDialog *dialog, gint arg1, gpointer data);
 
 static gchar *dir_error = "You have specified an invalid music directory. Do you want to specify the correct music directory ?";

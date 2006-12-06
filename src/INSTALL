@@ -1,5 +1,5 @@
-Gimmix 0.3
-===========
+Gimmix Install Instructions
+============================
 
 Requirements:
 =============
@@ -28,6 +28,7 @@ then make sure you delete your old .gimmixrc before starting gimmix.
 
 Configuration options:
 ======================
+
 Following is a list of valid configuration options for gimmix.
 As from version 0.3, the new config file layout will be followed.
 

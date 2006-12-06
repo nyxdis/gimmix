@@ -4,14 +4,18 @@ Gimmix-0.3 README
 Gimmix is a graphical Music player daemon (MPD) client written in C
 using Gtk+2.
 
+Website:
+http://gimmix.berlios.de/
+
 Features:
 * Simple and Clean Interface.
 * System tray icon support.
 * Library browser.
 * Library search. (search by artist, album, filename, etc) 
 * ID3v2 tag editing support.
+* Support for controlling gimmix through Keyboard.
 * Playlist browser. (load/save/delete m3u playlists)
-* Notification support (Display the currently playing song in systray).
+* Notification support (Displays the currently playing song in systray).
 * Small memory footprint.
 
 Requirements:
