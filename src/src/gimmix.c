@@ -112,6 +112,7 @@ gimmix_about_show (void)
 	g_free (path);
 
 	gchar *authors[] = { "Priyank M. Gosalia <priyankmg@gmail.com>",
+				"Gimmix uses wejpconfig written by Johannes Heimansberg.",
 			 _("A part of the song seek code borrowed from Pygmy."),
 			 NULL
 			};
