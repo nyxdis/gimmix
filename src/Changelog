@@ -1,3 +1,28 @@
+Version 0.3 (xx-12-2006)
+* Replaced the old libconfuse based config system with wejpconfig (written by Johannes Heimansberg)
+* Configuration file layout is changed completely.
+* Fixed a bad bad bug on x86_64 where gimmix crashed if compiled with -O2 flags.
+* Dropped notification using libnotify. Song info is now displayed as a tooltip in the system tray icon.
+* Tooltip notifications are now enabled by default and not user-configurable.
+* Added key bindings for play/pause/stop/prev/next/info buttons.
+* Fixed a bug that caused blank entires to be displayed in filebrower.
+* Current playlist can now be saved.
+* Added support for managing mpd playlists. (load/save)
+* Added a new tab for playlists.
+* Gimmix now remembers the window position when the user quits.
+* Users can now select whether a song should be played immediately when he adds it to the playlist. (Requested by Kedar Desai)
+* Users can also set whether gimmix should stop playback when user quits gimmix.
+* Fixed a random bug that caused garbage values to be displayed in password entry of preferences.
+* Implemented ID3 Tag editor using taglib. Now users can edit ID3 information of songs.
+* Display Bitrate, Channels, and song length in the tag editor window.
+* Fixed a major race condition which caused gimmix to use too much of memory when gimmix is not playing any song.
+* Replaced old error dialogs with GtkMessageDialog.
+* Fixed major memory leaks in the playlist code.
+* Completely re-organized code and lots of code cleanups.
+* Lots of other fixes and improvements.
+* Better error handling.
+
+
 Version 0.2 (16-11-2006)
 * A l33t-new logo.
 * Fixed several memory leaks.
