@@ -11,7 +11,8 @@ Features:
 * Simple and Clean Interface.
 * System tray icon support.
 * Library browser.
-* Library search. (search by artist, album, filename, etc) 
+* Library search. (search by artist, album, filename, etc)
+* Playlist management (manage mpd playlists)
 * ID3v2 tag editing support.
 * Support for controlling gimmix through Keyboard.
 * Playlist browser. (load/save/delete m3u playlists)
