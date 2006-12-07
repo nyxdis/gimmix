@@ -275,12 +275,14 @@ gimmix_library_and_playlists_populate (void)
 		if (data->type == MPD_DATA_TYPE_DIRECTORY)
 		{
 			gtk_list_store_append (dir_store, &dir_iter);
+			path = g_path_get_basename (data->directory);
 			gtk_list_store_set (dir_store, &dir_iter,
 						0, dir_pixbuf,
-						1, g_path_get_basename(data->directory),
+						1, path,
 						2, data->directory,
 						3, DIR,
 						-1);
+			g_free (path);
 		}
 		else if (data->type == MPD_DATA_TYPE_SONG)
 		{
@@ -408,7 +410,7 @@ gimmix_library_search (gint type, gchar *text)
 								2, data->song->file,
 								3, SONG,
 								-1);
-			free (title);
+			g_free (title);
 		}
 	}
 	
@@ -521,7 +523,6 @@ gimmix_library_add_song (GtkTreeView *treeview)
 		g_free (path);
 		
 		/* check whether the newly added song is to be played immediately */
-		//if (pub->conf->play_immediate == 1)
 		if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
 		{
 			id = data->song->id;
