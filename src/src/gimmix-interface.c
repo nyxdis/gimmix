@@ -44,6 +44,7 @@ static gboolean 	gimmix_timer (void);
 static void			gimmix_update_volume (void);
 static void			gimmix_update_repeat (void);
 static void			gimmix_update_shuffle (void);
+static gboolean		is_user_searching (void);
 
 /* Callbacks */
 static int		cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data);
@@ -173,6 +174,9 @@ cb_gimmix_key_press (GtkWidget   *widget,
 	gboolean result = FALSE;
 	GtkWidget *button;
 	gint state;
+	
+	if (is_user_searching())
+		return result;
 
 	if (event->type == GDK_KEY_PRESS) {
 		switch (event->keyval) {
@@ -662,3 +666,17 @@ gimmix_interface_cleanup (void)
 	
 	return;
 }
+
+static gboolean
+is_user_searching (void)
+{
+	GtkWidget *entry;
+	
+	entry = glade_xml_get_widget (xml, "search_entry");
+	if (GTK_WIDGET_HAS_FOCUS(entry))
+		return TRUE;
+	
+	return FALSE;
+}
+
+	
