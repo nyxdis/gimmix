@@ -66,6 +66,7 @@ install: all
 	install -D -m644 data/gimmix.png $(PREFIX)/share/pixmaps/gimmix.png
 	install -D -m644 data/gimmix_logo_small.png $(PREFIX)/share/pixmaps/gimmix_logo_small.png
 	install -D -m644 data/gimmix_firstrun.png $(PREFIX)/share/gimmix/gimmix_firstrun.png
+	install -D -m644 data/gimmix_playlist.png $(PREFIX)/share/pixmaps/gimmix_playlist.png
 	install -D -m644 data/gimmix.desktop $(PREFIX)/share/applications/gimmix.desktop
 	install -D -m644 glade/gimmix.glade $(PREFIX)/share/gimmix/gimmix.glade
 

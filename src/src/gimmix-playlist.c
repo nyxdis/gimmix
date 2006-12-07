@@ -26,7 +26,8 @@
 #include "gimmix-playlist.h"
 #include "gimmix-tagedit.h"
 
-#define GIMMIX_MEDIA_ICON "gimmix_logo_small.png"
+#define GIMMIX_MEDIA_ICON 		"gimmix_logo_small.png"
+#define GIMMIX_PLAYLIST_ICON 	"gimmix_playlist.png"
 
 typedef enum {
 	SONG = 1,
@@ -265,7 +266,9 @@ gimmix_library_and_playlists_populate (void)
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
 	g_free (path);
 	dir_pixbuf	= gtk_widget_render_icon (GTK_WIDGET(directory_treeview), GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_MENU, NULL);
-	pls_pixbuf	= gtk_widget_render_icon (GTK_WIDGET(playlists_treeview), GTK_STOCK_PLAYLIST, GTK_ICON_SIZE_MENU, NULL);
+	path = gimmix_get_full_image_path (GIMMIX_PLAYLIST_ICON);
+	pls_pixbuf	= gdk_pixbuf_new_from_file_at_size (path, 16, 16, NULL);
+	g_free (path);
 	
 	for (data = mpd_database_get_directory(gmo, NULL); data != NULL; data = mpd_data_get_next(data))
 	{	
