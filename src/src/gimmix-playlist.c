@@ -40,10 +40,10 @@ extern ConfigFile	conf;
 
 static gchar *dir_error = "You have specified an invalid music directory. Please specify the correct music directory in the preferences.";
 
-GtkWidget			*current_playlist_treeview;
+GtkWidget		*current_playlist_treeview;
 GtkTreeSelection	*current_playlist_selection;
 
-gchar				*loaded_playlist;
+gchar			*loaded_playlist;
 
 static void		gimmix_search_init (void);
 static void		gimmix_library_search (gint, gchar *);
@@ -52,9 +52,9 @@ static void		gimmix_update_library_with_dir (gchar *);
 static void		gimmix_current_playlist_popup_menu (void);
 static void		gimmix_library_popup_menu (void);
 static void		gimmix_playlists_popup_menu (void);
-static gchar*	gimmix_path_get_parent_dir (gchar *);
+static gchar*		gimmix_path_get_parent_dir (gchar *);
 static void		gimmix_library_add_song (GtkTreeView *);
-static void 	gimmix_load_playlist (gchar *);
+static void 		gimmix_load_playlist (gchar *);
 
 /* Callbacks */
 /* Current playlist callbacks */
@@ -70,32 +70,32 @@ static void		gimmix_current_playlist_song_info (void);
 static void		gimmix_current_playlist_clear (void);
 static void		gimmix_library_update (GtkWidget *widget, gpointer data);
 static void		gimmix_current_playlist_save (void);
-static gboolean	gimmix_update_player_status (gpointer data);
+static gboolean		gimmix_update_player_status (gpointer data);
 
 /* Library browser callbacks */
 static void		cb_library_dir_activated (GtkTreeView *);
-static void 	cb_playlist_activated (GtkTreeView *);
+static void 		cb_playlist_activated (GtkTreeView *);
 static void		cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 /* Playlist browser callbacks */
 static void		gimmix_update_playlists_treeview (void);
 static void		gimmix_playlist_save_dialog_show (void);
-static void 	cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog);
+static void 		cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog);
 static void		cb_playlists_right_click (GtkTreeView *treeview, GdkEventButton *event);
-static void 	cb_gimmix_playlist_remove ();
+static void		cb_gimmix_playlist_remove ();
 static void		cb_gimmix_playlist_load ();
 static void		cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 void
 gimmix_playlist_init (void)
 {
-	GtkWidget			*button;
-	GtkWidget 			*window;
-	GtkWidget 			*pls_treeview;
+	GtkWidget		*button;
+	GtkWidget 		*window;
+	GtkWidget 		*pls_treeview;
 	GtkTreeModel		*current_playlist_model;
 	GtkListStore		*current_playlist_store;
-	GtkCellRenderer     *current_playlist_renderer;
+	GtkCellRenderer		*current_playlist_renderer;
 	GtkTreeSelection	*current_playlist_selection;
 	
 	current_playlist_treeview = glade_xml_get_widget (xml, "current_playlist_treeview");
@@ -264,8 +264,8 @@ gimmix_library_and_playlists_populate (void)
 	path = gimmix_get_full_image_path (GIMMIX_MEDIA_ICON);
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
 	g_free (path);
-	dir_pixbuf 	    = gtk_widget_render_icon (GTK_WIDGET(directory_treeview), GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_MENU, NULL);
-	pls_pixbuf		= gtk_widget_render_icon (GTK_WIDGET(playlists_treeview), GTK_STOCK_FILE, GTK_ICON_SIZE_MENU, NULL);
+	dir_pixbuf	= gtk_widget_render_icon (GTK_WIDGET(directory_treeview), GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_MENU, NULL);
+	pls_pixbuf	= gtk_widget_render_icon (GTK_WIDGET(playlists_treeview), GTK_STOCK_PLAYLIST, GTK_ICON_SIZE_MENU, NULL);
 	
 	for (data = mpd_database_get_directory(gmo, NULL); data != NULL; data = mpd_data_get_next(data))
 	{	
@@ -273,11 +273,11 @@ gimmix_library_and_playlists_populate (void)
 		{
 			gtk_list_store_append (dir_store, &dir_iter);
 			gtk_list_store_set (dir_store, &dir_iter,
-								0, dir_pixbuf,
-								1, g_path_get_basename(data->directory),
-								2, data->directory,
-								3, DIR,
-								-1);
+						0, dir_pixbuf,
+						1, g_path_get_basename(data->directory),
+						2, data->directory,
+						3, DIR,
+						-1);
 		}
 		else if (data->type == MPD_DATA_TYPE_SONG)
 		{

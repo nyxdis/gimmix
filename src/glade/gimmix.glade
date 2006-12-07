@@ -2641,7 +2641,7 @@ Note: The directory should be same as what you specified in your mpd settings. I
 	<widget class="GtkExpander" id="playlist_expander">
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
-	  <property name="expanded">False</property>
+	  <property name="expanded">True</property>
 	  <property name="spacing">0</property>
 
 	  <child>
@@ -2960,8 +2960,8 @@ Filename
 		      <child>
 			<widget class="GtkImage" id="image15">
 			  <property name="visible">True</property>
-			  <property name="stock">gtk-justify-fill</property>
 			  <property name="icon_size">1</property>
+			  <property name="icon_name">stock_playlist</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
