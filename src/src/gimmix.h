@@ -18,7 +18,7 @@
 #include "gimmix-interface.h"
 
 #define APPNAME 		"Gimmix"
-#define VERSION 		"0.3-RC1"
+#define VERSION 		"0.3-RC2"
 #define APPURL			"http://gimmix.berlios.de/"
 
 /* main connect function */
