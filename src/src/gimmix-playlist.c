@@ -87,14 +87,13 @@ static void		cb_playlists_right_click (GtkTreeView *treeview, GdkEventButton *ev
 static void		cb_gimmix_playlist_remove ();
 static void		cb_gimmix_playlist_load ();
 static void		cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
-static void		cb_playlists_edited (GtkCellRendererText *text, gchar *path, gchar *new_text, gpointer data);
 
 void
 gimmix_playlist_init (void)
 {
-	GtkWidget		*button;
-	GtkWidget 		*window;
-	GtkWidget 		*pls_treeview;
+	GtkWidget			*button;
+	GtkWidget 			*window;
+	GtkWidget 			*pls_treeview;
 	GtkTreeModel		*current_playlist_model;
 	GtkListStore		*current_playlist_store;
 	GtkCellRenderer		*current_playlist_renderer;
@@ -252,10 +251,6 @@ gimmix_library_and_playlists_populate (void)
 							pls_renderer,
 							"text", 1,
 							NULL);
-	g_object_set (G_OBJECT(pls_renderer),
-				"editable", true,
-				"editable-set", true,
-				NULL);
 	
 	dir_store 	= gtk_list_store_new (4, 
 								GDK_TYPE_PIXBUF, 	/* icon */
@@ -327,7 +322,6 @@ gimmix_library_and_playlists_populate (void)
 	g_signal_connect (directory_treeview, "row-activated", G_CALLBACK(cb_library_dir_activated), NULL);
 	g_signal_connect (playlists_treeview, "row-activated", G_CALLBACK(cb_playlist_activated), NULL);
 	g_signal_connect (directory_treeview, "button-release-event", G_CALLBACK(cb_library_right_click), NULL);
-	g_signal_connect (G_OBJECT(pls_renderer), "edited", G_CALLBACK(cb_playlists_edited), pls_model);
 	g_object_unref (dir_model);
 	g_object_unref (pls_model);
 	g_object_unref (dir_pixbuf);
@@ -921,13 +915,13 @@ gimmix_playlists_popup_menu (void)
 
 	menu = gtk_menu_new ();
 	
-	menu_item = gtk_image_menu_item_new_with_label ("Load Playlist");
+	menu_item = gtk_image_menu_item_new_with_label (_("Load"));
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), GTK_WIDGET(get_image ("gtk-open", GTK_ICON_SIZE_MENU)));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_gimmix_playlist_load), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
-	menu_item = gtk_image_menu_item_new_with_label ("Delete Playlist");
+	menu_item = gtk_image_menu_item_new_with_label (_("Delete"));
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), GTK_WIDGET(get_image ("gtk-delete", GTK_ICON_SIZE_MENU)));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_gimmix_playlist_remove), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
@@ -1200,39 +1194,4 @@ cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
 	
 	return;
 }
-
-static void
-cb_playlists_edited (GtkCellRendererText *text, gchar *path, gchar *new_text, gpointer data)
-{
-	gchar *old_text;
-	GtkTreePath *pathl;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-	
-	pathl = gtk_tree_path_new_from_string (path);
-	model = (GtkTreeModel *) data;
-	
-	gtk_tree_model_get_iter (model, &iter, pathl);
-	gtk_tree_model_get (model, &iter, 1, &old_text, -1);
-	
-	if (strcmp(old_text, new_text) == 0)
-	{
-		g_print ("\nno change\n");
-		gtk_tree_path_free (pathl);
-		return;
-	}
-	else
-	g_print ("change...\n");
-	
-	gtk_list_store_set (GTK_LIST_STORE(model), &iter, 1, new_text, -1);
-	mpd_database_delete_playlist (gmo, old_text);
-	g_free (old_text);
-	if ((mpd_database_save_playlist (gmo, new_text)) == MPD_DATABASE_PLAYLIST_EXIST)
-				g_print (_("playlist already exists.\n"));
-	gtk_tree_path_free (pathl);
-	gimmix_update_playlists_treeview ();
-	
-	return;
-}
-
 

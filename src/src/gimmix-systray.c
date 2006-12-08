@@ -187,6 +187,8 @@ cb_systray_popup_quit_clicked (GtkMenuItem *menuitem, gpointer data)
 {
 	gimmix_save_window_pos ();
 	gtk_main_quit ();
+	
+	return;
 }
 
 void
