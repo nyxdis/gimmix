@@ -9,6 +9,7 @@ Version 0.3 (xx-12-2006)
 * Current playlist can now be saved.
 * Added support for managing mpd playlists. (load/save)
 * Added a new tab for playlists.
+* Added support for enabling/disabling Crossfade.
 * Gimmix now remembers the window position when the user quits.
 * Gimmix also remembers the window mode (full/compact) when gimmix
 quits.

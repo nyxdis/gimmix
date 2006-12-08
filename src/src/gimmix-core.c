@@ -66,7 +66,6 @@ gimmix_get_status (MpdObj *mo)
 bool
 gimmix_play (MpdObj *mo)
 {
-	//mpd_status_update (mo);
 	if (mpd_playlist_get_playlist_length (mo))
 	{
 		int state;
@@ -162,6 +161,7 @@ bool
 gimmix_seek (MpdObj *mo, int seektime)
 {
 	int state;
+	bool ret;
 	state = gimmix_get_status (mo);
 
 	if (state == PLAY || state == PAUSE)
@@ -170,18 +170,14 @@ gimmix_seek (MpdObj *mo, int seektime)
 		g_printf ("%d\n", seektime);
 		i = mpd_player_seek (mo, seektime);
 		if (i == MPD_OK)
-		{	
-			g_print ("seek ok\n");
-		}
+			ret = true;
 		else
-		{
-			g_printf ("seek error: %d \n", i);
-			return false;
-		}
-		return true;
+			ret = false;
 	}
+	else
+	ret = false;
 
-	return false;
+	return ret;
 }
 
 SongInfo *
