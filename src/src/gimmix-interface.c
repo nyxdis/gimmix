@@ -513,7 +513,7 @@ cb_gimmix_progress_seek (GtkWidget *progressbox, GdkEvent *event)
 	/* This is a bad bad libmpd/mpd bug */
 	/* When user seeks through a _BIG_ value, the connection gets dropped, and
 	   the client needs to reconnect to mpd */
-	if (!gimmix_seek (gmo, newtime))
+	if (gimmix_seek (gmo, newtime) == false)
 	{
 		mpd_free (gmo);
 		gmo = gimmix_mpd_connect ();
