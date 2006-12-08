@@ -21,7 +21,8 @@ typedef struct songinfo
 
 typedef enum { 	PLAY = 1,
 				PAUSE,
-				STOP
+				STOP,
+				UNKNOWN,
 } GimmixStatus;
 	
 /* status flags */

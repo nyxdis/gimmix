@@ -26,13 +26,13 @@
 #include "gimmix-interface.h"
 #include "gimmix.h"
 
+extern MpdObj		*gmo;
 extern GladeXML 	*xml;
 extern ConfigFile	conf;
 
 static void 	cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
 static void		cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data);
-static void		cb_pref_notify_checkbox_toggled (GtkToggleButton *button, gpointer data);
-static void		cb_pref_notify_timeout_spin_change (GtkSpinButton *button, gpointer data);
+static void		cb_pref_crossfade_toggled (GtkToggleButton *button, gpointer data);
 
 void
 gimmix_prefs_dialog_show (void)
@@ -41,6 +41,8 @@ gimmix_prefs_dialog_show (void)
 	GtkWidget	*entry;
 	GtkWidget	*widget;
 	GtkWidget	*pref_window;
+	GtkWidget	*c_spin;
+	gint		crossfade_time;
 	
 	pref_window = glade_xml_get_widget (xml, "prefs_window");
 	port = g_strdup_printf ("%s", cfg_get_key_value (conf, "mpd_port"));
@@ -78,6 +80,25 @@ gimmix_prefs_dialog_show (void)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), FALSE);
+	
+	widget = glade_xml_get_widget (xml, "pref_crossfade");
+	c_spin = glade_xml_get_widget (xml, "crossfade_spin");
+	g_signal_connect (G_OBJECT(widget), "toggled", G_CALLBACK(cb_pref_crossfade_toggled), c_spin);
+	
+	crossfade_time = mpd_status_get_crossfade (gmo);
+	if (crossfade_time != 0)
+	{
+		gtk_widget_set_sensitive (GTK_WIDGET(widget), TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET(glade_xml_get_widget (xml, "crossfade_spin")), TRUE);
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON(c_spin), (gdouble)crossfade_time);
+	}
+	else
+	{
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET(c_spin), FALSE);
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON(c_spin), (gdouble)crossfade_time);
+	}
 	
 	g_signal_connect (G_OBJECT(glade_xml_get_widget (xml, "button_apply")), "clicked", G_CALLBACK(cb_pref_apply_clicked), NULL);
 	gtk_widget_show (GTK_WIDGET(pref_window));
@@ -122,9 +143,29 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 		cfg_add_key (&conf, "stop_on_exit", "true");
 	else
 		cfg_add_key (&conf, "stop_on_exit", "false");
+		
+	pref_widget = glade_xml_get_widget (xml, "pref_crossfade");
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(pref_widget)))
+	{
+		pref_widget = glade_xml_get_widget (xml, "crossfade_spin");
+		gint val = gtk_spin_button_get_value (GTK_SPIN_BUTTON(pref_widget));
+		mpd_status_set_crossfade (gmo, val);
+	}
+	else
+	{
+		mpd_status_set_crossfade (gmo, 0);
+	}
 	
 	gimmix_config_save ();
 
+	return;
+}
+
+static void
+cb_pref_crossfade_toggled (GtkToggleButton *button, gpointer data)
+{
+	gtk_widget_set_sensitive (GTK_WIDGET(data), gtk_toggle_button_get_active (button));
+	
 	return;
 }
 

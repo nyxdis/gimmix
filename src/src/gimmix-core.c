@@ -60,7 +60,7 @@ gimmix_get_status (MpdObj *mo)
 		return PLAY;
 	else if (status == MPD_PLAYER_STOP)
 		return STOP;
-	return -1;
+	return UNKNOWN;
 }
 
 bool
@@ -166,7 +166,18 @@ gimmix_seek (MpdObj *mo, int seektime)
 
 	if (state == PLAY || state == PAUSE)
 	{
-		mpd_player_seek (mo, seektime);
+		int i;
+		g_printf ("%d\n", seektime);
+		i = mpd_player_seek (mo, seektime);
+		if (i == MPD_OK)
+		{	
+			g_print ("seek ok\n");
+		}
+		else
+		{
+			g_printf ("seek error: %d \n", i);
+			return false;
+		}
 		return true;
 	}
 
