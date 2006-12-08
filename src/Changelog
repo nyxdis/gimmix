@@ -10,6 +10,8 @@ Version 0.3 (xx-12-2006)
 * Added support for managing mpd playlists. (load/save)
 * Added a new tab for playlists.
 * Gimmix now remembers the window position when the user quits.
+* Gimmix also remembers the window mode (full/compact) when gimmix
+quits.
 * Users can now select whether a song should be played immediately when he adds it to the playlist. (Requested by Kedar Desai)
 * Users can also set whether gimmix should stop playback when user quits gimmix.
 * Fixed a random bug that caused garbage values to be displayed in password entry of preferences.
