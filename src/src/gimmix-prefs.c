@@ -31,7 +31,7 @@ extern GladeXML 	*xml;
 extern ConfigFile	conf;
 
 static void 	cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
-static void		cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data);
+static void		cb_pref_systray_toggled (GtkToggleButton *button, gpointer data);
 static void		cb_pref_crossfade_toggled (GtkToggleButton *button, gpointer data);
 
 void
@@ -67,7 +67,7 @@ gimmix_prefs_dialog_show (void)
 	{
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(entry), FALSE);
 	}
-	g_signal_connect (G_OBJECT(entry), "toggled", G_CALLBACK(cb_pref_systray_checkbox_toggled), NULL);
+	g_signal_connect (G_OBJECT(entry), "toggled", G_CALLBACK(cb_pref_systray_toggled), NULL);
 	
 	widget = glade_xml_get_widget (xml, "pref_play_immediate");
 	if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
@@ -170,7 +170,7 @@ cb_pref_crossfade_toggled (GtkToggleButton *button, gpointer data)
 }
 
 static void
-cb_pref_systray_checkbox_toggled (GtkToggleButton *button, gpointer data)
+cb_pref_systray_toggled (GtkToggleButton *button, gpointer data)
 {
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{
