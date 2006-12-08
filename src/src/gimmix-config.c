@@ -42,8 +42,6 @@ gimmix_config_init (void)
 	cfg_add_key (&conf, "mpd_port", 		"6600");
 	cfg_add_key (&conf, "mpd_password",		"");
 	cfg_add_key (&conf, "music_directory",	"");
-	cfg_add_key (&conf, "enable_crossfade",	"false");
-	cfg_add_key (&conf, "crossfade_timeout","0");
 	cfg_add_key (&conf, "enable_systray",	"true");
 	cfg_add_key (&conf, "play_on_add",		"false");
 	cfg_add_key (&conf, "stop_on_exit",		"false");
