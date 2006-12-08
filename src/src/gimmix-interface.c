@@ -134,6 +134,11 @@ gimmix_init (void)
 	{
 		gimmix_create_systray_icon ();
 	}
+	if (strncasecmp(cfg_get_key_value(conf, "full_view_mode"), "true", 4) == 0)
+	{
+		widget = glade_xml_get_widget (xml, "playlist_expander");
+		gtk_expander_set_expanded (GTK_EXPANDER(widget), TRUE);
+	}
 
 	status = gimmix_get_status (gmo);
 
@@ -628,7 +633,7 @@ cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data)
 	if (strncasecmp(cfg_get_key_value(conf, "stop_on_exit"), "true", 4) == 0)
 		gimmix_stop (gmo);
 		
-	/* save window position */
+	/* save window position and mode */
 	gimmix_save_window_pos ();
 	
 	return 0;
@@ -638,16 +643,26 @@ void
 gimmix_save_window_pos (void)
 {
 	GtkWidget *window;
+	GtkWidget *exp;
 	gint x,y;
 	gchar xpos[4];
 	gchar ypos[4];
 	
+	/* save position */
 	window = glade_xml_get_widget (xml, "main_window");
+	exp = glade_xml_get_widget (xml, "playlist_expander");
 	gtk_window_get_position (GTK_WINDOW(window), &x, &y);
 	sprintf (xpos, "%d", x);
 	sprintf (ypos, "%d", y);
 	cfg_add_key (&conf, "window_xpos", xpos);
 	cfg_add_key (&conf, "window_ypos", ypos);
+	
+	/* save mode */
+	if (gtk_expander_get_expanded (GTK_EXPANDER(exp)))
+		cfg_add_key (&conf, "full_view_mode", "true");
+	else
+		cfg_add_key (&conf, "full_view_mode", "false");
+		
 	gimmix_config_save ();
 	
 	return;

@@ -5,6 +5,7 @@ Requirements:
 =============
 
 Gimmix requires the following pacakges to be installed before compiling.
+
 * gtk+-2.10.x
 * libmpd-0.12
 * libglade-2.6.x
@@ -17,7 +18,7 @@ Installing gimmix is very simple. Before installing, make sure
 your system has all the required packages. After you unpack the source,
 just follow these steps to install gimmix.
 
-cd gimmix-0.2.1
+cd gimmix-0.3
 make
 make install (as root)
 

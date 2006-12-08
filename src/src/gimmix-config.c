@@ -40,13 +40,14 @@ gimmix_config_init (void)
 	
 	cfg_add_key (&conf, "mpd_hostname",		"localhost");
 	cfg_add_key (&conf, "mpd_port", 		"6600");
-	cfg_add_key (&conf, "mpd_password",		"booga");
+	cfg_add_key (&conf, "mpd_password",		"");
 	cfg_add_key (&conf, "music_directory",	"");
 	cfg_add_key (&conf, "enable_systray",	"true");
 	cfg_add_key (&conf, "play_on_add",		"false");
 	cfg_add_key (&conf, "stop_on_exit",		"false");
 	cfg_add_key (&conf, "window_xpos",		"200");
 	cfg_add_key (&conf, "window_ypos",		"300");
+	cfg_add_key (&conf, "full_view_mode",	"false");
 	
 	rcfile = cfg_get_path_to_config_file (CONFIG_FILE);
 	
