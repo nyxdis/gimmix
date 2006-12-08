@@ -51,6 +51,8 @@ gimmix_show_firstrun_dialog (void)
 	cfg_add_key (&cf, "mpd_port", 			"6600");
 	cfg_add_key (&cf, "mpd_password",		"");
 	cfg_add_key (&cf, "music_directory",	"");
+	cfg_add_key (&cf, "enable_crossfade",	"false");
+	cfg_add_key (&cf, "crossfade_timeout",	"0");
 	cfg_add_key (&cf, "enable_systray",		"true");
 	cfg_add_key (&cf, "play_on_add",		"false");
 	cfg_add_key (&cf, "stop_on_exit",		"false");

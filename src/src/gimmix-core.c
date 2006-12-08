@@ -37,9 +37,8 @@ gimmix_mpd_connect (void)
 	pass = cfg_get_key_value (conf, "mpd_password");
 	port = atoi (cfg_get_key_value (conf, "mpd_port"));
 	mo = mpd_new (host, port, pass);
-	mpd_connect (mo);
 	
-	if (mpd_check_connected (mo))
+	if (mpd_connect (mo) == MPD_OK)
 	{
 		mpd_signal_connect_status_changed (mo, (StatusChangedCallback)gimmix_status_changed, NULL);
 		return mo;

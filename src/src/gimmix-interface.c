@@ -277,6 +277,13 @@ gimmix_timer (void)
 		if (status == PLAY || status == PAUSE)
 		{
 			gimmix_get_progress_status (gmo, &fraction, time);
+			if (time == NULL)
+			{
+				g_print ("NULL occured\n");
+				return TRUE;
+			}
+			//g_printf ("fraction: %f\n", fraction);
+			//g_printf ("time: %s\n", time);
 			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), fraction);
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), time);
 		}
@@ -509,8 +516,8 @@ cb_gimmix_progress_seek (GtkWidget *progressbox, GdkEvent *event)
 	totaltime = mpd_status_get_total_song_time (gmo);
 	seektime = (gdouble)x/allocation.width;
 	newtime = seektime * totaltime;
-	if (gimmix_seek(gmo, newtime))
-		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), seektime);
+	gimmix_seek (gmo, newtime);
+	//	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), seektime);
 
 	return;
 }
