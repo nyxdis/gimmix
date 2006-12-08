@@ -5,6 +5,7 @@ Gimmix is a graphical Music player daemon (MPD) client written in C
 using GTK+2.
 
 Features:
+=========
 * Simple and Clean Interface.
 * Library browser.
 * Library search. (search by artist, album, filename, etc)
@@ -16,27 +17,79 @@ Features:
 * Small memory footprint.
 
 Requirements:
+=============
 * gtk+-2.10.x
 * libmpd-0.12
 * libglade-2.6.x
 * taglib-1.4 (C bindings)
 
 Installation:
+=============
 Read the INSTALL file for details on installation procedure.
 
-Configuration:
+Configuration file:
 Gimmix stores its configuration settings in ~/.gimmixrc
 NOTE: The configuration file layout has changed in gimmix-0.3. Please
 delete your ~/.gimmixrc before running gimmix.
 
+Configuration options:
+======================
+
+Following is a list of valid configuration options for gimmix.
+As from version 0.3, the new config file layout will be followed.
+
+mpd_hostname = your_hostname
+(default is localhost)
+
+mpd_port = port_number
+(default is 6600)
+
+mpd_password = your_mpd_password
+leave blank for no password
+
+enable_systray = true or false
+Enable/Disable the system tray icon. Enable is true, Disable is false.
+
+music_directory = /foo/bar
+The directory where your music is stored. Actually, its the music directory 
+you specified in your mpd.conf. This setting is required for the tag editor
+to function properly.
+
+Make sure your .gimmixrc has all these configuration values set.
+
+Other optional configuration options:
+=====================================
+
+play_on_add = true or false
+if true, songs will automatically be played when you add them to the playlist.
+if false, songs will just be added to the playlist.
+default value is false.
+
+stop_on_exit = true or false
+if true, gimmix will stop playing when user quits gimmix.
+if false, gimmix will not stop playing when user quits gimmix.
+default value is false.
+
+full_view_mode = true or false
+if true, the playlist will be expanded by default when gimmix starts.
+if false, gimmix will start in compact mode.
+(This is automatically set by gimmix, so, its not necessary to set this value always)
+
+window_xpos and window_ypos
+x and y co-ordinates representing window position of gimmix.
+(These values are automatically set, so, its not necessary to set these values)
+
 Bugs:
+=====
 Report any bug(s) at the gimmix bug reports page at http://launchpad.net/products/gimmix
 with a detailed description and steps to reproduce the bug. Also mention
 your version of gtk+2, libmpd etc.
 
 Website:
+========
 http://gimmix.berlios.de/
 
 Author:
+=======
 Priyank M. Gosalia (http://priyank.one09.net/)
 

@@ -26,38 +26,3 @@ Note: gimmix stores its configuration settings in ~/.gimmixrc
 The configuration file layout has been changed in the new version,
 so, if you are upgrading from an older version of gimmix (gimmix-0.1)
 then make sure you delete your old .gimmixrc before starting gimmix.
-
-Configuration options:
-======================
-
-Following is a list of valid configuration options for gimmix.
-As from version 0.3, the new config file layout will be followed.
-
-mpd_hostname = your_hostname
-(default is localhost)
-
-mpd_port = port_number
-(default is 6600)
-
-mpd_password = your_mpd_password
-leave blank for no password
-
-enable_systray = true or false
-Enable/Disable the system tray icon. Enable is true, Disable is false.
-
-music_directory = /foo/bar
-The directory where your music is stored. Actually, its the music directory 
-you specified in your mpd.conf. This setting is required for the tag editor
-to function properly.
-
-play_on_add = true or false
-if true, songs will automatically be played when you add them to the playlist.
-if false, songs will just be added to the playlist.
-default value is false.
-
-stop_on_exit = true or false
-if true, gimmix will stop playing when user quits gimmix.
-if false, gimmix will not stop playing when user quits gimmix.
-default value is false.
-
-Make sure your .gimmixrc has all these configuration values set.
