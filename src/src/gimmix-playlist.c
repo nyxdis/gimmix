@@ -610,6 +610,7 @@ gimmix_update_playlists_treeview (void)
 	GdkPixbuf		*pls_pixbuf;
 	MpdData			*data;
 	gchar			*name;
+	gchar			*path;
 	
 	pls_treeview = glade_xml_get_widget (xml, "playlists_treeview");
 	pls_treemodel = gtk_tree_view_get_model (GTK_TREE_VIEW(pls_treeview));
@@ -617,10 +618,9 @@ gimmix_update_playlists_treeview (void)
 	
 	gtk_list_store_clear (pls_liststore);
 	
-	pls_pixbuf = gtk_widget_render_icon (GTK_WIDGET(pls_treeview),
-										GTK_STOCK_FILE,
-										GTK_ICON_SIZE_MENU,
-										NULL);
+	path = gimmix_get_full_image_path (GIMMIX_PLAYLIST_ICON);
+	pls_pixbuf	= gdk_pixbuf_new_from_file_at_size (path, 16, 16, NULL);
+	g_free (path);
 	
 	for (data = mpd_database_get_directory(gmo, NULL); data != NULL; data = mpd_data_get_next(data))
 	{
