@@ -167,7 +167,6 @@ gimmix_seek (MpdObj *mo, int seektime)
 	if (state == PLAY || state == PAUSE)
 	{
 		int i;
-		g_printf ("%d\n", seektime);
 		i = mpd_player_seek (mo, seektime);
 		if (i == MPD_OK)
 			ret = true;
