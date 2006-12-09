@@ -678,11 +678,6 @@ gimmix_save_window_pos (void)
 void
 gimmix_interface_cleanup (void)
 {	
-	/* destroy the main window */
-	GtkWidget *w = glade_xml_get_widget (xml, "main_window");
-	if (w)
-	gtk_widget_destroy (w);
-	
 	/* destroy system tray icon */
 	gimmix_destroy_systray_icon ();
 	

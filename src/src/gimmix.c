@@ -27,8 +27,8 @@
 #include "gimmix-interface.h"
 #include "gimmix-playlist.h"
 
-#define GLADE_FILE 		"/share/gimmix/gimmix.glade"
-#define GIMMIX_ICON 	"gimmix.png"
+#define GLADE_FILE		"/share/gimmix/gimmix.glade"
+#define GIMMIX_ICON		"gimmix.png"
 
 MpdObj 		*gmo = NULL;
 GladeXML 	*xml = NULL;
@@ -58,7 +58,7 @@ void
 gimmix_connect_error (void)
 {
 	GtkWidget		*error_dialog;
-	static gchar 	*error = "Gimmix couldn't connect to mpd. \n\nCheck whether mpd is running.\nAlso check that you have specified the proper hostname, port and password in ~/.gimmixrc";
+	static gchar	*error = "Gimmix couldn't connect to mpd. \n\nCheck whether mpd is running.\nAlso check that you have specified the proper hostname, port and password in ~/.gimmixrc";
 	
 	error_dialog = gtk_message_dialog_new_with_markup (NULL,
 							GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -89,7 +89,7 @@ error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog)
 void
 gimmix_about_show (void)
 {
- 	GdkPixbuf 		*about_pixbuf;
+	GdkPixbuf		*about_pixbuf;
 	gchar			*path;
 	static gchar	*license = 
 	("Gimmix is free software; you can redistribute it and/or "
@@ -173,6 +173,8 @@ main (int argc, char *argv[])
 	
 	gtk_main ();
 	exit_cleanup ();
+	
+	return 0;
 }
 
 void
@@ -183,6 +185,4 @@ exit_cleanup ()
 	if (gmo != NULL)
 		gimmix_disconnect (gmo);
 	gimmix_config_free ();
-
-	exit (0);
 }
