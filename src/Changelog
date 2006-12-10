@@ -1,4 +1,4 @@
-Version 0.3 (xx-12-2006)
+Version 0.3 (10-12-2006)
 * Replaced the old libconfuse based config system with wejpconfig (written by Johannes Heimansberg)
 * Configuration file layout is changed completely.
 * Fixed a bad bad bug on x86_64 where gimmix crashed if compiled with -O2 flags.
