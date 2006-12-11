@@ -40,7 +40,6 @@ gimmix_mpd_connect (void)
 	
 	if (mpd_connect (mo) == MPD_OK)
 	{
-		mpd_signal_connect_status_changed (mo, (StatusChangedCallback)gimmix_status_changed, NULL);
 		return mo;
 	}
 	
@@ -273,37 +272,6 @@ gimmix_disconnect (MpdObj *mo)
 	{
 		mpd_free (mo);
 	}
-	
-	return;
-}
-
-void
-gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
-{
-	if (id&MPD_CST_SONGID)
-		song_is_changed = true;
-	else
-		song_is_changed = false;
-		
-	if (id&MPD_CST_PLAYLIST)
-		playlist_is_changed = true;
-	else
-		playlist_is_changed = false;
-		
-	if (id&MPD_CST_VOLUME)
-		volume_is_changed = true;
-	else
-		volume_is_changed = false;
-	
-	if (id&MPD_CST_RANDOM)
-		shuffle_is_changed = true;
-	else
-		shuffle_is_changed = false;
-	
-	if (id&MPD_CST_REPEAT)
-		repeat_is_changed = true;
-	else
-		repeat_is_changed = false;
 	
 	return;
 }

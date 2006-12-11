@@ -46,6 +46,10 @@ static void			gimmix_update_repeat (void);
 static void			gimmix_update_shuffle (void);
 static gboolean		is_user_searching (void);
 
+/* status flags */
+/* set when song is changed */
+static bool song_is_changed;
+
 /* Callbacks */
 static int		cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data);
 static void		cb_play_button_clicked 	(GtkWidget *widget, gpointer data);
@@ -61,6 +65,31 @@ static void 	cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
 static void 	cb_volume_scale_changed (GtkWidget *widget, gpointer data);
 static void		cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
 static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata);
+
+static void gimmix_status_changed (MpdObj *mo, ChangedStatusType id);
+
+static void
+gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
+{
+	if (id&MPD_CST_SONGID)
+		song_is_changed = true;
+	else
+		song_is_changed = false;
+		
+	if (id&MPD_CST_PLAYLIST)
+		gimmix_update_current_playlist ();
+		
+	if (id&MPD_CST_VOLUME)
+		gimmix_update_volume ();
+	
+	if (id&MPD_CST_RANDOM)
+		gimmix_update_shuffle ();
+	
+	if (id&MPD_CST_REPEAT)
+		gimmix_update_repeat ();
+	
+	return;
+}
 
 void
 gimmix_init (void)
@@ -160,6 +189,9 @@ gimmix_init (void)
 
 	g_timeout_add (300, (GSourceFunc)gimmix_timer, NULL);
 
+	/* connect the main mpd callback */
+	mpd_signal_connect_status_changed (gmo, (StatusChangedCallback)gimmix_status_changed, NULL);
+	
 	/* initialize playlist and tag editor */
 	gimmix_playlist_init ();
 	gimmix_tag_editor_init ();
@@ -246,30 +278,6 @@ gimmix_timer (void)
 	{
 		gimmix_set_song_info ();
 		song_is_changed = false;
-	}
-	
-	if (playlist_is_changed)
-	{
-		gimmix_update_current_playlist ();
-		playlist_is_changed = false;
-	}
-	
-	if (volume_is_changed)
-	{
-		gimmix_update_volume ();
-		volume_is_changed = false;
-	}
-	
-	if (repeat_is_changed)
-	{
-		gimmix_update_repeat ();
-		repeat_is_changed = false;
-	}
-	
-	if (shuffle_is_changed)
-	{
-		gimmix_update_shuffle ();
-		shuffle_is_changed = false;
 	}
 	
 	if (status == new_status)

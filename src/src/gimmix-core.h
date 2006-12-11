@@ -24,20 +24,6 @@ typedef enum { 	PLAY = 1,
 				STOP,
 				UNKNOWN,
 } GimmixStatus;
-	
-/* status flags */
-/* set when song is changed */
-bool song_is_changed;
-
-/* set when playlist is changed */
-bool playlist_is_changed;
-
-/* set when voulume is changed */
-bool volume_is_changed;
-
-/* set when shuffle/repeat is toggled */
-bool shuffle_is_changed;
-bool repeat_is_changed;
 
 /* create a mpd object and connect to mpd using the conf */
 MpdObj * gimmix_mpd_connect (void);
@@ -67,9 +53,5 @@ GimmixStatus gimmix_get_status (MpdObj *);
 /* repeat / shuffle status functions */
 bool is_gimmix_repeat (MpdObj *);
 bool is_gimmix_shuffle (MpdObj *);
-
-/* Status changed callback */
-/* Monitors song, volume, and playlist changes */
-void gimmix_status_changed (MpdObj *, ChangedStatusType);
 
 #endif
