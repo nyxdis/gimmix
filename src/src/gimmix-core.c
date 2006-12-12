@@ -22,6 +22,7 @@
  */
 
 #include "gimmix-core.h"
+#include "gimmix.h"
 
 extern ConfigFile 	conf;
 
@@ -170,7 +171,10 @@ gimmix_seek (MpdObj *mo, int seektime)
 		if (i == MPD_OK)
 			ret = true;
 		else
+		{
+			printf ("Error: %d: %s\n", i, _("Status Failed."));
 			ret = false;
+		}
 	}
 	else
 	ret = false;

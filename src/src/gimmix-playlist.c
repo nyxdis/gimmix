@@ -55,6 +55,7 @@ static void		gimmix_library_popup_menu (void);
 static void		gimmix_playlists_popup_menu (void);
 static gchar*	gimmix_path_get_parent_dir (gchar *);
 static void 	gimmix_load_playlist (gchar *);
+static void		gimmix_display_total_playlist_time (void);
 
 /* Callbacks */
 /* Current playlist callbacks */
@@ -103,9 +104,9 @@ gimmix_playlist_init (void)
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
 	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (current_playlist_treeview),
 							-1,
-							"Song",
+							_("Song"),
 							current_playlist_renderer,
-							"text", 0,
+							"markup", 0,
 							NULL);
 	current_playlist_store = gtk_list_store_new (3,
 												G_TYPE_STRING, 	/* name */
@@ -159,11 +160,13 @@ gimmix_update_current_playlist (void)
 	GtkLabel		*status_label;
 	gchar			*status_markup;
 	gint 			new;
-	gint 			time = 0;
 	MpdData 		*data;
+	gint			current_song_id = -1;
 
 	new = mpd_playlist_get_playlist_id (gmo);
 	data = mpd_playlist_get_changes (gmo, 0);
+
+	current_song_id = mpd_player_get_current_song_id (gmo);
 	
 	status_label = GTK_LABEL(glade_xml_get_widget (xml, "gimmix_status"));
 	current_playlist_model = gtk_tree_view_get_model (GTK_TREE_VIEW(current_playlist_treeview));
@@ -174,18 +177,34 @@ gimmix_update_current_playlist (void)
 	{
 		gchar 	*title;
 		
-		if (data->song->title != NULL)
+		if (data->song->id == current_song_id)
 		{
-			if (data->song->artist)
-				title = g_strdup_printf ("%s - %s", data->song->artist, data->song->title);
+			if (data->song->title != NULL)
+			{
+				if (data->song->artist)
+				title = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s - %s</span>", data->song->artist, data->song->title);
+				else
+					title = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s</span>", data->song->title);
+			}
 			else
-				title = g_strdup_printf ("%s", data->song->title);
+			{
+				title = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s</span>", data->song->file);
+			}
 		}
 		else
-		{
-			title = g_strdup (data->song->file);
+		{	
+			if (data->song->title != NULL)
+			{
+				if (data->song->artist)
+				title = g_markup_printf_escaped ("%s - %s", data->song->artist, data->song->title);
+				else
+					title = g_markup_printf_escaped ("%s", data->song->title);
+			}
+			else
+			{
+				title = g_markup_printf_escaped (data->song->file);
+			}
 		}
-		
 		gtk_list_store_append (current_playlist_store, &current_playlist_iter);
 		gtk_list_store_set (current_playlist_store, 
 							&current_playlist_iter,
@@ -193,26 +212,46 @@ gimmix_update_current_playlist (void)
 							1, data->song->file,
 							2, data->song->id,
 							-1);
-		time += data->song->time;
 		data = mpd_data_get_next (data);
 		g_free (title);
 	}
+	gtk_tree_view_set_model (GTK_TREE_VIEW (current_playlist_treeview), current_playlist_model);
+	gimmix_display_total_playlist_time ();
+	
+	mpd_data_free (data);
+	
+	return;
+}
+
+static void
+gimmix_display_total_playlist_time (void)
+{
+	GtkWidget 	*label;
+	MpdData 	*data = NULL;
+	gchar		*time_string;
+	gint		time = 0;
+	
+	if ((data = mpd_playlist_get_changes (gmo, 0)) == NULL)
+		return;
+	
+	label = glade_xml_get_widget (xml, "gimmix_status");
+	while (data != NULL)
+	{
+		time += data->song->time;
+		data = mpd_data_get_next (data);
+	}
+	
 	if (time > 0)
 	{
-		gtk_widget_show (GTK_WIDGET(status_label));
-		//status_markup = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s%d %s</span>", _("Total Playlist Time: "), time/60, _("minutes"));
-		status_markup = g_strdup_printf ("%s%d %s", _("Total Playlist Time: "), time/60, _("minutes"));
-		//gtk_label_set_markup (status_label, status_markup);
-		gtk_label_set_text (status_label, status_markup);
-		g_free (status_markup);
+		time_string = g_strdup_printf ("%s%d %s", _("Total Playlist Time: "), time/60, _("minutes"));
+		gtk_label_set_text (GTK_LABEL(label), time_string);
+		gtk_widget_show (label);
+		g_free (time_string);
 	}
 	else
 	{
-		gtk_widget_hide (GTK_WIDGET(status_label));
+		gtk_widget_hide (label);
 	}
-	gtk_tree_view_set_model (GTK_TREE_VIEW (current_playlist_treeview), current_playlist_model);
-	
-	mpd_data_free (data);
 	
 	return;
 }
@@ -593,7 +632,7 @@ cb_library_dir_activated (GtkTreeView *treeview)
 			g_free (path);
 		}
 		
-		list = list->next;
+		list = g_list_next (list);
 	}
 	
 	data = mpd_playlist_get_changes (gmo, mpd_playlist_get_playlist_id(gmo));
@@ -869,6 +908,7 @@ gimmix_current_playlist_remove_song (void)
 	}
 	
 	mpd_status_update (gmo);
+	gimmix_update_current_playlist ();
 	
 	/* free the list */
 	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
@@ -1035,17 +1075,12 @@ void
 gimmix_library_update (GtkWidget *widget, gpointer data)
 {
 	GtkWidget 		*label;
-	const gchar 	*old_text = NULL;
 	
 	label = glade_xml_get_widget (xml, "gimmix_status");
-	if (GTK_WIDGET_VISIBLE(label))
-	{
-		old_text = gtk_label_get_text (GTK_LABEL(label));
-	}
 	mpd_database_update_dir (gmo, "/");
 	gtk_label_set_text (GTK_LABEL(label), _("Updating Library..."));
 	gtk_widget_show (label);
-	g_timeout_add (300, (GSourceFunc)gimmix_update_player_status, (gpointer)old_text);
+	g_timeout_add (300, (GSourceFunc)gimmix_update_player_status, NULL);
 
 	return;
 }
@@ -1057,12 +1092,7 @@ gimmix_update_player_status (gpointer data)
 		return TRUE;
 	else
 	{
-		GtkWidget *label = glade_xml_get_widget(xml,"gimmix_status");
-		if (data == NULL)
-			gtk_widget_hide (GTK_WIDGET(label));
-		else
-			gtk_label_set_text (GTK_LABEL(label), (gchar *)data);
-			
+		gimmix_display_total_playlist_time ();		
 		gimmix_update_library_with_dir ("/");
 		return FALSE;
 	}

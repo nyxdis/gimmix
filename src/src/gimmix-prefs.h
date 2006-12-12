@@ -7,4 +7,7 @@
 /* Display the preferences dialog */
 void gimmix_prefs_dialog_show (void);
 
+/* Initialize preferences dialog widget */
+void gimmix_prefs_init (void);
+
 #endif

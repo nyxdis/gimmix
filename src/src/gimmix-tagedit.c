@@ -32,6 +32,18 @@ extern ConfigFile	conf;
 TagLib_File 	*file = NULL;
 TagLib_Tag 		*tag = NULL;
 
+GtkWidget	*tag_title;
+GtkWidget	*tag_artist;
+GtkWidget	*tag_album;
+GtkWidget	*tag_comment;
+GtkWidget	*tag_track_spin;
+GtkWidget	*tag_year_spin;
+GtkWidget	*tag_genre;
+GtkWidget	*tag_info_bitrate;
+GtkWidget	*tag_info_channels;
+GtkWidget	*tag_info_length;
+GtkWidget	*tag_editor_window;
+
 /* Save action */
 static void	gimmix_tag_editor_save (GtkWidget *button, gpointer data);
 
@@ -50,6 +62,18 @@ void
 gimmix_tag_editor_init (void)
 {
 	GtkWidget *widget;
+	
+	tag_editor_window = glade_xml_get_widget (xml, "tag_editor_window");
+	tag_title = glade_xml_get_widget (xml,"entry_title");
+	tag_artist = glade_xml_get_widget (xml,"entry_artist");
+	tag_album = glade_xml_get_widget (xml,"entry_album");
+	tag_comment = glade_xml_get_widget (xml,"entry_comment");
+	tag_year_spin = glade_xml_get_widget (xml, "tag_year");
+	tag_track_spin = glade_xml_get_widget (xml, "tag_track");
+	tag_genre = glade_xml_get_widget (xml,"combo_genre");
+	tag_info_length = glade_xml_get_widget (xml, "info_length");
+	tag_info_channels = glade_xml_get_widget (xml, "info_channels");
+	tag_info_bitrate = glade_xml_get_widget (xml, "info_bitrate");
 	
 	widget = glade_xml_get_widget (xml, "tag_editor_save");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(gimmix_tag_editor_save), NULL);
@@ -87,35 +111,31 @@ gimmix_tag_editor_populate (const gchar *song)
 	tag = taglib_file_tag (file);
 	properties = taglib_file_audioproperties (file);
 	
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON(glade_xml_get_widget (xml, "tag_year")), taglib_tag_year(tag));
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON(glade_xml_get_widget (xml, "tag_track")), taglib_tag_track(tag));
-	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget (xml,"entry_title")), taglib_tag_title(tag));
-	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget (xml,"entry_artist")), taglib_tag_artist(tag));
-	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget (xml,"entry_album")), taglib_tag_album(tag));
-	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget (xml, "entry_comment")), taglib_tag_comment(tag));
-
-	widget = glade_xml_get_widget (xml,"combo_genre");
-	gtk_combo_box_append_text (GTK_COMBO_BOX(widget), taglib_tag_genre(tag));
-	genre_model = gtk_combo_box_get_model (GTK_COMBO_BOX(widget));
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON(tag_year_spin), taglib_tag_year(tag));
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON(tag_track_spin), taglib_tag_track(tag));
+	gtk_entry_set_text (GTK_ENTRY(tag_title), taglib_tag_title(tag));
+	gtk_entry_set_text (GTK_ENTRY(tag_artist), taglib_tag_artist(tag));
+	gtk_entry_set_text (GTK_ENTRY(tag_album), taglib_tag_album(tag));
+	gtk_entry_set_text (GTK_ENTRY(tag_comment), taglib_tag_comment(tag));
+	
+	gtk_combo_box_append_text (GTK_COMBO_BOX(tag_genre), taglib_tag_genre(tag));
+	genre_model = gtk_combo_box_get_model (GTK_COMBO_BOX(tag_genre));
 	n = gtk_tree_model_iter_n_children (genre_model, NULL);
-	gtk_combo_box_set_active (GTK_COMBO_BOX(widget), n-1);
+	gtk_combo_box_set_active (GTK_COMBO_BOX(tag_genre), n-1);
 
 	/* Audio Information */
-	widget = glade_xml_get_widget (xml, "info_length");
 	sec = taglib_audioproperties_length(properties) % 60;
     min = (taglib_audioproperties_length(properties) - sec) / 60;
 	info = g_strdup_printf ("%02i:%02i", min, sec);
-	gtk_label_set_text (GTK_LABEL(widget), info);
+	gtk_label_set_text (GTK_LABEL(tag_info_length), info);
 	g_free (info);
 
-	widget = glade_xml_get_widget (xml, "info_bitrate");
 	info = g_strdup_printf ("%i Kbps", taglib_audioproperties_bitrate(properties));
-	gtk_label_set_text (GTK_LABEL(widget), info);
+	gtk_label_set_text (GTK_LABEL(tag_info_bitrate), info);
 	g_free (info);
 	
-	widget = glade_xml_get_widget (xml, "info_channels");
 	info = g_strdup_printf ("%i", taglib_audioproperties_channels(properties));
-	gtk_label_set_text (GTK_LABEL(widget), info);
+	gtk_label_set_text (GTK_LABEL(tag_info_channels), info);
 	g_free (info);
 	
 	taglib_tag_free_strings ();
@@ -126,12 +146,10 @@ gimmix_tag_editor_populate (const gchar *song)
 static void
 gimmix_tag_editor_close (GtkWidget *widget, gpointer data)
 {
-	GtkWidget *window;
-    window = glade_xml_get_widget (xml, "tag_editor_window");
 	taglib_tag_free_strings ();
     if (file)
     	taglib_file_free (file);
-    gtk_widget_hide (window);
+    gtk_widget_hide (tag_editor_window);
     
     return;
 }
@@ -148,28 +166,17 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 	const gchar *album;
 	const gchar *comment;
 
-	widget = glade_xml_get_widget (xml, "tag_year");
-	year = gtk_spin_button_get_value (GTK_SPIN_BUTTON(widget));
+	year = gtk_spin_button_get_value (GTK_SPIN_BUTTON(tag_year_spin));
 	taglib_tag_set_year (tag, year);
 
-	widget = glade_xml_get_widget (xml, "tag_track");
-	track = gtk_spin_button_get_value (GTK_SPIN_BUTTON(widget));
+	track = gtk_spin_button_get_value (GTK_SPIN_BUTTON(tag_track_spin));
 	taglib_tag_set_track (tag, track);
 
-	widget = glade_xml_get_widget (xml, "entry_title");
-	title = gtk_entry_get_text (GTK_ENTRY(widget));
-
-	widget = glade_xml_get_widget (xml, "entry_artist");
-	artist = gtk_entry_get_text (GTK_ENTRY(widget));
-
-	widget = glade_xml_get_widget (xml, "entry_album");
-	album = gtk_entry_get_text (GTK_ENTRY(widget));
-
-	widget = glade_xml_get_widget (xml, "entry_comment");
-	comment = gtk_entry_get_text (GTK_ENTRY(widget));
-
-	widget = glade_xml_get_widget (xml,"combo_genre");
-	genre = gtk_combo_box_get_active_text (GTK_COMBO_BOX(widget));
+	title = gtk_entry_get_text (GTK_ENTRY(tag_title));
+	artist = gtk_entry_get_text (GTK_ENTRY(tag_artist));
+	album = gtk_entry_get_text (GTK_ENTRY(tag_album));
+	comment = gtk_entry_get_text (GTK_ENTRY(tag_comment));
+	genre = gtk_combo_box_get_active_text (GTK_COMBO_BOX(tag_genre));
 
 	taglib_tag_set_title (tag, title);
 	taglib_tag_set_artist (tag, artist);
@@ -217,14 +224,13 @@ gimmix_tag_editor_show (void)
 	gchar			*song;
 	
 	status = gimmix_get_status (gmo);
-	window = glade_xml_get_widget (xml, "tag_editor_window");
 	
 	if (status == PLAY || status == PAUSE)
 	{
 		info = gimmix_get_song_info (gmo);
 		song = g_strdup_printf ("%s/%s", cfg_get_key_value(conf, "music_directory"), info->file);
 		if (gimmix_tag_editor_populate (song))
-			gtk_widget_show (GTK_WIDGET(window));
+			gtk_widget_show (GTK_WIDGET(tag_editor_window));
 		else
 		{	
 			g_warning (_("Invalid music directory."));

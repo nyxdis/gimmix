@@ -32,13 +32,26 @@
 
 #define GIMMIX_APP_ICON  	"gimmix_logo_small.png"
 
-GimmixStatus 		status;
-GtkWidget 			*progress = NULL;
-GtkTooltips 		*play_button_tooltip = NULL;
+GimmixStatus 	status;
+GtkWidget		*main_window;
+GtkWidget 		*progress = NULL;
+GtkWidget		*shuffle_toggle_button;
+GtkWidget		*repeat_toggle_button;
+GtkWidget		*volume_scale;
+GtkWidget		*song_label;
+GtkWidget		*artist_label;
+GtkWidget		*album_label;
+GtkWidget		*search_entry;
+GtkWidget		*playlist_expander;
+GtkWidget		*image_play;
+GtkWidget		*play_button;
+GtkTooltips 	*play_button_tooltip = NULL;
 
 extern MpdObj 		*gmo;
 extern GladeXML 	*xml;
 extern ConfigFile	conf;
+
+extern GtkWidget	*current_playlist_treeview;
 
 static gboolean 	gimmix_timer (void);
 static void			gimmix_update_volume (void);
@@ -67,26 +80,70 @@ static void		cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
 static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata);
 
 static void gimmix_status_changed (MpdObj *mo, ChangedStatusType id);
+static void	gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata);
 
 static void
 gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 {
 	if (id&MPD_CST_SONGID)
+	{	
 		song_is_changed = true;
+		gimmix_update_current_playlist ();
+	}
 	else
 		song_is_changed = false;
-		
+
+	if (id&MPD_CST_STATE)
+	{
+		int state = mpd_player_get_state (gmo);
+		if (state == MPD_PLAYER_PLAY)
+		{
+			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
+			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
+		}
+		if (state == MPD_PLAYER_PAUSE)
+		{
+			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
+			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Play <x or c>"), NULL);
+		}
+		if (state == MPD_PLAYER_STOP)
+		{
+			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
+			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
+			gimmix_show_ver_info ();
+			
+			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
+			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Play <x or c>"), NULL);
+		}
+		g_object_ref_sink (play_button_tooltip);
+		gimmix_update_current_playlist ();
+	}
+	
 	if (id&MPD_CST_PLAYLIST)
 		gimmix_update_current_playlist ();
-		
+
 	if (id&MPD_CST_VOLUME)
 		gimmix_update_volume ();
-	
+
 	if (id&MPD_CST_RANDOM)
 		gimmix_update_shuffle ();
-	
+
 	if (id&MPD_CST_REPEAT)
 		gimmix_update_repeat ();
+
+	return;
+}
+
+static void
+gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
+{
+	if (id&MPD_STATUS_FAILED || id&MPD_STATS_FAILED || id&MPD_SERVER_ERROR || id&MPD_FATAL_ERROR)
+	{
+		mpd_free (gmo);
+		gmo = gimmix_mpd_connect ();
+		mpd_signal_connect_status_changed (gmo, (StatusChangedCallback)gimmix_status_changed, NULL);
+		mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_mpd_error, NULL);
+	}
 	
 	return;
 }
@@ -97,7 +154,6 @@ gimmix_init (void)
 	GtkWidget 		*widget;
 	GtkWidget		*image;
 	GtkWidget		*progressbox;
-	GtkWidget		*main_window;
 	GtkAdjustment	*vol_adj;
 	GdkPixbuf		*app_icon;
 	gchar			*path;
@@ -134,23 +190,31 @@ gimmix_init (void)
 	
 	g_signal_connect (G_OBJECT(glade_xml_get_widget (xml, "pref_button")), "clicked", G_CALLBACK(cb_pref_button_clicked), NULL);
 	
-	widget = glade_xml_get_widget (xml, "repeat_toggle");
-	if (is_gimmix_repeat (gmo))
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
-	g_signal_connect (G_OBJECT(widget), "toggled", G_CALLBACK(cb_repeat_button_toggled), NULL);
+	shuffle_toggle_button = glade_xml_get_widget (xml, "shuffle_toggle");
+	repeat_toggle_button = glade_xml_get_widget (xml, "repeat_toggle");
+	volume_scale = glade_xml_get_widget (xml, "volume_scale");
+	playlist_expander = glade_xml_get_widget (xml, "playlist_expander");
+	song_label = glade_xml_get_widget (xml, "song_label");
+	artist_label = glade_xml_get_widget (xml, "artist_label");
+	album_label = glade_xml_get_widget (xml, "album_label");
+	search_entry = glade_xml_get_widget (xml, "search_label");
+	play_button = glade_xml_get_widget (xml, "play_button");
+	image_play = glade_xml_get_widget (xml, "image_play");
 	
-	widget = glade_xml_get_widget (xml, "shuffle_toggle");
+	if (is_gimmix_repeat (gmo))
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(repeat_toggle_button), TRUE);
+	g_signal_connect (G_OBJECT(repeat_toggle_button), "toggled", G_CALLBACK(cb_repeat_button_toggled), NULL);
+	
 	if (is_gimmix_shuffle (gmo))
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(widget), TRUE);
-	g_signal_connect (G_OBJECT(widget), "toggled", G_CALLBACK(cb_shuffle_button_toggled), NULL);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(shuffle_toggle_button), TRUE);
+	g_signal_connect (G_OBJECT(shuffle_toggle_button), "toggled", G_CALLBACK(cb_shuffle_button_toggled), NULL);
 
 	widget = glade_xml_get_widget (xml, "info_button");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(cb_info_button_clicked), NULL);
 
-	widget = glade_xml_get_widget (xml, "volume_scale");
-	g_signal_connect(G_OBJECT(widget), "value_changed", G_CALLBACK(cb_volume_scale_changed), NULL);
-	g_signal_connect (G_OBJECT(widget), "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
-	vol_adj = gtk_range_get_adjustment (GTK_RANGE(widget));
+	g_signal_connect(G_OBJECT(volume_scale), "value_changed", G_CALLBACK(cb_volume_scale_changed), NULL);
+	g_signal_connect (G_OBJECT(volume_scale), "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
+	vol_adj = gtk_range_get_adjustment (GTK_RANGE(volume_scale));
 	gtk_adjustment_set_value (GTK_ADJUSTMENT(vol_adj), mpd_status_get_volume (gmo));
 
 	progress = glade_xml_get_widget (xml,"progress");
@@ -165,8 +229,7 @@ gimmix_init (void)
 	}
 	if (strncasecmp(cfg_get_key_value(conf, "full_view_mode"), "true", 4) == 0)
 	{
-		widget = glade_xml_get_widget (xml, "playlist_expander");
-		gtk_expander_set_expanded (GTK_EXPANDER(widget), TRUE);
+		gtk_expander_set_expanded (GTK_EXPANDER(playlist_expander), TRUE);
 	}
 
 	status = gimmix_get_status (gmo);
@@ -189,13 +252,17 @@ gimmix_init (void)
 
 	g_timeout_add (300, (GSourceFunc)gimmix_timer, NULL);
 
-	/* connect the main mpd callback */
+	/* connect the main mpd callbacks */
 	mpd_signal_connect_status_changed (gmo, (StatusChangedCallback)gimmix_status_changed, NULL);
+	mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_mpd_error, NULL);
 	
 	/* initialize playlist and tag editor */
 	gimmix_playlist_init ();
 	gimmix_tag_editor_init ();
 	gimmix_update_current_playlist ();
+	
+	/* initialize preferences dialog */
+	gimmix_prefs_init ();
 	
 	/* show the main window */
 	gtk_widget_show (main_window);
@@ -242,35 +309,32 @@ cb_gimmix_key_press (GtkWidget   *widget,
 				result = TRUE;
 				break;
 			case GDK_r: /* REPEAT */
-				button = glade_xml_get_widget(xml, "repeat_toggle");
-				state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(button));
+				state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(repeat_toggle_button));
 				if (state == TRUE)
-					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), FALSE);
+					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(repeat_toggle_button), FALSE);
 				else
-					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), TRUE);
+					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(repeat_toggle_button), TRUE);
 				result = TRUE;
 				break;
 			case GDK_s: /* SHUFFLE */
-				button = glade_xml_get_widget(xml, "shuffle_toggle");
-				state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(button));
+				state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(shuffle_toggle_button));
 				if (state == TRUE)
-					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), FALSE);
+					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(shuffle_toggle_button), FALSE);
 				else
-					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), TRUE);
+					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(shuffle_toggle_button), TRUE);
 				result = TRUE;
 				break;
 		}
 	}
 	return result;
 }
-
+	
 static gboolean
 gimmix_timer (void)
 {
 	gchar 	time[15];
 	int 	new_status;
 	float 	fraction;
-	static	gboolean stop;
 
 	new_status = gimmix_get_status (gmo);
 	
@@ -288,37 +352,11 @@ gimmix_timer (void)
 			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), fraction);
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), time);
 		}
-		else if (status == STOP)
-		{
-			if (stop == true)
-			{
-				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
-				gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
-				gimmix_show_ver_info ();
-				stop = false;
-			}
-		}
 		return TRUE;
 	}
 	else
 	{
-		GtkWidget 	*button;
-		
-		button = glade_xml_get_widget (xml, "play_button");
 		status = new_status;
-		if (status == PLAY)
-		{
-			gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_play")), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
-			gtk_tooltips_set_tip (play_button_tooltip, button, _("Pause <x or c>"), NULL);
-			stop = true;
-		}
-		else if (status == PAUSE || status == STOP)
-		{
-			gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_play")), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
-			gtk_tooltips_set_tip (play_button_tooltip, button, _("Play <x or c>"), NULL);
-		}
-		
-		g_object_ref_sink (play_button_tooltip);
 		return TRUE;
 	}
 }
@@ -326,8 +364,7 @@ gimmix_timer (void)
 static void
 cb_prev_button_clicked (GtkWidget *widget, gpointer data)
 {
-	if (gimmix_prev(gmo))
-		gimmix_set_song_info ();
+	gimmix_prev (gmo);
 
 	return;
 }
@@ -335,8 +372,7 @@ cb_prev_button_clicked (GtkWidget *widget, gpointer data)
 static void
 cb_next_button_clicked (GtkWidget *widget, gpointer data)
 {
-	if (gimmix_next(gmo))
-		gimmix_set_song_info ();
+	gimmix_next (gmo);
 	
 	return;
 }
@@ -344,28 +380,14 @@ cb_next_button_clicked (GtkWidget *widget, gpointer data)
 static void
 cb_play_button_clicked (GtkWidget *widget, gpointer data)
 {
-	if (gimmix_play(gmo))
-	{
-		gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_play")), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
-		gimmix_set_song_info ();
-	}
-	else
-	{
-		gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_play")), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
-	}
-	
+	gimmix_play (gmo);
 	return;
 }
 
 static void
 cb_stop_button_clicked (GtkWidget *widget, gpointer data)
 {
-	if (gimmix_stop(gmo))
-	{
-		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
-		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
-		gimmix_show_ver_info ();
-	}
+	gimmix_stop (gmo);
 	
 	return;
 }
@@ -464,14 +486,11 @@ cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event)
 
 static void
 gimmix_update_repeat (void)
-{
-	GtkWidget *button;
-	
-	button = glade_xml_get_widget (xml, "repeat_toggle");
+{	
 	if (is_gimmix_repeat (gmo))
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(repeat_toggle_button), TRUE);
 	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), FALSE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(repeat_toggle_button), FALSE);
 	
 	return;
 }
@@ -479,13 +498,10 @@ gimmix_update_repeat (void)
 static void
 gimmix_update_shuffle (void)
 {
-	GtkWidget *button;
-	
-	button = glade_xml_get_widget (xml, "shuffle_toggle");
 	if (is_gimmix_shuffle (gmo))
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(shuffle_toggle_button), TRUE);
 	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(button), FALSE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(shuffle_toggle_button), FALSE);
 	
 	return;
 }
@@ -494,11 +510,9 @@ static void
 gimmix_update_volume ()
 {
 	gint 			volume;
-	GtkWidget		*widget;
 	GtkAdjustment	*volume_adj;
 	
-	widget = glade_xml_get_widget (xml, "volume_scale");
-	volume_adj = gtk_range_get_adjustment (GTK_RANGE(widget));
+	volume_adj = gtk_range_get_adjustment (GTK_RANGE(volume_scale));
 	volume = mpd_status_get_volume (gmo);
 	gtk_adjustment_set_value (GTK_ADJUSTMENT(volume_adj), volume);
 	
@@ -518,14 +532,9 @@ cb_gimmix_progress_seek (GtkWidget *progressbox, GdkEvent *event)
 	seektime = (gdouble)x/allocation.width;
 	newtime = seektime * totaltime;
 	
-	/* This is a bad bad libmpd/mpd bug */
 	/* When user seeks through a _BIG_ value, the connection gets dropped, and
 	   the client needs to reconnect to mpd */
-	if (gimmix_seek (gmo, newtime) == false)
-	{
-		mpd_free (gmo);
-		gmo = gimmix_mpd_connect ();
-	}
+	gimmix_seek (gmo, newtime);
 
 	return;
 }
@@ -537,17 +546,16 @@ gimmix_window_visible_toggle (void)
 	static int y;
 	GtkWidget *window;
 
-	window = glade_xml_get_widget (xml, "main_window");
-	if( !GTK_WIDGET_VISIBLE (window) )
+	if( !GTK_WIDGET_VISIBLE (main_window) )
 	{	
-		gtk_window_move (GTK_WINDOW(window), x, y);
-		gtk_widget_show (GTK_WIDGET(window));
-		gtk_window_present (GTK_WINDOW(window));
+		gtk_window_move (GTK_WINDOW(main_window), x, y);
+		gtk_widget_show (GTK_WIDGET(main_window));
+		gtk_window_present (GTK_WINDOW(main_window));
 	}
 	else
 	{	
-		gtk_window_get_position (GTK_WINDOW(window), &x, &y);
-		gtk_widget_hide (GTK_WIDGET(window));
+		gtk_window_get_position (GTK_WINDOW(main_window), &x, &y);
+		gtk_widget_hide (GTK_WIDGET(main_window));
 	}
 
 	return;
@@ -569,21 +577,13 @@ gimmix_set_song_info (void)
 	gchar 		*markup;
 	gchar 		*title;
 	SongInfo 	*song = NULL;
-	GtkWidget 	*window;
-	GtkWidget	*artist_label;
-	GtkWidget	*album_label;
-	GtkWidget	*song_label;
 	
-	song 			= gimmix_get_song_info (gmo);
-	window 			= glade_xml_get_widget (xml, "main_window");
-	song_label 		= glade_xml_get_widget (xml,"song_label");
-	artist_label 	= glade_xml_get_widget (xml,"artist_label");
-	album_label 	= glade_xml_get_widget (xml,"album_label");
+	song = gimmix_get_song_info (gmo);
 		
 	if (song->title != NULL)
 	{
 		title = g_strdup_printf ("%s - %s", "Gimmix", song->title);
-		gtk_window_set_title (GTK_WINDOW(window), title);
+		gtk_window_set_title (GTK_WINDOW(main_window), title);
 		g_free (title);
 		markup = g_markup_printf_escaped ("<span size=\"large\"weight=\"bold\"><i>%s</i></span>", song->title);
 	}
@@ -592,7 +592,7 @@ gimmix_set_song_info (void)
 		title = g_path_get_basename (song->file);
 		markup = g_markup_printf_escaped ("<span size=\"large\"weight=\"bold\"><i>%s</i></span>", title);
 		g_free (title);
-		gtk_window_set_title (GTK_WINDOW(window), "Gimmix");
+		gtk_window_set_title (GTK_WINDOW(main_window), "Gimmix");
 	}
 	gtk_label_set_markup (GTK_LABEL(song_label), markup);
 	gtk_label_set_text (GTK_LABEL(artist_label), song->artist);
@@ -612,26 +612,17 @@ gimmix_show_ver_info (void)
 {
 	gchar 		*markup;
 	gchar 		*appver;
-	GtkWidget	*artist_label;
-	GtkWidget	*album_label;
-	GtkWidget	*song_label;
-	GtkWidget	*window;
-
-	song_label = glade_xml_get_widget (xml, "song_label");
-	artist_label = glade_xml_get_widget (xml, "artist_label");
-	album_label = glade_xml_get_widget (xml, "album_label");
-	window = glade_xml_get_widget (xml, "main_window");
 
 	appver = g_strdup_printf ("%s %s", APPNAME, VERSION);
 	markup = g_markup_printf_escaped ("<span size=\"large\"weight=\"bold\">%s</span>", appver);
 	gtk_label_set_markup (GTK_LABEL(song_label), markup);
 	gtk_label_set_text (GTK_LABEL(artist_label), APPURL);
 	gtk_label_set_text (GTK_LABEL(album_label), NULL);
-	gtk_window_set_title (GTK_WINDOW(window), APPNAME);
+	gtk_window_set_title (GTK_WINDOW(main_window), APPNAME);
 	gimmix_update_systray_tooltip (NULL);
 	g_free (markup);
 	g_free (appver);
-	
+
 	return;
 }
 
@@ -657,23 +648,19 @@ cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data)
 void
 gimmix_save_window_pos (void)
 {
-	GtkWidget *window;
-	GtkWidget *exp;
 	gint x,y;
 	gchar xpos[4];
 	gchar ypos[4];
 	
 	/* save position */
-	window = glade_xml_get_widget (xml, "main_window");
-	exp = glade_xml_get_widget (xml, "playlist_expander");
-	gtk_window_get_position (GTK_WINDOW(window), &x, &y);
+	gtk_window_get_position (GTK_WINDOW(main_window), &x, &y);
 	sprintf (xpos, "%d", x);
 	sprintf (ypos, "%d", y);
 	cfg_add_key (&conf, "window_xpos", xpos);
 	cfg_add_key (&conf, "window_ypos", ypos);
 	
 	/* save mode */
-	if (gtk_expander_get_expanded (GTK_EXPANDER(exp)))
+	if (gtk_expander_get_expanded (GTK_EXPANDER(playlist_expander)))
 		cfg_add_key (&conf, "full_view_mode", "true");
 	else
 		cfg_add_key (&conf, "full_view_mode", "false");
@@ -695,10 +682,7 @@ gimmix_interface_cleanup (void)
 static gboolean
 is_user_searching (void)
 {
-	GtkWidget *entry;
-	
-	entry = glade_xml_get_widget (xml, "search_entry");
-	if (GTK_WIDGET_HAS_FOCUS(entry))
+	if (GTK_WIDGET_HAS_FOCUS(search_entry))
 		return TRUE;
 	
 	return FALSE;
