@@ -239,6 +239,8 @@ gimmix_init (void)
 		gimmix_set_song_info ();
 		status = -1;
 		song_is_changed = true;
+		gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
+		gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
 	}
 	else if (status == PAUSE)
 	{
@@ -531,9 +533,7 @@ cb_gimmix_progress_seek (GtkWidget *progressbox, GdkEvent *event)
 	totaltime = mpd_status_get_total_song_time (gmo);
 	seektime = (gdouble)x/allocation.width;
 	newtime = seektime * totaltime;
-	
-	/* When user seeks through a _BIG_ value, the connection gets dropped, and
-	   the client needs to reconnect to mpd */
+
 	gimmix_seek (gmo, newtime);
 
 	return;

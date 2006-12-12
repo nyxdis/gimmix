@@ -231,10 +231,14 @@ gimmix_display_total_playlist_time (void)
 	gchar		*time_string;
 	gint		time = 0;
 	
-	if ((data = mpd_playlist_get_changes (gmo, 0)) == NULL)
-		return;
-	
+	data = mpd_playlist_get_changes (gmo, 0);
 	label = glade_xml_get_widget (xml, "gimmix_status");
+	if (mpd_playlist_get_playlist_length(gmo) == 0)
+	{
+		gtk_widget_hide (label);
+		return;
+	}
+	
 	while (data != NULL)
 	{
 		time += data->song->time;
@@ -243,7 +247,7 @@ gimmix_display_total_playlist_time (void)
 	
 	if (time > 0)
 	{
-		time_string = g_strdup_printf ("%s%d %s", _("Total Playlist Time: "), time/60, _("minutes"));
+		time_string = g_strdup_printf ("%d %s, %s%d %s", mpd_playlist_get_playlist_length(gmo), _("Items"), _("Total Playlist Time: "), time/60, _("minutes"));
 		gtk_label_set_text (GTK_LABEL(label), time_string);
 		gtk_widget_show (label);
 		g_free (time_string);
@@ -549,7 +553,6 @@ cb_current_playlist_double_click (GtkTreeView *treeview)
 	gtk_tree_model_get (model, &iter, 2, &id, -1);
 	mpd_player_play_id (gmo, id);
 	mpd_status_update (gmo);
-	gimmix_set_song_info ();
 	
 	/* free the list */
 	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
@@ -908,7 +911,6 @@ gimmix_current_playlist_remove_song (void)
 	}
 	
 	mpd_status_update (gmo);
-	gimmix_update_current_playlist ();
 	
 	/* free the list */
 	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
