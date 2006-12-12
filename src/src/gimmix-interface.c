@@ -59,10 +59,6 @@ static void			gimmix_update_repeat (void);
 static void			gimmix_update_shuffle (void);
 static gboolean		is_user_searching (void);
 
-/* status flags */
-/* set when song is changed */
-static bool song_is_changed;
-
 /* Callbacks */
 static int		cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data);
 static void		cb_play_button_clicked 	(GtkWidget *widget, gpointer data);
@@ -79,6 +75,7 @@ static void 	cb_volume_scale_changed (GtkWidget *widget, gpointer data);
 static void		cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
 static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata);
 
+/* mpd callbacks */
 static void gimmix_status_changed (MpdObj *mo, ChangedStatusType id);
 static void	gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata);
 
@@ -87,11 +84,9 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 {
 	if (id&MPD_CST_SONGID)
 	{	
-		song_is_changed = true;
+		gimmix_set_song_info ();
 		gimmix_update_current_playlist ();
 	}
-	else
-		song_is_changed = false;
 
 	if (id&MPD_CST_STATE)
 	{
@@ -100,6 +95,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		{
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
+			gimmix_set_song_info ();
 		}
 		if (state == MPD_PLAYER_PAUSE)
 		{
@@ -238,7 +234,6 @@ gimmix_init (void)
 	{
 		gimmix_set_song_info ();
 		status = -1;
-		song_is_changed = true;
 		gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
 		gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
 	}
@@ -339,13 +334,6 @@ gimmix_timer (void)
 	float 	fraction;
 
 	new_status = gimmix_get_status (gmo);
-	
-	if (song_is_changed == true && new_status == PLAY)
-	{
-		gimmix_set_song_info ();
-		song_is_changed = false;
-	}
-	
 	if (status == new_status)
 	{
 		if (status == PLAY || status == PAUSE)

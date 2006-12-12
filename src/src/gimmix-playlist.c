@@ -41,6 +41,7 @@ extern ConfigFile	conf;
 
 static gchar *dir_error = "You have specified an invalid music directory. Please specify the correct music directory in the preferences.";
 
+GtkWidget			*gimmix_statusbar;
 GtkWidget			*current_playlist_treeview;
 GtkTreeSelection	*current_playlist_selection;
 
@@ -71,7 +72,7 @@ static void		gimmix_current_playlist_song_info (void);
 static void		gimmix_current_playlist_clear (void);
 static void		gimmix_library_update (GtkWidget *widget, gpointer data);
 static void		gimmix_current_playlist_save (void);
-static gboolean		gimmix_update_player_status (gpointer data);
+static gboolean	gimmix_update_player_status (gpointer data);
 
 /* Library browser callbacks */
 static void		cb_library_dir_activated (GtkTreeView *);
@@ -115,8 +116,9 @@ gimmix_playlist_init (void)
 	current_playlist_model	= GTK_TREE_MODEL (current_playlist_store);
 	current_playlist_selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(current_playlist_treeview));
 	gtk_tree_selection_set_mode (current_playlist_selection, GTK_SELECTION_MULTIPLE);
-
 	gtk_tree_view_set_model (GTK_TREE_VIEW (current_playlist_treeview), current_playlist_model);
+	gimmix_statusbar = glade_xml_get_widget (xml, "gimmix_status");
+	
 	g_signal_connect (current_playlist_treeview, "row-activated", G_CALLBACK(cb_current_playlist_double_click), NULL);
 	g_signal_connect (current_playlist_treeview, "button-press-event", G_CALLBACK(cb_all_playlist_button_press), NULL);
 	g_signal_connect (current_playlist_treeview, "button-release-event", G_CALLBACK (cb_current_playlist_right_click), NULL);
