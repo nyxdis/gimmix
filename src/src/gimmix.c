@@ -181,7 +181,6 @@ void
 exit_cleanup ()
 {
 	gimmix_interface_cleanup ();
-	g_object_unref (xml);
 	if (gmo != NULL)
 		gimmix_disconnect (gmo);
 	gimmix_config_free ();

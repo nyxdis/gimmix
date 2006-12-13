@@ -261,6 +261,8 @@ gimmix_init (void)
 	/* initialize preferences dialog */
 	gimmix_prefs_init ();
 	
+	g_object_unref (xml);
+	
 	/* show the main window */
 	gtk_widget_show (main_window);
 	

@@ -12,7 +12,7 @@ MPD_CFLAGS=$(shell pkg-config libmpd --cflags)
 MPD_LIB=$(shell pkg-config libmpd --libs)
 TAG_CFLAGS=$(shell pkg-config taglib --cflags)
 
-CFLAGS += -g3 -fPIC -DPREFIX=\"$(PREFIX)\" $(GLADE_CFLAGS) $(MPD_CFLAGS) $(TAG_CFLAGS) -I.
+CFLAGS += -fPIC -DPREFIX=\"$(PREFIX)\" $(GLADE_CFLAGS) $(MPD_CFLAGS) $(TAG_CFLAGS) -I.
 LIBS= $(GLADE_LIB) $(MPD_LIB) -ltag_c
 
 OBJS = wejpconfig.o gimmix-config.o gimmix-core.o gimmix-playlist.o gimmix-systray.o gimmix-prefs.o gimmix-interface.o gimmix-firstrun.o gimmix-tagedit.o gimmix.o
