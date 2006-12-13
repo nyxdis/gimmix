@@ -167,7 +167,6 @@ gimmix_update_current_playlist (void)
 
 	new = mpd_playlist_get_playlist_id (gmo);
 	data = mpd_playlist_get_changes (gmo, 0);
-
 	current_song_id = mpd_player_get_current_song_id (gmo);
 	
 	status_label = GTK_LABEL(glade_xml_get_widget (xml, "gimmix_status"));
@@ -928,15 +927,16 @@ gimmix_current_playlist_clear (void)
 	
 	current_playlist_store = GTK_LIST_STORE(gtk_tree_view_get_model (GTK_TREE_VIEW(current_playlist_treeview)));
 	gtk_list_store_clear (GTK_LIST_STORE(current_playlist_store));
-	mpd_playlist_clear (gmo);
-	mpd_status_update (gmo);
-	
+	if (mpd_playlist_get_playlist_length (gmo) != 0)
+	{
+		mpd_playlist_clear (gmo);
+		mpd_status_update (gmo);
+	}
 	if (loaded_playlist != NULL)
 	{
 		g_free (loaded_playlist);
 		loaded_playlist = NULL;
 	}
-	
 	return;
 }
 

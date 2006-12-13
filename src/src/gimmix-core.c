@@ -191,6 +191,9 @@ gimmix_get_song_info (MpdObj *mo)
 	mpd_status_update (mo);
 	ms = mpd_playlist_get_current_song (mo);
 	
+	if (!ms)
+	return NULL;
+	
 	if (ms->file != NULL)
 		s->file = strdup (ms->file);
 	else

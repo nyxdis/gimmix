@@ -567,7 +567,9 @@ gimmix_set_song_info (void)
 	SongInfo 	*song = NULL;
 	
 	song = gimmix_get_song_info (gmo);
-		
+	if (song == NULL)
+	return;
+	
 	if (song->title != NULL)
 	{
 		title = g_strdup_printf ("%s - %s", "Gimmix", song->title);
