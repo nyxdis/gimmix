@@ -185,3 +185,4 @@ exit_cleanup ()
 		gimmix_disconnect (gmo);
 	gimmix_config_free ();
 }
+
