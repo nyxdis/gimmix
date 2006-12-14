@@ -46,7 +46,7 @@ static void		cb_systray_popup_prev_clicked (GtkMenuItem *menuitem, gpointer data
 static void		cb_systray_popup_quit_clicked (GtkMenuItem *menuitem, gpointer data);
 
 static gboolean	cb_gimmix_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data);
-static void	cb_systray_volume_scroll (GtkWidget *widget, GdkEventScroll *event);
+static void		cb_systray_volume_scroll (GtkWidget *widget, GdkEventScroll *event);
 
 void
 gimmix_create_systray_icon (void)

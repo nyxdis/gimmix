@@ -1,3 +1,11 @@
+Version 0.3.1 (xx-xx-2006)
+* Replaced GtkStatusIcon by EggTrayIcon to manage compatibility with older versions of
+GTK+. Gimmix can now be compiled with gtk+-2.6.x
+* Users can now control volume by scrolling on the system tray icon.
+* Users can now select and delete multiple items from the current playlist.
+* Improved startup time.
+* Minor fixes and improvements.
+
 Version 0.3 (10-12-2006)
 * Replaced the old libconfuse based config system with wejpconfig (written by Johannes Heimansberg)
 * Configuration file layout is changed completely.
