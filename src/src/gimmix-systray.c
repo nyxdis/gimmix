@@ -34,6 +34,8 @@ extern MpdObj		*gmo;
 extern GladeXML 	*xml;
 extern ConfigFile	conf;
 
+extern GtkWidget	*volume_scale;
+
 static void 	gimmix_systray_display_popup_menu (void);
 
 /* system tray popup menu callbacks */
@@ -43,8 +45,8 @@ static void		cb_systray_popup_next_clicked (GtkMenuItem *menuitem, gpointer data
 static void		cb_systray_popup_prev_clicked (GtkMenuItem *menuitem, gpointer data);
 static void		cb_systray_popup_quit_clicked (GtkMenuItem *menuitem, gpointer data);
 
-static gboolean
-cb_gimmix_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data);
+static gboolean	cb_gimmix_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data);
+static void	cb_systray_volume_scroll (GtkWidget *widget, GdkEventScroll *event);
 
 void
 gimmix_create_systray_icon (void)
@@ -66,6 +68,7 @@ gimmix_create_systray_icon (void)
 	gtk_tooltips_set_tip (icon_tooltip, GTK_WIDGET(icon), APPNAME, NULL);
 	
 	g_signal_connect (icon, "button-press-event", G_CALLBACK (cb_gimmix_systray_icon_clicked), NULL);
+	g_signal_connect (icon, "scroll_event", G_CALLBACK(cb_systray_volume_scroll), NULL);
 	gtk_widget_show (GTK_WIDGET(systray_icon));
 	gtk_widget_show (GTK_WIDGET(icon));
 
@@ -85,6 +88,32 @@ cb_gimmix_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpoint
 	}
 	
 	return TRUE;
+}
+
+static void
+cb_systray_volume_scroll (GtkWidget *widget, GdkEventScroll *event)
+{
+	gint volume;
+	GtkAdjustment *volume_adj;
+	if (event->type != GDK_SCROLL)
+		return;
+	
+	volume_adj = gtk_range_get_adjustment (GTK_RANGE(volume_scale));
+	switch (event->direction)
+	{
+		case GDK_SCROLL_UP:
+			volume = gtk_adjustment_get_value (GTK_ADJUSTMENT(volume_adj)) + 2;
+			gtk_adjustment_set_value (GTK_ADJUSTMENT (volume_adj), volume);
+			break;
+		case GDK_SCROLL_DOWN:
+			volume = gtk_adjustment_get_value (GTK_ADJUSTMENT(volume_adj)) - 2;
+			gtk_adjustment_set_value (GTK_ADJUSTMENT(volume_adj), volume);
+			break;
+		default:
+			return;
+	}
+	
+	return;
 }
 
 static void
