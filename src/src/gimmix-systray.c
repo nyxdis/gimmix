@@ -55,7 +55,7 @@ gimmix_create_systray_icon (void)
 	
 	icon_file = gimmix_get_full_image_path (GIMMIX_ICON);
 	/* create the tray icon */
-	icon = egg_tray_icon_new ("Gimmix");
+	icon = egg_tray_icon_new (APPNAME);
 	icon_image = gdk_pixbuf_new_from_file_at_size (icon_file, 20, 20, NULL);
 	systray_icon = gtk_image_new_from_pixbuf (icon_image);
 	gtk_container_add (GTK_CONTAINER (icon), systray_icon);
