@@ -26,15 +26,14 @@
 
 #define GIMMIX_ICON  	"gimmix_logo_small.png"
 
-GtkStatusIcon		*icon = NULL;
+EggTrayIcon			*icon = NULL;
+GtkTooltips			*icon_tooltip = NULL;
 extern GtkWidget 	*progress;
 
 extern MpdObj		*gmo;
 extern GladeXML 	*xml;
 extern ConfigFile	conf;
 
-static void 	cb_gimmix_systray_icon_popup (GtkStatusIcon *sicon, guint button, guint time, gpointer data);
-static void		cb_gimmix_systray_icon_activate (GtkStatusIcon *sicon, gpointer data);
 static void 	gimmix_systray_display_popup_menu (void);
 
 /* system tray popup menu callbacks */
@@ -44,35 +43,48 @@ static void		cb_systray_popup_next_clicked (GtkMenuItem *menuitem, gpointer data
 static void		cb_systray_popup_prev_clicked (GtkMenuItem *menuitem, gpointer data);
 static void		cb_systray_popup_quit_clicked (GtkMenuItem *menuitem, gpointer data);
 
+static gboolean
+cb_gimmix_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data);
+
 void
 gimmix_create_systray_icon (void)
 {
 	gchar 		*icon_file;
+	GdkPixbuf	*icon_image;
+	GtkWidget	*systray_icon;
 	
 	icon_file = gimmix_get_full_image_path (GIMMIX_ICON);
-	
 	/* create the tray icon */
-	icon = gtk_status_icon_new_from_file (icon_file);
+	icon = egg_tray_icon_new ("Gimmix");
+	icon_image = gdk_pixbuf_new_from_file_at_size (icon_file, 20, 20, NULL);
+	systray_icon = gtk_image_new_from_pixbuf (icon_image);
+	gtk_container_add (GTK_CONTAINER (icon), systray_icon);
 	g_free (icon_file);
-	gtk_status_icon_set_tooltip (icon, APPNAME);
+	g_object_unref (icon_image);
+	icon_tooltip = gtk_tooltips_new ();
+	/* set the default tooltip */
+	gtk_tooltips_set_tip (icon_tooltip, GTK_WIDGET(icon), APPNAME, NULL);
 	
-	g_signal_connect (G_OBJECT(icon), "popup-menu", G_CALLBACK (cb_gimmix_systray_icon_popup), NULL);
-	g_signal_connect (G_OBJECT(icon), "activate", G_CALLBACK(cb_gimmix_systray_icon_activate), NULL);
+	g_signal_connect (icon, "button-press-event", G_CALLBACK (cb_gimmix_systray_icon_clicked), NULL);
+	gtk_widget_show (GTK_WIDGET(systray_icon));
+	gtk_widget_show (GTK_WIDGET(icon));
 
 	return;
 }
 
-static void
-cb_gimmix_systray_icon_activate (GtkStatusIcon *sicon, gpointer data)
+static gboolean
+cb_gimmix_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
-	gimmix_window_visible_toggle ();
-	return;
-}
-
-static void
-cb_gimmix_systray_icon_popup (GtkStatusIcon *sicon, guint button, guint time, gpointer data)
-{
-	gimmix_systray_display_popup_menu ();
+	switch (event->button)
+	{
+		case 1: gimmix_window_visible_toggle ();
+				break;
+		case 3: gimmix_systray_display_popup_menu ();
+				break;
+		default: break;
+	}
+	
+	return TRUE;
 }
 
 static void
@@ -138,15 +150,7 @@ gimmix_systray_display_popup_menu (void)
 static void
 cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data)
 {
-	if (gimmix_play(gmo))
-	{
-		gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_play")), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
-		gimmix_set_song_info ();
-	}
-	else
-	{
-		gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_play")), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
-	}
+	gimmix_play (gmo);
 	
 	return;
 }
@@ -154,12 +158,7 @@ cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data)
 static void
 cb_systray_popup_stop_clicked (GtkMenuItem *menuitem, gpointer data)
 {
-	if (gimmix_stop(gmo))
-	{
-		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
-		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
-		gimmix_show_ver_info ();
-	}
+	gimmix_stop (gmo);
 	
 	return;
 }
@@ -167,8 +166,7 @@ cb_systray_popup_stop_clicked (GtkMenuItem *menuitem, gpointer data)
 static void
 cb_systray_popup_prev_clicked (GtkMenuItem *menuitem, gpointer data)
 {
-	if (gimmix_prev(gmo))
-		gimmix_set_song_info ();
+	gimmix_prev (gmo);
 
 	return;
 }
@@ -176,8 +174,7 @@ cb_systray_popup_prev_clicked (GtkMenuItem *menuitem, gpointer data)
 static void
 cb_systray_popup_next_clicked (GtkMenuItem *menuitem, gpointer data)
 {
-	if (gimmix_next(gmo))
-		gimmix_set_song_info ();
+	gimmix_next (gmo);
 
 	return;
 }
@@ -196,8 +193,8 @@ gimmix_disable_systray_icon (void)
 {
 	if (icon == NULL)
 		return;
-	
-	gtk_status_icon_set_visible (icon, FALSE);
+
+	gtk_widget_hide (GTK_WIDGET(icon));
 	cfg_add_key (&conf, "enable_systray", "false");
 	
 	return;
@@ -213,7 +210,7 @@ gimmix_enable_systray_icon (void)
 	}
 	else
 	{
-		gtk_status_icon_set_visible (icon, TRUE);
+		gtk_widget_show (GTK_WIDGET(icon));
 	}
 	return;
 }
@@ -223,8 +220,14 @@ gimmix_destroy_systray_icon (void)
 {
 	if (icon == NULL)
 		return;
-	g_object_unref (icon);
+	gtk_widget_destroy (GTK_WIDGET(icon));
+	
+	if (!icon_tooltip)
+		return;
+		
+	g_object_ref_sink (icon_tooltip);
 	icon = NULL;
+	icon_tooltip = NULL;
 	
 	return;
 }	
@@ -240,7 +243,7 @@ gimmix_update_systray_tooltip (SongInfo *s)
 		
 	if (s == NULL)
 	{
-		gtk_status_icon_set_tooltip (icon, APPNAME);
+		gtk_tooltips_set_tip (icon_tooltip, GTK_WIDGET(icon), APPNAME, NULL);
 		return;
 	}
 	
@@ -259,7 +262,7 @@ gimmix_update_systray_tooltip (SongInfo *s)
 		g_free (file);
 	}
 	
-	gtk_status_icon_set_tooltip (icon, summary);
+	gtk_tooltips_set_tip (icon_tooltip, GTK_WIDGET(icon), summary, NULL);
 	g_free (summary);
 	
 	return;
