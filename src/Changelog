@@ -1,4 +1,6 @@
 Version 0.3.1 (xx-xx-2006)
+* New Autotools based build system (Thanks to Alex Smith)
+* Highlight currently playlist song in the playlist.
 * Replaced GtkStatusIcon by EggTrayIcon to manage compatibility with older versions of
 GTK+. Gimmix can now be compiled with gtk+-2.6.x
 * Users can now control volume by scrolling on the system tray icon.
