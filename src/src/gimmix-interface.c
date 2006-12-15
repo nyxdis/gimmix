@@ -225,8 +225,9 @@ gimmix_init (void)
 	{
 		gtk_expander_set_expanded (GTK_EXPANDER(playlist_expander), TRUE);
 	}
-
-	status = gimmix_get_status (gmo);
+	
+	mpd_status_update (gmo);
+	status = mpd_player_get_status (gmo);
 
 	if (status == PLAY)
 	{

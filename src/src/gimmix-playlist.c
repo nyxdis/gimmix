@@ -930,14 +930,14 @@ gimmix_current_playlist_popup_menu (void)
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
-	menu_item = gtk_check_menu_item_new_with_label ("Repeat");
+	menu_item = gtk_check_menu_item_new_with_label (_("Repeat"));
 	g_signal_connect (G_OBJECT(menu_item), "toggled", G_CALLBACK(cb_repeat_menu_toggled), NULL);
 	if (is_gimmix_repeat(gmo))
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
-	menu_item = gtk_check_menu_item_new_with_label ("Shuffle");
+	menu_item = gtk_check_menu_item_new_with_label (_("Shuffle"));
 	g_signal_connect (G_OBJECT(menu_item), "toggled", G_CALLBACK(cb_shuffle_menu_toggled), NULL);
 	if (is_gimmix_shuffle(gmo))
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
@@ -948,7 +948,7 @@ gimmix_current_playlist_popup_menu (void)
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
-	menu_item = gtk_image_menu_item_new_with_label ("Save Playlist");
+	menu_item = gtk_image_menu_item_new_with_label (_("Save Playlist"));
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), GTK_WIDGET(get_image ("gtk-save", GTK_ICON_SIZE_MENU)));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_playlist_save_dialog_show), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
