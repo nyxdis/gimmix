@@ -32,7 +32,7 @@
 
 #define GIMMIX_APP_ICON  	"gimmix_logo_small.png"
 
-GimmixStatus 	status;
+GimmixStatus 		status;
 GtkWidget		*main_window;
 GtkWidget 		*progress = NULL;
 GtkWidget		*shuffle_toggle_button;
@@ -45,7 +45,7 @@ GtkWidget		*search_entry;
 GtkWidget		*playlist_expander;
 GtkWidget		*image_play;
 GtkWidget		*play_button;
-GtkTooltips 	*play_button_tooltip = NULL;
+GtkTooltips 		*play_button_tooltip = NULL;
 
 extern MpdObj 		*gmo;
 extern GladeXML 	*xml;
@@ -54,17 +54,17 @@ extern ConfigFile	conf;
 extern GtkWidget	*current_playlist_treeview;
 
 static gboolean 	gimmix_timer (void);
-static void			gimmix_update_volume (void);
-static void			gimmix_update_repeat (void);
-static void			gimmix_update_shuffle (void);
+static void		gimmix_update_volume (void);
+static void		gimmix_update_repeat (void);
+static void		gimmix_update_shuffle (void);
 static gboolean		is_user_searching (void);
 
 /* Callbacks */
-static int		cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data);
-static void		cb_play_button_clicked 	(GtkWidget *widget, gpointer data);
-static void		cb_stop_button_clicked 	(GtkWidget *widget, gpointer data);
-static void		cb_next_button_clicked 	(GtkWidget *widget, gpointer data);
-static void		cb_prev_button_clicked 	(GtkWidget *widget, gpointer data);
+static int	cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data);
+static void	cb_play_button_clicked 	(GtkWidget *widget, gpointer data);
+static void	cb_stop_button_clicked 	(GtkWidget *widget, gpointer data);
+static void	cb_next_button_clicked 	(GtkWidget *widget, gpointer data);
+static void	cb_prev_button_clicked 	(GtkWidget *widget, gpointer data);
 static void 	cb_info_button_clicked 	(GtkWidget *widget, gpointer data);
 static void 	cb_pref_button_clicked 	(GtkWidget *widget, gpointer data);
 static void 	cb_repeat_button_toggled (GtkToggleButton *button, gpointer data);
@@ -72,11 +72,11 @@ static void 	cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data);
 
 static void 	cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
 static void 	cb_volume_scale_changed (GtkWidget *widget, gpointer data);
-static void		cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
+static void	cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
 static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata);
 
 /* mpd callbacks */
-static void gimmix_status_changed (MpdObj *mo, ChangedStatusType id);
+static void 	gimmix_status_changed (MpdObj *mo, ChangedStatusType id);
 static void	gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata);
 
 static void
@@ -149,7 +149,7 @@ gimmix_init (void)
 {
 	GtkWidget 		*widget;
 	GtkWidget		*progressbox;
-	GtkAdjustment	*vol_adj;
+	GtkAdjustment		*vol_adj;
 	GdkPixbuf		*app_icon;
 	gchar			*path;
 	
@@ -227,20 +227,20 @@ gimmix_init (void)
 	}
 	
 	mpd_status_update (gmo);
-	status = mpd_player_get_status (gmo);
+	status = mpd_player_get_state (gmo);
 
-	if (status == PLAY)
+	if (status == MPD_PLAYER_PLAY)
 	{
 		gimmix_set_song_info ();
 		status = -1;
 		gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
 		gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
 	}
-	else if (status == PAUSE)
+	else if (status == MPD_PLAYER_PAUSE)
 	{
 		gimmix_set_song_info ();
 	}
-	else if (status == STOP)
+	else if (status == MPD_PLAYER_STOP)
 	{
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
 		gimmix_show_ver_info ();
@@ -270,8 +270,8 @@ gimmix_init (void)
 
 static gboolean
 cb_gimmix_key_press (GtkWidget   *widget,
-					GdkEventKey *event,
-					gpointer     userdata)
+			GdkEventKey *event,
+			gpointer     userdata)
 {
 	gboolean result = FALSE;
 	gint state;
