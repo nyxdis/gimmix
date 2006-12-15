@@ -134,8 +134,6 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 	const gchar *port;
 	const gchar *password;
 	const gchar *dir;
-	gint		val;
-	GtkWidget 	*pref_widget;
 
 	host = gtk_entry_get_text (GTK_ENTRY(pref_host_entry));
 	cfg_add_key (&conf, "mpd_hostname", (char *)host);

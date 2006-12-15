@@ -148,12 +148,10 @@ void
 gimmix_init (void)
 {
 	GtkWidget 		*widget;
-	GtkWidget		*image;
 	GtkWidget		*progressbox;
 	GtkAdjustment	*vol_adj;
 	GdkPixbuf		*app_icon;
 	gchar			*path;
-	gint			state;
 	
 	/* Set the application icon */
 	main_window = glade_xml_get_widget (xml, "main_window");
@@ -275,7 +273,6 @@ cb_gimmix_key_press (GtkWidget   *widget,
 					gpointer     userdata)
 {
 	gboolean result = FALSE;
-	GtkWidget *button;
 	gint state;
 	
 	if (is_user_searching())
@@ -534,7 +531,6 @@ gimmix_window_visible_toggle (void)
 {
 	static int x;
 	static int y;
-	GtkWidget *window;
 
 	if( !GTK_WIDGET_VISIBLE (main_window) )
 	{	

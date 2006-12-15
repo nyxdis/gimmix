@@ -1,0 +1,9 @@
+src/gimmix.c
+src/gimmix-core.c
+src/gimmix-interface.c
+src/gimmix-systray.c
+src/gimmix-playlist.c
+src/gimmix-firstrun.c
+src/gimmix-config.c
+src/gimmix-prefs.c
+src/gimmix-tagedit.c

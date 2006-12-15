@@ -43,8 +43,6 @@ gimmix_show_firstrun_dialog (void)
 	GtkWidget *check;
 	GtkWidget *entry;
 
-	char		*rcfile;
-
 	cfg_init_config_file_struct (&cf);
 	
 	cfg_add_key (&cf, "mpd_hostname",		"localhost");

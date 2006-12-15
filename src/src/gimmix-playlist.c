@@ -65,8 +65,6 @@ static void		gimmix_display_total_playlist_time (void);
 
 /* Callbacks */
 /* Current playlist callbacks */
-static void		cb_remove_button_clicked (GtkWidget *widget, gpointer data);
-static void		cb_clear_button_clicked (GtkWidget *widget, gpointer data);
 static void		cb_current_playlist_double_click (GtkTreeView *);
 static void		cb_current_playlist_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_repeat_menu_toggled (GtkCheckMenuItem *item, gpointer data);
@@ -76,7 +74,6 @@ static void		gimmix_current_playlist_remove_song (void);
 static void		gimmix_current_playlist_song_info (void);
 static void		gimmix_current_playlist_clear (void);
 static void		gimmix_library_update (GtkWidget *widget, gpointer data);
-static void		gimmix_current_playlist_save (void);
 static gboolean	gimmix_update_player_status (gpointer data);
 
 /* Library browser callbacks */
@@ -98,9 +95,6 @@ static void		cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, g
 void
 gimmix_playlist_init (void)
 {
-	GtkWidget			*button;
-	GtkWidget 			*window;
-	GtkWidget 			*pls_treeview;
 	GtkTreeModel		*current_playlist_model;
 	GtkListStore		*current_playlist_store;
 	GtkCellRenderer		*current_playlist_renderer;
@@ -162,8 +156,6 @@ gimmix_update_current_playlist (void)
 	GtkTreeModel	*current_playlist_model;
 	GtkListStore	*current_playlist_store;
 	GtkTreeIter		current_playlist_iter;
-	GtkLabel		*status_label;
-	gchar			*status_markup;
 	gint 			new;
 	MpdData 		*data;
 	gint			current_song_id = -1;
@@ -229,7 +221,6 @@ gimmix_update_current_playlist (void)
 static void
 gimmix_display_total_playlist_time (void)
 {
-	GtkWidget 	*label;
 	MpdData 	*data = NULL;
 	gchar		*time_string;
 	gint		time = 0;
@@ -464,7 +455,7 @@ gimmix_library_search (gint type, gchar *text)
 		{
 			gchar *title;
 			
-			title = data->song->title ? g_strdup (data->song->title) : g_path_get_basename(data->song->file);
+			title = (data->song->title!=NULL) ? g_strdup (data->song->title) : g_path_get_basename(data->song->file);
 			gtk_list_store_append (dir_store, &dir_iter);
 			gtk_list_store_set (dir_store, &dir_iter,
 								0, song_pixbuf,
@@ -510,22 +501,6 @@ cb_current_playlist_delete_press (GtkWidget *widget, GdkEventKey *event, gpointe
 		return;
 	
 	gimmix_current_playlist_remove_song ();
-	
-	return;
-}
-
-static void
-cb_remove_button_clicked (GtkWidget *widget, gpointer data)
-{
-	gimmix_current_playlist_remove_song ();
-	
-	return;
-}
-
-static void
-cb_clear_button_clicked (GtkWidget *widget, gpointer data)
-{
-	gimmix_current_playlist_clear ();
 	
 	return;
 }
@@ -586,6 +561,7 @@ cb_library_dir_activated (GtkTreeView *treeview)
 	gchar				*path;
 	GimmixFileType		type;
 	MpdData				*data;
+	gint				id;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview));
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
@@ -632,7 +608,7 @@ cb_library_dir_activated (GtkTreeView *treeview)
 	data = mpd_playlist_get_changes (gmo, mpd_playlist_get_playlist_id(gmo));
 	if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
 	{
-		gint id = data->song->id;
+		id = data->song->id;
 		mpd_player_play_id (gmo, data->song->id);
 		gimmix_set_song_info ();
 	}
@@ -930,7 +906,6 @@ static void
 gimmix_current_playlist_popup_menu (void)
 {
 	GtkWidget *menu, *menu_item;
-	GtkWidget *image;
 
 	menu = gtk_menu_new ();
 
@@ -997,7 +972,6 @@ static void
 gimmix_playlists_popup_menu (void)
 {
 	GtkWidget *menu, *menu_item;
-	GtkWidget *image;
 
 	menu = gtk_menu_new ();
 	

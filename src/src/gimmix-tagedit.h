@@ -5,6 +5,7 @@
 #include <tag_c.h>
 #include <libmpd/libmpd.h>
 #include <libmpd/libmpdclient.h>
+#include "gimmix-prefs.h"
 
 /* Initialize the tag editor signals */
 void gimmix_tag_editor_init (void);

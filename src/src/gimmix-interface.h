@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "gimmix-core.h"
+#include "gimmix-systray.h"
 
 /* Initializes default interface signals */
 void gimmix_init (void);

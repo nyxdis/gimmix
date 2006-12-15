@@ -22,13 +22,17 @@
  */
 
 #include <gtk/gtk.h>
+#include <locale.h>
+
 #include "gimmix.h"
 #include "gimmix-firstrun.h"
 #include "gimmix-interface.h"
 #include "gimmix-playlist.h"
 
-#define GLADE_FILE		"/share/gimmix/gimmix.glade"
-#define GIMMIX_ICON		"gimmix.png"
+#define GETTEXT_PACKAGE "gimmix"
+
+#define GLADE_FILE	"/share/gimmix/gimmix.glade"
+#define GIMMIX_ICON	"gimmix.png"
 
 MpdObj 		*gmo = NULL;
 GladeXML 	*xml = NULL;
@@ -138,7 +142,10 @@ int
 main (int argc, char *argv[])
 {
 	gchar 		*path;
-	GtkWidget	*main_window;
+	
+	setlocale (LC_ALL, "");
+	bindtextdomain (GETTEXT_PACKAGE, "/usr/share/locale");
+	textdomain (GETTEXT_PACKAGE);
 
 	gtk_init (&argc, &argv);
 	

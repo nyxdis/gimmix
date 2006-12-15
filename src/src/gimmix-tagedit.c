@@ -88,7 +88,6 @@ gimmix_tag_editor_init (void)
 gboolean
 gimmix_tag_editor_populate (const gchar *song)
 {
-	GtkWidget 		*widget;
 	GtkTreeModel 	*genre_model;
 	gchar 			*info;
 	gint 			min;
@@ -157,7 +156,6 @@ gimmix_tag_editor_close (GtkWidget *widget, gpointer data)
 static void
 gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 {
-	GtkWidget 	*widget;
 	gint		year;
 	gint		track;
 	gchar		*genre;
@@ -219,7 +217,6 @@ void
 gimmix_tag_editor_show (void)
 {
 	GimmixStatus 	status;
-	GtkWidget		*window;
 	SongInfo		*info;
 	gchar			*song;
 	
