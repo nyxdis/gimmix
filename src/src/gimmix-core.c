@@ -41,6 +41,7 @@ gimmix_mpd_connect (void)
 	
 	if (mpd_connect (mo) == MPD_OK)
 	{
+		mpd_send_password(mo);
 		return mo;
 	}
 	
