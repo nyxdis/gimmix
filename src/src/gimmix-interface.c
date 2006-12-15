@@ -331,8 +331,9 @@ gimmix_timer (void)
 	gchar 	time[15];
 	int 	new_status;
 	float 	fraction;
-
-	new_status = gimmix_get_status (gmo);
+	
+	mpd_status_update (gmo);
+	new_status = mpd_player_get_state (gmo);
 	if (status == new_status)
 	{
 		if (status == PLAY || status == PAUSE)
@@ -589,7 +590,6 @@ gimmix_set_song_info (void)
 
 	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
 		gimmix_update_systray_tooltip (song);
-	
 	gimmix_free_song_info (song);
 	
 	return;

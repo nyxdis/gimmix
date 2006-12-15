@@ -173,7 +173,7 @@ gimmix_seek (MpdObj *mo, int seektime)
 			ret = true;
 		else
 		{
-			printf ("Error: %d: %s\n", i, _("Status Failed."));
+			printf ("%s %d: %s\n", _("Error"), i, _("Status Failed."));
 			ret = false;
 		}
 	}
@@ -255,7 +255,6 @@ gimmix_get_progress_status (MpdObj *mo, float *fraction, char *time)
 	{
 		case MPD_PLAYER_PLAY:
 		case MPD_PLAYER_PAUSE:
-			mpd_status_update(mo);
 			total = mpd_status_get_total_song_time (mo);
 			elapsed = mpd_status_get_elapsed_song_time (mo);
 			snprintf (time, 20, "%02i:%02i / %02i:%02i", elapsed/60,

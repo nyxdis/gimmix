@@ -167,7 +167,6 @@ gimmix_update_current_playlist (void)
 	current_playlist_model = gtk_tree_view_get_model (GTK_TREE_VIEW(current_playlist_treeview));
 	current_playlist_store = GTK_LIST_STORE (current_playlist_model);
 	gtk_list_store_clear (current_playlist_store);
-
 	while (data != NULL)
 	{
 		gchar 	*title;
@@ -689,7 +688,6 @@ gimmix_update_playlists_treeview (void)
 								-1);
 		}
 	}
-	
 	g_object_unref (pls_pixbuf);
 	mpd_data_free (data);
 
