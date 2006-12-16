@@ -50,6 +50,8 @@ GtkWidget			*library_treeview;
 GtkWidget			*playlists_treeview;
 GtkTreeSelection	*current_playlist_selection;
 
+extern GtkWidget	*tag_editor_window;
+
 gchar			*loaded_playlist;
 
 static void		gimmix_search_init (void);
@@ -820,7 +822,6 @@ gimmix_current_playlist_song_info (void)
 	GtkTreeModel		*model;
 	GList				*list;
 	GtkTreeIter			iter;
-	GtkWidget			*info_window;
 	gchar				*path;
 	gchar				*song_path;
 
@@ -835,8 +836,7 @@ gimmix_current_playlist_song_info (void)
 	song_path = g_strdup_printf ("%s/%s", cfg_get_key_value(conf, "music_directory"), path);
 	if (gimmix_tag_editor_populate (song_path))
 	{	
-		info_window = glade_xml_get_widget (xml, "tag_editor_window");
-		gtk_widget_show (info_window);
+		gtk_widget_show (tag_editor_window);
 	}
 	else
 		gimmix_tag_editor_error (dir_error);
