@@ -29,7 +29,6 @@
 #endif
 
 #include "gimmix.h"
-#include "gimmix-firstrun.h"
 #include "gimmix-interface.h"
 #include "gimmix-playlist.h"
 
@@ -64,7 +63,9 @@ void
 gimmix_connect_error (void)
 {
 	GtkWidget	*error_dialog;
-	static gchar	*error = "Gimmix couldn't connect to mpd. \n\nCheck whether mpd is running.\nAlso check that you have specified the proper hostname, port and password in ~/.gimmixrc";
+	gchar		*error;
+	
+	error = _("Gimmix couldn't connect to mpd. \n\nCheck whether mpd is running.\nAlso check that you have specified the proper hostname, port and password in ~/.gimmixrc");
 	
 	error_dialog = gtk_message_dialog_new_with_markup (NULL,
 							GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -146,8 +147,8 @@ main (int argc, char *argv[])
 	gchar 		*path;
 	
 	setlocale (LC_ALL, "");
-	bindtextdomain (PACKAGE, "/usr/share/locale");
-	textdomain (PACKAGE);
+	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+	textdomain (GETTEXT_PACKAGE);
 
 	gtk_init (&argc, &argv);
 	

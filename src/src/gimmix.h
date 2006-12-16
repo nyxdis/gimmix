@@ -16,6 +16,7 @@
 #include "gimmix-config.h"
 #include "gimmix-core.h"
 #include "gimmix-interface.h"
+#include "gimmix-firstrun.h"
 
 #define APPNAME 		"Gimmix"
 #define APPURL			"http://gimmix.berlios.de/"
