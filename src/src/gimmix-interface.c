@@ -30,9 +30,13 @@
 #include "gimmix-prefs.h"
 #include "gimmix.h"
 
+#ifdef HAVE_CONFIG_H
+#	include "config.h"
+#endif
+
 #define GIMMIX_APP_ICON  	"gimmix_logo_small.png"
 
-GimmixStatus 		status;
+gint 			status;
 GtkWidget		*main_window;
 GtkWidget 		*progress = NULL;
 GtkWidget		*shuffle_toggle_button;
@@ -337,7 +341,7 @@ gimmix_timer (void)
 	new_status = mpd_player_get_state (gmo);
 	if (status == new_status)
 	{
-		if (status == PLAY || status == PAUSE)
+		if (status == MPD_PLAYER_PLAY || status == MPD_PLAYER_PAUSE)
 		{
 			gimmix_get_progress_status (gmo, &fraction, time);
 			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), fraction);

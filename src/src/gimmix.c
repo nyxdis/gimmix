@@ -24,12 +24,14 @@
 #include <gtk/gtk.h>
 #include <locale.h>
 
+#ifdef HAVE_CONFIG_H
+#	include "config.h"
+#endif
+
 #include "gimmix.h"
 #include "gimmix-firstrun.h"
 #include "gimmix-interface.h"
 #include "gimmix-playlist.h"
-
-#define GETTEXT_PACKAGE "gimmix"
 
 #define GLADE_FILE	"/share/gimmix/gimmix.glade"
 #define GIMMIX_ICON	"gimmix.png"
@@ -61,7 +63,7 @@ gimmix_connect (void)
 void
 gimmix_connect_error (void)
 {
-	GtkWidget		*error_dialog;
+	GtkWidget	*error_dialog;
 	static gchar	*error = "Gimmix couldn't connect to mpd. \n\nCheck whether mpd is running.\nAlso check that you have specified the proper hostname, port and password in ~/.gimmixrc";
 	
 	error_dialog = gtk_message_dialog_new_with_markup (NULL,
@@ -72,9 +74,9 @@ gimmix_connect_error (void)
 							_("ERROR"),
 							error);
 	g_signal_connect (error_dialog,
-					"response",
-					G_CALLBACK (error_dialog_response),
-					(gpointer)error_dialog);
+			"response",
+			G_CALLBACK (error_dialog_response),
+			(gpointer)error_dialog);
 	
 	gtk_widget_show_all (error_dialog);
     
@@ -95,7 +97,7 @@ gimmix_about_show (void)
 {
 	GdkPixbuf		*about_pixbuf;
 	gchar			*path;
-	static gchar	*license = 
+	static gchar		*license = 
 	("Gimmix is free software; you can redistribute it and/or "
 	"modify it under the terms of the GNU General Public Licence as "
 	"published by the Free Software Foundation; either version 2 of the "
@@ -144,8 +146,8 @@ main (int argc, char *argv[])
 	gchar 		*path;
 	
 	setlocale (LC_ALL, "");
-	bindtextdomain (GETTEXT_PACKAGE, "/usr/share/locale");
-	textdomain (GETTEXT_PACKAGE);
+	bindtextdomain (PACKAGE, "/usr/share/locale");
+	textdomain (PACKAGE);
 
 	gtk_init (&argc, &argv);
 	
