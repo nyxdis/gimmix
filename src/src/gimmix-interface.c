@@ -34,7 +34,7 @@
 #	include "config.h"
 #endif
 
-#define GIMMIX_APP_ICON  	"gimmix_logo_small.png"
+#define GIMMIX_APP_ICON  	"gimmix.png"
 
 gint 			status;
 GtkWidget		*main_window;
@@ -162,7 +162,7 @@ gimmix_init (void)
 	g_signal_connect (G_OBJECT(main_window), "delete-event", G_CALLBACK(cb_gimmix_main_window_delete_event), NULL);
 	gtk_window_move (GTK_WINDOW(main_window), atoi(cfg_get_key_value(conf, "window_xpos")), atoi(cfg_get_key_value(conf, "window_ypos")));
 	path = gimmix_get_full_image_path (GIMMIX_APP_ICON);
-	app_icon = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
+	app_icon = gdk_pixbuf_new_from_file_at_size (path, 48, 48, NULL);
 	gtk_window_set_icon (GTK_WINDOW(main_window), app_icon);
 	g_object_unref (app_icon);
 	g_free (path);
