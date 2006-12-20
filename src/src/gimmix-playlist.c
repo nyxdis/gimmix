@@ -49,6 +49,7 @@ GtkWidget			*current_playlist_treeview;
 GtkWidget			*library_treeview;
 GtkWidget			*playlists_treeview;
 GtkTreeSelection	*current_playlist_selection;
+GtkTreeSelection	*library_selection;
 
 extern GtkWidget	*tag_editor_window;
 
@@ -79,7 +80,8 @@ static void		gimmix_library_update (GtkWidget *widget, gpointer data);
 static gboolean	gimmix_update_player_status (gpointer data);
 
 /* Library browser callbacks */
-static void		cb_library_dir_activated (GtkTreeView *);
+static void		cb_library_dir_activated (void);
+static void		gimmix_library_song_info (void);
 static void 	cb_playlist_activated (GtkTreeView *);
 static void		cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data);
@@ -113,9 +115,9 @@ gimmix_playlist_init (void)
 							"markup", 0,
 							NULL);
 	current_playlist_store = gtk_list_store_new (3,
-												G_TYPE_STRING, 	/* name */
-												G_TYPE_STRING, 	/* path */
-												G_TYPE_INT); 	/* id */
+												G_TYPE_STRING, 	/* name (0) */
+												G_TYPE_STRING, 	/* path (1) */
+												G_TYPE_INT); 	/* id (2) */
 	current_playlist_model	= GTK_TREE_MODEL (current_playlist_store);
 	current_playlist_selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(current_playlist_treeview));
 	gtk_tree_selection_set_mode (current_playlist_selection, GTK_SELECTION_MULTIPLE);
@@ -270,11 +272,9 @@ gimmix_library_and_playlists_populate (void)
 	GdkPixbuf			*song_pixbuf;
 	GdkPixbuf			*pls_pixbuf;
 	gchar				*path;
-	GtkTreeSelection	*selection;
-	
 
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(library_treeview));
-	gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
+	library_selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(library_treeview));
+	gtk_tree_selection_set_mode (library_selection, GTK_SELECTION_MULTIPLE);
 	dir_renderer		= gtk_cell_renderer_pixbuf_new();
 	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (library_treeview),
 							-1,
@@ -308,10 +308,10 @@ gimmix_library_and_playlists_populate (void)
 							NULL);
 	
 	dir_store 	= gtk_list_store_new (4, 
-								GDK_TYPE_PIXBUF, 	/* icon */
-								G_TYPE_STRING, 		/* name */
-								G_TYPE_STRING,		/* path */
-								G_TYPE_INT);		/* type DIR/SONG */
+								GDK_TYPE_PIXBUF, 	/* icon (0) */
+								G_TYPE_STRING, 		/* name (1) */
+								G_TYPE_STRING,		/* path (2) */
+								G_TYPE_INT);		/* type DIR/SONG (3) */
 	
 	pls_store 	= gtk_list_store_new (2, 
 								GDK_TYPE_PIXBUF, 	/* icon */
@@ -445,7 +445,6 @@ gimmix_library_search (gint type, gchar *text)
 		return;
 	}
 
-
 	path = gimmix_get_full_image_path (GIMMIX_MEDIA_ICON);
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
 	g_free (path);
@@ -553,10 +552,9 @@ cb_all_playlist_button_press (GtkTreeView *treeview, GdkEventButton *event)
 }
 
 static void
-cb_library_dir_activated (GtkTreeView *treeview)
+cb_library_dir_activated (void)
 {
 	GtkTreeModel 		*model;
-	GtkTreeSelection 	*selection;
 	GtkTreeIter 		iter;
 	GList				*list;
 	gchar				*path;
@@ -564,11 +562,10 @@ cb_library_dir_activated (GtkTreeView *treeview)
 	MpdData				*data;
 	gint				id;
 
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview));
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
-	list = gtk_tree_selection_get_selected_rows (selection, &model);
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (library_treeview));
+	list = gtk_tree_selection_get_selected_rows (library_selection, &model);
 	
-	if (gtk_tree_selection_count_selected_rows (selection) == 1)
+	if (gtk_tree_selection_count_selected_rows (library_selection) == 1)
 	{
 		gtk_tree_model_get_iter (model, &iter, list->data);
 		gtk_tree_model_get (model, &iter, 2, &path, 3, &type, -1);
@@ -817,6 +814,46 @@ cb_playlists_right_click (GtkTreeView *treeview, GdkEventButton *event)
 }
 
 static void
+gimmix_library_song_info (void)
+{
+	GtkTreeModel		*model;
+	GList				*list;
+	GtkTreeIter			iter;
+	gchar				*path;
+	gchar				*song_path;
+	gint				type = -1;
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW(library_treeview));
+	
+	list = gtk_tree_selection_get_selected_rows (library_selection, &model);
+	gtk_tree_model_get_iter (model, &iter, list->data);
+	gtk_tree_model_get (model, &iter, 2, &path, 3, &type, -1);
+
+	if (type == DIR)
+	{
+		g_free (path);
+		return;
+	}
+	
+	song_path = g_strdup_printf ("%s/%s", cfg_get_key_value(conf, "music_directory"), path);
+	if (gimmix_tag_editor_populate (song_path))
+	{	
+		gtk_widget_show (tag_editor_window);
+	}
+	else
+		gimmix_tag_editor_error (dir_error);
+		
+	g_free (path);
+	g_free (song_path);
+	
+	/* free the list */
+	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
+	g_list_free (list);
+	
+	return;
+}
+
+static void
 gimmix_current_playlist_song_info (void)
 {
 	GtkTreeModel		*model;
@@ -967,6 +1004,47 @@ gimmix_current_playlist_popup_menu (void)
 }
 
 static void
+gimmix_library_popup_menu (void)
+{
+	GtkWidget 			*menu;
+	GtkWidget 			*menu_item;
+	GtkWidget			*image;
+
+	menu = gtk_menu_new ();
+	image = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_MENU);
+	
+	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_ADD, NULL);
+	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_library_dir_activated), NULL);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
+	
+	if (gtk_tree_selection_count_selected_rows(library_selection) == 1)
+	{
+		menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_INFO, NULL);
+		g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_library_song_info), NULL);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+		gtk_widget_show (menu_item);
+	}
+	
+	menu_item = gtk_image_menu_item_new_with_label (_("Update Library"));
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), image);
+	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_library_update), NULL);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
+	
+	gtk_widget_show (menu);
+	gtk_menu_popup (GTK_MENU(menu),
+					NULL,
+					NULL,
+					NULL,
+					NULL,
+					3,
+					gtk_get_current_event_time());
+					
+	return;
+}
+
+static void
 gimmix_playlists_popup_menu (void)
 {
 	GtkWidget *menu, *menu_item;
@@ -1057,34 +1135,6 @@ gimmix_update_player_status (gpointer data)
 	}
 	
 	return FALSE;
-}
-
-static void
-gimmix_library_popup_menu (void)
-{
-	GtkWidget 			*menu;
-	GtkWidget 			*menu_item;
-	GtkWidget			*image;
-
-	menu = gtk_menu_new ();
-	image = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_MENU);
-	
-	menu_item = gtk_image_menu_item_new_with_label (_("Update Library"));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), image);
-	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_library_update), NULL);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	gtk_widget_show (menu_item);
-	
-	gtk_widget_show (menu);
-	gtk_menu_popup (GTK_MENU(menu),
-					NULL,
-					NULL,
-					NULL,
-					NULL,
-					3,
-					gtk_get_current_event_time());
-					
-	return;
 }
 
 static gchar *
