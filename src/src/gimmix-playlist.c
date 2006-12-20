@@ -596,13 +596,14 @@ cb_library_dir_activated (void)
 		*/
 		if (type == SONG)
 		{
-			mpd_playlist_add (gmo, path);
+			mpd_playlist_queue_add (gmo, path);
 			g_free (path);
 		}
 		
 		list = g_list_next (list);
 	}
 	
+	mpd_playlist_queue_commit (gmo);
 	data = mpd_playlist_get_changes (gmo, mpd_playlist_get_playlist_id(gmo));
 	if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
 	{
