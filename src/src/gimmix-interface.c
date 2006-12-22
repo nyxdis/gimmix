@@ -76,6 +76,7 @@ static void 	cb_pref_button_clicked 	(GtkWidget *widget, gpointer data);
 static void 	cb_volume_button_clicked (GtkWidget *widget, gpointer data);
 static void 	cb_repeat_button_toggled (GtkToggleButton *button, gpointer data);
 static void 	cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data);
+static void	cb_playlist_button_clicked (GtkWidget *widget, gpointer data);
 
 static void 	cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
 static void 	cb_volume_scale_changed (GtkWidget *widget, gpointer data);
@@ -86,7 +87,6 @@ static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpoin
 static void 	gimmix_status_changed (MpdObj *mo, ChangedStatusType id);
 static void	gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata);
 
-static void	cb_playlist_button_clicked (GtkWidget *widget, gpointer data);
 static void
 gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 {
@@ -161,7 +161,8 @@ cb_playlist_button_clicked (GtkWidget *widget, gpointer data)
 	if( !GTK_WIDGET_VISIBLE (playlist_box) )
 	{	
 		gtk_widget_show (GTK_WIDGET(playlist_box));
-		gtk_window_resize (GTK_WINDOW(main_window), width, height);
+		if (height>0 && width>0)
+			gtk_window_resize (GTK_WINDOW(main_window), width, height);
 		gtk_window_get_size (GTK_WINDOW(main_window), &width, &height);
 	}
 	else
