@@ -52,6 +52,8 @@ gimmix_show_firstrun_dialog (void)
 	cfg_add_key (&cf, "enable_systray",		"true");
 	cfg_add_key (&cf, "play_on_add",		"false");
 	cfg_add_key (&cf, "stop_on_exit",		"false");
+	cfg_add_key (&cf, "window_width",		"334");
+	cfg_add_key (&cf, "window_height",		"120");
 	cfg_add_key (&cf, "full_view_mode",		"false");
 	
 	window = glade_xml_get_widget (xml, "first_run_dialog");

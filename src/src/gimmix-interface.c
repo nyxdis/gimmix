@@ -155,18 +155,21 @@ gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
 static void
 cb_playlist_button_clicked (GtkWidget *widget, gpointer data)
 {
+	static int height;
+	static int width;
+	
 	if( !GTK_WIDGET_VISIBLE (playlist_box) )
 	{	
-		//gtk_window_move (GTK_WINDOW(main_window), x, y);
 		gtk_widget_show (GTK_WIDGET(playlist_box));
-		//gtk_window_present (GTK_WINDOW(main_window));
+		gtk_window_resize (GTK_WINDOW(main_window), width, height);
+		gtk_window_get_size (GTK_WINDOW(main_window), &width, &height);
 	}
 	else
-	{	
-		//gtk_window_get_position (GTK_WINDOW(main_window), &x, &y);
+	{
 		gint w;
 		w = main_window->allocation.width;
 		gtk_widget_hide (GTK_WIDGET(playlist_box));
+		gtk_window_get_size (GTK_WINDOW(main_window), &width, &height);
 		gtk_window_resize (GTK_WINDOW(main_window), w, 120);
 	}
 }
@@ -183,6 +186,8 @@ gimmix_init (void)
 	/* Set the application icon */
 	main_window = glade_xml_get_widget (xml, "main_window");
 	g_signal_connect (G_OBJECT(main_window), "delete-event", G_CALLBACK(cb_gimmix_main_window_delete_event), NULL);
+	gtk_window_set_default_size (GTK_WINDOW(main_window), -1, 120);
+	gtk_window_resize (GTK_WINDOW(main_window), atoi(cfg_get_key_value(conf, "window_width")), atoi(cfg_get_key_value(conf, "window_height")));
 	gtk_window_move (GTK_WINDOW(main_window), atoi(cfg_get_key_value(conf, "window_xpos")), atoi(cfg_get_key_value(conf, "window_ypos")));
 	path = gimmix_get_full_image_path (GIMMIX_APP_ICON);
 	app_icon = gdk_pixbuf_new_from_file_at_size (path, 48, 48, NULL);
@@ -294,8 +299,6 @@ gimmix_init (void)
 	g_object_unref (xml);
 	
 	/* show the main window */
-	gtk_window_set_default_size (GTK_WINDOW(main_window), -1, 120);
-	
 	gtk_widget_show (main_window);
 	
 	return;
@@ -353,6 +356,9 @@ cb_gimmix_key_press (GtkWidget   *widget,
 				else
 					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(shuffle_toggle_button), TRUE);
 				result = TRUE;
+				break;
+			case GDK_l: /* TOGGLE DISPLAY PLAYLIST */
+				cb_playlist_button_clicked (NULL, NULL);
 				break;
 		}
 	}
@@ -695,13 +701,21 @@ gimmix_save_window_pos (void)
 	gint x,y;
 	gchar xpos[4];
 	gchar ypos[4];
+	gchar width[4];
+	gchar height[4];
 	
-	/* save position */
+	/* save position and geometry */
 	gtk_window_get_position (GTK_WINDOW(main_window), &x, &y);
 	sprintf (xpos, "%d", x);
 	sprintf (ypos, "%d", y);
+	gtk_window_get_size (GTK_WINDOW(main_window), &x, &y);
+	sprintf (width, "%d", x);
+	sprintf (height, "%d", y);
+	
 	cfg_add_key (&conf, "window_xpos", xpos);
 	cfg_add_key (&conf, "window_ypos", ypos);
+	cfg_add_key (&conf, "window_width", width);
+	cfg_add_key (&conf, "window_height", height);
 	
 	/* save mode */
 	if (GTK_WIDGET_VISIBLE (GTK_WIDGET(playlist_box)))
