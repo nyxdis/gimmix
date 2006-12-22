@@ -128,6 +128,11 @@ gimmix_prefs_dialog_show (void)
 		gtk_spin_button_set_value (GTK_SPIN_BUTTON(pref_crossfade_spin), (gdouble)crossfade_time);
 	}
 	
+	if (strncasecmp(cfg_get_key_value(conf, "enable_search"), "true", 4) == 0)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_search_check), TRUE);
+	else
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_search_check), FALSE);
+	
 	gtk_widget_show (GTK_WIDGET(pref_window));
 	
 	return;
