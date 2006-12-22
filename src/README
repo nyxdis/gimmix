@@ -43,6 +43,7 @@ Gimmix keybindings are not yet configurable unless you manually edit the source.
 'i'		-> Song information
 'r'		-> Toggle Repeat
 's'		-> Toggle Shuffle
+'l'		-> Toggle display Playlist
 
 You can also adjust volume by scrolling your mouse wheel on the system tray icon.
 
@@ -65,9 +66,9 @@ enable_systray = true or false
 Enable/Disable the system tray icon. Enable is true, Disable is false.
 
 music_directory = /foo/bar
-The directory where your music is stored. Actually, its the music directory 
-you specified in your mpd.conf. This setting is required for the tag editor
-to function properly.
+The absolut path to the directory where your music is stored.
+Actually, its the music directory you specified in your mpd.conf. 
+This setting is required for the tag editor to function properly.
 
 Make sure your .gimmixrc has all these configuration values set.
 
@@ -84,6 +85,11 @@ if true, gimmix will stop playing when user quits gimmix.
 if false, gimmix will not stop playing when user quits gimmix.
 default value is false.
 
+enable_search = true or false
+if true, search mode is enabled in library browser.
+if false, search mode will be disabled.
+default value is true.
+
 full_view_mode = true or false
 if true, the playlist will be expanded by default when gimmix starts.
 if false, gimmix will start in compact mode.
@@ -92,6 +98,11 @@ if false, gimmix will start in compact mode.
 window_xpos and window_ypos
 x and y co-ordinates representing window position of gimmix.
 (These values are automatically set, so, its not necessary to set these values)
+
+window_width and window_height
+these represt the window geometry of gimmix.
+(These values are automatically set, so, its not necessary to set these
+values)
 
 Bugs:
 =====
