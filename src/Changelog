@@ -1,10 +1,20 @@
 Version 0.3.1 (xx-xx-2006)
 * New Autotools based build system (Thanks to Alex Smith)
+* Added a new status bar at the bottom of the player window, which displays the current player status.
+* Fixed the window resize bug. Users can now resize the player window.
+* Made the ui a little more compact.
 * Highlight currently playlist song in the playlist.
-* Replaced GtkStatusIcon by EggTrayIcon to manage compatibility with older versions of
-GTK+. Gimmix can now be compiled with gtk+-2.6.x
+* Multiple selection of files or dirs is now possible in library.
+* Adding multiple files from library is now possible.
+* Allow users to view/edit song information even in library browser. (Requested by Roman Kyrylych)
+* Allow user to enable/disable search mode in library.
+* Replaced GtkStatusIcon by EggTrayIcon to maintain compatibility with older versions of
+GTK+. Gimmix can now be compiled with gtk+-2.6.x.
+* Gimmix can now remember the window geometry (width and height).
+* Added a new button for showing/hiding the playlist.
 * Users can now control volume by scrolling on the system tray icon.
 * Users can now select and delete multiple items from the current playlist.
+* Added support for internationalization. Gimmix needs translators now ;)
 * Improved startup time.
 * Minor fixes and improvements.
 

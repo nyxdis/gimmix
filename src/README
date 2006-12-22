@@ -7,7 +7,7 @@ using GTK+2.
 Features:
 =========
 * Simple and Clean Interface.
-* Library browser.
+* Library Browser.
 * Library search. (search by artist, album, filename, etc)
 * Playlist management (manage mpd playlists)
 * ID3v2 tag editing support.
