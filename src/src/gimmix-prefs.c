@@ -229,4 +229,3 @@ cb_pref_search_toggled (GtkToggleButton *button, gpointer data)
 	return;
 }
 
-
