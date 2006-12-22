@@ -26,7 +26,7 @@
 #include "gimmix-playlist.h"
 #include "gimmix-tagedit.h"
 
-#define GIMMIX_MEDIA_ICON 		"gimmix_logo_small.png"
+#define GIMMIX_MEDIA_ICON 	"gimmix_logo_small.png"
 #define GIMMIX_PLAYLIST_ICON 	"gimmix_playlist.png"
 
 typedef enum {
@@ -44,10 +44,10 @@ static gchar *dir_error = "You have specified an invalid music directory. Please
 GtkWidget 	*search_combo;
 GtkWidget	*search_entry;
 	
-GtkWidget			*gimmix_statusbar;
-GtkWidget			*current_playlist_treeview;
-GtkWidget			*library_treeview;
-GtkWidget			*playlists_treeview;
+GtkWidget		*gimmix_statusbar;
+GtkWidget		*current_playlist_treeview;
+GtkWidget		*library_treeview;
+GtkWidget		*playlists_treeview;
 GtkTreeSelection	*current_playlist_selection;
 GtkTreeSelection	*library_selection;
 
@@ -62,8 +62,8 @@ static void		gimmix_update_library_with_dir (gchar *);
 static void		gimmix_current_playlist_popup_menu (void);
 static void		gimmix_library_popup_menu (void);
 static void		gimmix_playlists_popup_menu (void);
-static gchar*	gimmix_path_get_parent_dir (gchar *);
-static void 	gimmix_load_playlist (gchar *);
+static gchar*		gimmix_path_get_parent_dir (gchar *);
+static void 		gimmix_load_playlist (gchar *);
 static void		gimmix_display_total_playlist_time (void);
 
 /* Callbacks */
@@ -77,19 +77,19 @@ static void		gimmix_current_playlist_remove_song (void);
 static void		gimmix_current_playlist_song_info (void);
 static void		gimmix_current_playlist_clear (void);
 static void		gimmix_library_update (GtkWidget *widget, gpointer data);
-static gboolean	gimmix_update_player_status (gpointer data);
+static gboolean		gimmix_update_player_status (gpointer data);
 
 /* Library browser callbacks */
-static void		cb_library_dir_activated (void);
+static void		cb_library_dir_activated (gpointer data);
 static void		gimmix_library_song_info (void);
-static void 	cb_playlist_activated (GtkTreeView *);
+static void 		cb_playlist_activated (GtkTreeView *);
 static void		cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 /* Playlist browser callbacks */
 static void		gimmix_update_playlists_treeview (void);
 static void		gimmix_playlist_save_dialog_show (void);
-static void 	cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog);
+static void 		cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog);
 static void		cb_playlists_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static bool		cb_all_playlist_button_press (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_gimmix_playlist_remove ();
@@ -115,9 +115,9 @@ gimmix_playlist_init (void)
 							"markup", 0,
 							NULL);
 	current_playlist_store = gtk_list_store_new (3,
-												G_TYPE_STRING, 	/* name (0) */
-												G_TYPE_STRING, 	/* path (1) */
-												G_TYPE_INT); 	/* id (2) */
+						G_TYPE_STRING, 	/* name (0) */
+						G_TYPE_STRING, 	/* path (1) */
+						G_TYPE_INT); 	/* id (2) */
 	current_playlist_model	= GTK_TREE_MODEL (current_playlist_store);
 	current_playlist_selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(current_playlist_treeview));
 	gtk_tree_selection_set_mode (current_playlist_selection, GTK_SELECTION_MULTIPLE);
@@ -552,14 +552,14 @@ cb_all_playlist_button_press (GtkTreeView *treeview, GdkEventButton *event)
 }
 
 static void
-cb_library_dir_activated (void)
+cb_library_dir_activated (gpointer data)
 {
 	GtkTreeModel 		*model;
 	GtkTreeIter 		iter;
 	GList				*list;
 	gchar				*path;
 	GimmixFileType		type;
-	MpdData				*data;
+	MpdData				*mpddata;
 	gint				id;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (library_treeview));
@@ -569,6 +569,11 @@ cb_library_dir_activated (void)
 	{
 		gtk_tree_model_get_iter (model, &iter, list->data);
 		gtk_tree_model_get (model, &iter, 2, &path, 3, &type, -1);
+		
+		if (data == NULL)
+		g_print ("Double clicked\n");
+		else
+		g_print ("Right clicked\n");
 		
 		if (type == DIR)
 		{	
@@ -604,15 +609,15 @@ cb_library_dir_activated (void)
 	}
 	
 	mpd_playlist_queue_commit (gmo);
-	data = mpd_playlist_get_changes (gmo, mpd_playlist_get_playlist_id(gmo));
+	mpddata = mpd_playlist_get_changes (gmo, mpd_playlist_get_playlist_id(gmo));
 	if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
 	{
-		id = data->song->id;
-		mpd_player_play_id (gmo, data->song->id);
+		id = mpddata->song->id;
+		mpd_player_play_id (gmo, mpddata->song->id);
 		gimmix_set_song_info ();
 	}
 	mpd_status_update (gmo);
-	mpd_data_free (data);
+	mpd_data_free (mpddata);
 		
 	/* free the list */
 	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
@@ -1015,7 +1020,7 @@ gimmix_library_popup_menu (void)
 	image = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_MENU);
 	
 	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_ADD, NULL);
-	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_library_dir_activated), NULL);
+	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_library_dir_activated), (gpointer)1);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	

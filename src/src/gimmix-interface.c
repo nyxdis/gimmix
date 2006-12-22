@@ -42,11 +42,13 @@ GtkWidget 		*progress = NULL;
 GtkWidget		*shuffle_toggle_button;
 GtkWidget		*repeat_toggle_button;
 GtkWidget		*volume_scale;
+GtkWidget		*volume_window;
 GtkWidget		*song_label;
 GtkWidget		*artist_label;
 GtkWidget		*album_label;
 GtkWidget		*search_entry;
-GtkWidget		*playlist_expander;
+GtkWidget		*playlist_button;
+GtkWidget		*playlist_box;
 GtkWidget		*image_play;
 GtkWidget		*play_button;
 GtkTooltips 		*play_button_tooltip = NULL;
@@ -71,6 +73,7 @@ static void	cb_next_button_clicked 	(GtkWidget *widget, gpointer data);
 static void	cb_prev_button_clicked 	(GtkWidget *widget, gpointer data);
 static void 	cb_info_button_clicked 	(GtkWidget *widget, gpointer data);
 static void 	cb_pref_button_clicked 	(GtkWidget *widget, gpointer data);
+static void 	cb_volume_button_clicked (GtkWidget *widget, gpointer data);
 static void 	cb_repeat_button_toggled (GtkToggleButton *button, gpointer data);
 static void 	cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data);
 
@@ -83,6 +86,7 @@ static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpoin
 static void 	gimmix_status_changed (MpdObj *mo, ChangedStatusType id);
 static void	gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata);
 
+static void	cb_playlist_button_clicked (GtkWidget *widget, gpointer data);
 static void
 gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 {
@@ -148,6 +152,25 @@ gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
 	return;
 }
 
+static void
+cb_playlist_button_clicked (GtkWidget *widget, gpointer data)
+{
+	if( !GTK_WIDGET_VISIBLE (playlist_box) )
+	{	
+		//gtk_window_move (GTK_WINDOW(main_window), x, y);
+		gtk_widget_show (GTK_WIDGET(playlist_box));
+		//gtk_window_present (GTK_WINDOW(main_window));
+	}
+	else
+	{	
+		//gtk_window_get_position (GTK_WINDOW(main_window), &x, &y);
+		gint w;
+		w = main_window->allocation.width;
+		gtk_widget_hide (GTK_WIDGET(playlist_box));
+		gtk_window_resize (GTK_WINDOW(main_window), w, 120);
+	}
+}
+
 void
 gimmix_init (void)
 {
@@ -191,7 +214,9 @@ gimmix_init (void)
 	shuffle_toggle_button = glade_xml_get_widget (xml, "shuffle_toggle");
 	repeat_toggle_button = glade_xml_get_widget (xml, "repeat_toggle");
 	volume_scale = glade_xml_get_widget (xml, "volume_scale");
-	playlist_expander = glade_xml_get_widget (xml, "playlist_expander");
+
+	playlist_button = glade_xml_get_widget (xml, "playlist_button");
+	playlist_box = glade_xml_get_widget (xml, "playlistbox");
 	song_label = glade_xml_get_widget (xml, "song_label");
 	artist_label = glade_xml_get_widget (xml, "artist_label");
 	album_label = glade_xml_get_widget (xml, "album_label");
@@ -199,6 +224,8 @@ gimmix_init (void)
 	play_button = glade_xml_get_widget (xml, "play_button");
 	image_play = glade_xml_get_widget (xml, "image_play");
 	
+	g_signal_connect (G_OBJECT(playlist_button), "clicked", G_CALLBACK(cb_playlist_button_clicked), NULL);
+
 	if (is_gimmix_repeat (gmo))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(repeat_toggle_button), TRUE);
 	g_signal_connect (G_OBJECT(repeat_toggle_button), "toggled", G_CALLBACK(cb_repeat_button_toggled), NULL);
@@ -226,9 +253,9 @@ gimmix_init (void)
 		gimmix_create_systray_icon ();
 	}
 	if (strncasecmp(cfg_get_key_value(conf, "full_view_mode"), "true", 4) == 0)
-	{
-		gtk_expander_set_expanded (GTK_EXPANDER(playlist_expander), TRUE);
-	}
+		gtk_widget_show (playlist_box);
+	else
+		gtk_widget_hide (playlist_box);
 	
 	mpd_status_update (gmo);
 	status = mpd_player_get_state (gmo);
@@ -267,6 +294,8 @@ gimmix_init (void)
 	g_object_unref (xml);
 	
 	/* show the main window */
+	gtk_window_set_default_size (GTK_WINDOW(main_window), -1, 120);
+	
 	gtk_widget_show (main_window);
 	
 	return;
@@ -385,6 +414,28 @@ cb_stop_button_clicked (GtkWidget *widget, gpointer data)
 	gimmix_stop (gmo);
 	
 	return;
+}
+
+static void
+cb_volume_button_clicked (GtkWidget *widget, gpointer data)
+{
+	gint x, y;
+
+	gtk_window_get_position (GTK_WINDOW(main_window), &x, &y);
+	x += widget->allocation.x;
+	y += widget->allocation.y;
+
+	if( !GTK_WIDGET_VISIBLE (volume_window) )
+	{	
+		gtk_window_move (GTK_WINDOW(volume_window), x+13 , y + widget->allocation.height+13);
+		gtk_widget_show (GTK_WIDGET(volume_window));
+		gtk_window_present (GTK_WINDOW(volume_window));
+	}
+	else
+	{	
+		//gtk_window_get_position (GTK_WINDOW(main_window), &x, &y);
+		gtk_widget_hide (GTK_WIDGET(volume_window));
+	}
 }
 
 static void
@@ -653,7 +704,7 @@ gimmix_save_window_pos (void)
 	cfg_add_key (&conf, "window_ypos", ypos);
 	
 	/* save mode */
-	if (gtk_expander_get_expanded (GTK_EXPANDER(playlist_expander)))
+	if (GTK_WIDGET_VISIBLE (GTK_WIDGET(playlist_box)))
 		cfg_add_key (&conf, "full_view_mode", "true");
 	else
 		cfg_add_key (&conf, "full_view_mode", "false");
