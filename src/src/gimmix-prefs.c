@@ -42,9 +42,13 @@ GtkWidget *pref_crossfade_spin;
 GtkWidget *pref_button_apply;
 GtkWidget *pref_button_close;
 GtkWidget *pref_dir_chooser;
+GtkWidget *pref_search_check;
+
+extern GtkWidget *search_box;
 
 static void 	cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
 static void		cb_pref_systray_toggled (GtkToggleButton *button, gpointer data);
+static void		cb_pref_search_toggled (GtkToggleButton *button, gpointer data);
 static void		cb_pref_crossfade_toggled (GtkToggleButton *button, gpointer data);
 
 void
@@ -62,10 +66,12 @@ gimmix_prefs_init (void)
 	pref_button_apply = glade_xml_get_widget (xml, "button_apply");
 	pref_button_close = glade_xml_get_widget (xml, "prefs_window");
 	pref_dir_chooser = glade_xml_get_widget (xml, "conf_dir_chooser");
+	pref_search_check = glade_xml_get_widget (xml, "search_checkbutton");
 	
 	g_signal_connect (G_OBJECT(pref_systray_check), "toggled", G_CALLBACK(cb_pref_systray_toggled), NULL);
 	g_signal_connect (G_OBJECT(pref_crossfade_check), "toggled", G_CALLBACK(cb_pref_crossfade_toggled), pref_crossfade_spin);
 	g_signal_connect (G_OBJECT(pref_button_apply), "clicked", G_CALLBACK(cb_pref_apply_clicked), NULL);
+	g_signal_connect (G_OBJECT(pref_search_check), "toggled", G_CALLBACK(cb_pref_search_toggled), NULL);
 	
 	return;
 }
@@ -199,4 +205,23 @@ cb_pref_systray_toggled (GtkToggleButton *button, gpointer data)
 
 	return;
 }
+
+static void
+cb_pref_search_toggled (GtkToggleButton *button, gpointer data)
+{
+	if (gtk_toggle_button_get_active(button) == TRUE)
+	{
+		gtk_widget_show (search_box);
+		cfg_add_key (&conf, "enable_search", "true");
+	}
+	else
+	if (gtk_toggle_button_get_active(button) == FALSE)
+	{
+		gtk_widget_hide (search_box);
+		cfg_add_key (&conf, "enable_search", "false");
+	}
+
+	return;
+}
+
 

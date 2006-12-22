@@ -43,6 +43,7 @@ static gchar *dir_error = "You have specified an invalid music directory. Please
 
 GtkWidget 	*search_combo;
 GtkWidget	*search_entry;
+GtkWidget	*search_box;
 	
 GtkWidget		*gimmix_statusbar;
 GtkWidget		*current_playlist_treeview;
@@ -145,11 +146,15 @@ gimmix_playlist_init (void)
 static void
 gimmix_search_init (void)
 {
+	search_box = glade_xml_get_widget (xml, "search_box");
 	search_combo = glade_xml_get_widget (xml, "search_combo");
 	search_entry = glade_xml_get_widget (xml, "search_entry");
 	
 	gtk_combo_box_set_active (GTK_COMBO_BOX(search_combo), 0);
 	g_signal_connect (G_OBJECT(search_entry), "key_release_event", G_CALLBACK(cb_search_keypress), NULL);
+	
+	if (strncasecmp(cfg_get_key_value(conf, "enable_search"), "true", 4) != 0)
+		gtk_widget_hide (search_box);
 	
 	return;
 }
