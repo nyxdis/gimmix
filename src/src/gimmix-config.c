@@ -51,6 +51,7 @@ gimmix_config_init (void)
 	cfg_add_key (&conf, "window_height",	"120");
 	cfg_add_key (&conf, "full_view_mode",	"false");
 	cfg_add_key (&conf, "enable_search",	"true");
+	cfg_add_key (&conf, "update_on_startup","false");
 	
 	rcfile = cfg_get_path_to_config_file (CONFIG_FILE);
 	

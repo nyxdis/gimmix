@@ -302,6 +302,10 @@ gimmix_init (void)
 	/* show the main window */
 	gtk_widget_show (main_window);
 	
+	/* check if library needs to be updated on startup */
+	if (strncasecmp(cfg_get_key_value(conf, "update_on_startup"), "true", 4) == 0)
+	gimmix_library_update ();
+	
 	return;
 }
 

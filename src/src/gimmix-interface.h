@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include "gimmix-core.h"
 #include "gimmix-systray.h"
+#include "gimmix-playlist.h"
 
 /* Initializes default interface signals */
 void gimmix_init (void);

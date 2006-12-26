@@ -37,6 +37,7 @@ GtkWidget *pref_port_entry;
 GtkWidget *pref_systray_check;
 GtkWidget *pref_play_immediate_check;
 GtkWidget *pref_stop_exit_check;
+GtkWidget *pref_upd_startup_check;
 GtkWidget *pref_crossfade_check;
 GtkWidget *pref_crossfade_spin;
 GtkWidget *pref_button_apply;
@@ -62,6 +63,7 @@ gimmix_prefs_init (void)
 	pref_play_immediate_check = glade_xml_get_widget (xml, "pref_play_immediate");
 	pref_stop_exit_check = glade_xml_get_widget (xml, "pref_stop_on_exit");
 	pref_crossfade_check = glade_xml_get_widget (xml, "pref_crossfade");
+	pref_upd_startup_check = glade_xml_get_widget (xml, "pref_upd_on_startup");
 	pref_crossfade_spin = glade_xml_get_widget (xml, "crossfade_spin");
 	pref_button_apply = glade_xml_get_widget (xml, "button_apply");
 	pref_button_close = glade_xml_get_widget (xml, "prefs_window");
@@ -112,6 +114,11 @@ gimmix_prefs_dialog_show (void)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_stop_exit_check), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_stop_exit_check), FALSE);
+		
+	if (strncasecmp(cfg_get_key_value(conf, "update_on_startup"), "true", 4) == 0)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_upd_startup_check), TRUE);
+	else
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_upd_startup_check), FALSE);
 	
 	crossfade_time = mpd_status_get_crossfade (gmo);
 	if (crossfade_time != 0)
@@ -167,6 +174,11 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 		cfg_add_key (&conf, "stop_on_exit", "true");
 	else
 		cfg_add_key (&conf, "stop_on_exit", "false");
+	
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pref_upd_startup_check)))
+		cfg_add_key (&conf, "update_on_startup", "true");
+	else
+		cfg_add_key (&conf, "update_on_startup", "false");
 		
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(pref_crossfade_check)))
 	{

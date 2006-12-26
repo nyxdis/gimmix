@@ -338,6 +338,26 @@
 		      </child>
 
 		      <child>
+			<widget class="GtkCheckButton" id="pref_upd_on_startup">
+			  <property name="border_width">6</property>
+			  <property name="visible">True</property>
+			  <property name="can_focus">True</property>
+			  <property name="label" translatable="yes">Update mpd library on startup.</property>
+			  <property name="use_underline">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
+			  <property name="active">False</property>
+			  <property name="inconsistent">False</property>
+			  <property name="draw_indicator">True</property>
+			</widget>
+			<packing>
+			  <property name="padding">0</property>
+			  <property name="expand">False</property>
+			  <property name="fill">False</property>
+			</packing>
+		      </child>
+
+		      <child>
 			<widget class="GtkHBox" id="hbox19">
 			  <property name="visible">True</property>
 			  <property name="homogeneous">False</property>

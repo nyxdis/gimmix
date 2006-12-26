@@ -56,7 +56,8 @@ gimmix_show_firstrun_dialog (void)
 	cfg_add_key (&cf, "window_height",		"120");
 	cfg_add_key (&cf, "full_view_mode",		"false");
 	cfg_add_key (&cf, "enable_search",		"true");
-		
+	cfg_add_key (&cf, "update_on_startup",	"false");
+			
 	window = glade_xml_get_widget (xml, "first_run_dialog");
 	button = glade_xml_get_widget (xml, "fr_apply");
 	g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK(on_fr_apply_clicked), NULL);
