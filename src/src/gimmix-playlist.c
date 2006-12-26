@@ -85,6 +85,7 @@ static void		cb_library_dir_activated (gpointer data);
 static void		gimmix_library_song_info (void);
 static void 		cb_playlist_activated (GtkTreeView *);
 static void		cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event);
+static void		cb_library_popup_add_clicked (GtkWidget *widget, gpointer data);
 static void		cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 /* Playlist browser callbacks */
@@ -96,7 +97,6 @@ static bool		cb_all_playlist_button_press (GtkTreeView *treeview, GdkEventButton
 static void		cb_gimmix_playlist_remove ();
 static void		cb_gimmix_playlist_load ();
 static void		cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
-static void		cb_library_popup_add_clicked (GtkWidget *widget, gpointer data);
 
 void
 gimmix_playlist_init (void)
@@ -1247,9 +1247,9 @@ gimmix_playlist_save_dialog_show (void)
 	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), label);
 	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), entry);
    
-   gtk_widget_show_all (dialog);
+	gtk_widget_show_all (dialog);
    
-   return;
+	return;
 }
 
 static void
