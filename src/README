@@ -90,6 +90,11 @@ if true, search mode is enabled in library browser.
 if false, search mode will be disabled.
 default value is true.
 
+update_on_startup = true or false
+if true, gimmix will update the mpd database everytime on startup.
+if false, gimmix won't update the mpd database on startup.
+defalt value is false.
+
 full_view_mode = true or false
 if true, the playlist will be expanded by default when gimmix starts.
 if false, gimmix will start in compact mode.
