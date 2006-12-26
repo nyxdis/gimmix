@@ -22,6 +22,10 @@ just follow these steps to install gimmix.
 make
 make install (as root)
 
+Gimmix will be installed to /usr/local/bin. If you want, you can change
+the installation path by setting the --prefix argument to ./configure.
+like, ./configure --prefix=/usr to install gimmix to /usr.
+
 Note: gimmix stores its configuration settings in ~/.gimmixrc
 The configuration file layout has been changed in the new version,
 so, if you are upgrading from an older version of gimmix (0.1 or 0.2)
