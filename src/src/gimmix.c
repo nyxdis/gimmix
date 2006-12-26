@@ -120,7 +120,9 @@ gimmix_about_show (void)
 
 	gchar *authors[] = { "Priyank M. Gosalia <priyankmg@gmail.com>",
 				"Gimmix uses wejpconfig written by Johannes Heimansberg.",
-			 _("A part of the song seek code borrowed from Pygmy."),
+			 	_("A part of the song seek code borrowed from Pygmy."),
+			 	"Alex Smith: Autoconf 2.5 support",
+			 	"Rohan Dhruva: Extensive testing and bug reports",
 			 NULL
 			};
 	

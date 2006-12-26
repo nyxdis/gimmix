@@ -77,7 +77,6 @@ static void		cb_current_playlist_delete_press (GtkWidget *widget, GdkEventKey *e
 static void		gimmix_current_playlist_remove_song (void);
 static void		gimmix_current_playlist_song_info (void);
 static void		gimmix_current_playlist_clear (void);
-static void		gimmix_library_update (GtkWidget *widget, gpointer data);
 static gboolean		gimmix_update_player_status (gpointer data);
 
 /* Library browser callbacks */
@@ -1171,7 +1170,7 @@ cb_shuffle_menu_toggled (GtkCheckMenuItem *item, gpointer data)
 }
 
 void
-gimmix_library_update (GtkWidget *widget, gpointer data)
+gimmix_library_update (void)
 {
 	mpd_database_update_dir (gmo, "/");
 	gtk_label_set_text (GTK_LABEL(gimmix_statusbar), _("Updating Library..."));
