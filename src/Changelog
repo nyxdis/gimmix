@@ -2,7 +2,7 @@ Version 0.3.1 (26-12-2006)
 * Added Autoconf 2.5 support (Thanks to Alex Smith)
 * Added a new status bar at the bottom of the player window, which displays the current player status.
 * Fixed the window resize bug. Users can now resize the player window.
-* Made the ui a little more compact.
+* Made the UI a little more compact.
 * New configuration option to allow users to set whether gimmix should update mpd database on startup.
 * Highlight currently playlist song in the playlist.
 * Multiple selection of files or dirs is now possible in library.
