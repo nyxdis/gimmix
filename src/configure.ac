@@ -20,17 +20,14 @@ AC_PROG_CC
 AC_HEADER_STDC
 AC_CHECK_HEADERS([locale.h stdlib.h string.h sys/ioctl.h unistd.h])
 AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_INTLTOOL(, [no-xml])
 
 if test "${GCC}" = "yes"
 then
 	CFLAGS="${CFLAGS} -pipe"
 	CFLAGS="${CFLAGS} -Wall"
 fi
-
-GTK_REQUIRED=2.6.0
-GLADE_REQUIRED=2.6.0
-MPD_REQUIRED=0.12.0
-TAGLIB_REQUIRED=1.4
 
 GETTEXT_PACKAGE=gimmix
 AC_SUBST(GETTEXT_PACKAGE)
@@ -40,8 +37,11 @@ AM_GLIB_DEFINE_LOCALEDIR(LOCALEDIR)
 
 AC_MSG_CHECKING(for flying pigs)
 AC_MSG_RESULT([ooh, there's one!])
-
-PKG_CHECK_MODULES([GIMMIX], gtk+-2.0 >= $GTK_REQUIRED libglade-2.0 >= $GLADE_REQUIRED libmpd >= $MPD_REQUIRED taglib >= $TAGLIB_REQUIRED)
+pkg_modules="gtk+-2.0 >= 2.6.0 \
+			 libmpd >= 0.12.0 \
+			 libglade-2.0 >= 2.6.0 \
+			 taglib >= 1.4"
+PKG_CHECK_MODULES([GIMMIX], [$pkg_modules])
 
 CFLAGS="${CFLAGS}"
 
