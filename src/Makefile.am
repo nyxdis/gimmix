@@ -1,4 +1,4 @@
-SUBDIRS = src
+SUBDIRS = src po
 
 sharedir   = $(pkgdatadir)
 share_DATA = glade/gimmix.glade data/gimmix_firstrun.png
