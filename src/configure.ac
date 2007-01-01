@@ -29,7 +29,7 @@ then
 	CFLAGS="${CFLAGS} -Wall"
 fi
 
-ALL_LINGUAS=""
+ALL_LINGUAS="zh_TW"
 GETTEXT_PACKAGE=gimmix
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [needed for bindtextdomain() and textdomain()])
