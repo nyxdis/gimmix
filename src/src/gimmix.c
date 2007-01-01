@@ -119,13 +119,13 @@ gimmix_about_show (void)
 	g_free (path);
 
 	gchar *authors[] = { "Priyank M. Gosalia <priyankmg@gmail.com>",
-				"Gimmix uses wejpconfig written by Johannes Heimansberg.",
-			 	_("A part of the song seek code borrowed from Pygmy."),
-			 	"Alex Smith: Autoconf 2.5 support",
-			 	"Rohan Dhruva: Extensive testing and bug reports",
-			 NULL
-			};
-	
+					"Gimmix uses wejpconfig written by Johannes Heimansberg.",
+					_("A part of the song seek code borrowed from Pygmy."),
+					"Alex Smith: Autoconf 2.5 support",
+				 	"Rohan Dhruva: Extensive testing and bug reports",
+					 NULL
+					};
+
 	gtk_show_about_dialog (NULL,
                            "name", APPNAME,
                            "version", VERSION,
@@ -133,6 +133,7 @@ gimmix_about_show (void)
                            "comments", _("Gimmix is a graphical music player daemon (MPD) client written in C."),
                            "license", license,
                            "authors", authors,
+					  "translator-credits", _("Traditional Chinese (zh_TW) - Cheng-Wei Chien <e.cwchien@gmail.com>"),
                            "website", APPURL,
                            "website-label", APPURL,
                            "logo", about_pixbuf,
