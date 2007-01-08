@@ -588,7 +588,7 @@ cb_library_dir_activated (gpointer data)
 	}
 	
 	mpddata = mpd_playlist_get_changes (gmo, mpd_playlist_get_playlist_id(gmo));
-	if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
+	if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0 && mpddata!=NULL)
 	{
 		id = mpddata->song->id;
 		mpd_player_play_id (gmo, mpddata->song->id);
