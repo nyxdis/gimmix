@@ -10,6 +10,7 @@ gimmix_SOURCES=	wejpconfig.c \
 		gimmix-config.c \
 		gimmix-core.c \
 		gimmix-playlist.c \
+		gimmix-tooltip.c \
 		gimmix-systray.c \
 		gimmix-prefs.c \
 		gimmix-interface.c \

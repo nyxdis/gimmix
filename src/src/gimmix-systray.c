@@ -23,11 +23,14 @@
  
 #include "gimmix-core.h"
 #include "gimmix-systray.h"
+#include "gimmix-tooltip.h"
 
-#define GIMMIX_ICON  	"gimmix_logo_small.png"
+#define GIMMIX_ICON  			"gimmix_logo_small.png"
+#define GIMMIX_TOOLTIP_ICON 	"gimmix.png"
 
 EggTrayIcon			*icon = NULL;
-GtkTooltips			*icon_tooltip = NULL;
+//GtkTooltips		*icon_tooltip = NULL;
+GimmixTooltip		*tooltip = NULL;
 extern GtkWidget 	*progress;
 
 extern MpdObj		*gmo;
@@ -44,15 +47,20 @@ static void		cb_systray_popup_stop_clicked (GtkMenuItem *menuitem, gpointer data
 static void		cb_systray_popup_next_clicked (GtkMenuItem *menuitem, gpointer data);
 static void		cb_systray_popup_prev_clicked (GtkMenuItem *menuitem, gpointer data);
 static void		cb_systray_popup_quit_clicked (GtkMenuItem *menuitem, gpointer data);
+static void		cb_systray_volume_scroll (GtkWidget *widget, GdkEventScroll *event);
 
 static gboolean	cb_gimmix_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data);
-static void		cb_systray_volume_scroll (GtkWidget *widget, GdkEventScroll *event);
+
+static gboolean cb_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data);
+
+static gboolean cb_systray_leave_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data);
 
 void
 gimmix_create_systray_icon (void)
 {
 	gchar 		*icon_file;
 	GdkPixbuf	*icon_image;
+	GdkPixbuf	*icon_tooltip;
 	GtkWidget	*systray_icon;
 	
 	icon_file = gimmix_get_full_image_path (GIMMIX_ICON);
@@ -60,19 +68,48 @@ gimmix_create_systray_icon (void)
 	icon = egg_tray_icon_new (APPNAME);
 	icon_image = gdk_pixbuf_new_from_file_at_size (icon_file, 20, 20, NULL);
 	systray_icon = gtk_image_new_from_pixbuf (icon_image);
-	gtk_container_add (GTK_CONTAINER (icon), systray_icon);
 	g_free (icon_file);
+	gtk_container_add (GTK_CONTAINER (icon), systray_icon);
 	g_object_unref (icon_image);
-	icon_tooltip = gtk_tooltips_new ();
+	
 	/* set the default tooltip */
-	gtk_tooltips_set_tip (icon_tooltip, GTK_WIDGET(icon), APPNAME, NULL);
+	tooltip = gimmix_tooltip_new ();
+	gimmix_tooltip_set_text1 (tooltip, APPNAME);
+	icon_file = gimmix_get_full_image_path (GIMMIX_TOOLTIP_ICON);
+	icon_tooltip = gdk_pixbuf_new_from_file_at_size (icon_file, 32, 32, NULL);
+	g_free (icon_file);
+	gimmix_tooltip_set_icon (tooltip, icon_tooltip);
+	g_object_unref (icon_tooltip);
+	tooltip->progressbar = gtk_progress_bar_new ();
+	gtk_progress_bar_set_orientation (GTK_PROGRESS_BAR(tooltip->progressbar), GTK_PROGRESS_LEFT_TO_RIGHT);
+	gtk_widget_set_size_request (tooltip->progressbar, -1, 16);
+	gtk_box_pack_start (GTK_BOX(tooltip->vbox), tooltip->progressbar, TRUE, FALSE, 2);
 	
 	g_signal_connect (icon, "button-press-event", G_CALLBACK (cb_gimmix_systray_icon_clicked), NULL);
 	g_signal_connect (icon, "scroll_event", G_CALLBACK(cb_systray_volume_scroll), NULL);
+	g_signal_connect (icon, "enter-notify-event", G_CALLBACK(cb_systray_enter_notify), NULL);
+	g_signal_connect (icon, "leave-notify-event", G_CALLBACK(cb_systray_leave_notify), NULL);
 	gtk_widget_show (GTK_WIDGET(systray_icon));
 	gtk_widget_show (GTK_WIDGET(icon));
+	gimmix_tooltip_attach_to_widget (tooltip, icon);
 
 	return;
+}
+
+static gboolean
+cb_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data)
+{
+	gimmix_tooltip_show (tooltip);
+	
+	return TRUE;
+}
+
+static gboolean
+cb_systray_leave_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data)
+{
+	gimmix_tooltip_hide (tooltip);
+	
+	return TRUE;
 }
 
 static gboolean
@@ -250,13 +287,10 @@ gimmix_destroy_systray_icon (void)
 	if (icon == NULL)
 		return;
 	gtk_widget_destroy (GTK_WIDGET(icon));
+	gimmix_tooltip_destroy (tooltip);
 	
-	if (!icon_tooltip)
-		return;
-		
-	g_object_ref_sink (icon_tooltip);
 	icon = NULL;
-	icon_tooltip = NULL;
+	tooltip = NULL;
 	
 	return;
 }	
@@ -265,34 +299,31 @@ gimmix_destroy_systray_icon (void)
 void
 gimmix_update_systray_tooltip (SongInfo *s)
 {
-	gchar 	*summary = NULL;
-	
 	if (icon == NULL)
 		return;
 		
 	if (s == NULL)
 	{
-		gtk_tooltips_set_tip (icon_tooltip, GTK_WIDGET(icon), APPNAME, NULL);
+		gimmix_tooltip_set_text1 (tooltip, APPNAME);
+		gimmix_tooltip_set_text2 (tooltip, "http://gimmix.berlios.de/");
+		gimmix_tooltip_set_text3 (tooltip, NULL);
 		return;
 	}
 	
 	if (s->title != NULL)
-	{
-		if (s->artist != NULL)
-			summary = g_strdup_printf ("%s\n%s - %s", APPNAME, s->title, s->artist);
-		else
-			summary = g_strdup_printf ("%s\n%s", APPNAME, s->title);
-	}
+		gimmix_tooltip_set_text1 (tooltip, s->title);
 	else
-	{	
-		gchar *file;
-		file = g_path_get_basename (s->file);
-		summary = g_strdup_printf ("%s", file);
-		g_free (file);
-	}
+		gimmix_tooltip_set_text1 (tooltip, s->file);
 	
-	gtk_tooltips_set_tip (icon_tooltip, GTK_WIDGET(icon), summary, NULL);
-	g_free (summary);
+	if (s->artist != NULL)
+		gimmix_tooltip_set_text2 (tooltip, s->artist);
+	else
+		gimmix_tooltip_set_text2 (tooltip, NULL);
+	
+	if (s->album != NULL)
+		gimmix_tooltip_set_text3 (tooltip, s->album);
+	else
+		gimmix_tooltip_set_text3 (tooltip, NULL);
 	
 	return;
 }

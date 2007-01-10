@@ -4,6 +4,7 @@
 #include <gtk/gtk.h>
 #include "gimmix.h"
 #include "eggtrayicon.h"
+#include "gimmix-tooltip.h"
 
 /* create system tray icon */
 void gimmix_create_systray_icon (void);

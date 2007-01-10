@@ -25,6 +25,7 @@
 #include <glade/glade.h>
 #include <gdk/gdkkeysyms.h>
 #include "gimmix-interface.h"
+#include "gimmix-tooltip.h"
 #include "gimmix-playlist.h"
 #include "gimmix-tagedit.h"
 #include "gimmix-prefs.h"
@@ -51,19 +52,21 @@ GtkWidget		*playlist_button;
 GtkWidget		*playlist_box;
 GtkWidget		*image_play;
 GtkWidget		*play_button;
-GtkTooltips 		*play_button_tooltip = NULL;
+GtkTooltips 	*play_button_tooltip = NULL;
 
-extern MpdObj 		*gmo;
-extern GladeXML 	*xml;
-extern ConfigFile	conf;
+extern MpdObj 			*gmo;
+extern GladeXML 		*xml;
+extern ConfigFile		conf;
+extern GimmixTooltip 	*tooltip;
 
 extern GtkWidget	*current_playlist_treeview;
 
-static gboolean 	gimmix_timer (void);
 static void		gimmix_update_volume (void);
 static void		gimmix_update_repeat (void);
 static void		gimmix_update_shuffle (void);
+
 static gboolean		is_user_searching (void);
+static gboolean 	gimmix_timer (void);
 
 /* Callbacks */
 static int	cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data);
@@ -71,15 +74,15 @@ static void	cb_play_button_clicked 	(GtkWidget *widget, gpointer data);
 static void	cb_stop_button_clicked 	(GtkWidget *widget, gpointer data);
 static void	cb_next_button_clicked 	(GtkWidget *widget, gpointer data);
 static void	cb_prev_button_clicked 	(GtkWidget *widget, gpointer data);
-static void 	cb_info_button_clicked 	(GtkWidget *widget, gpointer data);
-static void 	cb_pref_button_clicked 	(GtkWidget *widget, gpointer data);
-static void 	cb_volume_button_clicked (GtkWidget *widget, gpointer data);
-static void 	cb_repeat_button_toggled (GtkToggleButton *button, gpointer data);
-static void 	cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data);
+static void cb_info_button_clicked 	(GtkWidget *widget, gpointer data);
+static void cb_pref_button_clicked 	(GtkWidget *widget, gpointer data);
+static void cb_volume_button_clicked (GtkWidget *widget, gpointer data);
+static void cb_repeat_button_toggled (GtkToggleButton *button, gpointer data);
+static void cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data);
 static void	cb_playlist_button_clicked (GtkWidget *widget, gpointer data);
 
-static void 	cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
-static void 	cb_volume_scale_changed (GtkWidget *widget, gpointer data);
+static void cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
+static void cb_volume_scale_changed (GtkWidget *widget, gpointer data);
 static void	cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
 static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata);
 
@@ -114,6 +117,10 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		{
 			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
+			
+			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), 0.0);
+			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
+			
 			gimmix_show_ver_info ();
 			
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
@@ -280,6 +287,7 @@ gimmix_init (void)
 	else if (status == MPD_PLAYER_STOP)
 	{
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
+		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
 		gimmix_show_ver_info ();
 	}
 
@@ -386,6 +394,10 @@ gimmix_timer (void)
 			gimmix_get_progress_status (gmo, &fraction, time);
 			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), fraction);
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), time);
+			
+			/* Update the system tray progress bar */
+			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), fraction);
+			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), time);
 		}
 		return TRUE;
 	}

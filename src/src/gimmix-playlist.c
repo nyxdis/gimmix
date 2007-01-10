@@ -26,7 +26,7 @@
 #include "gimmix-playlist.h"
 #include "gimmix-tagedit.h"
 
-#define GIMMIX_MEDIA_ICON 	"gimmix_logo_small.png"
+#define GIMMIX_MEDIA_ICON 		"gimmix_logo_small.png"
 #define GIMMIX_PLAYLIST_ICON 	"gimmix_playlist.png"
 
 typedef enum {
