@@ -75,7 +75,7 @@ gimmix_create_systray_icon (void)
 	g_object_unref (icon_image);
 	
 	stooltip = sexy_tooltip_new ();
-	gdk_color_parse ("#EDF5FF", &color);
+	gdk_color_parse ("white", &color);
 	gtk_widget_modify_bg (GTK_WIDGET(stooltip), GTK_STATE_NORMAL, &color);
 	
 	/* set the default tooltip */

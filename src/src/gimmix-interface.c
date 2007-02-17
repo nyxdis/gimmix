@@ -43,7 +43,6 @@ GtkWidget 		*progress = NULL;
 GtkWidget		*shuffle_toggle_button;
 GtkWidget		*repeat_toggle_button;
 GtkWidget		*volume_scale;
-GtkWidget		*volume_window;
 GtkWidget		*song_label;
 GtkWidget		*artist_label;
 GtkWidget		*search_entry;
