@@ -23,7 +23,7 @@
 #endif
 
 #include <gtk/gtk.h>
-#include <libsexy/sexy-tooltip.h>
+#include "sexy-tooltip.h"
 
 struct _SexyTooltipPriv
 {
