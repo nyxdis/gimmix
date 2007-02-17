@@ -7,6 +7,7 @@ bin_PROGRAMS=gimmix
 ## Gimmix
 gimmix_SOURCES=	wejpconfig.c \
 		eggtrayicon.c \
+		sexy-tooltip.c \
 		gimmix-config.c \
 		gimmix-core.c \
 		gimmix-playlist.c \

@@ -47,7 +47,7 @@ gimmix_config_init (void)
 	cfg_add_key (&conf, "stop_on_exit",		"false");
 	cfg_add_key (&conf, "window_xpos",		"200");
 	cfg_add_key (&conf, "window_ypos",		"300");
-	cfg_add_key (&conf, "window_width",		"334");
+	cfg_add_key (&conf, "window_width",		"358");
 	cfg_add_key (&conf, "window_height",	"120");
 	cfg_add_key (&conf, "full_view_mode",	"false");
 	cfg_add_key (&conf, "enable_search",	"true");

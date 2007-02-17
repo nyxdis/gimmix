@@ -1,7 +1,7 @@
 /*
  * gimmix-systray.c
  *
- * Copyright (C) 2006 Priyank Gosalia
+ * Copyright (C) 2006-2007 Priyank Gosalia
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -24,13 +24,14 @@
 #include "gimmix-core.h"
 #include "gimmix-systray.h"
 #include "gimmix-tooltip.h"
+#include "sexy-tooltip.h"
 
 #define GIMMIX_ICON  			"gimmix_logo_small.png"
 #define GIMMIX_TOOLTIP_ICON 	"gimmix.png"
 
 EggTrayIcon			*icon = NULL;
-//GtkTooltips		*icon_tooltip = NULL;
 GimmixTooltip		*tooltip = NULL;
+GtkWidget			*stooltip;
 extern GtkWidget 	*progress;
 
 extern MpdObj		*gmo;
@@ -62,6 +63,7 @@ gimmix_create_systray_icon (void)
 	GdkPixbuf	*icon_image;
 	GdkPixbuf	*icon_tooltip;
 	GtkWidget	*systray_icon;
+	GdkColor 	color;
 	
 	icon_file = gimmix_get_full_image_path (GIMMIX_ICON);
 	/* create the tray icon */
@@ -72,18 +74,18 @@ gimmix_create_systray_icon (void)
 	gtk_container_add (GTK_CONTAINER (icon), systray_icon);
 	g_object_unref (icon_image);
 	
+	stooltip = sexy_tooltip_new ();
+	gdk_color_parse ("#EDF5FF", &color);
+	gtk_widget_modify_bg (GTK_WIDGET(stooltip), GTK_STATE_NORMAL, &color);
+	
 	/* set the default tooltip */
 	tooltip = gimmix_tooltip_new ();
-	gimmix_tooltip_set_text1 (tooltip, APPNAME);
+	gimmix_tooltip_set_text1 (tooltip, APPNAME, TRUE);
 	icon_file = gimmix_get_full_image_path (GIMMIX_TOOLTIP_ICON);
 	icon_tooltip = gdk_pixbuf_new_from_file_at_size (icon_file, 32, 32, NULL);
 	g_free (icon_file);
 	gimmix_tooltip_set_icon (tooltip, icon_tooltip);
 	g_object_unref (icon_tooltip);
-	tooltip->progressbar = gtk_progress_bar_new ();
-	gtk_progress_bar_set_orientation (GTK_PROGRESS_BAR(tooltip->progressbar), GTK_PROGRESS_LEFT_TO_RIGHT);
-	gtk_widget_set_size_request (tooltip->progressbar, -1, 16);
-	gtk_box_pack_start (GTK_BOX(tooltip->vbox), tooltip->progressbar, TRUE, FALSE, 2);
 	
 	g_signal_connect (icon, "button-press-event", G_CALLBACK (cb_gimmix_systray_icon_clicked), NULL);
 	g_signal_connect (icon, "scroll_event", G_CALLBACK(cb_systray_volume_scroll), NULL);
@@ -91,16 +93,40 @@ gimmix_create_systray_icon (void)
 	g_signal_connect (icon, "leave-notify-event", G_CALLBACK(cb_systray_leave_notify), NULL);
 	gtk_widget_show (GTK_WIDGET(systray_icon));
 	gtk_widget_show (GTK_WIDGET(icon));
-	gimmix_tooltip_attach_to_widget (tooltip, icon);
-
+	
+	gtk_widget_ref (tooltip->hbox);
+	gtk_container_remove (GTK_CONTAINER(tooltip->window), tooltip->hbox);
+	gtk_container_add (GTK_CONTAINER(stooltip), tooltip->hbox);
+	gtk_widget_unref (tooltip->hbox);
+	
 	return;
 }
 
 static gboolean
 cb_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data)
 {
-	gimmix_tooltip_show (tooltip);
+	GdkScreen *screen = gtk_widget_get_screen (GTK_WIDGET(icon));
+	GdkRectangle rectangle;
+	gint x, y;
+	gint w, h;
 	
+	/* Get the location of the system tray icon */
+	gdk_window_get_origin ((GTK_WIDGET(icon)->window), &x, &y);
+	
+	/* Move the tooltip off-screen to calculate the exact co-ordinates */
+	rectangle.x = 2500;
+	rectangle.y = 2500;
+	rectangle.width = 100;
+	rectangle.height = 50;
+	sexy_tooltip_position_to_rect (SEXY_TOOLTIP(stooltip), &rectangle, screen);
+	gtk_widget_show_all (stooltip);
+	gtk_window_get_size (GTK_WINDOW(stooltip), &w, &h);
+	
+	/* Good, now lets move it back to where it should be */
+	rectangle.x = x-(w/4);
+	rectangle.y = y-120;
+	sexy_tooltip_position_to_rect (SEXY_TOOLTIP(stooltip), &rectangle, screen);
+
 	return TRUE;
 }
 
@@ -108,6 +134,7 @@ static gboolean
 cb_systray_leave_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data)
 {
 	gimmix_tooltip_hide (tooltip);
+	gtk_widget_hide (stooltip);
 	
 	return TRUE;
 }
@@ -304,26 +331,25 @@ gimmix_update_systray_tooltip (SongInfo *s)
 		
 	if (s == NULL)
 	{
-		gimmix_tooltip_set_text1 (tooltip, APPNAME);
-		gimmix_tooltip_set_text2 (tooltip, "http://gimmix.berlios.de/");
-		gimmix_tooltip_set_text3 (tooltip, NULL);
+		gimmix_tooltip_set_text1 (tooltip, APPNAME, TRUE);
+		gimmix_tooltip_set_text2 (tooltip, APPURL, FALSE);
 		return;
 	}
 	
 	if (s->title != NULL)
-		gimmix_tooltip_set_text1 (tooltip, s->title);
+		gimmix_tooltip_set_text1 (tooltip, s->title, TRUE);
 	else
-		gimmix_tooltip_set_text1 (tooltip, s->file);
+		gimmix_tooltip_set_text1 (tooltip, s->file, FALSE);
 	
+	gchar *artist_str;
 	if (s->artist != NULL)
-		gimmix_tooltip_set_text2 (tooltip, s->artist);
+	{	
+		artist_str = g_strdup_printf ("%s %s", _("by"), s->artist);
+		gimmix_tooltip_set_text2 (tooltip, artist_str, TRUE);
+		g_free (artist_str);
+	}
 	else
-		gimmix_tooltip_set_text2 (tooltip, NULL);
-	
-	if (s->album != NULL)
-		gimmix_tooltip_set_text3 (tooltip, s->album);
-	else
-		gimmix_tooltip_set_text3 (tooltip, NULL);
+		gimmix_tooltip_set_text2 (tooltip, NULL, FALSE);
 	
 	return;
 }

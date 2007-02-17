@@ -1,7 +1,7 @@
 /*
  * gimmix-tooltip.c
  *
- * Copyright (C) 2006 Priyank Gosalia
+ * Copyright (C) 2006-2007 Priyank Gosalia
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -30,9 +30,6 @@ GimmixTooltip *gimmix_tooltip_new (void)
 	GimmixTooltip	*tooltip;
 	GtkWidget		*label1;
 	GtkWidget		*label2;
-	GtkWidget		*label3;
-	GtkWidget		*event_box;
-	GdkColor		color;
 	
 	/* main tooltip window */
 	tooltip = g_malloc (sizeof(GimmixTooltip));
@@ -53,12 +50,8 @@ GimmixTooltip *gimmix_tooltip_new (void)
 	
 	/* tooltip icon */
 	tooltip->icon = gtk_image_new_from_pixbuf (NULL);
-	gtk_misc_set_padding (GTK_MISC(tooltip->icon), 5, 4);
-	gdk_color_parse ("grey", &color);
-	event_box = gtk_event_box_new ();
-	gtk_container_add (GTK_CONTAINER(event_box), tooltip->icon);
-	gtk_widget_modify_bg (GTK_WIDGET(event_box), GTK_STATE_NORMAL, &color);
-	gtk_box_pack_start (GTK_BOX(tooltip->hbox), event_box, TRUE, TRUE, 0);
+	gtk_misc_set_padding (GTK_MISC(tooltip->icon), 4, 4);
+	gtk_box_pack_start (GTK_BOX(tooltip->hbox), tooltip->icon, TRUE, TRUE, 0);
 
 	/* labels */
 	label1 = gtk_label_new (NULL);
@@ -69,15 +62,17 @@ GimmixTooltip *gimmix_tooltip_new (void)
 	g_object_set (G_OBJECT(label2), "use-markup", TRUE, NULL);
 	gtk_box_pack_start (GTK_BOX(tooltip->vbox), label2, TRUE, FALSE, 1);
 	gtk_misc_set_alignment (GTK_MISC(label2), 0, 0);
-	label3 = gtk_label_new (NULL);
-	g_object_set (G_OBJECT(label3), "use-markup", TRUE, NULL);
-	gtk_box_pack_start (GTK_BOX(tooltip->vbox), label3, TRUE, FALSE, 1);
-	gtk_misc_set_alignment (GTK_MISC(label3), 0, 0);
+	
+	/* And finally, the progress meter */
+	tooltip->progressbar = gtk_progress_bar_new ();
+	gtk_progress_bar_set_orientation (GTK_PROGRESS_BAR(tooltip->progressbar), GTK_PROGRESS_LEFT_TO_RIGHT);
+	gtk_widget_set_size_request (tooltip->progressbar, -1, 16);
+	gtk_box_pack_start (GTK_BOX(tooltip->vbox), tooltip->progressbar, TRUE, FALSE, 2);
 
 	return tooltip;
 }
 
-void gimmix_tooltip_set_text1 (GimmixTooltip *tooltip, const gchar *text)
+void gimmix_tooltip_set_text1 (GimmixTooltip *tooltip, const gchar *text, gboolean formatting)
 {
 	GList *list;
 	gchar *markup;
@@ -87,18 +82,28 @@ void gimmix_tooltip_set_text1 (GimmixTooltip *tooltip, const gchar *text)
 		if (text == NULL)
 		{
 			gtk_label_set_text (GTK_LABEL(list->data), NULL);
+			gtk_widget_hide (GTK_WIDGET(list->data));
 			return;
 		}
-		markup = g_markup_printf_escaped ("<span size=\"large\" weight=\"bold\">%s</span>", text);
-		gtk_label_set_markup (GTK_LABEL(list->data), markup);
-		g_free (markup);
+		
+		if (formatting == TRUE)
+		{
+			markup = g_markup_printf_escaped ("<span size=\"large\" weight=\"bold\">%s</span>", text);
+			gtk_label_set_markup (GTK_LABEL(list->data), markup);
+			g_free (markup);
+		}
+		else
+		{
+			gtk_label_set_text (GTK_LABEL(list->data), text);
+		}
+
 		g_list_free (list);
 	}
 
 	return;
 }
 
-void gimmix_tooltip_set_text2 (GimmixTooltip *tooltip, const gchar *text)
+void gimmix_tooltip_set_text2 (GimmixTooltip *tooltip, const gchar *text, gboolean formatting)
 {
 	GList *list;
 	gchar *markup;
@@ -111,35 +116,20 @@ void gimmix_tooltip_set_text2 (GimmixTooltip *tooltip, const gchar *text)
 		if (text == NULL)
 		{
 			gtk_label_set_text (GTK_LABEL(list->data), NULL);
+			gtk_widget_hide (GTK_WIDGET(list->data));
 			return;
 		}
-		markup = g_markup_printf_escaped ("<span size=\"medium\">%s</span>", text);
-		gtk_label_set_markup (GTK_LABEL(list->data), markup);
-		g_free (markup);
-		g_list_free (list);
-	}
-
-	return;
-}
-
-void gimmix_tooltip_set_text3 (GimmixTooltip *tooltip, const gchar *text)
-{
-	GList *list;
-	gchar *markup;
-
-	if ( (list = gtk_container_get_children (GTK_CONTAINER(tooltip->vbox))) != NULL )
-	{
-		if ((list = g_list_nth (list, 2)) == NULL)
-			return;
-
-		if (text == NULL)
+		if (formatting == TRUE)
 		{
-			gtk_label_set_text (GTK_LABEL(list->data), NULL);
-			return;
+			markup = g_markup_printf_escaped ("<span size=\"medium\"><i>%s</i></span>", text);
+			gtk_label_set_markup (GTK_LABEL(list->data), markup);
+			g_free (markup);
 		}
-		markup = g_markup_printf_escaped ("%s", text);
-		gtk_label_set_markup (GTK_LABEL(list->data), markup);
-		g_free (markup);
+		else
+		{
+			gtk_label_set_text (GTK_LABEL(list->data), text);
+		}
+		gtk_widget_show (GTK_WIDGET(list->data));
 		g_list_free (list);
 	}
 
@@ -152,22 +142,36 @@ void gimmix_tooltip_set_icon (GimmixTooltip *tooltip, GdkPixbuf *pixbuf)
 
 	return;
 }
-
+/*
 void gimmix_tooltip_attach_to_widget (GimmixTooltip *tooltip, GtkWidget *widget)
 {
 	if (widget == NULL)
 		return;
 	
 	gint x, y;
+	gint wheight, wwidth;
+	GtkRequisition req;
+	gint height, width;
+	GdkScreen *screen;
+	
+	screen = gdk_screen_get_default ();
+	width = gdk_screen_get_width (screen);
+	height = gdk_screen_get_height (screen);
+	gdk_window_get_geometry (tooltip->window, NULL, NULL, &wwidth, &wheight, NULL);
+	printf ("tooltip size: %d x %d\n", wwidth, wheight);
+	printf ("screen size: %d x %d\n", width, height);
+	
 	gdk_window_get_origin (widget->window, &x, &y);
 	gtk_window_move (GTK_WINDOW(tooltip->window), x-150, y-75);
 }
-
+*/
 void gimmix_tooltip_show (GimmixTooltip *tooltip)
 {
 	if (tooltip != NULL)
-		gtk_widget_show_all (GTK_WIDGET(tooltip->window));
-	
+	{
+		gtk_widget_show (GTK_WIDGET(tooltip->hbox));
+		gtk_widget_show (GTK_WIDGET(tooltip->window));
+	}
 	return;
 }
 

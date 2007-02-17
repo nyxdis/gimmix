@@ -45,7 +45,11 @@ SongInfo * gimmix_get_song_info (MpdObj *);
 /* Free memory allocated by gimmix_get_song_info() */
 void gimmix_free_song_info (SongInfo *);
 
+/* Get the "elapsed time / total time" as a string */
 void gimmix_get_progress_status (MpdObj *, float *, char *);
+
+/* Get the total time in the format "mm:ss" as a string for a mpd_Song * */
+void gimmix_get_total_time_for_song (MpdObj *, mpd_Song *, char *);
 
 /* Check mpd status for PLAY/PAUSE/STOP */
 GimmixStatus gimmix_get_status (MpdObj *);

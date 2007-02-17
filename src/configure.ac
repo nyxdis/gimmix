@@ -2,7 +2,7 @@ ENV_CFLAGS=$CFLAGS
 
 AC_PREREQ(2.59)
 dnl Update it right before new releases
-AC_INIT([Gimmix], 0.3.1, [priyankmg@gmail.com], gimmix)
+AC_INIT([Gimmix], 0.4.0, [priyankmg@gmail.com], gimmix)
 AC_CONFIG_SRCDIR([src/gimmix.c])
 AC_LANG(C)
 AM_CONFIG_HEADER(config.h)
@@ -41,6 +41,7 @@ AC_MSG_RESULT([ooh, there's one!])
 pkg_modules="gtk+-2.0 >= 2.6.0 \
 			 libmpd >= 0.12.0 \
 			 libglade-2.0 >= 2.6.0 \
+			 libsexy >= 0.1.8 \
 			 taglib >= 1.4"
 PKG_CHECK_MODULES([GIMMIX], [$pkg_modules])
 

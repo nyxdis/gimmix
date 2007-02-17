@@ -1,7 +1,7 @@
 /*
  * gimmix-core.c
  *
- * Copyright (C) 2006 Priyank Gosalia
+ * Copyright (C) 2006-2007 Priyank Gosalia
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -261,6 +261,7 @@ gimmix_get_progress_status (MpdObj *mo, float *fraction, char *time)
 					elapsed%60,
 					total/60,
 					total%60);
+			if (fraction!=NULL)
 			*fraction = (float)((float)elapsed/(float)total);
 			break;
 
@@ -269,6 +270,20 @@ gimmix_get_progress_status (MpdObj *mo, float *fraction, char *time)
 			time = NULL;
 			return;
 	}
+	return;
+}
+
+void
+gimmix_get_total_time_for_song (MpdObj *mo, mpd_Song *song, char *time)
+{
+	if (!song)
+	{
+		time = NULL;
+		return;
+	}
+	snprintf (time, 15, "%02i:%02i",
+				song->time/60,
+				song->time%60);
 	return;
 }
 

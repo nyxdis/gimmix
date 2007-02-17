@@ -18,19 +18,16 @@ typedef struct {
 GimmixTooltip *gimmix_tooltip_new (void);
 
 /* Sets the tooltip text (label1) */
-void gimmix_tooltip_set_text1 (GimmixTooltip *tooltip, const gchar *text);
+void gimmix_tooltip_set_text1 (GimmixTooltip *tooltip, const gchar *text, gboolean formatting);
 
 /* Sets the tooltip text (label2) */
-void gimmix_tooltip_set_text2 (GimmixTooltip *tooltip, const gchar *text);
-
-/* Sets the tooltip text (label3) */
-void gimmix_tooltip_set_text3 (GimmixTooltip *tooltip, const gchar *text);
+void gimmix_tooltip_set_text2 (GimmixTooltip *tooltip, const gchar *text, gboolean formatting);
 
 /* Sets the icon for the tooltip */
 void gimmix_tooltip_set_icon (GimmixTooltip *tooltip, GdkPixbuf *pixbuf);
 
 /* Attach tooltip to a widget */
-void gimmix_tooltip_attach_to_widget (GimmixTooltip *tooltip, GtkWidget *widget);
+// void gimmix_tooltip_attach_to_widget (GimmixTooltip *tooltip, GtkWidget *widget);
 
 /* Show the tooltip */
 void gimmix_tooltip_show (GimmixTooltip *tooltip);

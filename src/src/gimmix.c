@@ -1,7 +1,7 @@
 /*
  * gimmix.c
  *
- * Copyright (C) 2006 Priyank Gosalia
+ * Copyright (C) 2006-2007 Priyank Gosalia
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -52,11 +52,9 @@ gimmix_connect (void)
 		gmo = mo;
 		return true;
 	}
-	else
-	{
-		gmo = NULL;
-		return false;
-	}
+	
+	gmo = NULL;
+	return false;
 }
 
 void
@@ -148,8 +146,13 @@ int
 main (int argc, char *argv[])
 {
 	gchar 		*path;
+	char		*lang;
 	
-	setlocale (LC_ALL, "");
+	lang = getenv ("LC_ALL");
+	if (lang==NULL || lang[0]=='\0')
+		lang = getenv ("LANG");
+	
+	setlocale (LC_ALL, lang);
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
 
@@ -169,7 +172,7 @@ main (int argc, char *argv[])
 	
 	if (gimmix_config_exists())
 	{
-		gimmix_config_init ();
+		gimmix_config_init (); /* initialize configuration */
 		if (gimmix_connect())
 		{
 			gimmix_init ();
@@ -181,7 +184,7 @@ main (int argc, char *argv[])
 	}
 	else
 	{
-		gimmix_show_firstrun_dialog ();
+		gimmix_show_firstrun_dialog (); /* display the first run dialog */
 	}
 	
 	gtk_main ();
