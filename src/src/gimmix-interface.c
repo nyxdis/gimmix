@@ -397,8 +397,11 @@ gimmix_timer (void)
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), time);
 			
 			/* Update the system tray tooltip progress bar */
-			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), fraction);
-			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), time);
+			if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
+			{
+				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), fraction);
+				gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), time);
+			}
 		}
 		return TRUE;
 	}
