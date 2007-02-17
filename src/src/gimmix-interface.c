@@ -115,10 +115,11 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		{
 			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
-			
-			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), 0.0);
-			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
-			
+			if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
+			{
+				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), 0.0);
+				gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
+			}
 			gimmix_show_ver_info ();
 			
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
@@ -288,6 +289,7 @@ gimmix_init (void)
 	else if (status == MPD_PLAYER_STOP)
 	{
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
+		if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
 		gimmix_show_ver_info ();
 	}
