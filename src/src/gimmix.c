@@ -127,7 +127,7 @@ gimmix_about_show (void)
 	gtk_show_about_dialog (NULL,
                            "name", APPNAME,
                            "version", VERSION,
-                           "copyright", _("\xC2\xA9 2006 Priyank Gosalia  (GPL)"),
+                           "copyright", _("\xC2\xA9 2006-2007 Priyank Gosalia  (GPL)"),
                            "comments", _("Gimmix is a graphical music player daemon (MPD) client written in C."),
                            "license", license,
                            "authors", authors,

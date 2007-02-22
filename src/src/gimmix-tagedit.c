@@ -57,7 +57,7 @@ static gboolean	gimmix_update_song_info (gpointer data);
 /* error dialog callback */
 static void cb_gimmix_tag_editor_error_response (GtkDialog *dialog, gint arg1, gpointer data);
 
-static gchar *dir_error = "You have specified an invalid music directory. Do you want to specify the correct music directory now ?";
+const gchar *dir_error = "You have specified an invalid music directory. Do you want to specify the correct music directory now ?";
 	
 void
 gimmix_tag_editor_init (void)

@@ -1740,7 +1740,7 @@ Filename
 		  <property name="visible">True</property>
 		  <property name="label" translatable="yes">Select the directory where your music is stored. 
 &lt;b&gt;Note: &lt;/b&gt; The directory should be same as what you specified in your mpd settings. 
-If you're not sure, check your mpd configuration file mpd.coonf</property>
+If you're not sure, check your mpd configuration file mpd.conf</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">True</property>
 		  <property name="justify">GTK_JUSTIFY_FILL</property>
