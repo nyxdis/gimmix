@@ -280,6 +280,9 @@ static void
 cb_systray_popup_quit_clicked (GtkMenuItem *menuitem, gpointer data)
 {
 	gimmix_save_window_pos ();
+	if (strncasecmp(cfg_get_key_value(conf, "stop_on_exit"), "true", 4) == 0)
+		gimmix_stop (gmo);
+	
 	gtk_main_quit ();
 	
 	return;
