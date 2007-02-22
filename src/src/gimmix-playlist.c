@@ -869,7 +869,15 @@ gimmix_update_library_with_dir (gchar *dir)
 			gchar *title;
 			
 			gtk_list_store_append (dir_store, &dir_iter);
-			title = data->song->title ? g_strdup (data->song->title) : g_path_get_basename(data->song->file);
+			if (data->song->title)
+			{
+				title = g_strdup (data->song->title);
+			}
+			else
+			{
+				title = g_path_get_basename (data->song->file);
+				gimmix_strip_file_ext (title);
+			}
 			gtk_list_store_set (dir_store, &dir_iter,
 								0, song_pixbuf,
 								1, title,
