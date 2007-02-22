@@ -439,6 +439,7 @@ gimmix_library_and_playlists_populate (void)
 	g_signal_connect (playlists_treeview, "row-activated", G_CALLBACK(cb_playlist_activated), NULL);
 	g_signal_connect (library_treeview, "button-press-event", G_CALLBACK(cb_all_playlist_button_press), NULL);
 	g_signal_connect (library_treeview, "button-release-event", G_CALLBACK(cb_library_right_click), NULL);
+	g_signal_connect (glade_xml_get_widget(xml,"library_window"), "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 
 	g_object_unref (dir_model);
 	g_object_unref (pls_model);
