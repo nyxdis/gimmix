@@ -18,9 +18,9 @@ Installing gimmix is very simple. Before installing, make sure
 your system has all the required packages. After you unpack the source,
 just follow these steps to install gimmix.
 
-./configure 
-make
-make install (as root)
+$ ./configure 
+$ make
+$ make install (as root)
 
 Gimmix will be installed to /usr/local/bin. If you want, you can change
 the installation path by setting the --prefix argument to ./configure.
@@ -30,3 +30,6 @@ Note: gimmix stores its configuration settings in ~/.gimmixrc
 The configuration file layout has been changed in the new version,
 so, if you are upgrading from an older version of gimmix (0.1 or 0.2)
 then make sure you delete your old .gimmixrc before starting gimmix.
+For a complete list of configuration options and their use, refer the
+README file.
+

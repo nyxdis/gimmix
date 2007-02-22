@@ -1,4 +1,4 @@
-Gimmix-0.3.1 README
+Gimmix-0.4.0 README
 ===================
 
 Gimmix is a graphical Music player daemon (MPD) client written in C
@@ -36,14 +36,14 @@ Keybindings:
 ============
 Gimmix keybindings are not yet configurable unless you manually edit the source.
 
-'z'		-> Previous song
-'x' or 'c'	-> Play/Pause (Toggle)
-'v'		-> Stop
-'b'		-> Next song
-'i'		-> Song information
-'r'		-> Toggle Repeat
-'s'		-> Toggle Shuffle
-'l'		-> Toggle display Playlist
+'z'			-> Previous song
+'x' / 'c'	-> Play/Pause (Toggle)
+'v'			-> Stop
+'b'			-> Next song
+'i'			-> Song information
+'r'			-> Toggle Repeat
+'s'			-> Toggle Shuffle
+'l'			-> Toggle display Playlist
 
 You can also adjust volume by scrolling your mouse wheel on the system tray icon.
 

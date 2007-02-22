@@ -184,7 +184,8 @@ main (int argc, char *argv[])
 	}
 	else
 	{
-		gimmix_show_firstrun_dialog (); /* display the first run dialog */
+		/* display the first run dialog */
+		gimmix_show_firstrun_dialog (); 
 	}
 	
 	gtk_main ();
@@ -200,5 +201,7 @@ exit_cleanup ()
 	if (gmo != NULL)
 		gimmix_disconnect (gmo);
 	gimmix_config_free ();
+	
+	return;
 }
 
