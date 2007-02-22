@@ -82,6 +82,7 @@ gimmix_tag_editor_init (void)
 	
 	widget = glade_xml_get_widget (xml, "tag_editor_close");
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(gimmix_tag_editor_close), NULL);
+	g_signal_connect (G_OBJECT(tag_editor_window), "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 	
 	return;
 }
