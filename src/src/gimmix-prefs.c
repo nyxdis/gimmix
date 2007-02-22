@@ -78,6 +78,7 @@ gimmix_prefs_init (void)
 	g_signal_connect (G_OBJECT(pref_crossfade_check), "toggled", G_CALLBACK(cb_pref_crossfade_toggled), pref_crossfade_spin);
 	g_signal_connect (G_OBJECT(pref_button_apply), "clicked", G_CALLBACK(cb_pref_apply_clicked), NULL);
 	g_signal_connect (G_OBJECT(pref_search_check), "toggled", G_CALLBACK(cb_pref_search_toggled), NULL);
+	g_signal_connect (G_OBJECT(pref_window), "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 	
 	return;
 }
