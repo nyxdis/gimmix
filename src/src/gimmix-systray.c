@@ -105,11 +105,14 @@ gimmix_create_systray_icon (void)
 static gboolean
 cb_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data)
 {
-	GdkScreen *screen = gtk_widget_get_screen (GTK_WIDGET(icon));
+	GdkScreen *screen; 
 	GdkRectangle rectangle;
 	gint x, y;
 	gint w, h;
 	
+	if (strncasecmp(cfg_get_key_value(conf, "enable_notification"), "true", 4) != 0)
+	return FALSE;
+
 	/* Get the location of the system tray icon */
 	gdk_window_get_origin ((GTK_WIDGET(icon)->window), &x, &y);
 	
@@ -118,6 +121,7 @@ cb_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer da
 	rectangle.y = 2500;
 	rectangle.width = 100;
 	rectangle.height = 50;
+	screen = gtk_widget_get_screen (GTK_WIDGET(icon));
 	sexy_tooltip_position_to_rect (SEXY_TOOLTIP(stooltip), &rectangle, screen);
 	gtk_widget_show_all (stooltip);
 	gtk_window_get_size (GTK_WINDOW(stooltip), &w, &h);
@@ -326,6 +330,8 @@ gimmix_destroy_systray_icon (void)
 void
 gimmix_update_systray_tooltip (SongInfo *s)
 {
+	gchar *text;
+	
 	if (icon == NULL)
 		return;
 		
@@ -339,7 +345,12 @@ gimmix_update_systray_tooltip (SongInfo *s)
 	if (s->title != NULL)
 		gimmix_tooltip_set_text1 (tooltip, s->title, TRUE);
 	else
-		gimmix_tooltip_set_text1 (tooltip, s->file, FALSE);
+	{
+		text = g_path_get_basename (s->file);
+		gimmix_strip_file_ext (text);
+		gimmix_tooltip_set_text1 (tooltip, text, TRUE);
+		g_free (text);
+	}
 	
 	gchar *artist_str;
 	if (s->artist != NULL)

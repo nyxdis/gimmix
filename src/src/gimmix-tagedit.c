@@ -57,7 +57,7 @@ static gboolean	gimmix_update_song_info (gpointer data);
 /* error dialog callback */
 static void cb_gimmix_tag_editor_error_response (GtkDialog *dialog, gint arg1, gpointer data);
 
-static gchar *dir_error = "You have specified an invalid music directory. Do you want to specify the correct music directory ?";
+static gchar *dir_error = "You have specified an invalid music directory. Do you want to specify the correct music directory now ?";
 	
 void
 gimmix_tag_editor_init (void)
@@ -273,7 +273,7 @@ cb_gimmix_tag_editor_error_response (GtkDialog *dialog, gint arg1, gpointer data
 	{
 		GtkWidget *notebook;
 		notebook = glade_xml_get_widget (xml, "pref_notebook");
-		gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 2);
+		gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 3);
 		gimmix_prefs_dialog_show ();
 	}
 	

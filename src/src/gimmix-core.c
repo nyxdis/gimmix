@@ -309,3 +309,25 @@ gimmix_get_full_image_path (const char *image_name)
 	return full_path;
 }
 
+void
+gimmix_strip_file_ext (char *string)
+{
+	int len;
+	int i;
+	
+	if (string == NULL || (len=strlen(string))==0 )
+	return;
+	
+	for (i=len-1; i>0; i--)
+	{
+		if (string[i] == '.')
+		{
+			string[i] = '\0';
+			break;
+		}
+	}
+
+	return;
+}
+
+

@@ -58,4 +58,7 @@ GimmixStatus gimmix_get_status (MpdObj *);
 bool is_gimmix_repeat (MpdObj *);
 bool is_gimmix_shuffle (MpdObj *);
 
+/* strips file extension */
+void gimmix_strip_file_ext (char *string);
+
 #endif

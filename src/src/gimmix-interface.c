@@ -43,6 +43,7 @@ GtkWidget 		*progress = NULL;
 GtkWidget		*shuffle_toggle_button;
 GtkWidget		*repeat_toggle_button;
 GtkWidget		*volume_scale;
+GtkWidget		*volume_button;
 GtkWidget		*song_label;
 GtkWidget		*artist_label;
 GtkWidget		*search_entry;
@@ -67,7 +68,7 @@ static gboolean		is_user_searching (void);
 static gboolean 	gimmix_timer (void);
 
 /* Callbacks */
-static int	cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data);
+static gboolean cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data);
 static void	cb_play_button_clicked 	(GtkWidget *widget, gpointer data);
 static void	cb_stop_button_clicked 	(GtkWidget *widget, gpointer data);
 static void	cb_next_button_clicked 	(GtkWidget *widget, gpointer data);
@@ -81,6 +82,7 @@ static gboolean	cb_playlist_button_press (GtkWidget *widget, GdkEventButton *eve
 static void cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
 static void cb_volume_scale_changed (GtkWidget *widget, gpointer data);
 static void	cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
+static void cb_volume_button_clicked (GtkWidget *widget, gpointer data);
 static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata);
 
 /* mpd callbacks */
@@ -173,6 +175,7 @@ cb_playlist_button_press (GtkWidget *widget, GdkEventButton *event, gpointer dat
 		if (height>0 && width>0)
 			gtk_window_resize (GTK_WINDOW(main_window), width, height);
 		gtk_window_get_size (GTK_WINDOW(main_window), &width, &height);
+		gtk_window_set_resizable (GTK_WINDOW(main_window), TRUE);
 	}
 	else
 	{
@@ -180,7 +183,8 @@ cb_playlist_button_press (GtkWidget *widget, GdkEventButton *event, gpointer dat
 		w = main_window->allocation.width;
 		gtk_widget_hide (GTK_WIDGET(playlist_box));
 		gtk_window_get_size (GTK_WINDOW(main_window), &width, &height);
-		gtk_window_resize (GTK_WINDOW(main_window), w, 70);
+		gtk_window_resize (GTK_WINDOW(main_window), 1, 1);
+		gtk_window_set_resizable (GTK_WINDOW(main_window), FALSE);
 	}
 
 	return TRUE;
@@ -191,7 +195,7 @@ gimmix_init (void)
 {
 	GtkWidget 		*widget;
 	GtkWidget		*progressbox;
-	GtkAdjustment		*vol_adj;
+	GtkAdjustment	*vol_adj;
 	GdkPixbuf		*app_icon;
 	gchar			*path;
 	
@@ -209,6 +213,9 @@ gimmix_init (void)
 	
 	/* connect the key press signal */
 	g_signal_connect(G_OBJECT(main_window), "key-press-event", G_CALLBACK(cb_gimmix_key_press), NULL);
+	
+	/* connect the destroy signal */
+	g_signal_connect(G_OBJECT(main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
 	/* set icons for buttons */
 	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_prev")), "gtk-media-previous", GTK_ICON_SIZE_BUTTON);
@@ -229,7 +236,7 @@ gimmix_init (void)
 	shuffle_toggle_button = glade_xml_get_widget (xml, "shuffle_toggle");
 	repeat_toggle_button = glade_xml_get_widget (xml, "repeat_toggle");
 	volume_scale = glade_xml_get_widget (xml, "volume_scale");
-
+	volume_button = glade_xml_get_widget (xml, "volume_button");
 	playlist_button = glade_xml_get_widget (xml, "playlist_button");
 	playlist_box = glade_xml_get_widget (xml, "playlistbox");
 	song_label = glade_xml_get_widget (xml, "song_label");
@@ -251,10 +258,12 @@ gimmix_init (void)
 	widget = glade_xml_get_widget (xml, "info_button");
 	g_signal_connect (G_OBJECT(widget), "button-release-event", G_CALLBACK(cb_info_button_press), NULL);
 
-	g_signal_connect(G_OBJECT(volume_scale), "value_changed", G_CALLBACK(cb_volume_scale_changed), NULL);
+	g_signal_connect (G_OBJECT(volume_scale), "value_changed", G_CALLBACK(cb_volume_scale_changed), NULL);
 	g_signal_connect (G_OBJECT(volume_scale), "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
 	vol_adj = gtk_range_get_adjustment (GTK_RANGE(volume_scale));
 	gtk_adjustment_set_value (GTK_ADJUSTMENT(vol_adj), mpd_status_get_volume (gmo));
+	g_signal_connect (G_OBJECT(volume_button), "clicked", G_CALLBACK(cb_volume_button_clicked), (gpointer)glade_xml_get_widget(xml, "volume_window"));
+	g_signal_connect (G_OBJECT(volume_button), "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
 
 	progress = glade_xml_get_widget (xml,"progress");
 	progressbox = glade_xml_get_widget (xml,"progress_event_box");
@@ -267,9 +276,15 @@ gimmix_init (void)
 		gimmix_create_systray_icon ();
 	}
 	if (strncasecmp(cfg_get_key_value(conf, "full_view_mode"), "true", 4) == 0)
+	{	
 		gtk_widget_show (playlist_box);
+		gtk_window_set_resizable (GTK_WINDOW(main_window), TRUE);
+	}
 	else
+	{	
 		gtk_widget_hide (playlist_box);
+		gtk_window_set_resizable (GTK_WINDOW(main_window), FALSE);
+	}
 	
 	mpd_status_update (gmo);
 	status = mpd_player_get_state (gmo);
@@ -398,7 +413,7 @@ gimmix_timer (void)
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), time);
 			
 			/* Update the system tray tooltip progress bar */
-			if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
+			if (strncasecmp(cfg_get_key_value(conf, "enable_notification"), "true", 4) == 0)
 			{
 				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), fraction);
 				gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), time);
@@ -440,6 +455,26 @@ static void
 cb_stop_button_clicked (GtkWidget *widget, gpointer data)
 {
 	gimmix_stop (gmo);
+	
+	return;
+}
+
+static void
+cb_volume_button_clicked (GtkWidget *widget, gpointer data)
+{
+	gint x, y;
+	
+	if (GTK_WIDGET_VISIBLE (data))
+		gtk_widget_hide (data);
+	else
+	{	
+		gdk_window_get_origin (widget->window, &x, &y);
+		x += (widget->allocation.x);
+		y += (widget->allocation.y + widget->allocation.height);
+		gtk_window_resize (GTK_WINDOW(data), widget->allocation.width, 1);
+		gtk_window_move (GTK_WINDOW(data), x, y);
+		gtk_widget_show (data);
+	}
 	
 	return;
 }
@@ -522,7 +557,7 @@ cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event)
 	if (event->type != GDK_SCROLL)
 		return;
 	
-	volume_adj = gtk_range_get_adjustment (GTK_RANGE(widget));
+	volume_adj = gtk_range_get_adjustment (GTK_RANGE(volume_scale));
 	switch (event->direction)
 	{
 		case GDK_SCROLL_UP:
@@ -645,6 +680,7 @@ gimmix_set_song_info (void)
 	else
 	{
 		title = g_path_get_basename (song->file);
+		gimmix_strip_file_ext (title);
 		markup = g_markup_printf_escaped ("<span size=\"large\"weight=\"bold\">%s</span>", title);
 		g_free (title);
 		gtk_window_set_title (GTK_WINDOW(main_window), "Gimmix");
@@ -687,13 +723,13 @@ gimmix_show_ver_info (void)
 	return;
 }
 
-static int
-cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data)
+static gboolean
+cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
-	{	
+	{
 		gimmix_window_visible_toggle ();
-		return 1;
+		return TRUE;
 	}
 	
 	/* stop playback on exit */
@@ -703,7 +739,7 @@ cb_gimmix_main_window_delete_event (GtkWidget *widget, gpointer data)
 	/* save window position and mode */
 	gimmix_save_window_pos ();
 	
-	return 0;
+	return FALSE;
 }
 
 void

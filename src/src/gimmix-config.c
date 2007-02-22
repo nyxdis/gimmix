@@ -43,12 +43,13 @@ gimmix_config_init (void)
 	cfg_add_key (&conf, "mpd_password",		"");
 	cfg_add_key (&conf, "music_directory",	"");
 	cfg_add_key (&conf, "enable_systray",	"true");
+	cfg_add_key (&conf, "enable_notification", "true");
 	cfg_add_key (&conf, "play_on_add",		"false");
 	cfg_add_key (&conf, "stop_on_exit",		"false");
 	cfg_add_key (&conf, "window_xpos",		"200");
 	cfg_add_key (&conf, "window_ypos",		"300");
-	cfg_add_key (&conf, "window_width",		"358");
-	cfg_add_key (&conf, "window_height",	"120");
+	cfg_add_key (&conf, "window_width",		"335");
+	cfg_add_key (&conf, "window_height",	"65");
 	cfg_add_key (&conf, "full_view_mode",	"false");
 	cfg_add_key (&conf, "enable_search",	"true");
 	cfg_add_key (&conf, "update_on_startup","false");

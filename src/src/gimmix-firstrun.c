@@ -50,10 +50,11 @@ gimmix_show_firstrun_dialog (void)
 	cfg_add_key (&cf, "mpd_password",		"");
 	cfg_add_key (&cf, "music_directory",	"");
 	cfg_add_key (&cf, "enable_systray",		"true");
+	cfg_add_key (&cf, "enable_notification", "true");
 	cfg_add_key (&cf, "play_on_add",		"false");
 	cfg_add_key (&cf, "stop_on_exit",		"false");
-	cfg_add_key (&cf, "window_width",		"334");
-	cfg_add_key (&cf, "window_height",		"120");
+	cfg_add_key (&cf, "window_width",		"335");
+	cfg_add_key (&cf, "window_height",		"65");
 	cfg_add_key (&cf, "full_view_mode",		"false");
 	cfg_add_key (&cf, "enable_search",		"true");
 	cfg_add_key (&cf, "update_on_startup",	"false");
@@ -72,8 +73,8 @@ gimmix_show_firstrun_dialog (void)
 	gtk_entry_set_visibility (GTK_ENTRY(entry), FALSE);
 	gtk_entry_set_invisible_char (GTK_ENTRY(entry), g_utf8_get_char("*"));
 
-	check = glade_xml_get_widget (xml, "fr_systray_toggle");
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(check), TRUE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(glade_xml_get_widget (xml, "fr_systray_toggle")), TRUE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(glade_xml_get_widget (xml, "fr_notify_toggle")), TRUE);
 		
 	gtk_widget_show (window);
 		
@@ -136,6 +137,12 @@ on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 	cfg_add_key (&cf, "enable_systray", "true");
 	else
 	cfg_add_key (&cf, "enable_systray", "false");
+	
+	s_checkbox = glade_xml_get_widget (xml, "fr_notify_toggle");
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(s_checkbox)))
+	cfg_add_key (&cf, "enable_notification", "true");
+	else
+	cfg_add_key (&cf, "enable_notification", "false");
 	
 	rcfile = cfg_get_path_to_config_file (CONFIG_FILE);
 	cfg_write_config_file (&cf, rcfile);

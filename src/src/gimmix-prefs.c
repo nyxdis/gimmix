@@ -35,6 +35,7 @@ GtkWidget *pref_host_entry;
 GtkWidget *pref_pass_entry;
 GtkWidget *pref_port_entry;
 GtkWidget *pref_systray_check;
+GtkWidget *pref_notification_check;
 GtkWidget *pref_play_immediate_check;
 GtkWidget *pref_stop_exit_check;
 GtkWidget *pref_upd_startup_check;
@@ -49,6 +50,7 @@ extern GtkWidget *search_box;
 
 static void 	cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
 static void		cb_pref_systray_toggled (GtkToggleButton *button, gpointer data);
+static void		cb_pref_notification_toggled (GtkToggleButton *button, gpointer data);
 static void		cb_pref_search_toggled (GtkToggleButton *button, gpointer data);
 static void		cb_pref_crossfade_toggled (GtkToggleButton *button, gpointer data);
 
@@ -60,6 +62,7 @@ gimmix_prefs_init (void)
 	pref_pass_entry = glade_xml_get_widget (xml, "password_entry");
 	pref_port_entry = glade_xml_get_widget (xml, "port_entry");
 	pref_systray_check = glade_xml_get_widget (xml, "systray_checkbutton");
+	pref_notification_check = glade_xml_get_widget (xml, "tooltip_checkbutton");
 	pref_play_immediate_check = glade_xml_get_widget (xml, "pref_play_immediate");
 	pref_stop_exit_check = glade_xml_get_widget (xml, "pref_stop_on_exit");
 	pref_crossfade_check = glade_xml_get_widget (xml, "pref_crossfade");
@@ -70,7 +73,8 @@ gimmix_prefs_init (void)
 	pref_dir_chooser = glade_xml_get_widget (xml, "conf_dir_chooser");
 	pref_search_check = glade_xml_get_widget (xml, "search_checkbutton");
 	
-	g_signal_connect (G_OBJECT(pref_systray_check), "toggled", G_CALLBACK(cb_pref_systray_toggled), NULL);
+	g_signal_connect (G_OBJECT(pref_systray_check), "toggled", G_CALLBACK(cb_pref_systray_toggled), (gpointer)pref_notification_check);
+	g_signal_connect (G_OBJECT(pref_notification_check), "toggled", G_CALLBACK(cb_pref_notification_toggled), NULL);
 	g_signal_connect (G_OBJECT(pref_crossfade_check), "toggled", G_CALLBACK(cb_pref_crossfade_toggled), pref_crossfade_spin);
 	g_signal_connect (G_OBJECT(pref_button_apply), "clicked", G_CALLBACK(cb_pref_apply_clicked), NULL);
 	g_signal_connect (G_OBJECT(pref_search_check), "toggled", G_CALLBACK(cb_pref_search_toggled), NULL);
@@ -103,6 +107,13 @@ gimmix_prefs_dialog_show (void)
 	else
 	{
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_systray_check), FALSE);
+	}
+	
+	if (strncasecmp(cfg_get_key_value(conf, "enable_notification"), "true", 4) == 0)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_notification_check), TRUE);
+	else
+	{
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_notification_check), FALSE);
 	}
 	
 	if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
@@ -216,10 +227,30 @@ cb_pref_systray_toggled (GtkToggleButton *button, gpointer data)
 	{
 		gimmix_disable_systray_icon ();
 		cfg_add_key (&conf, "enable_systray", "false");
+		/* disable notificaiton tooltips too */
+		gtk_toggle_button_set_active (data, FALSE);
 	}
 	
 	gimmix_config_save ();
 
+	return;
+}
+
+static void
+cb_pref_notification_toggled (GtkToggleButton *button, gpointer data)
+{
+	if (gtk_toggle_button_get_active(button) == TRUE)
+	{
+		cfg_add_key (&conf, "enable_notification", "true");
+	}
+	else
+	if (gtk_toggle_button_get_active(button) == FALSE)
+	{
+		cfg_add_key (&conf, "enable_notification", "false");
+	}
+	
+	gimmix_config_save ();
+	
 	return;
 }
 

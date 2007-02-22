@@ -39,16 +39,17 @@ extern MpdObj		*gmo;
 extern GladeXML 	*xml;
 extern ConfigFile	conf;
 
-static gchar *dir_error = "You have specified an invalid music directory. Please specify the correct music directory in the preferences.";
+static gchar *invalid_dir_error = "You have specified an invalid music directory. Do you want to specify the correct music directory now ?";
 
 GtkWidget 	*search_combo;
 GtkWidget	*search_entry;
 GtkWidget	*search_box;
 	
-GtkWidget		*gimmix_statusbar;
-GtkWidget		*button_update;
-GtkWidget		*current_playlist_treeview;
-GtkWidget		*library_treeview;
+static GtkWidget		*gimmix_statusbar;
+static GtkWidget		*gimmix_statusbox;
+static GtkWidget		*button_update;
+static GtkWidget		*current_playlist_treeview;
+static GtkWidget		*library_treeview;
 GtkWidget		*playlists_treeview;
 GtkTreeSelection	*current_playlist_selection;
 GtkTreeSelection	*library_selection;
@@ -143,6 +144,7 @@ gimmix_playlist_init (void)
 	gtk_tree_selection_set_mode (current_playlist_selection, GTK_SELECTION_MULTIPLE);
 	gtk_tree_view_set_model (GTK_TREE_VIEW (current_playlist_treeview), current_playlist_model);
 	gimmix_statusbar = glade_xml_get_widget (xml, "gimmix_status");
+	gimmix_statusbox = glade_xml_get_widget (xml, "gimmix_statusbox");
 	
 	g_signal_connect (current_playlist_treeview, "row-activated", G_CALLBACK(cb_current_playlist_double_click), NULL);
 	g_signal_connect (current_playlist_treeview, "button-press-event", G_CALLBACK(cb_all_playlist_button_press), NULL);
@@ -233,7 +235,10 @@ gimmix_update_current_playlist (void)
 			}
 			else
 			{
-				title = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s</span>", data->song->file);
+				gchar *file = g_path_get_basename(data->song->file);
+				gimmix_strip_file_ext (file);
+				title = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s</span>", file);
+				g_free (file);
 			}
 			gimmix_get_total_time_for_song (gmo, data->song, time);
 			ti = g_markup_printf_escaped ("<span size=\"medium\" weight=\"bold\">%s</span>", time);
@@ -249,7 +254,8 @@ gimmix_update_current_playlist (void)
 			}
 			else
 			{
-				title = g_markup_printf_escaped (data->song->file);
+				title = g_markup_printf_escaped (g_path_get_basename(data->song->file));
+				gimmix_strip_file_ext (title);
 			}
 			gimmix_get_total_time_for_song (gmo, data->song, time);
 			ti = NULL;
@@ -286,7 +292,7 @@ gimmix_display_total_playlist_time (void)
 	data = mpd_playlist_get_changes (gmo, 0);
 	if (mpd_playlist_get_playlist_length(gmo) == 0)
 	{
-		gtk_widget_hide (gimmix_statusbar);
+		gtk_widget_hide (gimmix_statusbox);
 		return;
 	}
 	
@@ -300,12 +306,12 @@ gimmix_display_total_playlist_time (void)
 	{
 		time_string = g_strdup_printf ("%d %s, %s%d %s", mpd_playlist_get_playlist_length(gmo), _("Items"), _("Total Duration: "), time/60, _("minutes"));
 		gtk_label_set_text (GTK_LABEL(gimmix_statusbar), time_string);
-		gtk_widget_show (gimmix_statusbar);
+		gtk_widget_show (gimmix_statusbox);
 		g_free (time_string);
 	}
 	else
 	{
-		gtk_widget_hide (gimmix_statusbar);
+		gtk_widget_hide (gimmix_statusbox);
 	}
 	
 	return;
@@ -946,7 +952,7 @@ gimmix_library_song_info (void)
 		gtk_widget_show (tag_editor_window);
 	}
 	else
-		gimmix_tag_editor_error (dir_error);
+		gimmix_tag_editor_error (invalid_dir_error);
 		
 	g_free (path);
 	g_free (song_path);
@@ -981,7 +987,7 @@ gimmix_current_playlist_song_info (void)
 		gtk_widget_show (tag_editor_window);
 	}
 	else
-		gimmix_tag_editor_error (dir_error);
+		gimmix_tag_editor_error (invalid_dir_error);
 		
 	g_free (path);
 	g_free (song_path);
@@ -1225,7 +1231,7 @@ gimmix_library_update (void)
 {
 	mpd_database_update_dir (gmo, "/");
 	gtk_label_set_text (GTK_LABEL(gimmix_statusbar), _("Updating Library..."));
-	gtk_widget_show (gimmix_statusbar);
+	gtk_widget_show (gimmix_statusbox);
 	/* disable the update button on the toolbar */
 	gtk_widget_set_sensitive (button_update, FALSE);
 	g_timeout_add (300, (GSourceFunc)gimmix_update_player_status, NULL);

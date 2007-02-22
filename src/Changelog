@@ -1,3 +1,16 @@
+Version 0.4.0 (xx-xx-2007)
+* Brand new interface. Gimmix is much more cleaner than before and the
+ui is a lot more compact.
+* Revamped the first run dialog.
+* Library is now separated from the main window.
+* A new libnotify-style tooltip with progress bar.
+* Fixed a problem with displaying long filenames having no ID3 information.
+* Don't display the full path of a file in current playlist. Not even extension.
+* Don't display the file's extension in current playlist, song info and tooltip.
+* Gimmix gets its first translation.
+* New translation: zh_TW (Thanks to Cheng-Wei Chien)
+* Many more fixes.
+
 Version 0.3.1 (26-12-2006)
 * Added Autoconf 2.5 support (Thanks to Alex Smith)
 * Added a new status bar at the bottom of the player window, which displays the current player status.
