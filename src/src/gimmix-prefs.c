@@ -31,6 +31,7 @@ extern GladeXML 	*xml;
 extern ConfigFile	conf;
 
 GtkWidget *pref_window;
+GtkWidget *pref_notebook;
 GtkWidget *pref_host_entry;
 GtkWidget *pref_pass_entry;
 GtkWidget *pref_port_entry;
@@ -72,6 +73,7 @@ gimmix_prefs_init (void)
 	pref_button_close = glade_xml_get_widget (xml, "prefs_window");
 	pref_dir_chooser = glade_xml_get_widget (xml, "conf_dir_chooser");
 	pref_search_check = glade_xml_get_widget (xml, "search_checkbutton");
+	pref_notebook = glade_xml_get_widget (xml, "pref_notebook");
 	
 	g_signal_connect (G_OBJECT(pref_systray_check), "toggled", G_CALLBACK(cb_pref_systray_toggled), (gpointer)pref_notification_check);
 	g_signal_connect (G_OBJECT(pref_notification_check), "toggled", G_CALLBACK(cb_pref_notification_toggled), NULL);

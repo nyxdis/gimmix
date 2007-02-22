@@ -272,9 +272,8 @@ cb_gimmix_tag_editor_error_response (GtkDialog *dialog, gint arg1, gpointer data
 {
 	if (arg1 == GTK_RESPONSE_YES)
 	{
-		GtkWidget *notebook;
-		notebook = glade_xml_get_widget (xml, "pref_notebook");
-		gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 3);
+		extern GtkWidget *pref_notebook;
+		gtk_notebook_set_current_page (GTK_NOTEBOOK(pref_notebook), 2);
 		gimmix_prefs_dialog_show ();
 	}
 	
