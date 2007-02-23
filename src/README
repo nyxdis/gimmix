@@ -69,8 +69,8 @@ enable_notification = true or false
 Enable/Disable the notification tooltip. Enable is true, Disable is false.
 
 music_directory = /foo/bar
-The absolut path to the directory where your music is stored.
-Actually, its the music directory you specified in your mpd.conf. 
+The absolute path to the directory where your music is stored.
+This is same as the one you specified in your mpd.conf. 
 This setting is required for the tag editor to function properly.
 
 Make sure your .gimmixrc has all these configuration values set.
