@@ -100,7 +100,7 @@ msgstr "載入"
 msgid "Delete"
 msgstr "刪除"
 
-#: ../src/gimmix-playlist.c:1242
+#: ../src/gimmix-playlist.c:1243
 msgid "Updating Library..."
 msgstr "正在更新媒體櫃…"
 
