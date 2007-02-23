@@ -76,27 +76,27 @@ msgstr "分"
 msgid "No Result"
 msgstr "沒有歌曲"
 
-#: ../src/gimmix-playlist.c:1090
+#: ../src/gimmix-playlist.c:1091
 msgid "Repeat"
 msgstr "重複播放"
 
-#: ../src/gimmix-playlist.c:1097
+#: ../src/gimmix-playlist.c:1098
 msgid "Shuffle"
 msgstr "隨機播放"
 
-#: ../src/gimmix-playlist.c:1108 ../glade/gimmix.glade:732
+#: ../src/gimmix-playlist.c:1109 ../glade/gimmix.glade:732
 msgid "Save Playlist"
 msgstr "儲存播放清單"
 
-#: ../src/gimmix-playlist.c:1153 ../glade/gimmix.glade:893
+#: ../src/gimmix-playlist.c:1154 ../glade/gimmix.glade:893
 msgid "Update Library"
 msgstr "更新媒體櫃"
 
-#: ../src/gimmix-playlist.c:1178
+#: ../src/gimmix-playlist.c:1179
 msgid "Load"
 msgstr "載入"
 
-#: ../src/gimmix-playlist.c:1184
+#: ../src/gimmix-playlist.c:1185
 msgid "Delete"
 msgstr "刪除"
 
@@ -104,11 +104,11 @@ msgstr "刪除"
 msgid "Updating Library..."
 msgstr "正在更新媒體櫃…"
 
-#: ../src/gimmix-playlist.c:1292
+#: ../src/gimmix-playlist.c:1293
 msgid "Save playlist"
 msgstr "儲存播放清單"
 
-#: ../src/gimmix-playlist.c:1330 ../src/gimmix-playlist.c:1341
+#: ../src/gimmix-playlist.c:1331 ../src/gimmix-playlist.c:1342
 msgid "playlist already exists.\n"
 msgstr ""
 "播放清單已經存在。\n"

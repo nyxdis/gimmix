@@ -1017,17 +1017,18 @@ gimmix_current_playlist_remove_song (void)
 	gint				id;
 
 	current_playlist_model = gtk_tree_view_get_model (GTK_TREE_VIEW(current_playlist_treeview));
-
 	list = gtk_tree_selection_get_selected_rows (current_playlist_selection, &current_playlist_model);
 	
 	while (list != NULL)
 	{
-		gtk_tree_model_get_iter (current_playlist_model, &iter, list->data);
-		gtk_tree_model_get (current_playlist_model, &iter, 2, &id, -1);
-		mpd_playlist_delete_id (gmo, id);
+		if (TRUE == gtk_tree_model_get_iter (current_playlist_model, &iter, list->data))
+		{
+			gtk_tree_model_get (current_playlist_model, &iter, 2, &id, -1);
+			mpd_playlist_queue_delete_id (gmo, id);
+		}
 		list = g_list_next (list);
 	}
-	
+	mpd_playlist_queue_commit (gmo);
 	mpd_status_update (gmo);
 	
 	/* free the list */
