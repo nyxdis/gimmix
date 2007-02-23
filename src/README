@@ -65,6 +65,9 @@ leave blank for no password
 enable_systray = true or false
 Enable/Disable the system tray icon. Enable is true, Disable is false.
 
+enable_notification = true or false
+Enable/Disable the notification tooltip. Enable is true, Disable is false.
+
 music_directory = /foo/bar
 The absolut path to the directory where your music is stored.
 Actually, its the music directory you specified in your mpd.conf. 
