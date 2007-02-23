@@ -1025,7 +1025,7 @@ gimmix_current_playlist_remove_song (void)
 		gtk_tree_model_get_iter (current_playlist_model, &iter, list->data);
 		gtk_tree_model_get (current_playlist_model, &iter, 2, &id, -1);
 		mpd_playlist_delete_id (gmo, id);
-		list = list->next;
+		list = g_list_next (list);
 	}
 	
 	mpd_status_update (gmo);

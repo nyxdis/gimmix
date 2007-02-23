@@ -1,18 +1,23 @@
-# Chinese translations for gimmix.
-# Copyright (C) 2007 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the gimmix package.
+# Chinese translations for Gimmix package.
+# Copyright (C) 2007 Priyank Gosalia
+# This file is distributed under the same license as the Gimmix
+# package.
 # Cheng-Wei Chien <e.cwchien@gmail.com>, 2007.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gimmix 0.3.1\n"
+"Project-Id-Version: Gimmix 0.4.0\n"
 "POT-Creation-Date: 2006-12-30 22:35+0530\n"
-"PO-Revision-Date: 2007-01-01 14:06+0800\n"
+"PO-Revision-Date: 2007-02-23 18:47+0800\n"
 "Last-Translator: Cheng-Wei Chien <e.cwchien@gmail.com>\n"
 "Language-Team: Cheng-Wei Chien <e.cwchien@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-Country: TAIWAN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #: ../src/gimmix-core.c:176
 msgid "Error"
@@ -22,28 +27,24 @@ msgstr "發生錯誤"
 msgid "Status Failed."
 msgstr "無法取得目前狀態。"
 
-#: ../src/gimmix-tagedit.c:233
+#: ../src/gimmix-tagedit.c:237
 msgid "Invalid music directory."
 msgstr "無效的音樂目錄。"
 
-#: ../src/gimmix-tagedit.c:253
-#: ../src/gimmix.c:75
+#: ../src/gimmix-tagedit.c:257 ../src/gimmix.c:73
 msgid "ERROR"
 msgstr "發生錯誤"
 
-#: ../src/gimmix-interface.c:105
-#: ../src/gimmix-interface.c:274
+#: ../src/gimmix-interface.c:107 ../src/gimmix-interface.c:297
 msgid "Pause <x or c>"
 msgstr "暫停 <x 或 c>"
 
-#: ../src/gimmix-interface.c:111
-#: ../src/gimmix-interface.c:120
-#: ../glade/gimmix.glade:2662
+#: ../src/gimmix-interface.c:113 ../src/gimmix-interface.c:127
 msgid "Play <x or c>"
 msgstr "播放 <x 或 c>"
 
-#: ../src/gimmix-interface.c:116
-#: ../src/gimmix-interface.c:282
+#: ../src/gimmix-interface.c:118 ../src/gimmix-interface.c:122
+#: ../src/gimmix-interface.c:305 ../src/gimmix-interface.c:307
 msgid "Stopped"
 msgstr "已停止"
 
@@ -59,7 +60,7 @@ msgstr "系統列的選單方向。"
 msgid "Song"
 msgstr "歌曲"
 
-#: ../src/gimmix-playlist.c:251
+#: ../src/gimmix-playlist.c:307
 msgid "Items"
 msgstr "項目"
 
@@ -67,53 +68,52 @@ msgstr "項目"
 msgid "Total Playlist Time: "
 msgstr "總播放時間："
 
-#: ../src/gimmix-playlist.c:251
+#: ../src/gimmix-playlist.c:307
 msgid "minutes"
 msgstr "分"
 
-#: ../src/gimmix-playlist.c:443
+#: ../src/gimmix-playlist.c:501
 msgid "No Result"
 msgstr "沒有歌曲"
 
-#: ../src/gimmix-playlist.c:1024
+#: ../src/gimmix-playlist.c:1090
 msgid "Repeat"
 msgstr "重複播放"
 
-#: ../src/gimmix-playlist.c:1031
+#: ../src/gimmix-playlist.c:1097
 msgid "Shuffle"
 msgstr "隨機播放"
 
-#: ../src/gimmix-playlist.c:1042
+#: ../src/gimmix-playlist.c:1108 ../glade/gimmix.glade:732
 msgid "Save Playlist"
 msgstr "儲存播放清單"
 
-#: ../src/gimmix-playlist.c:1087
+#: ../src/gimmix-playlist.c:1153 ../glade/gimmix.glade:893
 msgid "Update Library"
 msgstr "更新媒體櫃"
 
-#: ../src/gimmix-playlist.c:1112
+#: ../src/gimmix-playlist.c:1178
 msgid "Load"
 msgstr "載入"
 
-#: ../src/gimmix-playlist.c:1118
+#: ../src/gimmix-playlist.c:1184
 msgid "Delete"
 msgstr "刪除"
 
-#: ../src/gimmix-playlist.c:1176
+#: ../src/gimmix-playlist.c:1242
 msgid "Updating Library..."
 msgstr "正在更新媒體櫃…"
 
-#: ../src/gimmix-playlist.c:1225
+#: ../src/gimmix-playlist.c:1292
 msgid "Save playlist"
 msgstr "儲存播放清單"
 
-#: ../src/gimmix-playlist.c:1263
-#: ../src/gimmix-playlist.c:1274
+#: ../src/gimmix-playlist.c:1330 ../src/gimmix-playlist.c:1341
 msgid "playlist already exists.\n"
 msgstr ""
 "播放清單已經存在。\n"
 
-#: ../src/gimmix.c:68
+#: ../src/gimmix.c:66
 msgid ""
 "Gimmix couldn't connect to mpd. \n"
 "\n"
@@ -125,7 +125,7 @@ msgstr ""
 "請確認 mpd 是否正在執行。\n"
 "同時也請確認您已於 ~/.gimmixrc 中指定正確的主機名稱，連接埠及密碼"
 
-#: ../src/gimmix.c:123
+#: ../src/gimmix.c:121
 msgid "A part of the song seek code borrowed from Pygmy."
 msgstr "歌曲搜尋的程式碼有一部份是參考 Pygmy。"
 
@@ -133,31 +133,27 @@ msgstr "歌曲搜尋的程式碼有一部份是參考 Pygmy。"
 msgid "Â© 2006 Priyank Gosalia  (GPL)"
 msgstr "版權所有 (C) 2006 Priyank Gosalia (GPL)"
 
-#: ../src/gimmix.c:133
+#: ../src/gimmix.c:131
 msgid "Gimmix is a graphical music player daemon (MPD) client written in C."
 msgstr "Gimmix 是一個以 C 語言撰寫，音樂播放伺服器 (MPD) 的圖形介面用戶端。"
 
-#: ../src/gimmix.c:163
+#: ../src/gimmix.c:167
 msgid "Failed to initialize interface."
 msgstr "無法初始化介面。"
 
-#: ../glade/gimmix.glade:9
-#: ../glade/gimmix.glade:2818
+#: ../glade/gimmix.glade:1230
 msgid "Preferences"
 msgstr "偏好設定"
 
-#: ../glade/gimmix.glade:74
-#: ../glade/gimmix.glade:2154
+#: ../glade/gimmix.glade:3075
 msgid "Host"
 msgstr "主機"
 
-#: ../glade/gimmix.glade:102
-#: ../glade/gimmix.glade:2126
+#: ../glade/gimmix.glade:1357 ../glade/gimmix.glade:3103
 msgid "Port"
 msgstr "連接埠"
 
-#: ../glade/gimmix.glade:130
-#: ../glade/gimmix.glade:2056
+#: ../glade/gimmix.glade:1385 ../glade/gimmix.glade:3131
 msgid "Password"
 msgstr "密碼"
 
@@ -165,15 +161,15 @@ msgstr "密碼"
 msgid "<b>Connection</b>"
 msgstr "<b>連線</b>"
 
-#: ../glade/gimmix.glade:254
+#: ../glade/gimmix.glade:1482
 msgid "Connection"
 msgstr "連線"
 
-#: ../glade/gimmix.glade:305
+#: ../glade/gimmix.glade:1513
 msgid "Immediately play songs when i add them to playlist."
 msgstr "將歌曲加入清單後就立即播放。"
 
-#: ../glade/gimmix.glade:325
+#: ../glade/gimmix.glade:1532
 msgid "Stop playback when Gimmix exits."
 msgstr "Gimmix 結束後就停止播放。"
 
@@ -181,7 +177,7 @@ msgstr "Gimmix 結束後就停止播放。"
 msgid "Update mpd library on startup."
 msgstr "啟動時更新 mpd 媒體櫃。"
 
-#: ../glade/gimmix.glade:371
+#: ../glade/gimmix.glade:1576
 msgid "Enable Crossfade"
 msgstr "啟用淡入淡出"
 
@@ -193,17 +189,15 @@ msgstr "淡入淡出時間："
 msgid "<b>Player</b>"
 msgstr "<b>播放器</b>"
 
-#: ../glade/gimmix.glade:491
+#: ../glade/gimmix.glade:1655
 msgid "Behavior"
 msgstr "行為"
 
-#: ../glade/gimmix.glade:546
-#: ../glade/gimmix.glade:2305
+#: ../glade/gimmix.glade:1691
 msgid "<b>Music Directory : </b>"
 msgstr "<b>音樂目錄：</b>"
 
-#: ../glade/gimmix.glade:573
-#: ../glade/gimmix.glade:2331
+#: ../glade/gimmix.glade:1717
 msgid "Select the directory"
 msgstr "請選擇目錄"
 
@@ -221,12 +215,11 @@ msgstr ""
 msgid "<b>Directories</b>"
 msgstr "<b>目錄</b>"
 
-#: ../glade/gimmix.glade:657
+#: ../glade/gimmix.glade:1774
 msgid "Directories"
 msgstr "目錄"
 
-#: ../glade/gimmix.glade:720
-#: ../glade/gimmix.glade:2251
+#: ../glade/gimmix.glade:1819
 msgid "Enable system tray icon"
 msgstr "啟用系統列圖示"
 
@@ -238,12 +231,11 @@ msgstr "<b>系統列</b>"
 msgid "Enable Library search"
 msgstr "啟用媒體櫃搜尋"
 
-#: ../glade/gimmix.glade:822
-#: ../glade/gimmix.glade:3032
+#: ../glade/gimmix.glade:1912
 msgid "<b>Search</b>"
 msgstr "<b>搜尋</b>"
 
-#: ../glade/gimmix.glade:869
+#: ../glade/gimmix.glade:1952
 msgid "Interface"
 msgstr "介面"
 
@@ -251,39 +243,39 @@ msgstr "介面"
 msgid "Apply"
 msgstr "套用"
 
-#: ../glade/gimmix.glade:1027
+#: ../glade/gimmix.glade:1177
 msgid "Close"
 msgstr "關閉"
 
-#: ../glade/gimmix.glade:1072
+#: ../glade/gimmix.glade:2126
 msgid "Information"
 msgstr "資訊"
 
-#: ../glade/gimmix.glade:1146
+#: ../glade/gimmix.glade:2171
 msgid "<b>Track :</b>"
 msgstr "<b>音軌編號：</b>"
 
-#: ../glade/gimmix.glade:1205
+#: ../glade/gimmix.glade:2228
 msgid "<b>Year :</b>"
 msgstr "<b>年份：</b>"
 
-#: ../glade/gimmix.glade:1296
+#: ../glade/gimmix.glade:2632
 msgid "<b>Title :</b>"
 msgstr "<b>歌曲標題：</b>"
 
-#: ../glade/gimmix.glade:1345
+#: ../glade/gimmix.glade:2604
 msgid "<b>Artist :</b>"
 msgstr "<b>藝人：</b>"
 
-#: ../glade/gimmix.glade:1394
+#: ../glade/gimmix.glade:2555
 msgid "<b>Album :</b>"
 msgstr "<b>專輯：</b>"
 
-#: ../glade/gimmix.glade:1422
+#: ../glade/gimmix.glade:2506
 msgid "<b>Genre :</b>"
 msgstr "<b>樂曲類型：</b>"
 
-#: ../glade/gimmix.glade:1451
+#: ../glade/gimmix.glade:2345
 msgid ""
 "A Cappella\n"
 "Acid\n"
@@ -598,8 +590,8 @@ msgstr "<b>聲道：</b>"
 msgid "<b> Audio Information </b>"
 msgstr "<b>音效資訊</b>"
 
-#: ../glade/gimmix.glade:1973
-#: ../glade/gimmix.glade:2426
+#: ../glade/gimmix.glade:7 ../glade/gimmix.glade:233
+#: ../glade/gimmix.glade:3001
 msgid "Gimmix"
 msgstr "Gimmix"
 
@@ -611,7 +603,7 @@ msgstr ""
 "這是 Gimmix 首次啟動。請輸入您的\n"
 "mpd 使用者名稱和密碼後點擊「套用」。\n"
 
-#: ../glade/gimmix.glade:2203
+#: ../glade/gimmix.glade:3222
 msgid "(Leave blank for no password)"
 msgstr "(若無密碼請保持空白)"
 
@@ -633,19 +625,19 @@ msgstr ""
 msgid "Previous <z>"
 msgstr "上一首 <z>"
 
-#: ../glade/gimmix.glade:2687
+#: ../glade/gimmix.glade:98
 msgid "Stop <v>"
 msgstr "停止 <v>"
 
-#: ../glade/gimmix.glade:2712
+#: ../glade/gimmix.glade:123
 msgid "Next <b>"
 msgstr "下一首 <b>"
 
-#: ../glade/gimmix.glade:2737
+#: ../glade/gimmix.glade:799
 msgid "Repeat <r>"
 msgstr "重複播放 <r>"
 
-#: ../glade/gimmix.glade:2765
+#: ../glade/gimmix.glade:770
 msgid "Shuffle <s>"
 msgstr "隨機播放 <s>"
 
@@ -661,7 +653,7 @@ msgstr "播放清單 <l>"
 msgid "Current"
 msgstr "正在播放"
 
-#: ../glade/gimmix.glade:3066
+#: ../glade/gimmix.glade:1095
 msgid ""
 "Artist\n"
 "Album\n"
@@ -673,7 +665,7 @@ msgstr ""
 "歌曲標題\n"
 "檔案名稱\n"
 
-#: ../glade/gimmix.glade:3147
+#: ../glade/gimmix.glade:993
 msgid "Library"
 msgstr "媒體櫃"
 
@@ -681,10 +673,192 @@ msgstr "媒體櫃"
 msgid "Playlists"
 msgstr "播放清單"
 
-#: ../glade/gimmix.glade:3315
+#: ../glade/gimmix.glade:2054
 msgid "+"
 msgstr "+"
 
-#: ../glade/gimmix.glade:3344
+#: ../glade/gimmix.glade:2098
 msgid "-"
 msgstr "-"
+
+#: ../src/gimmix-systray.c:358
+msgid "by"
+msgstr "藝人："
+
+#: ../src/gimmix-tagedit.c:60 ../src/gimmix-playlist.c:42
+msgid ""
+"You have specified an invalid music directory. Do you want to specify the "
+"correct music directory now ?"
+msgstr "您指定了一個無效的音樂目錄。您想要現在指定正確的音樂目錄嗎？"
+
+#: ../src/gimmix-playlist.c:122
+msgid "Title"
+msgstr "歌曲標題"
+
+#: ../src/gimmix-playlist.c:131
+msgid "Length"
+msgstr "長度"
+
+#: ../src/gimmix-playlist.c:307
+msgid "Total Duration: "
+msgstr "總播放時間："
+
+#: ../src/gimmix.c:130
+msgid "© 2006-2007 Priyank Gosalia  (GPL)"
+msgstr "版權所有 (C) 2006-2007 Priyank Gosalia (GPL)"
+
+#: ../src/gimmix.c:134
+msgid "Traditional Chinese (zh_TW) - Cheng-Wei Chien <e.cwchien@gmail.com>"
+msgstr "正體中文 (zh_TW) - 錢政維 <e.cwchien@gmail.com>"
+
+#: ../glade/gimmix.glade:49
+msgid "Prev <z>"
+msgstr "上一首 <z>"
+
+#: ../glade/gimmix.glade:148
+msgid "Volume"
+msgstr "音量"
+
+#: ../glade/gimmix.glade:258
+msgid "http://gimmix.berlios.de/"
+msgstr "官方網站 http://gimmix.berlios.de/"
+
+#: ../glade/gimmix.glade:309
+msgid "Song Info <i>"
+msgstr "歌曲資訊 <i>"
+
+#: ../glade/gimmix.glade:431
+msgid "<b>Current Playlist</b>"
+msgstr "<b>目前播放清單</b>"
+
+#: ../glade/gimmix.glade:530
+msgid "<b>Playlist Manager</b>"
+msgstr "<b>播放清單管理員</b>"
+
+#: ../glade/gimmix.glade:622
+msgid "Add"
+msgstr "新增"
+
+#: ../glade/gimmix.glade:649
+msgid "Remove"
+msgstr "移除"
+
+#: ../glade/gimmix.glade:676
+msgid "Clear"
+msgstr "全部清除"
+
+#: ../glade/gimmix.glade:703
+msgid "Playlist Manager"
+msgstr "播放清單管理員"
+
+#: ../glade/gimmix.glade:839
+msgid "Configure Gimmix"
+msgstr "設定 Gimmix"
+
+#: ../glade/gimmix.glade:944
+msgid "Player status goes here"
+msgstr "播放器狀態在此顯示"
+
+#: ../glade/gimmix.glade:1061
+msgid "<b> Search </b>"
+msgstr "<b> 搜尋 </b>"
+
+#: ../glade/gimmix.glade:1276
+msgid "<b>Preferences</b>"
+msgstr "<b>偏好設定</b>"
+
+#: ../glade/gimmix.glade:1329
+msgid "Hostname"
+msgstr "主機名稱"
+
+#: ../glade/gimmix.glade:1551
+msgid "Update the mpd database on startup."
+msgstr "啟動時更新 mpd 媒體櫃。"
+
+#: ../glade/gimmix.glade:1594
+msgid "Fade Time:"
+msgstr "淡入淡出時間："
+
+#: ../glade/gimmix.glade:1741
+msgid ""
+"Select the directory where your music is stored. \n"
+"<b>Note: </b> The directory should be same as what you specified in your mpd "
+"settings. \n"
+"If you're not sure, check your mpd configuration file mpd.conf"
+msgstr ""
+"請選擇您存放歌曲的目錄。\n"
+"<b>注意：</b> 這個目錄必須和您在 mpd 設定中所指定的一樣。\n"
+"如果您不太確定，請對照您的 mpd 設定檔 mpd.conf"
+
+#: ../glade/gimmix.glade:1839
+msgid "Enable system tray tooltip"
+msgstr "啟用系統列工具提示"
+
+#: ../glade/gimmix.glade:1859
+msgid "<b>System Tray</b>"
+msgstr "<b>系統列</b>"
+
+#: ../glade/gimmix.glade:1899
+msgid "Enable Library Search"
+msgstr "啟用媒體櫃搜尋"
+
+#: ../glade/gimmix.glade:2296
+msgid "<b>Comment :   </b>"
+msgstr "<b>註解：</b>"
+
+#: ../glade/gimmix.glade:2681
+msgid "<b>File :</b>"
+msgstr "<b>檔案：</b>"
+
+#: ../glade/gimmix.glade:2744
+msgid "<b>Audio Information </b>"
+msgstr "<b>音效資訊</b>"
+
+#: ../glade/gimmix.glade:2779
+msgid "Length :"
+msgstr "<b>長度：</b>"
+
+#: ../glade/gimmix.glade:2807
+msgid "Bitrate :"
+msgstr "<b>位元率：</b>"
+
+#: ../glade/gimmix.glade:2835
+msgid "Channels :    "
+msgstr "<b>聲道：</b>"
+
+#: ../glade/gimmix.glade:3040
+msgid ""
+"Gimmix is running for the first time. \n"
+"Please enter your username, password and other options and hit the Apply "
+"button."
+msgstr ""
+"這是 Gimmix 首次啟動。\n"
+"請輸入您的使用者名稱、密碼及其他選項後點擊「套用」。"
+
+#: ../glade/gimmix.glade:3275
+msgid "Enable system tray icon."
+msgstr "啟用系統列圖示。"
+
+#: ../glade/gimmix.glade:3294
+msgid "Enable system tray tooltips."
+msgstr "啟用系統列工具提示。"
+
+#: ../glade/gimmix.glade:3342
+msgid "<b>Music Directory :</b>"
+msgstr "<b>音樂目錄：</b>"
+
+#: ../glade/gimmix.glade:3367
+msgid "Select A Directory"
+msgstr "請選擇目錄"
+
+#: ../glade/gimmix.glade:3391
+msgid ""
+"Please select the directory where your music is stored. This is required for "
+"gimmix to function properly.\n"
+"Note: The directory should be same as what you specified in your mpd "
+"settings. If you're not sure,\n"
+"Check your mpd configuration file (/etc/mpd.conf on most systems)."
+msgstr ""
+"請選擇您存放歌曲的目錄。為了能讓 gimmix 正常運作，這是必須的。\n"
+"注意：這個目錄必須和您在 mpd 設定中所指定的一樣。如果您不太確定，\n"
+"請對照您的 mpd 設定檔 (大多都位於 /etc/mpd.conf)。"
