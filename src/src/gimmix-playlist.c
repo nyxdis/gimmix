@@ -405,7 +405,18 @@ gimmix_library_and_playlists_populate (void)
 			gchar *title;
 
 			gtk_list_store_append (dir_store, &dir_iter);
-			title = data->song->title ? g_strdup (data->song->title) : g_strdup (data->song->file);
+			if (data->song->title)
+			{
+				if (data->song->artist)
+					title = g_strdup_printf ("%s - %s", data->song->artist, data->song->title);
+				else
+					title = g_strdup (data->song->title);
+			}
+			else
+			{
+				title = g_path_get_basename (data->song->file);
+				gimmix_strip_file_ext (title);
+			}
 			gtk_list_store_set (dir_store, &dir_iter,
 								0, song_pixbuf,
 								1, title,
@@ -872,7 +883,10 @@ gimmix_update_library_with_dir (gchar *dir)
 			gtk_list_store_append (dir_store, &dir_iter);
 			if (data->song->title)
 			{
-				title = g_strdup (data->song->title);
+				if (data->song->artist)
+					title = g_strdup_printf ("%s - %s", data->song->artist, data->song->title);
+				else
+					title = g_strdup (data->song->title);
 			}
 			else
 			{

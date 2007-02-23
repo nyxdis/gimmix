@@ -87,46 +87,46 @@ msgstr ""
 msgid "minutes"
 msgstr ""
 
-#: ../src/gimmix-playlist.c:501
+#: ../src/gimmix-playlist.c:512
 msgid "No Result"
 msgstr ""
 
-#: ../src/gimmix-playlist.c:1091
+#: ../src/gimmix-playlist.c:1105
 msgid "Repeat"
 msgstr ""
 
-#: ../src/gimmix-playlist.c:1098
+#: ../src/gimmix-playlist.c:1112
 msgid "Shuffle"
 msgstr ""
 
-#: ../src/gimmix-playlist.c:1109
+#: ../src/gimmix-playlist.c:1123
 #: ../glade/gimmix.glade:732
 msgid "Save Playlist"
 msgstr ""
 
-#: ../src/gimmix-playlist.c:1154
+#: ../src/gimmix-playlist.c:1168
 #: ../glade/gimmix.glade:893
 msgid "Update Library"
 msgstr ""
 
-#: ../src/gimmix-playlist.c:1179
+#: ../src/gimmix-playlist.c:1193
 msgid "Load"
 msgstr ""
 
-#: ../src/gimmix-playlist.c:1184
+#: ../src/gimmix-playlist.c:1199
 msgid "Delete"
 msgstr ""
 
-#: ../src/gimmix-playlist.c:1243
+#: ../src/gimmix-playlist.c:1257
 msgid "Updating Library..."
 msgstr ""
 
-#: ../src/gimmix-playlist.c:1293
+#: ../src/gimmix-playlist.c:1307
 msgid "Save playlist"
 msgstr ""
 
-#: ../src/gimmix-playlist.c:1331
-#: ../src/gimmix-playlist.c:1342
+#: ../src/gimmix-playlist.c:1345
+#: ../src/gimmix-playlist.c:1356
 msgid "playlist already exists.\n"
 msgstr ""
 
