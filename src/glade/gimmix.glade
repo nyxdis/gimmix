@@ -988,14 +988,14 @@
 </widget>
 
 <widget class="GtkWindow" id="library_window">
-  <property name="width_request">250</property>
-  <property name="height_request">275</property>
+  <property name="width_request">425</property>
+  <property name="height_request">340</property>
   <property name="title" translatable="yes">Library</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
-  <property name="default_width">330</property>
-  <property name="default_height">350</property>
+  <property name="default_width">425</property>
+  <property name="default_height">340</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>
