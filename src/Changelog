@@ -3,8 +3,12 @@ Version 0.4.0 (xx-xx-2007)
 ui is a lot more compact.
 * Revamped the first run dialog.
 * Library is now separated from the main window.
+* Songs are now displayed in the format "Artist - Title" in Library as
+well as Current playlist.
 * A new libnotify-style tooltip with progress bar.
 * Fixed a problem with displaying long filenames having no ID3 information.
+* Fixed a randomly occuring bug which caused gimmix to segfault when
+user tried to delete multiple items from the current playlist.
 * Don't display the full path of a file in current playlist. Not even extension.
 * Don't display the file's extension in current playlist, song info and tooltip.
 * Gimmix gets its first translation.
