@@ -51,21 +51,21 @@ GtkWidget		*playlist_button;
 GtkWidget		*playlist_box;
 GtkWidget		*image_play;
 GtkWidget		*play_button;
-GtkTooltips 	*play_button_tooltip = NULL;
+GtkTooltips 		*play_button_tooltip = NULL;
 
 extern MpdObj 			*gmo;
 extern GladeXML 		*xml;
 extern ConfigFile		conf;
-extern GimmixTooltip 	*tooltip;
+extern GimmixTooltip 		*tooltip;
 
-extern GtkWidget	*current_playlist_treeview;
+extern GtkWidget		*current_playlist_treeview;
 
-static void		gimmix_update_volume (void);
-static void		gimmix_update_repeat (void);
-static void		gimmix_update_shuffle (void);
+static void			gimmix_update_volume (void);
+static void			gimmix_update_repeat (void);
+static void			gimmix_update_shuffle (void);
 
-static gboolean		is_user_searching (void);
-static gboolean 	gimmix_timer (void);
+static gboolean			is_user_searching (void);
+static gboolean 		gimmix_timer (void);
 
 /* Callbacks */
 static gboolean cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data);
@@ -74,15 +74,15 @@ static void	cb_stop_button_clicked 	(GtkWidget *widget, gpointer data);
 static void	cb_next_button_clicked 	(GtkWidget *widget, gpointer data);
 static void	cb_prev_button_clicked 	(GtkWidget *widget, gpointer data);
 static gboolean cb_info_button_press 	(GtkWidget *widget, GdkEventButton *event, gpointer data);
-static void cb_pref_button_clicked 	(GtkWidget *widget, gpointer data);
-static void cb_repeat_button_toggled (GtkToggleButton *button, gpointer data);
-static void cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data);
+static void 	cb_pref_button_clicked 	(GtkWidget *widget, gpointer data);
+static void 	cb_repeat_button_toggled (GtkToggleButton *button, gpointer data);
+static void 	cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data);
 static gboolean	cb_playlist_button_press (GtkWidget *widget, GdkEventButton *event, gpointer data);
 
-static void cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
-static void cb_volume_scale_changed (GtkWidget *widget, gpointer data);
+static void 	cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
+static void 	cb_volume_scale_changed (GtkWidget *widget, gpointer data);
 static void	cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
-static void cb_volume_button_clicked (GtkWidget *widget, gpointer data);
+static void 	cb_volume_button_clicked (GtkWidget *widget, gpointer data);
 static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata);
 
 /* mpd callbacks */
@@ -195,7 +195,7 @@ gimmix_init (void)
 {
 	GtkWidget 		*widget;
 	GtkWidget		*progressbox;
-	GtkAdjustment	*vol_adj;
+	GtkAdjustment		*vol_adj;
 	GdkPixbuf		*app_icon;
 	gchar			*path;
 	
@@ -224,7 +224,7 @@ gimmix_init (void)
 	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_stop")), "gtk-media-stop", GTK_ICON_SIZE_BUTTON);
 	
 	g_signal_connect (G_OBJECT(glade_xml_get_widget (xml, "prev_button")), "clicked", G_CALLBACK(cb_prev_button_clicked), NULL);
-	
+
 	g_signal_connect (G_OBJECT(glade_xml_get_widget (xml, "play_button")), "clicked", G_CALLBACK(cb_play_button_clicked), NULL);
 	
 	g_signal_connect (G_OBJECT(glade_xml_get_widget (xml, "next_button")), "clicked", G_CALLBACK(cb_next_button_clicked), NULL);
