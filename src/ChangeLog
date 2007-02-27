@@ -1,3 +1,8 @@
+Version 0.4.1 (27-02-2007)
+* This is a bugfix release to 0.4.0. (No new features are added)
+* Bug #87633: Fixed wrong placing of tooltip on some systems.
+* Bug #88027: Fixed compile errors.
+
 Version 0.4.0 (23-02-2007)
 * Brand new interface. Gimmix is much more cleaner than before and the
 ui is a lot more compact.
