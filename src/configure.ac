@@ -7,6 +7,8 @@ AC_CONFIG_SRCDIR([src/gimmix.c])
 AC_LANG(C)
 AM_CONFIG_HEADER(config.h)
 AC_CANONICAL_SYSTEM
+AC_PROG_INTLTOOL([0.21])
+AC_PROG_LIBTOOL
 AM_INIT_AUTOMAKE
 
 dnl Host dependant flags
@@ -19,9 +21,6 @@ esac
 AC_PROG_CC
 AC_HEADER_STDC
 AC_CHECK_HEADERS([locale.h stdlib.h string.h sys/ioctl.h unistd.h])
-AC_PROG_INSTALL
-AC_PROG_LN_S
-AC_PROG_INTLTOOL(, [no-xml])
 
 if test "${GCC}" = "yes"
 then
