@@ -1,0 +1,748 @@
+# Language Translations for Gimmix
+# Copyright (C) 2006-2007 Priyank Gosalia
+# This file is distributed under the same license as the Gimmix
+# package.
+# yavuz selim burgu <turkalinux@gmail.com>, 2007.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Gimmix 0.4.0\n"
+"POT-Creation-Date: 2006-12-30 22:35+0530\n"
+"PO-Revision-Date: 2007-02-22 17:41+0530\n"
+"Last-Translator: yavuz selim burgu <turkalinux@gmail.com>\n"
+"Language-Team: yavuz selim burgu <turkalinux@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/gimmix-systray.c:358
+msgid "by"
+msgstr "by"
+
+#: ../src/gimmix-core.c:176
+msgid "Error"
+msgstr "Hata"
+
+#: ../src/gimmix-core.c:176
+msgid "Status Failed."
+msgstr "Başarısız Durum"
+
+#: ../src/gimmix-tagedit.c:60
+#: ../src/gimmix-playlist.c:42
+msgid "You have specified an invalid music directory. Do you want to specify the correct music directory now ?"
+msgstr "Geçersiz bir müzik dizini belirlediniz. Şimdi doğru bir müzik dizini belirlemek ister misiniz ?"
+
+#: ../src/gimmix-tagedit.c:237
+msgid "Invalid music directory."
+msgstr "Geçersiz Müzik Dizini"
+
+#: ../src/gimmix-tagedit.c:257
+#: ../src/gimmix.c:73
+msgid "ERROR"
+msgstr "HATA"
+
+#: ../src/gimmix-interface.c:107
+#: ../src/gimmix-interface.c:297
+msgid "Pause <x or c>"
+msgstr "Ara<x veya c>"
+
+#: ../src/gimmix-interface.c:113
+#: ../src/gimmix-interface.c:127
+msgid "Play <x or c>"
+msgstr "Çal <x veya c>"
+
+#: ../src/gimmix-interface.c:118
+#: ../src/gimmix-interface.c:122
+#: ../src/gimmix-interface.c:305
+#: ../src/gimmix-interface.c:307
+msgid "Stopped"
+msgstr "Durdur"
+
+#: ../src/eggtrayicon.c:115
+msgid "Orientation"
+msgstr "Uydur"
+
+#: ../src/eggtrayicon.c:116
+msgid "The orientation of the tray."
+msgstr "Çekmeceye uydur."
+
+#: ../src/gimmix-playlist.c:122
+msgid "Title"
+msgstr "Şarkıadı"
+
+#: ../src/gimmix-playlist.c:131
+msgid "Length"
+msgstr "Şarkı Uzunluğu"
+
+#: ../src/gimmix-playlist.c:307
+msgid "Items"
+msgstr "Parçalar"
+
+#: ../src/gimmix-playlist.c:307
+msgid "Total Duration: "
+msgstr "Toplam Süre"
+
+#: ../src/gimmix-playlist.c:307
+msgid "minutes"
+msgstr "dakika"
+
+#: ../src/gimmix-playlist.c:512
+msgid "No Result"
+msgstr "Bulunamadı"
+
+#: ../src/gimmix-playlist.c:1105
+msgid "Repeat"
+msgstr "Tekrarla"
+
+#: ../src/gimmix-playlist.c:1112
+msgid "Shuffle"
+msgstr "Karıştır"
+
+#: ../src/gimmix-playlist.c:1123
+#: ../glade/gimmix.glade:732
+msgid "Save Playlist"
+msgstr "Çalma Listesini Kaydet"
+
+#: ../src/gimmix-playlist.c:1168
+#: ../glade/gimmix.glade:893
+msgid "Update Library"
+msgstr "Kütüphaneyi Güncelle"
+
+#: ../src/gimmix-playlist.c:1193
+msgid "Load"
+msgstr "Yükle"
+
+#: ../src/gimmix-playlist.c:1199
+msgid "Delete"
+msgstr "Sil"
+
+#: ../src/gimmix-playlist.c:1257
+msgid "Updating Library..."
+msgstr "Kütüphane Güncelleniyor..."
+
+#: ../src/gimmix-playlist.c:1307
+msgid "Save playlist"
+msgstr "Çalma Listesini Kaydet"
+
+#: ../src/gimmix-playlist.c:1345
+#: ../src/gimmix-playlist.c:1356
+msgid "playlist already exists.\n"
+msgstr "Çalma Listesi zatan mevcut. \n"
+
+#: ../src/gimmix.c:66
+msgid ""
+"Gimmix couldn't connect to mpd. \n"
+"\n"
+"Check whether mpd is running.\n"
+"Also check that you have specified the proper hostname, port and password in ~/.gimmixrc"
+msgstr ""
+"Gimmix mpd'ye bağlanamadı. \n"
+"\n"
+"mpd'nin çalışıp çalışmadığını kontrol edin. \n"
+"~/.gimmixrc dosyasında hata olup olmadığını kontrol edin.(Şifre, hostname, port vb.)"
+
+#: ../src/gimmix.c:121
+msgid "A part of the song seek code borrowed from Pygmy."
+msgstr "Şarkının bir parçası pygmy'den alınan kodu arıyor."
+
+#: ../src/gimmix.c:130
+msgid "Â© 2006-2007 Priyank Gosalia  (GPL)"
+msgstr "Â© 2006-2007 Priyank Gosalia  (GPL)"
+
+#: ../src/gimmix.c:131
+msgid "Gimmix is a graphical music player daemon (MPD) client written in C."
+msgstr "Gimmix, C ile kodlanmış grafik arayüzlü (MPD) istemcisi."
+
+#: ../src/gimmix.c:134
+msgid "Traditional Chinese (zh_TW) - Cheng-Wei Chien <e.cwchien@gmail.com>"
+msgstr "Traditional Chinese (zh_TW) - Cheng-Wei Chien <e.cwchien@gmail.com>"
+
+#: ../src/gimmix.c:167
+msgid "Failed to initialize interface."
+msgstr "Grafiksel arayüz başltılamadı."
+
+#: ../glade/gimmix.glade:7
+#: ../glade/gimmix.glade:233
+#: ../glade/gimmix.glade:3001
+msgid "Gimmix"
+msgstr "Gimmix"
+
+#: ../glade/gimmix.glade:49
+msgid "Prev <z>"
+msgstr "Önceki <z>"
+
+#: ../glade/gimmix.glade:98
+msgid "Stop <v>"
+msgstr "Dur <v>"
+
+#: ../glade/gimmix.glade:123
+msgid "Next <b>"
+msgstr "Sonraki <b>"
+
+#: ../glade/gimmix.glade:148
+msgid "Volume"
+msgstr "Ses"
+
+#: ../glade/gimmix.glade:258
+msgid "http://gimmix.berlios.de/"
+msgstr "http://gimmix.berlios.de/"
+
+#: ../glade/gimmix.glade:309
+msgid "Song Info <i>"
+msgstr "Şarkı Bilgisi <i>"
+
+#: ../glade/gimmix.glade:431
+msgid "<b>Current Playlist</b>"
+msgstr "<b>Geçerli Çalma Listesi</b>"
+
+#: ../glade/gimmix.glade:530
+msgid "<b>Playlist Manager</b>"
+msgstr "<b>Çalma Listesi Düzenleyicisi</b>"
+
+#: ../glade/gimmix.glade:622
+msgid "Add"
+msgstr "Ekle"
+
+#: ../glade/gimmix.glade:649
+msgid "Remove"
+msgstr "Kaldır"
+
+#: ../glade/gimmix.glade:676
+msgid "Clear"
+msgstr "Temizle"
+
+#: ../glade/gimmix.glade:703
+msgid "Playlist Manager"
+msgstr "Çalma Listesi Düzenleyicisi"
+
+#: ../glade/gimmix.glade:770
+msgid "Shuffle <s>"
+msgstr "Karıştır <s>"
+
+#: ../glade/gimmix.glade:799
+msgid "Repeat <r>"
+msgstr "Tekrarla <r>"
+
+#: ../glade/gimmix.glade:839
+msgid "Configure Gimmix"
+msgstr "Gimmix Yapılandırma"
+
+#: ../glade/gimmix.glade:944
+msgid "Player status goes here"
+msgstr "Çalıcının konumunu değiş."
+
+#: ../glade/gimmix.glade:993
+msgid "Library"
+msgstr "Kütüphane"
+
+#: ../glade/gimmix.glade:1061
+msgid "<b> Search </b>"
+msgstr "<b> Ara </b>"
+
+#: ../glade/gimmix.glade:1095
+msgid ""
+"Artist\n"
+"Album\n"
+"Title\n"
+"Filename\n"
+msgstr ""
+"Artist\n"
+"Album\n"
+"Şarkıadı\n"
+"Dosya adı\n"
+
+
+#: ../glade/gimmix.glade:1177
+msgid "Close"
+msgstr "Kapat"
+
+#: ../glade/gimmix.glade:1230
+msgid "Preferences"
+msgstr "Tercihler"
+
+#: ../glade/gimmix.glade:1276
+msgid "<b>Preferences</b>"
+msgstr "<b>Tercihler</b>"
+
+#: ../glade/gimmix.glade:1329
+msgid "Hostname"
+msgstr "Hostname"
+
+#: ../glade/gimmix.glade:1357
+#: ../glade/gimmix.glade:3103
+msgid "Port"
+msgstr "Port"
+
+#: ../glade/gimmix.glade:1385
+#: ../glade/gimmix.glade:3131
+msgid "Password"
+msgstr "Şifre"
+
+#: ../glade/gimmix.glade:1482
+msgid "Connection"
+msgstr "Bağlantı"
+
+#: ../glade/gimmix.glade:1513
+msgid "Immediately play songs when i add them to playlist."
+msgstr "Şarkıları listeye ekledikten sonra anında çalmaya başla. "
+
+#: ../glade/gimmix.glade:1532
+msgid "Stop playback when Gimmix exits."
+msgstr "Gimmix'ten çıkıldığında çalmayı durdur."
+
+#: ../glade/gimmix.glade:1551
+msgid "Update the mpd database on startup."
+msgstr "mpd veritabanını açılışta güncelle"
+
+#: ../glade/gimmix.glade:1576
+msgid "Enable Crossfade"
+msgstr "Yavaş Geçişi etkinleştir"
+
+#: ../glade/gimmix.glade:1594
+msgid "Fade Time:"
+msgstr "Geçiş Süresi"
+
+#: ../glade/gimmix.glade:1655
+msgid "Behavior"
+msgstr "Davranış"
+
+#: ../glade/gimmix.glade:1691
+msgid "<b>Music Directory : </b>"
+msgstr "<b>Müzik Dizini: </b>"
+
+#: ../glade/gimmix.glade:1717
+msgid "Select the directory"
+msgstr "Dizin Seçin"
+
+#: ../glade/gimmix.glade:1741
+msgid ""
+"Select the directory where your music is stored. \n"
+"<b>Note: </b> The directory should be same as what you specified in your mpd settings. \n"
+"If you're not sure, check your mpd configuration file mpd.conf"
+msgstr ""
+"Müziklerinizin bulunduğu dizini seçin. \n"
+"<b>Not: </b> Dizin mpd ayarlarınızda belirtilenle aynı olmalı.\n"
+"Emin değilseniz mpd.conf dosyanızdaki ayarları kontrol edin"
+
+#: ../glade/gimmix.glade:1774
+msgid "Directories"
+msgstr "Dizinler"
+
+#: ../glade/gimmix.glade:1819
+msgid "Enable system tray icon"
+msgstr "Sistem Çekmecesi ikonunu etkinleştir"
+
+#: ../glade/gimmix.glade:1839
+msgid "Enable system tray tooltip"
+msgstr "Sistem çekmecesi araç ipucunu etkinleştir"
+
+#: ../glade/gimmix.glade:1859
+msgid "<b>System Tray</b>"
+msgstr "<b>Sistem Çekmecesi</b>"
+
+#: ../glade/gimmix.glade:1899
+msgid "Enable Library Search"
+msgstr "Kütüphane Aramayı Etkinleştir"
+
+#: ../glade/gimmix.glade:1912
+msgid "<b>Search</b>"
+msgstr "<b>Ara</b>"
+
+#: ../glade/gimmix.glade:1952
+msgid "Interface"
+msgstr "Arayüz"
+
+#: ../glade/gimmix.glade:2054
+msgid "+"
+msgstr "+"
+
+#: ../glade/gimmix.glade:2098
+msgid "-"
+msgstr "-"
+
+#: ../glade/gimmix.glade:2126
+msgid "Information"
+msgstr "Bilgi"
+
+#: ../glade/gimmix.glade:2171
+msgid "<b>Track :</b>"
+msgstr "<b>Eser :</b>"
+
+#: ../glade/gimmix.glade:2228
+msgid "<b>Year :</b>"
+msgstr "<b>Yıl :</b>"
+
+#: ../glade/gimmix.glade:2296
+msgid "<b>Comment :   </b>"
+msgstr "<b>Açıklama</b>"
+
+#: ../glade/gimmix.glade:2345
+msgid ""
+"A Cappella\n"
+"Acid\n"
+"Acid Jazz\n"
+"Acid Punk\n"
+"Acoustic\n"
+"Alt. Rock\n"
+"Alternative\n"
+"Ambient\n"
+"Anime\n"
+"Avantgarde\n"
+"Ballad\n"
+"Bass\n"
+"Beat\n"
+"Bebob\n"
+"Big Band\n"
+"Black Metal\n"
+"Bluegrass\n"
+"Blues\n"
+"Booty Bass\n"
+"BritPop\n"
+"Cabaret\n"
+"Celtic\n"
+"Chamber music\n"
+"Chanson\n"
+"Chorus\n"
+"Christian Gangsta Rap\n"
+"Christian Rap\n"
+"Christian Rock\n"
+"Classic Rock\n"
+"Classical\n"
+"Club\n"
+"Club-House\n"
+"Comedy\n"
+"Contemporary Christian\n"
+"Country\n"
+"Crossover\n"
+"Cult\n"
+"Dance\n"
+"Dance Hall\n"
+"Darkwave\n"
+"Death Metal\n"
+"Disco\n"
+"Dream\n"
+"Drum & Bass\n"
+"Drum Solo\n"
+"Duet\n"
+"Easy Listening\n"
+"Electronic\n"
+"Ethnic\n"
+"Euro-House\n"
+"Euro-Techno\n"
+"Eurodance\n"
+"Fast Fusion\n"
+"Folk\n"
+"Folk-Rock\n"
+"Folklore\n"
+"Freestyle\n"
+"Funk\n"
+"Fusion\n"
+"Game\n"
+"Gangsta\n"
+"Goa\n"
+"Gospel\n"
+"Gothic\n"
+"Gothic Rock\n"
+"Grunge\n"
+"Hard Rock\n"
+"Hardcore\n"
+"Heavy Metal\n"
+"Hip-Hop\n"
+"House\n"
+"Humour\n"
+"Indie\n"
+"Industrial\n"
+"Instrumental\n"
+"Instrumental pop\n"
+"Instrumental rock\n"
+"JPop\n"
+"Jazz\n"
+"Jazz+Funk\n"
+"Jungle\n"
+"Latin\n"
+"Lo-Fi\n"
+"Meditative\n"
+"Merengue\n"
+"Metal\n"
+"Musical\n"
+"National Folk\n"
+"Native American\n"
+"Negerpunk\n"
+"New Age\n"
+"New Wave\n"
+"Noise\n"
+"Oldies\n"
+"Opera\n"
+"Other\n"
+"Polka\n"
+"Polsk Punk\n"
+"Pop\n"
+"Pop-Folk\n"
+"Pop/Funk\n"
+"Porn Groove\n"
+"Power Ballad\n"
+"Pranks\n"
+"Primus\n"
+"Progressive Rock\n"
+"Psychedelic\n"
+"Psychedelic Rock\n"
+"Punk\n"
+"Punk Rock\n"
+"R&B\n"
+"Rap\n"
+"Rave\n"
+"Reggae\n"
+"Retro\n"
+"Revival\n"
+"Rhythmic soul\n"
+"Rock\n"
+"Rock & Roll\n"
+"Salsa\n"
+"Samba\n"
+"Satire\n"
+"Showtunes\n"
+"Ska\n"
+"Slow Jam\n"
+"Slow Rock\n"
+"Sonata\n"
+"Soul\n"
+"Sound Clip\n"
+"Soundtrack\n"
+"Southern Rock\n"
+"Space\n"
+"Speech\n"
+"Swing\n"
+"Symphonic Rock\n"
+"Symphony\n"
+"Synthpop\n"
+"Tango\n"
+"Techno\n"
+"Techno-Industrial\n"
+"Terror\n"
+"Thrash Metal\n"
+"Top 40\n"
+"Trailer\n"
+msgstr ""
+"A Cappella\n"
+"Acid\n"
+"Acid Jazz\n"
+"Acid Punk\n"
+"Acoustic\n"
+"Alt. Rock\n"
+"Alternative\n"
+"Ambient\n"
+"Anime\n"
+"Avantgarde\n"
+"Ballad\n"
+"Bass\n"
+"Beat\n"
+"Bebob\n"
+"Big Band\n"
+"Black Metal\n"
+"Bluegrass\n"
+"Blues\n"
+"Booty Bass\n"
+"BritPop\n"
+"Cabaret\n"
+"Celtic\n"
+"Chamber music\n"
+"Chanson\n"
+"Chorus\n"
+"Christian Gangsta Rap\n"
+"Christian Rap\n"
+"Christian Rock\n"
+"Classic Rock\n"
+"Classical\n"
+"Club\n"
+"Club-House\n"
+"Comedy\n"
+"Contemporary Christian\n"
+"Country\n"
+"Crossover\n"
+"Cult\n"
+"Dance\n"
+"Dance Hall\n"
+"Darkwave\n"
+"Death Metal\n"
+"Disco\n"
+"Dream\n"
+"Drum & Bass\n"
+"Drum Solo\n"
+"Duet\n"
+"Easy Listening\n"
+"Electronic\n"
+"Ethnic\n"
+"Euro-House\n"
+"Euro-Techno\n"
+"Eurodance\n"
+"Fast Fusion\n"
+"Folk\n"
+"Folk-Rock\n"
+"Folklore\n"
+"Freestyle\n"
+"Funk\n"
+"Fusion\n"
+"Game\n"
+"Gangsta\n"
+"Goa\n"
+"Gospel\n"
+"Gothic\n"
+"Gothic Rock\n"
+"Grunge\n"
+"Hard Rock\n"
+"Hardcore\n"
+"Heavy Metal\n"
+"Hip-Hop\n"
+"House\n"
+"Humour\n"
+"Indie\n"
+"Industrial\n"
+"Instrumental\n"
+"Instrumental pop\n"
+"Instrumental rock\n"
+"JPop\n"
+"Jazz\n"
+"Jazz+Funk\n"
+"Jungle\n"
+"Latin\n"
+"Lo-Fi\n"
+"Meditative\n"
+"Merengue\n"
+"Metal\n"
+"Musical\n"
+"National Folk\n"
+"Native American\n"
+"Negerpunk\n"
+"New Age\n"
+"New Wave\n"
+"Noise\n"
+"Oldies\n"
+"Opera\n"
+"Other\n"
+"Polka\n"
+"Polsk Punk\n"
+"Pop\n"
+"Pop-Folk\n"
+"Pop/Funk\n"
+"Porn Groove\n"
+"Power Ballad\n"
+"Pranks\n"
+"Primus\n"
+"Progressive Rock\n"
+"Psychedelic\n"
+"Psychedelic Rock\n"
+"Punk\n"
+"Punk Rock\n"
+"R&B\n"
+"Rap\n"
+"Rave\n"
+"Reggae\n"
+"Retro\n"
+"Revival\n"
+"Rhythmic soul\n"
+"Rock\n"
+"Rock & Roll\n"
+"Salsa\n"
+"Samba\n"
+"Satire\n"
+"Showtunes\n"
+"Ska\n"
+"Slow Jam\n"
+"Slow Rock\n"
+"Sonata\n"
+"Soul\n"
+"Sound Clip\n"
+"Soundtrack\n"
+"Southern Rock\n"
+"Space\n"
+"Speech\n"
+"Swing\n"
+"Symphonic Rock\n"
+"Symphony\n"
+"Synthpop\n"
+"Tango\n"
+"Techno\n"
+"Techno-Industrial\n"
+"Terror\n"
+"Thrash Metal\n"
+"Top 40\n"
+"Trailer\n"
+
+#: ../glade/gimmix.glade:2506
+msgid "<b>Genre :</b>"
+msgstr "<b>Tür :</b>"
+
+#: ../glade/gimmix.glade:2555
+msgid "<b>Album :</b>"
+msgstr "<b>Album :</b>"
+
+#: ../glade/gimmix.glade:2604
+msgid "<b>Artist :</b>"
+msgstr "<b>Artist :</b>"
+
+#: ../glade/gimmix.glade:2632
+msgid "<b>Title :</b>"
+msgstr "<b>Şarkıadı :</b>"
+
+#: ../glade/gimmix.glade:2681
+msgid "<b>File :</b>"
+msgstr "<b>Dosya :</b>"
+
+#: ../glade/gimmix.glade:2744
+msgid "<b>Audio Information </b>"
+msgstr "<b>Ses Bilgisi</b>"
+
+#: ../glade/gimmix.glade:2779
+msgid "Length :"
+msgstr "Uzunluk :"
+
+#: ../glade/gimmix.glade:2807
+msgid "Bitrate :"
+msgstr "Bitrate"
+
+#: ../glade/gimmix.glade:2835
+msgid "Channels :    "
+msgstr "Kanallar :    "
+
+#: ../glade/gimmix.glade:3040
+msgid ""
+"Gimmix is running for the first time. \n"
+"Please enter your username, password and other options and hit the Apply button."
+msgstr ""
+"Gimmix ilk kez çalıştırılıyor. \n"
+"Lütfen, kullanıcıadı, şifre ve diğer seçenekleri girin ve uygula düğmesine tıklayın. "
+
+#: ../glade/gimmix.glade:3075
+msgid "Host"
+msgstr "Host"
+
+#: ../glade/gimmix.glade:3222
+msgid "(Leave blank for no password)"
+msgstr "(Şifre yoksa boş bırak)"
+
+#: ../glade/gimmix.glade:3275
+msgid "Enable system tray icon."
+msgstr "Sistem Çekmecesi İkonunu Göster"
+
+#: ../glade/gimmix.glade:3294
+msgid "Enable system tray tooltips."
+msgstr "Sistem çekmecesi araç ipuçlarını etkinleştir."
+
+#: ../glade/gimmix.glade:3342
+msgid "<b>Music Directory :</b>"
+msgstr "<b>Müzik Dizini :</b>"
+
+#: ../glade/gimmix.glade:3367
+msgid "Select A Directory"
+msgstr "Bir Dizin Seçin"
+
+#: ../glade/gimmix.glade:3391
+msgid ""
+"Please select the directory where your music is stored. This is required for gimmix to function properly.\n"
+"Note: The directory should be same as what you specified in your mpd settings. If you're not sure,\n"
+"Check your mpd configuration file (/etc/mpd.conf on most systems)."
+msgstr ""
+"Lütfen müziklerinizin bulunduğu dizini seçin. Bu Gimmix'in düzgün çalışması için gereklidir.\n"
+"Not: Dizin sizin mpd ayarlarınızda belirtilenle aynı olmalı.Eğer emin değilseniz,\n"
+"mpd.conf dosyasındaki ayarları kontrol edin. (Bir çok sistemde şudur : /etc/mpd.conf )"
