@@ -69,6 +69,7 @@ static gboolean 		gimmix_timer (void);
 
 /* Callbacks */
 static gboolean cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data);
+static gboolean cb_gimmix_main_window_configure_event (GtkWidget *widget, GdkEventConfigure *event, gpointer data);
 static void	cb_play_button_clicked 	(GtkWidget *widget, gpointer data);
 static void	cb_stop_button_clicked 	(GtkWidget *widget, gpointer data);
 static void	cb_next_button_clicked 	(GtkWidget *widget, gpointer data);
@@ -83,6 +84,7 @@ static void 	cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
 static void 	cb_volume_scale_changed (GtkWidget *widget, gpointer data);
 static void	cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
 static void 	cb_volume_button_clicked (GtkWidget *widget, gpointer data);
+static void		gimmix_reposition_volume_window (GtkWidget *volwindow);
 static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata);
 
 /* mpd callbacks */
@@ -212,7 +214,9 @@ gimmix_init (void)
 	g_free (path);
 	
 	/* connect the key press signal */
-	g_signal_connect(G_OBJECT(main_window), "key-press-event", G_CALLBACK(cb_gimmix_key_press), NULL);
+	g_signal_connect (G_OBJECT(main_window), "key-press-event", G_CALLBACK(cb_gimmix_key_press), NULL);
+	
+	g_signal_connect (G_OBJECT(main_window), "configure-event", G_CALLBACK(cb_gimmix_main_window_configure_event), (gpointer)glade_xml_get_widget(xml, "volume_window"));
 	
 	/* connect the destroy signal */
 	g_signal_connect(G_OBJECT(main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
@@ -462,21 +466,28 @@ cb_stop_button_clicked (GtkWidget *widget, gpointer data)
 static void
 cb_volume_button_clicked (GtkWidget *widget, gpointer data)
 {
-	gint x, y;
-	
 	if (GTK_WIDGET_VISIBLE (data))
 		gtk_widget_hide (data);
 	else
-	{	
-		gdk_window_get_origin (widget->window, &x, &y);
-		x += (widget->allocation.x);
-		y += (widget->allocation.y + widget->allocation.height);
-		gtk_window_resize (GTK_WINDOW(data), widget->allocation.width, 1);
-		gtk_window_move (GTK_WINDOW(data), x, y);
 		gtk_widget_show (data);
-	}
-	
+		gimmix_reposition_volume_window (data);
 	return;
+}
+
+static void
+gimmix_reposition_volume_window (GtkWidget *volwindow)
+{
+		if (volwindow == NULL || !GTK_WIDGET_VISIBLE(volwindow))
+		return;
+		
+		gint x, y;
+		gdk_window_get_origin (volume_button->window, &x, &y);
+		x += (volume_button->allocation.x);
+		y += (volume_button->allocation.y + volume_button->allocation.height);
+		gtk_window_resize (GTK_WINDOW(volwindow), volume_button->allocation.width, 1);
+		gtk_window_move (GTK_WINDOW(volwindow), x, y);
+		
+		return;
 }
 
 static void
@@ -741,6 +752,16 @@ cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer
 	
 	return FALSE;
 }
+
+static gboolean cb_gimmix_main_window_configure_event (GtkWidget *widget, GdkEventConfigure *event, gpointer data)
+{
+	if (!GTK_WIDGET_VISIBLE(data))
+		return FALSE;
+	
+	gimmix_reposition_volume_window (data);
+	return FALSE;
+}
+
 
 void
 gimmix_save_window_pos (void)
