@@ -123,6 +123,11 @@ gimmix_about_show (void)
 				 	"Rohan Dhruva: Extensive testing and bug reports",
 					 NULL
 					};
+	gchar *translators[] = { 
+							"Traditional Chinese (zh_TW) - Cheng-Wei Chien <e.cwchien@gmail.com>",
+							"Turkish (tr) - Yavuz Selim Burgu <turkalinux@gmail.com>", 
+							NULL
+							};
 
 	gtk_show_about_dialog (NULL,
                            "name", APPNAME,
@@ -131,7 +136,7 @@ gimmix_about_show (void)
                            "comments", _("Gimmix is a graphical music player daemon (MPD) client written in C."),
                            "license", license,
                            "authors", authors,
-					  "translator-credits", _("Traditional Chinese (zh_TW) - Cheng-Wei Chien <e.cwchien@gmail.com>"),
+					  "translator-credits", translators,
                            "website", APPURL,
                            "website-label", APPURL,
                            "logo", about_pixbuf,
