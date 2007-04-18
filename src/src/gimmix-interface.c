@@ -42,6 +42,7 @@ GtkWidget		*main_window;
 GtkWidget 		*progress = NULL;
 GtkWidget		*shuffle_toggle_button;
 GtkWidget		*repeat_toggle_button;
+GtkWidget		*volume_window;
 GtkWidget		*volume_scale;
 GtkWidget		*volume_button;
 GtkWidget		*song_label;
@@ -239,6 +240,7 @@ gimmix_init (void)
 	
 	shuffle_toggle_button = glade_xml_get_widget (xml, "shuffle_toggle");
 	repeat_toggle_button = glade_xml_get_widget (xml, "repeat_toggle");
+	volume_window = glade_xml_get_widget (xml, "volume_window");
 	volume_scale = glade_xml_get_widget (xml, "volume_scale");
 	volume_button = glade_xml_get_widget (xml, "volume_button");
 	playlist_button = glade_xml_get_widget (xml, "playlist_button");
@@ -266,7 +268,7 @@ gimmix_init (void)
 	g_signal_connect (G_OBJECT(volume_scale), "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
 	vol_adj = gtk_range_get_adjustment (GTK_RANGE(volume_scale));
 	gtk_adjustment_set_value (GTK_ADJUSTMENT(vol_adj), mpd_status_get_volume (gmo));
-	g_signal_connect (G_OBJECT(volume_button), "clicked", G_CALLBACK(cb_volume_button_clicked), (gpointer)glade_xml_get_widget(xml, "volume_window"));
+	g_signal_connect (G_OBJECT(volume_button), "clicked", G_CALLBACK(cb_volume_button_clicked), volume_window);
 	g_signal_connect (G_OBJECT(volume_button), "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
 
 	progress = glade_xml_get_widget (xml,"progress");
@@ -340,8 +342,8 @@ gimmix_init (void)
 
 static gboolean
 cb_gimmix_key_press (GtkWidget   *widget,
-					GdkEventKey *event,
-					gpointer     userdata)
+		GdkEventKey *event,
+		gpointer     userdata)
 {
 	gboolean result = FALSE;
 	gint state;
@@ -654,6 +656,8 @@ gimmix_window_visible_toggle (void)
 	else
 	{	
 		gtk_window_get_position (GTK_WINDOW(main_window), &x, &y);
+		/* hide the volume window if not hidden */
+		gtk_widget_hide (GTK_WIDGET(volume_window));
 		gtk_widget_hide (GTK_WIDGET(main_window));
 	}
 

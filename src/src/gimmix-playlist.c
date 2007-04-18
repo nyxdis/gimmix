@@ -60,6 +60,17 @@ extern GtkWidget	*tag_editor_window;
 
 gchar			*loaded_playlist;
 
+void
+onDragDataRecived(GtkWidget *widget,
+		  GdkDragContext *context,
+		  int x, int y,
+		  GtkSelectionData *seldata,
+		  guint info, guint time,
+		  gpointer userdata)
+{
+	g_print ("Dropped.\n");
+}
+
 static void		gimmix_search_init (void);
 static void		gimmix_library_search (gint, gchar *);
 static void		gimmix_library_and_playlists_populate (void);
@@ -138,10 +149,10 @@ gimmix_playlist_init (void)
 	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
 
 	current_playlist_store = gtk_list_store_new (4,
-						G_TYPE_STRING, 		/* name (0) */
-						G_TYPE_STRING, 		/* path (1) */
-						G_TYPE_INT,			/* id (2) */
-						G_TYPE_STRING);    	/* length (3) */
+						G_TYPE_STRING, 	/* name (0) */
+						G_TYPE_STRING, 	/* path (1) */
+						G_TYPE_INT,	/* id (2) */
+						G_TYPE_STRING); /* length (3) */
 	current_playlist_model	= GTK_TREE_MODEL (current_playlist_store);
 	current_playlist_selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(current_playlist_treeview));
 	gtk_tree_selection_set_mode (current_playlist_selection, GTK_SELECTION_MULTIPLE);
@@ -184,8 +195,30 @@ gimmix_playlist_init (void)
 	
 	/* Initialize playlist search */
 	gimmix_search_init ();
-	
+
+	/* Drag and Drop */
+	enum { TARGET_STRING, TARGET_URI };
+  	GtkTargetEntry targetentries[] =
+    	{
+     		{ "STRING",        0, TARGET_STRING },
+      		{ "text/plain",    0, TARGET_STRING },      		
+		{ "text/uri-list", 0, TARGET_URI },
+	};
+
+	gtk_drag_dest_set(GTK_WIDGET(current_playlist_treeview),
+		    GTK_DEST_DEFAULT_ALL,
+		    targetentries, 3,
+		    GDK_ACTION_COPY|GDK_ACTION_MOVE);
+	gtk_drag_source_set(GTK_WIDGET(current_playlist_treeview),
+		    GDK_BUTTON1_MASK,
+		    targetentries, 3,
+		    GDK_ACTION_COPY|GDK_ACTION_MOVE);
+	g_signal_connect(GTK_WIDGET(current_playlist_treeview),
+		   "drag_data_received",
+		   G_CALLBACK(onDragDataRecived),
+		   current_playlist_store);
 	loaded_playlist = NULL;
+ 
 	return;
 }
 
