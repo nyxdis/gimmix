@@ -116,10 +116,10 @@ gimmix_tag_editor_populate (const gchar *song)
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON(tag_year_spin), taglib_tag_year(tag));
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON(tag_track_spin), taglib_tag_track(tag));
 	gtk_label_set_text (GTK_LABEL(tag_file), song);
-	gtk_entry_set_text (GTK_ENTRY(tag_title), taglib_tag_title(tag));
-	gtk_entry_set_text (GTK_ENTRY(tag_artist), taglib_tag_artist(tag));
-	gtk_entry_set_text (GTK_ENTRY(tag_album), taglib_tag_album(tag));
-	gtk_entry_set_text (GTK_ENTRY(tag_comment), taglib_tag_comment(tag));
+	gtk_entry_set_text (GTK_ENTRY(tag_title), g_strstrip(taglib_tag_title(tag)));
+	gtk_entry_set_text (GTK_ENTRY(tag_artist), g_strstrip(taglib_tag_artist(tag)));
+	gtk_entry_set_text (GTK_ENTRY(tag_album), g_strstrip(taglib_tag_album(tag)));
+	gtk_entry_set_text (GTK_ENTRY(tag_comment), g_strstrip(taglib_tag_comment(tag)));
 	
 	gtk_combo_box_append_text (GTK_COMBO_BOX(tag_genre), taglib_tag_genre(tag));
 	genre_model = gtk_combo_box_get_model (GTK_COMBO_BOX(tag_genre));
