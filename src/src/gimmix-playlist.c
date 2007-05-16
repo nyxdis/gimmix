@@ -78,8 +78,8 @@ static void		gimmix_update_library_with_dir (gchar *);
 static void		gimmix_current_playlist_popup_menu (void);
 static void		gimmix_library_popup_menu (void);
 static void		gimmix_playlists_popup_menu (void);
-static gchar*		gimmix_path_get_parent_dir (gchar *);
-static void 		gimmix_load_playlist (gchar *);
+static gchar*	gimmix_path_get_parent_dir (gchar *);
+static void 	gimmix_load_playlist (gchar *);
 static void		gimmix_display_total_playlist_time (void);
 
 /* Callbacks */
@@ -101,7 +101,7 @@ static gboolean	gimmix_update_player_status (gpointer data);
 /* Library browser callbacks */
 static void		cb_library_dir_activated (gpointer data);
 static void		gimmix_library_song_info (void);
-static void 		cb_playlist_activated (GtkTreeView *);
+static void 	cb_playlist_activated (GtkTreeView *);
 static void		cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_library_popup_add_clicked (GtkWidget *widget, gpointer data);
 static void		cd_library_popup_replace_clicked (GtkWidget *widget, gpointer data);
@@ -111,7 +111,7 @@ static void		cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer
 /* Playlist browser callbacks */
 static void		gimmix_update_playlists_treeview (void);
 static void		gimmix_playlist_save_dialog_show (void);
-static void 		cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog);
+static void 	cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog);
 static void		cb_playlists_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static bool		cb_all_playlist_button_press (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_gimmix_playlist_remove ();
@@ -130,28 +130,27 @@ gimmix_playlist_init (void)
 	playlists_treeview = glade_xml_get_widget (xml, "playlists_treeview");
 	library_treeview = glade_xml_get_widget (xml, "album");
 	
-	current_playlist_column = gtk_tree_view_column_new ();
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
-	gtk_tree_view_column_pack_start (current_playlist_column, current_playlist_renderer, FALSE);
-	gtk_tree_view_column_set_title (current_playlist_column, _("Title"));
+	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Title"),
+																		current_playlist_renderer,
+																		"markup", 0,
+																		NULL);
 	gtk_tree_view_column_set_resizable (current_playlist_column, TRUE);
 	gtk_tree_view_column_set_min_width (current_playlist_column, 200);
-	gtk_tree_view_column_set_resizable (current_playlist_column, TRUE);
 	g_object_set (G_OBJECT(current_playlist_column), "expand", TRUE, "spacing", 4, NULL);
-	gtk_tree_view_column_add_attribute (current_playlist_column, current_playlist_renderer, "markup", 0);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
 							
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
-	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Length"), current_playlist_renderer,
-			"markup", 3,
-			NULL);
-	gtk_tree_view_column_pack_end (current_playlist_column, current_playlist_renderer, FALSE);
+	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Length"),
+																		current_playlist_renderer,
+																		"markup", 3,
+																		NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
 
 	current_playlist_store = gtk_list_store_new (4,
 						G_TYPE_STRING, 	/* name (0) */
 						G_TYPE_STRING, 	/* path (1) */
-						G_TYPE_INT,	/* id (2) */
+						G_TYPE_INT,		/* id	(2) */
 						G_TYPE_STRING); /* length (3) */
 	current_playlist_model	= GTK_TREE_MODEL (current_playlist_store);
 	current_playlist_selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(current_playlist_treeview));
