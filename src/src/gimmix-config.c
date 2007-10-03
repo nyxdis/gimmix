@@ -23,6 +23,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <gtk/gtk.h>
 #include "gimmix.h"
 #include "gimmix-config.h"
@@ -77,6 +78,7 @@ gimmix_config_save (void)
 	
 	rcfile = cfg_get_path_to_config_file (CONFIG_FILE);
 	cfg_write_config_file (&conf, rcfile);
+	chmod (rcfile, S_IRUSR|S_IWUSR);
 	g_free (rcfile);
 	
 	return;

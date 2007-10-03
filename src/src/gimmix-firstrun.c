@@ -22,6 +22,7 @@
  */
  
 #include <gtk/gtk.h>
+#include <sys/stat.h>
 #include "gimmix-firstrun.h"
 #include "gimmix.h"
 
@@ -146,6 +147,7 @@ on_fr_apply_clicked (GtkWidget *widget, gpointer data)
 	
 	rcfile = cfg_get_path_to_config_file (CONFIG_FILE);
 	cfg_write_config_file (&cf, rcfile);
+	chmod (rcfile, S_IRUSR|S_IWUSR);
 	g_free (rcfile);
 	
 	return;
