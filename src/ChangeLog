@@ -1,3 +1,16 @@
+Version 0.4.2 (3-10-2007) (Gimmix is still alive)
+* Added Turkish translation (Thanks to Yavuz Selim Burgu)
+* Added some new features (Thanks to Asaf Karagila for the patches)
+  * Replace song(s) function in library browser
+  * Crop function in current playlist
+  * Bugfix in play on add feature
+* Bug #99630: Missing mkinstalldirs file (Thanks to Avuton Olrich)
+* Bug #89991: Volume bar stays there even after gimmix is minimized (Thanks to Pyluyten)
+* Fixed a bug where the volume bar was detached from the main window when it was moved
+* Fixed a bug where the text was not rendered correctly in some languages. This even fixes 
+a random crash when gimmix is run in a different locale other than english.
+* Other minor fixes
+
 Version 0.4.1 (27-02-2007)
 * This is a bugfix release to 0.4.0. (No new features are added)
 * Bug #87633: Fixed wrong placing of tooltip on some systems.
