@@ -90,6 +90,7 @@ gimmix_prefs_dialog_show (void)
 {
 	gchar 		*port;
 	gint		crossfade_time;
+	gboolean	syst = FALSE;
 	
 	port = g_strdup_printf ("%s", cfg_get_key_value (conf, "mpd_port"));
 
@@ -106,17 +107,27 @@ gimmix_prefs_dialog_show (void)
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER(pref_dir_chooser), cfg_get_key_value(conf, "music_directory"));
 	
 	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
+	{	
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_systray_check), TRUE);
+		syst = TRUE;
+	}
 	else
 	{
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_systray_check), FALSE);
+		syst = FALSE;
 	}
 	
-	if (strncasecmp(cfg_get_key_value(conf, "enable_notification"), "true", 4) == 0)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_notification_check), TRUE);
+	if (syst)
+	{
+		if (strncasecmp(cfg_get_key_value(conf, "enable_notification"), "true", 4) == 0)
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_notification_check), TRUE);
+		else
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_notification_check), FALSE);
+	}
 	else
 	{
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_notification_check), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET(pref_notification_check), FALSE);
 	}
 	
 	if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
@@ -224,6 +235,7 @@ cb_pref_systray_toggled (GtkToggleButton *button, gpointer data)
 	{
 		gimmix_enable_systray_icon ();
 		cfg_add_key (&conf, "enable_systray", "true");
+		gtk_widget_set_sensitive (GTK_WIDGET(pref_notification_check), TRUE);
 	}
 	else
 	if (gtk_toggle_button_get_active(button) == FALSE)
@@ -232,6 +244,7 @@ cb_pref_systray_toggled (GtkToggleButton *button, gpointer data)
 		cfg_add_key (&conf, "enable_systray", "false");
 		/* disable notificaiton tooltips too */
 		gtk_toggle_button_set_active (data, FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET(pref_notification_check), FALSE);
 	}
 	
 	gimmix_config_save ();
