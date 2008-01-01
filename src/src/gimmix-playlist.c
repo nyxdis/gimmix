@@ -1585,14 +1585,13 @@ cb_gimmix_playlist_load ()
 		gtk_tree_model_get (pls_treemodel, &iter,
 							1, &path,
 							-1);
+		mpd_playlist_queue_load (gmo, path);
+		gimmix_current_playlist_clear ();
+		mpd_playlist_queue_commit (gmo);
+	
+		gimmix_load_playlist (path);
+		g_free (path);
 	}
-	
-	mpd_playlist_queue_load (gmo, path);
-	gimmix_current_playlist_clear ();
-	mpd_playlist_queue_commit (gmo);
-	
-	gimmix_load_playlist (path);
-	g_free (path);
 	
 	return;
 }
