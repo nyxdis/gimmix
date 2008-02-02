@@ -1,3 +1,9 @@
+Version 0.4.3 (2-2-2008)
+* Bug #14583: Set the default permission of .gimmixrc to 600
+* Bug #127330: Don't enable notification bubble if systray icon is disabled.
+* Bug #157703: Entries in the song info dialog shouldn't be cropped
+* Bug #178604: Right click "Load" in playlist manager crashes gimmix.
+
 Version 0.4.2 (3-10-2007) (Gimmix is still alive)
 * Added Turkish translation (Thanks to Yavuz Selim Burgu)
 * Added some new features (Thanks to Asaf Karagila for the patches)
