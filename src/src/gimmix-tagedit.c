@@ -30,7 +30,7 @@ extern GladeXML 	*xml;
 extern ConfigFile	conf;
 
 TagLib_File 	*file = NULL;
-TagLib_Tag 		*tag = NULL;
+TagLib_Tag 	*tag = NULL;
 
 GtkWidget	*tag_title;
 GtkWidget	*tag_file;
@@ -92,10 +92,10 @@ gboolean
 gimmix_tag_editor_populate (const gchar *song)
 {
 	GtkTreeModel 	*genre_model;
-	gchar 			*info;
-	gint 			min;
-	gint			sec;
-	gint 			n;
+	gchar 		*info;
+	gint 		min;
+	gint		sec;
+	gint 		n;
 	const TagLib_AudioProperties *properties;
 	
 	if (!song)
@@ -128,7 +128,7 @@ gimmix_tag_editor_populate (const gchar *song)
 
 	/* Audio Information */
 	sec = taglib_audioproperties_length(properties) % 60;
-    min = (taglib_audioproperties_length(properties) - sec) / 60;
+    	min = (taglib_audioproperties_length(properties) - sec) / 60;
 	info = g_strdup_printf ("%02i:%02i", min, sec);
 	gtk_label_set_text (GTK_LABEL(tag_info_length), info);
 	g_free (info);
@@ -162,11 +162,11 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 {
 	gint		year;
 	gint		track;
-	gchar		*genre;
-	const gchar *title;
-	const gchar *artist;
-	const gchar *album;
-	const gchar *comment;
+	gchar		*genre = NULL;
+	gchar		*title = NULL;
+	gchar		*artist = NULL;
+	gchar		*album = NULL;
+	gchar		*comment = NULL;
 
 	year = gtk_spin_button_get_value (GTK_SPIN_BUTTON(tag_year_spin));
 	taglib_tag_set_year (tag, year);
@@ -174,16 +174,16 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 	track = gtk_spin_button_get_value (GTK_SPIN_BUTTON(tag_track_spin));
 	taglib_tag_set_track (tag, track);
 
-	title = gtk_entry_get_text (GTK_ENTRY(tag_title));
-	artist = gtk_entry_get_text (GTK_ENTRY(tag_artist));
-	album = gtk_entry_get_text (GTK_ENTRY(tag_album));
-	comment = gtk_entry_get_text (GTK_ENTRY(tag_comment));
+	title = g_strdup (gtk_entry_get_text (GTK_ENTRY(tag_title)));
+	artist = g_strdup (gtk_entry_get_text (GTK_ENTRY(tag_artist)));
+	album = g_strdup (gtk_entry_get_text (GTK_ENTRY(tag_album)));
+	comment = g_strdup (gtk_entry_get_text (GTK_ENTRY(tag_comment)));
 	genre = gtk_combo_box_get_active_text (GTK_COMBO_BOX(tag_genre));
 
-	taglib_tag_set_title (tag, title);
-	taglib_tag_set_artist (tag, artist);
-	taglib_tag_set_album (tag, album);
-	taglib_tag_set_comment (tag, comment);
+	taglib_tag_set_title (tag, g_strchomp(title));
+	taglib_tag_set_artist (tag, g_strchomp(artist));
+	taglib_tag_set_album (tag, g_strchomp(album));
+	taglib_tag_set_comment (tag, g_strchomp(comment));
 	taglib_tag_set_genre (tag, genre);
 	
 	/* update the mpd database */
@@ -195,6 +195,10 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 	/* free the strings */
 	taglib_tag_free_strings ();
 	taglib_file_save (file);
+	g_free (title);
+	g_free (artist);
+	g_free (album);
+	g_free (comment);
 	
 	return;
 }

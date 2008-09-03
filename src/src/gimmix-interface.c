@@ -404,7 +404,7 @@ cb_gimmix_key_press (GtkWidget   *widget,
 static gboolean
 gimmix_timer (void)
 {
-	gchar 	time[15];
+	gchar 	time[32] = "";
 	int 	new_status;
 	float 	fraction;
 	
