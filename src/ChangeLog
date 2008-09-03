@@ -1,3 +1,12 @@
+Version 0.4.4 (xx-xx-2008)
+* Bug #234739: Progress bar shows garbage next to time (in case of songs of length over 99 minutes)
+* Bug #253140: Gimmix sometimes displays "assertion `percentage >= 0 && percentage <= 1.0' failed"
+* Bug #263975: Window becomes too large if the song title is very long. This bug also fixes an issue
+  where strange trailing whitespaces appearead in the song title when the user modified the ID3 tag
+  information of a song.
+* Added support for command-line arguments using getopt. (currently only --version)
+* Added German translation (Thanks to Martin Stromberger)
+
 Version 0.4.3 (2-2-2008)
 * Bug #14583: Set the default permission of .gimmixrc to 600
 * Bug #127330: Don't enable notification bubble if systray icon is disabled.
