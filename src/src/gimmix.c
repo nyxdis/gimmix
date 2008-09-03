@@ -1,7 +1,7 @@
 /*
  * gimmix.c
  *
- * Copyright (C) 2006-2007 Priyank Gosalia
+ * Copyright (C) 2006-2008 Priyank Gosalia
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -123,16 +123,16 @@ gimmix_about_show (void)
 				 	"Rohan Dhruva: Extensive testing and bug reports",
 					 NULL
 					};
-	gchar *translators[] = { 
-							"Traditional Chinese (zh_TW) - Cheng-Wei Chien <e.cwchien@gmail.com>",
-							"Turkish (tr) - Yavuz Selim Burgu <turkalinux@gmail.com>", 
-							NULL
-							};
+	static gchar translators[] = \
+				"Deutsch (de) - Martin Stromberger <mstromberger@aon.at>\n"
+				"Traditional Chinese (zh_TW) - Cheng-Wei Chien <e.cwchien@gmail.com>\n"
+				"Turkish (tr) - Yavuz Selim Burgu <turkalinux@gmail.com>\n";
+
 
 	gtk_show_about_dialog (NULL,
                            "name", APPNAME,
                            "version", VERSION,
-                           "copyright", _("\xC2\xA9 2006-2007 Priyank Gosalia  (GPL)"),
+                           "copyright", _("\xC2\xA9 2006-2008 Priyank Gosalia  (GPL)"),
                            "comments", _("Gimmix is a graphical music player daemon (MPD) client written in C."),
                            "license", license,
                            "authors", authors,
