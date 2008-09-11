@@ -132,9 +132,9 @@ gimmix_playlist_init (void)
 	
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
 	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Title"),
-																		current_playlist_renderer,
-																		"markup", 0,
-																		NULL);
+										current_playlist_renderer,
+										"markup", 0,
+										NULL);
 	gtk_tree_view_column_set_resizable (current_playlist_column, TRUE);
 	gtk_tree_view_column_set_min_width (current_playlist_column, 200);
 	g_object_set (G_OBJECT(current_playlist_column), "expand", TRUE, "spacing", 4, NULL);
@@ -142,9 +142,9 @@ gimmix_playlist_init (void)
 							
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
 	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Length"),
-																		current_playlist_renderer,
-																		"markup", 3,
-																		NULL);
+										current_playlist_renderer,
+										"markup", 3,
+										NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
 
 	current_playlist_store = gtk_list_store_new (4,
@@ -187,7 +187,6 @@ gimmix_playlist_init (void)
 	/* Playlist toggle button */
 	current_pl_window = glade_xml_get_widget (xml, "current_pl_window");
 	pls_playlist_window = glade_xml_get_widget (xml, "pls_playlist_window");
-	g_signal_connect (G_OBJECT (glade_xml_get_widget(xml, "playlist_toggle")), "toggled", G_CALLBACK(cb_playlists_button_toggled), NULL);
 	
 	/* populate the file browser */
 	gimmix_library_and_playlists_populate ();
@@ -241,10 +240,10 @@ void
 gimmix_update_current_playlist (void)
 {
 	GtkListStore	*current_playlist_store;
-	GtkTreeIter		current_playlist_iter;
-	gint 			new;
-	MpdData 		*data;
-	gint			current_song_id = -1;
+	GtkTreeIter	current_playlist_iter;
+	gint 		new;
+	MpdData 	*data;
+	gint		current_song_id = -1;
 
 	new = mpd_playlist_get_playlist_id (gmo);
 	data = mpd_playlist_get_changes (gmo, 0);
@@ -1616,22 +1615,4 @@ cb_add_button_clicked (GtkWidget *widget, gpointer data)
 	gtk_window_present (GTK_WINDOW(data));
 	return;	
 }
-
-static void
-cb_playlists_button_toggled (GtkToggleButton *button, gpointer data)
-{
-	if (GTK_WIDGET_VISIBLE(current_pl_window))
-	{	
-		gtk_widget_hide (GTK_WIDGET(current_pl_window));
-		gtk_widget_show (GTK_WIDGET(pls_playlist_window));
-	}
-	else
-	{
-		gtk_widget_show (GTK_WIDGET(current_pl_window));
-		gtk_widget_hide (GTK_WIDGET(pls_playlist_window));
-	}
-	
-	return;	
-}
-
 

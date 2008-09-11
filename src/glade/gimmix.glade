@@ -256,107 +256,76 @@
                   <widget class="GtkHBox" id="hbox10">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkHBox" id="hbox11">
+                      <widget class="GtkNotebook" id="notebook1">
                         <property name="visible">True</property>
+                        <property name="can_focus">True</property>
                         <child>
-                          <widget class="GtkVBox" id="current_pl_window">
+                          <widget class="GtkHBox" id="hbox11">
                             <property name="visible">True</property>
                             <child>
-                              <widget class="GtkHBox" id="current_playlist_text_hbox">
+                              <widget class="GtkVBox" id="current_pl_window">
                                 <property name="visible">True</property>
                                 <child>
-                                  <widget class="GtkImage" id="image21">
-                                    <property name="visible">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="ypad">3</property>
-                                    <property name="stock">gtk-cdrom</property>
-                                    <property name="icon_size">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="padding">4</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="label4">
-                                    <property name="visible">True</property>
-                                    <property name="yalign">0.73000001907348633</property>
-                                    <property name="xpad">5</property>
-                                    <property name="label" translatable="yes">&lt;b&gt;Current Playlist&lt;/b&gt;</property>
-                                    <property name="use_markup">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </widget>
-                              <packing>
-                                <property name="expand">False</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkScrolledWindow" id="sadasd">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="border_width">3</property>
-                                <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                                <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                                <property name="shadow_type">GTK_SHADOW_IN</property>
-                                <child>
-                                  <widget class="GtkTreeView" id="current_playlist_treeview">
-                                    <property name="height_request">180</property>
+                                  <widget class="GtkScrolledWindow" id="sadasd">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="rules_hint">True</property>
+                                    <property name="border_width">3</property>
+                                    <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                                    <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                                    <property name="shadow_type">GTK_SHADOW_IN</property>
+                                    <child>
+                                      <widget class="GtkTreeView" id="current_playlist_treeview">
+                                        <property name="height_request">180</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="rules_hint">True</property>
+                                      </widget>
+                                    </child>
                                   </widget>
                                 </child>
                               </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
                             </child>
                           </widget>
                         </child>
                         <child>
-                          <widget class="GtkVBox" id="pls_playlist_window">
+                          <widget class="GtkHBox" id="current_playlist_text_hbox">
+                            <property name="visible">True</property>
                             <child>
-                              <widget class="GtkHBox" id="hbox13">
+                              <widget class="GtkImage" id="image21">
                                 <property name="visible">True</property>
-                                <child>
-                                  <widget class="GtkImage" id="image22">
-                                    <property name="visible">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="yalign">0</property>
-                                    <property name="ypad">2</property>
-                                    <property name="icon_size">1</property>
-                                    <property name="icon_name">stock_playlist</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="padding">4</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="label5">
-                                    <property name="visible">True</property>
-                                    <property name="yalign">0.73000001907348633</property>
-                                    <property name="xpad">5</property>
-                                    <property name="label" translatable="yes">&lt;b&gt;Playlist Manager&lt;/b&gt;</property>
-                                    <property name="use_markup">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
+                                <property name="xalign">0</property>
+                                <property name="ypad">1</property>
+                                <property name="stock">gtk-cdrom</property>
+                                <property name="icon_size">1</property>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
+                                <property name="padding">4</property>
                               </packing>
                             </child>
+                            <child>
+                              <widget class="GtkLabel" id="label12">
+                                <property name="visible">True</property>
+                                <property name="yalign">0.73000001907348633</property>
+                                <property name="xpad">1</property>
+                                <property name="label" translatable="yes">&lt;b&gt;Current Playlist&lt;/b&gt;</property>
+                                <property name="use_markup">True</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="type">tab</property>
+                            <property name="tab_fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkVBox" id="pls_playlist_window">
+                            <property name="visible">True</property>
                             <child>
                               <widget class="GtkScrolledWindow" id="pls_playlist_windows">
                                 <property name="visible">True</property>
@@ -375,13 +344,79 @@
                                   </widget>
                                 </child>
                               </widget>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkHBox" id="hbox13">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkImage" id="image22">
+                                <property name="visible">True</property>
+                                <property name="xalign">0</property>
+                                <property name="yalign">0</property>
+                                <property name="ypad">1</property>
+                                <property name="icon_size">1</property>
+                                <property name="icon_name">stock_playlist</property>
+                              </widget>
                               <packing>
+                                <property name="expand">False</property>
+                                <property name="padding">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label41">
+                                <property name="visible">True</property>
+                                <property name="yalign">0.73000001907348633</property>
+                                <property name="xpad">1</property>
+                                <property name="label" translatable="yes">&lt;b&gt;Playlist Manager&lt;/b&gt;</property>
+                                <property name="use_markup">True</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
                           </widget>
                           <packing>
+                            <property name="type">tab</property>
                             <property name="position">1</property>
+                            <property name="tab_fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="border_width">4</property>
+                            <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                            <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                            <property name="shadow_type">GTK_SHADOW_IN</property>
+                            <child>
+                              <widget class="GtkTextView" id="textview1">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                              </widget>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label5">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">&lt;b&gt;Lyrics&lt;/b&gt;</property>
+                            <property name="use_markup">True</property>
+                          </widget>
+                          <packing>
+                            <property name="type">tab</property>
+                            <property name="position">2</property>
+                            <property name="tab_fill">False</property>
                           </packing>
                         </child>
                       </widget>
@@ -450,25 +485,6 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkToggleButton" id="playlist_toggle">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="tooltip" translatable="yes">Playlist Manager</property>
-                        <property name="response_id">0</property>
-                        <child>
-                          <widget class="GtkImage" id="image20">
-                            <property name="visible">True</property>
-                            <property name="stock">gtk-justify-fill</property>
-                          </widget>
-                        </child>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
                       <widget class="GtkButton" id="button_save">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -484,7 +500,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="position">4</property>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                     <child>
@@ -494,7 +510,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="padding">3</property>
-                        <property name="position">5</property>
+                        <property name="position">4</property>
                       </packing>
                     </child>
                     <child>
@@ -513,7 +529,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="position">6</property>
+                        <property name="position">5</property>
                       </packing>
                     </child>
                     <child>
@@ -532,18 +548,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="position">7</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkVSeparator" id="vseparator2">
-                        <property name="visible">True</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="padding">3</property>
-                        <property name="position">8</property>
+                        <property name="position">6</property>
                       </packing>
                     </child>
                     <child>
@@ -579,7 +584,18 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="position">9</property>
+                        <property name="position">7</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkVSeparator" id="vseparator2">
+                        <property name="visible">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">3</property>
+                        <property name="position">8</property>
                       </packing>
                     </child>
                     <child>
@@ -598,7 +614,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="position">10</property>
+                        <property name="position">9</property>
                       </packing>
                     </child>
                   </widget>
@@ -615,6 +631,9 @@
                       <widget class="GtkHSeparator" id="hseparator1">
                         <property name="visible">True</property>
                       </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkLabel" id="gimmix_status">
