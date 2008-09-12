@@ -495,9 +495,34 @@ lyrics_search (void)
 	gchar		*url = NULL;
 	gint		state = -1;
 	gboolean	result = FALSE;
+	char		*path = NULL;
 
 	if (search_artist != NULL && search_title != NULL)
 	{
+		/* first check if the lyrics exist in ~/.lyrics/ */
+		path = g_strdup_printf ("%s/%s-%s.txt", cfg_get_path_to_config_file(LYRICS_DIR), search_artist, search_title);
+		if (g_file_test(path,G_FILE_TEST_EXISTS))
+		{
+			GString	*str = g_string_new ("");
+			FILE *fp = NULL;
+			char line[PATH_MAX+1] = "";
+			lyrics_node = (LYRICS_NODE*) malloc(sizeof(LYRICS_NODE));
+			strncpy (lyrics_node->artist, search_artist, strlen(search_artist));
+			strncpy (lyrics_node->title, search_title, strlen(search_title));
+			fp = fopen (path, "r");
+			if (fp != NULL)
+			{
+				while (fgets(line, PATH_MAX, fp))
+				{
+					str = g_string_append (str, line);
+				}
+				lyrics_node->lyrics = g_strdup (str->str);
+				g_string_free (str, TRUE);
+				fclose (fp);
+			}
+			g_free (path);
+			return TRUE;
+		}
 		char *artist_e = lyrics_url_encode (search_artist);
 		char *title_e = lyrics_url_encode (search_title);
 		url = g_strdup_printf ("%s&artist=%s&songtitle=%s", SEARCH_URL, artist_e, title_e);
@@ -512,6 +537,13 @@ lyrics_search (void)
 			result = lyrics_parse_search_result_xml (TEMP_XML);
 			if (result)
 			{
+				/* save the lyrics to a file in ~/.gimmix/lyrics */
+				if (lyrics_node->lyrics != NULL)
+				{
+					FILE *fp = fopen (path, "w");
+					fprintf (fp, "%s", lyrics_node->lyrics);
+					fclose (fp);
+				}
 				return TRUE;
 			}
 		}
