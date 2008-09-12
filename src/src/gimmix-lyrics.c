@@ -174,9 +174,28 @@ lyrics_process_fetch_result (xmlTextReaderPtr *reader, LYRICS_NODE *lnode)
 	}
 	else
 	{
-		for (i=0;i<36;i++) xmlTextReaderRead ((*reader));
-		value = xmlTextReaderConstValue((*reader));
-		
+		//for (i=0;i<36;i++) xmlTextReaderRead ((*reader));
+		//value = xmlTextReaderConstValue((*reader));
+		do {
+			value = xmlTextReaderConstName ((*reader));
+			/* see if we have the writer name available for the lyric */
+			if (!strcmp(value,"writer"))
+			{
+				xmlTextReaderRead ((*reader));
+				value = xmlTextReaderConstValue ((*reader));
+				if (value != NULL)
+				{
+					strcpy (lnode->writer, value);
+				}
+				continue;
+			}
+			if (!strcmp(value,"text"))
+			{
+				break;
+			}
+		} while (xmlTextReaderRead(*reader));
+		xmlTextReaderRead ((*reader));
+		value = xmlTextReaderConstValue ((*reader));
 		if (value == NULL)
 			return;
 		else
@@ -258,25 +277,23 @@ static gboolean
 lyrics_process_lyrics_node (LYRICS_NODE *ptr)
 {
 	LYRICS_NODE *node = ptr;
+	char *url = NULL;
+	gint status = -1;
 	
 	if (node == NULL)
 		return FALSE;
 	
-	if (node->match)
+	url = g_strdup_printf ("%s%s", LYRICS_URL, node->hid);
+	printf ("%s\n", url);
+	status = lyrics_perform_curl (url, FETCHL);
+	if (status == LYRICS_STATUS_OK)
 	{
-		char *url = NULL;
-		gint status = -1;
-		
-		url = g_strdup_printf ("%s%s", LYRICS_URL, node->hid);
-		printf ("%s\n", url);
-		status = lyrics_perform_curl (url, FETCHL);
-		if (status == LYRICS_STATUS_OK)
-		{
-			g_print ("fetching ok\n");
-			lyrics_parse_fetch_result_xml (LYRC_XML, node);
-			return TRUE;
-		}
+		g_print ("fetching ok\n");
+		lyrics_parse_fetch_result_xml (LYRC_XML, node);
+		return TRUE;
 	}
+	
+	return FALSE;
 }
 
 static gboolean
@@ -366,6 +383,18 @@ lyrics_process_search_result (xmlTextReaderPtr *reader)
 				lyrics_process_lyrics_node (lnode);
 				lyrics_node = lnode;
 				return FALSE;
+			}
+			else
+			if (!g_ascii_strcasecmp(lnode->artist, search_artist))
+			{
+				/* try to match a part of song */
+				if (!g_ascii_strncasecmp(lnode->title, search_title, 5))
+				{
+					lyrics_process_lyrics_node (lnode);
+					lyrics_node = lnode;
+					printf ("yes it did \n");
+					return FALSE;
+				}
 			}
 		}
 		xmlTextReaderRead ((*reader)); /* padding */
