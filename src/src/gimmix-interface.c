@@ -68,6 +68,7 @@ static void			gimmix_update_shuffle (void);
 
 static gboolean			is_user_searching (void);
 static gboolean 		gimmix_timer (void);
+static gboolean			gimmix_update_lyrics (void);
 
 /* Callbacks */
 static gboolean cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data);
@@ -100,17 +101,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 	{
 		gimmix_set_song_info ();
 		gimmix_update_current_playlist ();
-		SongInfo *s = gimmix_get_song_info (gmo);
-		if (s != NULL)
-		{
-			lyrics_set_artist (s->artist);
-			lyrics_set_songtitle (s->title);
-		}
-		if (lyrics_search())
-		{
-			LYRICS_NODE* node = lyrics_get_lyrics ();
-			gimmix_lyrics_populate_textview (node->lyrics);
-		}
+		g_timeout_add (300, (GSourceFunc)gimmix_update_lyrics, NULL);
 	}
 
 	if (id&MPD_CST_STATE)
@@ -121,6 +112,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
 			gimmix_set_song_info ();
+			g_timeout_add (300, (GSourceFunc)gimmix_update_lyrics, NULL);
 		}
 		if (state == MPD_PLAYER_PAUSE)
 		{
@@ -172,6 +164,25 @@ gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
 	}
 	
 	return;
+}
+
+static gboolean
+gimmix_update_lyrics (void)
+{
+	SongInfo *s = gimmix_get_song_info (gmo);
+	if (s != NULL)
+	{
+		lyrics_set_artist (s->artist);
+		lyrics_set_songtitle (s->title);
+		gimmix_free_song_info (s);
+	}
+	if (lyrics_search())
+	{
+		LYRICS_NODE* node = lyrics_get_lyrics ();
+		gimmix_lyrics_populate_textview (node->lyrics);
+	}
+	
+	return FALSE;
 }
 
 static gboolean

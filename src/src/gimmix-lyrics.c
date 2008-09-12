@@ -31,8 +31,9 @@
 #include <libxml/xmlreader.h>
 #include "gimmix-lyrics.h"
 
-#define TEMP_XML	"/home/priyank/ly.xml"
-#define LYRC_XML	"/home/priyank/lyc.xml"
+#define LYRICS_DIR	".gimmix/lyrics/"
+#define TEMP_XML	"lyt.xml"
+#define LYRC_XML	"lyc.xml"
 #define SEARCH_URL	"http://api.leoslyrics.com/api_search.php?auth=Gimmix"
 #define LYRICS_URL	"http://api.leoslyrics.com/api_lyrics.php?auth=Gimmix&hid="
 #define SEARCH		1
@@ -64,8 +65,14 @@ void
 gimmix_lyrics_plugin_init (void)
 {
 	GtkWidget	*widget = NULL;
+	char		*path = ".gimmix/lyrics";
+	char		*cpath = NULL;
 	
 	lyrics_textview = glade_xml_get_widget (xml, "lyrics_textview");
+	
+	/* check if .gimmix/lyrics exists */
+	cpath = cfg_get_path_to_config_file (path);
+	g_mkdir_with_parents (cpath, 00755);
 
 	return;
 }
@@ -115,18 +122,20 @@ lyrics_perform_curl (const char *url, gint action)
 	CURLcode	res;
 	FILE		*outfile;
 	char		*path = NULL;
-	char		*dir = NULL;
+	char		*file = NULL;
 
 	curl = curl_easy_init ();
 	if (curl)
 	{
 		if (action == SEARCH)
-			path = g_strdup (TEMP_XML);
+			file = g_strdup (TEMP_XML);
 		else
-			path = g_strdup (LYRC_XML);
+			file = g_strdup (LYRC_XML);
 //		dir = g_build_path (G_DIR_SEPARATOR_S, g_get_home_dir(), NEWS_ITEM_DIR, NULL);
 //		g_mkdir_with_parents (dir, 0755);
 //		g_free (dir);
+		path = g_strdup_printf ("%s/%s", cfg_get_path_to_config_file(LYRICS_DIR), file);
+		g_free (file);
 		if (g_file_test(path,G_FILE_TEST_EXISTS))
 			g_remove (path);
 		outfile = fopen (path, "w");
@@ -230,7 +239,8 @@ lyrics_parse_fetch_result_xml (const char *filename, LYRICS_NODE *ptr)
 
 	/* Initialize the XML library */
 	LIBXML_TEST_VERSION
-	reader = xmlReaderForFile (filename, NULL, 0);
+	path = g_strdup_printf ("%s/%s", cfg_get_path_to_config_file(LYRICS_DIR), filename);
+	reader = xmlReaderForFile (path, NULL, 0);
 	if (reader != NULL)
 	{
         	ret = xmlTextReaderRead (reader);
@@ -268,7 +278,7 @@ lyrics_parse_fetch_result_xml (const char *filename, LYRICS_NODE *ptr)
 	}
 	else
 	{
-		fprintf (stderr, "Unable to open %s\n", filename);
+		fprintf (stderr, "Unable to open %s\n", path);
 		return;
 	}
 }
@@ -419,7 +429,8 @@ lyrics_parse_search_result_xml (const char *filename)
 
 	/* Initialize the XML library */
 	LIBXML_TEST_VERSION
-	reader = xmlReaderForFile (filename, NULL, 0);
+	path = g_strdup_printf ("%s/%s", cfg_get_path_to_config_file(LYRICS_DIR), filename);
+	reader = xmlReaderForFile (path, NULL, 0);
 	if (reader != NULL)
 	{
         	ret = xmlTextReaderRead (reader);
@@ -457,7 +468,7 @@ lyrics_parse_search_result_xml (const char *filename)
 	}
 	else
 	{
-		fprintf (stderr, "Unable to open %s\n", filename);
+		fprintf (stderr, "Unable to open %s\n", path);
 		return FALSE;
 	}
 	
