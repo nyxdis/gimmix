@@ -29,6 +29,7 @@
 #include "gimmix-playlist.h"
 #include "gimmix-tagedit.h"
 #include "gimmix-prefs.h"
+#include "gimmix-lyrics.h"
 #include "gimmix.h"
 
 #ifdef HAVE_CONFIG_H
@@ -96,9 +97,20 @@ static void
 gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 {
 	if (id&MPD_CST_SONGID)
-	{	
+	{
 		gimmix_set_song_info ();
 		gimmix_update_current_playlist ();
+		SongInfo *s = gimmix_get_song_info (gmo);
+		if (s != NULL)
+		{
+			lyrics_set_artist (s->artist);
+			lyrics_set_songtitle (s->title);
+		}
+		if (lyrics_search())
+		{
+			LYRICS_NODE* node = lyrics_get_lyrics ();
+			gimmix_lyrics_populate_textview (node->lyrics);
+		}
 	}
 
 	if (id&MPD_CST_STATE)
@@ -324,6 +336,7 @@ gimmix_init (void)
 	gimmix_playlist_init ();
 	gimmix_tag_editor_init ();
 	gimmix_update_current_playlist ();
+	gimmix_lyrics_plugin_init ();
 	
 	/* initialize preferences dialog */
 	gimmix_prefs_init ();

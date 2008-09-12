@@ -29,6 +29,7 @@
 #include <curl/types.h>
 #include <curl/easy.h>
 #include <libxml/xmlreader.h>
+#include "gimmix-lyrics.h"
 
 #define TEMP_XML	"/home/priyank/ly.xml"
 #define LYRC_XML	"/home/priyank/lyc.xml"
@@ -37,6 +38,10 @@
 #define SEARCH		1
 #define FETCHL		0
 
+extern GladeXML *xml;
+
+static GtkWidget *lyrics_textview = NULL;
+
 typedef enum _lyrics_status
 {
 	LYRICS_STATUS_ERR_CURL = 0,
@@ -44,17 +49,52 @@ typedef enum _lyrics_status
 	LYRICS_STATUS_OK
 } LYRICS_STATUS;
 
-typedef struct _lnode
-{
-	char artist[80];
-	char title[80];
-	char hid[16];
-	char writer[80];
-	gboolean match;
-	char *lyrics;
-} LYRICS_NODE;
-
 static gboolean fetched = FALSE;
+static gchar*	search_artist = NULL;
+static gchar*	search_title = NULL;
+static LYRICS_NODE* lyrics_node = NULL;
+
+static gchar * lyrics_url_encode (const char *string);
+static LYRICS_STATUS lyrics_perform_curl (const char *url, gint action);
+static void lyrics_process_fetch_result (xmlTextReaderPtr *reader, LYRICS_NODE *lnode);
+static gboolean lyrics_process_lyrics_node (LYRICS_NODE *ptr);
+static gboolean lyrics_process_search_result (xmlTextReaderPtr *reader);
+
+void
+gimmix_lyrics_plugin_init (void)
+{
+	GtkWidget	*widget = NULL;
+	
+	lyrics_textview = glade_xml_get_widget (xml, "lyrics_textview");
+
+	return;
+}
+
+LYRICS_NODE*
+lyrics_get_lyrics (void)
+{
+	return lyrics_node;
+}
+
+void
+lyrics_set_artist (const char *artist)
+{
+	if (search_artist != NULL)
+		g_free (search_artist);
+	search_artist = g_strdup (artist);
+	
+	return;
+}
+
+void
+lyrics_set_songtitle (const char *title)
+{
+	if (search_title != NULL)
+		g_free (search_title);
+	search_title = g_strdup (title);
+	
+	return;
+}
 
 static size_t
 lyrics_xml_write_func (void *ptr, size_t size, size_t nmemb, FILE *stream)
@@ -239,7 +279,7 @@ lyrics_process_lyrics_node (LYRICS_NODE *ptr)
 	}
 }
 
-static void
+static gboolean
 lyrics_process_search_result (xmlTextReaderPtr *reader)
 {
 	const		xmlChar *name, *value;
@@ -314,6 +354,19 @@ lyrics_process_search_result (xmlTextReaderPtr *reader)
 		if (lnode->match)
 		{
 			lyrics_process_lyrics_node (lnode);
+			lyrics_node = lnode;
+			return FALSE;
+		}
+		else
+		{
+			/* compare artist */
+			if (!g_ascii_strcasecmp(lnode->artist, search_artist) &&
+				!g_ascii_strcasecmp(lnode->title, search_title))
+			{
+				lyrics_process_lyrics_node (lnode);
+				lyrics_node = lnode;
+				return FALSE;
+			}
 		}
 		xmlTextReaderRead ((*reader)); /* padding */
 		free (lnode);
@@ -321,10 +374,10 @@ lyrics_process_search_result (xmlTextReaderPtr *reader)
 	
 	printf ("=================================\n");
 
-	return;
+	return TRUE;
 }
 
-static void
+static gboolean
 lyrics_parse_search_result_xml (const char *filename)
 {
 	xmlTextReaderPtr reader;
@@ -359,11 +412,9 @@ lyrics_parse_search_result_xml (const char *filename)
 				g_free (temp);
 			}
 		}
-		while (ret == 1)
-		{
-			lyrics_process_search_result (&reader);
+		while (ret && lyrics_process_search_result(&reader))
 			ret = xmlTextReaderRead (reader);
-		}
+		
 		xmlFreeTextReader (reader);
 		/*
 		if (ret != 0)
@@ -372,39 +423,74 @@ lyrics_parse_search_result_xml (const char *filename)
 			return;
 		}
 		*/
+		if (!ret)
+			return FALSE;
 	}
 	else
 	{
 		fprintf (stderr, "Unable to open %s\n", filename);
-		return;
+		return FALSE;
 	}
+	
+	return TRUE;
 }
 
-static LYRICS_NODE *
-lyrics_search (const char *artist, const char *title)
+/* URL encodes a string */
+static gchar *
+lyrics_url_encode (const char *string)
 {
-	gchar	*url = NULL;
-	gint	state = -1;
+	CURL	*curl = NULL;
+	gchar	*ret = NULL;
+	
+	curl = curl_easy_init ();
+	ret = curl_easy_escape (curl, string, 0);
+	curl_easy_cleanup (curl);
+	
+	return ret;
+}
 
-	if (artist != NULL && title != NULL)
+gboolean
+lyrics_search (void)
+{
+	gchar		*url = NULL;
+	gint		state = -1;
+	gboolean	result = FALSE;
+
+	if (search_artist != NULL && search_title != NULL)
 	{
-		url = g_strdup_printf ("%s&artist=%s&songtitle=%s", SEARCH_URL, artist, title);
+		char *artist_e = lyrics_url_encode (search_artist);
+		char *title_e = lyrics_url_encode (search_title);
+		url = g_strdup_printf ("%s&artist=%s&songtitle=%s", SEARCH_URL, artist_e, title_e);
+		g_free (artist_e);
+		g_free (title_e);
+		g_print ("%s\n", url);
 		state = lyrics_perform_curl (url, SEARCH);
+		g_free (url);
 		if (state == LYRICS_STATUS_OK)
 		{
 			g_print ("everything ok\n");
-			lyrics_parse_search_result_xml (TEMP_XML);
-			return TRUE;
+			result = lyrics_parse_search_result_xml (TEMP_XML);
+			if (result)
+			{
+				return TRUE;
+			}
 		}
+		return FALSE;
 	}
+	
+	return FALSE;
 }
 
-/*
-int
-main (int argc, char *argv[])
+void
+gimmix_lyrics_populate_textview (const char *text)
 {
-	lyrics_search ("Pink+Floyd", "Coming+Back+To+Life");
-
-	return 0;
+	GtkTextBuffer	*buffer;
+	GtkTextIter	iter;
+	
+	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW(lyrics_textview));
+	gtk_text_buffer_set_text (buffer, "", 0);
+	gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
+	gtk_text_buffer_insert (buffer, &iter, text, -1);
+	
+	return;
 }
-*/
