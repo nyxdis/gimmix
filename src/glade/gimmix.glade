@@ -396,7 +396,7 @@
                                 <property name="visible">True</property>
                                 <property name="border_width">3</property>
                                 <child>
-                                  <widget class="GtkHBox" id="hbox2">
+                                  <widget class="GtkHBox" id="lyrics_songbox">
                                     <property name="visible">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="label4">
@@ -421,7 +421,7 @@
                                   </widget>
                                 </child>
                                 <child>
-                                  <widget class="GtkHBox" id="hbox4">
+                                  <widget class="GtkHBox" id="lyrics_artistbox">
                                     <property name="visible">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="label42">
