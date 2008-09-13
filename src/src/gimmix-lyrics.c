@@ -149,9 +149,6 @@ lyrics_perform_curl (const char *url, gint action)
 			file = g_strdup (TEMP_XML);
 		else
 			file = g_strdup (LYRC_XML);
-//		dir = g_build_path (G_DIR_SEPARATOR_S, g_get_home_dir(), NEWS_ITEM_DIR, NULL);
-//		g_mkdir_with_parents (dir, 0755);
-//		g_free (dir);
 		path = g_strdup_printf ("%s/%s", cfg_get_path_to_config_file(LYRICS_DIR), file);
 		g_free (file);
 		if (g_file_test(path,G_FILE_TEST_EXISTS))
@@ -201,8 +198,6 @@ lyrics_process_fetch_result (xmlTextReaderPtr *reader, LYRICS_NODE *lnode)
 	}
 	else
 	{
-		//for (i=0;i<36;i++) xmlTextReaderRead ((*reader));
-		//value = xmlTextReaderConstValue((*reader));
 		do {
 			value = xmlTextReaderConstName ((*reader));
 			/* see if we have the writer name available for the lyric */
@@ -345,7 +340,7 @@ lyrics_process_search_result (xmlTextReaderPtr *reader)
 	int		i;
 	LYRICS_NODE	*lnode;
 
-    	printf ("i entered processNode()\n");
+    	//printf ("i entered processNode()\n");
 	name = xmlTextReaderConstName ((*reader));
 
 	if (name == NULL)
@@ -363,7 +358,7 @@ lyrics_process_search_result (xmlTextReaderPtr *reader)
 		if (hid != NULL)
 		{
 			strncpy (lnode->hid, (char*)hid, strlen((char*)hid));
-			printf ("HID: %s\n", lnode->hid);
+			//printf ("HID: %s\n", lnode->hid);
 		}
 		match = (char*)xmlTextReaderGetAttribute ((*reader), (xmlChar*)"exactMatch");
 		if (match != NULL)
@@ -376,7 +371,7 @@ lyrics_process_search_result (xmlTextReaderPtr *reader)
 			{
 				lnode->match = FALSE;
 			}
-			printf ("MATCH: %s\n", match);
+			//printf ("MATCH: %s\n", match);
 		}
 
 		for (i=0;i<3;i++) xmlTextReaderRead ((*reader)); /* <title> */
@@ -388,7 +383,7 @@ lyrics_process_search_result (xmlTextReaderPtr *reader)
 			if (strlen(temp)>0)
 			{
 				strncpy (lnode->title, temp, strlen(temp));
-				printf ("TITLE: %s\n", lnode->title);
+				//printf ("TITLE: %s\n", lnode->title);
 				g_free (temp);
 			}
 		}
@@ -402,7 +397,7 @@ lyrics_process_search_result (xmlTextReaderPtr *reader)
 			if (strlen(temp)>0)
 			{
 				strncpy (lnode->artist, temp, strlen(temp));
-				printf ("ARTIST: %s\n", lnode->artist);
+				//printf ("ARTIST: %s\n", lnode->artist);
 				g_free (temp);
 			}
 		}
@@ -430,7 +425,7 @@ lyrics_process_search_result (xmlTextReaderPtr *reader)
 				{
 					lyrics_process_lyrics_node (lnode);
 					lyrics_node = lnode;
-					printf ("yes it did \n");
+					//printf ("yes it did \n");
 					return FALSE;
 				}
 			}
@@ -462,7 +457,7 @@ lyrics_parse_search_result_xml (const char *filename)
 	if (reader != NULL)
 	{
         	ret = xmlTextReaderRead (reader);
-		printf ("NAME=%s\n", name);
+		//printf ("NAME=%s\n", name);
 		/* Process response code */
 		for (i=0;i<3;i++) xmlTextReaderRead ((reader));
 		/* read response code */
@@ -476,7 +471,7 @@ lyrics_parse_search_result_xml (const char *filename)
    		 	g_strstrip (temp);
 			if (strlen(temp)>0)
 			{
-				printf ("RESPONSE CODE: %s\n", temp);
+				//printf ("RESPONSE CODE: %s\n", temp);
 				g_free (temp);
 			}
 		}
@@ -562,7 +557,7 @@ lyrics_search (void)
 		g_free (url);
 		if (state == LYRICS_STATUS_OK)
 		{
-			g_print ("everything ok\n");
+			//g_print ("everything ok\n");
 			result = lyrics_parse_search_result_xml (TEMP_XML);
 			if (result)
 			{
