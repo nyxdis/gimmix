@@ -169,23 +169,24 @@ gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
 static gboolean
 gimmix_update_lyrics (void)
 {
-	SongInfo *s = gimmix_get_song_info (gmo);
+	LYRICS_NODE	*node = NULL;
+	SongInfo	*s;
+	
+	s = gimmix_get_song_info (gmo);
 	if (s != NULL)
 	{
 		lyrics_set_artist (s->artist);
 		lyrics_set_songtitle (s->title);
 		gimmix_free_song_info (s);
 	}
-	if (lyrics_search())
+	lyrics_search ();
+	node = lyrics_get_lyrics ();
+	gimmix_lyrics_populate_textview (node);
+	if (node)
 	{
-		LYRICS_NODE* node = lyrics_get_lyrics ();
-		gimmix_lyrics_populate_textview (node->lyrics);
+		if (node->lyrics)
 		g_free (node->lyrics);
 		g_free (node);
-	}
-	else
-	{
-		gimmix_lyrics_populate_textview (_("Lyrics not found"));
 	}
 	
 	return FALSE;

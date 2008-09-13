@@ -565,15 +565,21 @@ lyrics_search (void)
 }
 
 void
-gimmix_lyrics_populate_textview (const char *text)
+gimmix_lyrics_populate_textview (LYRICS_NODE *node)
 {
 	GtkTextBuffer	*buffer;
 	GtkTextIter	iter;
 	
+	/* clear the textview */
 	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW(lyrics_textview));
 	gtk_text_buffer_set_text (buffer, "", 0);
 	gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
-	gtk_text_buffer_insert (buffer, &iter, text, -1);
 	
+	/* display the lyrics */
+	if (node && node->lyrics)
+		gtk_text_buffer_insert (buffer, &iter, node->lyrics, -1);
+	else
+		gtk_text_buffer_insert (buffer, &iter, _("Lyrics not found"), -1);
+
 	return;
 }

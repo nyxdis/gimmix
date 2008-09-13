@@ -23,6 +23,6 @@ void lyrics_set_artist (const char *artist);
 void lyrics_set_songtitle (const char *title);
 LYRICS_NODE* lyrics_get_lyrics (void);
 gboolean lyrics_search (void);
-void gimmix_lyrics_populate_textview (const char *text);
+void gimmix_lyrics_populate_textview (LYRICS_NODE *node);
 
 #endif
