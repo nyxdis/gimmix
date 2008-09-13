@@ -29,11 +29,14 @@
 #include "gimmix-playlist.h"
 #include "gimmix-tagedit.h"
 #include "gimmix-prefs.h"
-#include "gimmix-lyrics.h"
 #include "gimmix.h"
 
 #ifdef HAVE_CONFIG_H
 #	include "config.h"
+#endif
+
+#ifdef HAVE_LYRICS
+#	include "gimmix-lyrics.h"
 #endif
 
 #define GIMMIX_APP_ICON  	"gimmix.png"
@@ -68,7 +71,10 @@ static void			gimmix_update_shuffle (void);
 
 static gboolean			is_user_searching (void);
 static gboolean 		gimmix_timer (void);
+
+#ifdef HAVE_LYRICS
 gboolean			gimmix_update_lyrics (void);
+#endif
 
 /* Callbacks */
 static gboolean cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data);
@@ -101,7 +107,9 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 	{
 		gimmix_set_song_info ();
 		gimmix_update_current_playlist ();
+		#ifdef HAVE_LYRICS
 		g_timeout_add (300, (GSourceFunc)gimmix_update_lyrics, NULL);
+		#endif
 	}
 
 	if (id&MPD_CST_STATE)
@@ -112,7 +120,9 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
 			gimmix_set_song_info ();
+			#ifdef HAVE_LYRICS
 			g_timeout_add (300, (GSourceFunc)gimmix_update_lyrics, NULL);
+			#endif
 		}
 		if (state == MPD_PLAYER_PAUSE)
 		{
@@ -166,6 +176,7 @@ gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
 	return;
 }
 
+#ifdef HAVE_LYRICS
 gboolean
 gimmix_update_lyrics (void)
 {
@@ -195,6 +206,7 @@ gimmix_update_lyrics (void)
 	
 	return FALSE;
 }
+#endif
 
 static gboolean
 cb_playlist_button_press (GtkWidget *widget, GdkEventButton *event, gpointer data)
@@ -358,7 +370,13 @@ gimmix_init (void)
 	gimmix_playlist_init ();
 	gimmix_tag_editor_init ();
 	gimmix_update_current_playlist ();
+	
+	#ifdef HAVE_LYRICS
 	gimmix_lyrics_plugin_init ();
+	#else
+	widget = glade_xml_get_widget (xml, "lyricsvbox");
+	gtk_widget_hide (widget);
+	#endif
 	
 	/* initialize preferences dialog */
 	gimmix_prefs_init ();

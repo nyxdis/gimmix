@@ -21,6 +21,8 @@
  * Author: Priyank Gosalia <priyankmg@gmail.com>
  */
  
+#ifdef HAVE_LYRICS
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -617,3 +619,4 @@ cb_gimmix_lyrics_get_btn_clicked (GtkWidget *widget, gpointer data)
 	return;
 }
 
+#endif

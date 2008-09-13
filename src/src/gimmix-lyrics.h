@@ -1,3 +1,5 @@
+#ifdef HAVE_LYRICS
+
 #ifndef GIMMIX_LYRICS_H
 #define GIMMIX_LYRICS_H
 
@@ -24,5 +26,7 @@ void lyrics_set_songtitle (const char *title);
 LYRICS_NODE* lyrics_get_lyrics (void);
 gboolean lyrics_search (void);
 void gimmix_lyrics_populate_textview (LYRICS_NODE *node);
+
+#endif
 
 #endif

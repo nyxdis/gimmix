@@ -22,6 +22,24 @@ AC_PROG_CC
 AC_HEADER_STDC
 AC_CHECK_HEADERS([locale.h stdlib.h string.h sys/ioctl.h unistd.h])
 
+AC_ARG_ENABLE(lyrics,
+    AC_HELP_STRING([  --enable-lyrics], [Enable lyrics plugin]), [lyrics="yes"])
+dnl Check for Iconcache monitor support
+AC_MSG_CHECKING(if lyrics plugin is enabled)
+if test "x$lyrics" = "xyes" ; then
+	enable_lyrics=yes
+	AC_MSG_RESULT(yes)
+	pkg_modules="libxml-2.0 >= 2.0 libcurl"
+	CFLAGS="${CFLAGS} -DHAVE_LYRICS"
+	AC_DEFINE(HAVE_LYRICS, 1, [building gimmix with lyrics support])
+else
+	pkg_modules=""
+	enable_lyrics=no
+	AC_MSG_RESULT(no)
+fi
+AC_SUBST([GFPM_LYRICS])
+AM_CONDITIONAL(HAVE_LYRICS, test "x$enable_lyrics" = "xyes")
+
 if test "${GCC}" = "yes"
 then
 	CFLAGS="${CFLAGS} -pipe"
@@ -37,13 +55,15 @@ AM_GLIB_DEFINE_LOCALEDIR(LOCALEDIR)
 
 AC_MSG_CHECKING(for flying pigs)
 AC_MSG_RESULT([ooh, there's one!])
-pkg_modules="gtk+-2.0 >= 2.6.0 \
+
+pkg_modules="${pkg_modules} gtk+-2.0 >= 2.6.0 \
 			 libmpd >= 0.12.0 \
 			 libglade-2.0 >= 2.6.0 \
-			 taglib >= 1.4 \
-			 libxml-2.0 >= 2.0 \
-			 libcurl"
+			 taglib >= 1.4"
+			 
 PKG_CHECK_MODULES([GIMMIX], [$pkg_modules])
+    
+
 
 CFLAGS="${CFLAGS}"
 
@@ -62,4 +82,5 @@ gimmix $VERSION configuration summary:
         source code location     : ${srcdir}
         compiler                 : ${CC}
         compiler flags           : ${CFLAGS}
+	lyrics support		 : ${enable_lyrics}
 "
