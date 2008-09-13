@@ -180,6 +180,12 @@ gimmix_update_lyrics (void)
 	{
 		LYRICS_NODE* node = lyrics_get_lyrics ();
 		gimmix_lyrics_populate_textview (node->lyrics);
+		g_free (node->lyrics);
+		g_free (node);
+	}
+	else
+	{
+		gimmix_lyrics_populate_textview (_("Lyrics not found"));
 	}
 	
 	return FALSE;

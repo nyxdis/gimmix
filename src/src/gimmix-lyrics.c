@@ -296,6 +296,7 @@ lyrics_process_lyrics_node (LYRICS_NODE *ptr)
 	url = g_strdup_printf ("%s%s", LYRICS_URL, node->hid);
 	printf ("%s\n", url);
 	status = lyrics_perform_curl (url, FETCHL);
+	g_free (url);
 	if (status == LYRICS_STATUS_OK)
 	{
 		g_print ("fetching ok\n");
