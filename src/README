@@ -1,4 +1,4 @@
-Gimmix-0.4.3 README
+Gimmix-0.5.0 README
 ===================
 
 Gimmix is a graphical Music player daemon (MPD) client written in C
@@ -11,6 +11,7 @@ Features:
 * Library search. (search by artist, album, filename, etc)
 * Playlist management (manage mpd playlists)
 * ID3v2 tag editing support.
+* Support for fetching Lyrics from Leoslyrics.com
 * System tray icon support.
 * Support for controlling gimmix through Keyboard.
 * Notification support (Displays the currently playing song in systray).
@@ -22,6 +23,10 @@ Requirements:
 * libmpd-0.12
 * libglade-2.6.x
 * taglib-1.4 (C bindings)
+
+The lyrics plugin requires the following two libraries:
+* libxml2-2.0
+* libcurl
 
 Installation:
 =============

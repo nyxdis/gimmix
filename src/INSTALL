@@ -4,12 +4,16 @@ Gimmix Install Instructions
 Requirements:
 =============
 
-Gimmix requires the following pacakges to be installed before compiling.
+Gimmix requires the following packages to be installed before compiling.
 
 * gtk+-2.6.x
 * libmpd-0.12
 * libglade-2.6.x
 * taglib-1.4 (C bindings)
+
+The lyrics plugin requires the following two libraries:
+* libxml2-2.0
+* libcurl
 
 Installation procedure:
 =======================
@@ -18,7 +22,7 @@ Installing gimmix is very simple. Before installing, make sure
 your system has all the required packages. After you unpack the source,
 just follow these steps to install gimmix.
 
-$ ./configure 
+$ ./configure
 $ make
 $ make install (as root)
 
