@@ -241,6 +241,7 @@ lyrics_parse_fetch_result_xml (const char *filename, LYRICS_NODE *ptr)
 	LIBXML_TEST_VERSION
 	path = g_strdup_printf ("%s/%s", cfg_get_path_to_config_file(LYRICS_DIR), filename);
 	reader = xmlReaderForFile (path, NULL, 0);
+	g_free (path);
 	if (reader != NULL)
 	{
         	ret = xmlTextReaderRead (reader);
@@ -259,6 +260,12 @@ lyrics_parse_fetch_result_xml (const char *filename, LYRICS_NODE *ptr)
 			if (strlen(temp)>0)
 			{
 				printf ("FOOBAR: %s\n", temp);
+				if (!strcmp(temp,"NOT_FOUND"))
+				{
+					ptr->lyrics = NULL;
+					g_free (temp);
+					return;
+				}
 				g_free (temp);
 			}
 		}
@@ -301,7 +308,10 @@ lyrics_process_lyrics_node (LYRICS_NODE *ptr)
 	{
 		g_print ("fetching ok\n");
 		lyrics_parse_fetch_result_xml (LYRC_XML, node);
-		return TRUE;
+		if (node->lyrics!=NULL)
+			return TRUE;
+		else
+			return FALSE;
 	}
 	
 	return FALSE;
