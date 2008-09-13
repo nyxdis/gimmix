@@ -67,6 +67,8 @@ static void lyrics_process_fetch_result (xmlTextReaderPtr *reader, LYRICS_NODE *
 static gboolean lyrics_process_lyrics_node (LYRICS_NODE *ptr);
 static gboolean lyrics_process_search_result (xmlTextReaderPtr *reader);
 
+static void cb_gimmix_lyrics_get_btn_clicked (GtkWidget *widget, gpointer data);
+
 void
 gimmix_lyrics_plugin_init (void)
 {
@@ -79,6 +81,11 @@ gimmix_lyrics_plugin_init (void)
 	lyrics_artist_label = glade_xml_get_widget (xml, "lyrics_artist_label");
 	lyrics_artist_box = glade_xml_get_widget (xml, "lyrics_artistbox");
 	lyrics_song_box = glade_xml_get_widget (xml, "lyrics_songbox");
+	
+	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"lyrics_get_btn")),
+				"clicked",
+				G_CALLBACK(cb_gimmix_lyrics_get_btn_clicked),
+				NULL);
 
 	/* check if .gimmix/lyrics exists */
 	cpath = cfg_get_path_to_config_file (path);
@@ -603,3 +610,12 @@ gimmix_lyrics_populate_textview (LYRICS_NODE *node)
 
 	return;
 }
+
+static void
+cb_gimmix_lyrics_get_btn_clicked (GtkWidget *widget, gpointer data)
+{
+	gimmix_update_lyrics ();
+
+	return;
+}
+

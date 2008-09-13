@@ -68,7 +68,7 @@ static void			gimmix_update_shuffle (void);
 
 static gboolean			is_user_searching (void);
 static gboolean 		gimmix_timer (void);
-static gboolean			gimmix_update_lyrics (void);
+gboolean			gimmix_update_lyrics (void);
 
 /* Callbacks */
 static gboolean cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data);
@@ -166,7 +166,7 @@ gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
 	return;
 }
 
-static gboolean
+gboolean
 gimmix_update_lyrics (void)
 {
 	LYRICS_NODE	*node = NULL;
@@ -179,7 +179,11 @@ gimmix_update_lyrics (void)
 		lyrics_set_songtitle (s->title);
 		gimmix_free_song_info (s);
 	}
+	while (gtk_events_pending())
+		gtk_main_iteration ();
 	lyrics_search ();
+	while (gtk_events_pending())
+		gtk_main_iteration ();
 	node = lyrics_get_lyrics ();
 	gimmix_lyrics_populate_textview (node);
 	if (node)
