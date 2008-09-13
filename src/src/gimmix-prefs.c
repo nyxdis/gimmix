@@ -46,6 +46,7 @@ GtkWidget *pref_button_apply;
 GtkWidget *pref_button_close;
 GtkWidget *pref_dir_chooser;
 GtkWidget *pref_search_check;
+GtkWidget *pref_outputdev_tvw;
 
 extern GtkWidget *search_box;
 
@@ -54,10 +55,15 @@ static void		cb_pref_systray_toggled (GtkToggleButton *button, gpointer data);
 static void		cb_pref_notification_toggled (GtkToggleButton *button, gpointer data);
 static void		cb_pref_search_toggled (GtkToggleButton *button, gpointer data);
 static void		cb_pref_crossfade_toggled (GtkToggleButton *button, gpointer data);
+static void		cb_pref_outputdev_enable_toggled (GtkCellRendererToggle *toggle, gchar *path_str, gpointer data);
 
 void
 gimmix_prefs_init (void)
 {
+	GtkListStore		*store = NULL;
+	GtkCellRenderer		*renderer = NULL;
+	GtkTreeViewColumn	*column = NULL;
+
 	pref_window = glade_xml_get_widget (xml, "prefs_window");
 	pref_host_entry = glade_xml_get_widget (xml, "host_entry");
 	pref_pass_entry = glade_xml_get_widget (xml, "password_entry");
@@ -74,6 +80,7 @@ gimmix_prefs_init (void)
 	pref_dir_chooser = glade_xml_get_widget (xml, "conf_dir_chooser");
 	pref_search_check = glade_xml_get_widget (xml, "search_checkbutton");
 	pref_notebook = glade_xml_get_widget (xml, "pref_notebook");
+	pref_outputdev_tvw = glade_xml_get_widget (xml, "pref_outputdev_tvw");
 	
 	g_signal_connect (G_OBJECT(pref_systray_check), "toggled", G_CALLBACK(cb_pref_systray_toggled), (gpointer)pref_notification_check);
 	g_signal_connect (G_OBJECT(pref_notification_check), "toggled", G_CALLBACK(cb_pref_notification_toggled), NULL);
@@ -81,6 +88,30 @@ gimmix_prefs_init (void)
 	g_signal_connect (G_OBJECT(pref_button_apply), "clicked", G_CALLBACK(cb_pref_apply_clicked), NULL);
 	g_signal_connect (G_OBJECT(pref_search_check), "toggled", G_CALLBACK(cb_pref_search_toggled), NULL);
 	g_signal_connect (G_OBJECT(pref_window), "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+	
+	/* setup output devices treeview */
+	store = gtk_list_store_new (3, G_TYPE_BOOLEAN, G_TYPE_STRING, G_TYPE_INT);
+	renderer = gtk_cell_renderer_toggle_new ();
+	g_object_set (G_OBJECT(renderer), "activatable", TRUE, NULL);
+	g_signal_connect (renderer, "toggled", G_CALLBACK(cb_pref_outputdev_enable_toggled), store);
+	column = gtk_tree_view_column_new_with_attributes (_("Enabled"),
+							renderer,
+							"active", 0,
+							NULL);
+	gtk_tree_view_column_set_resizable (column, FALSE);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(pref_outputdev_tvw), column);
+	
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("Device"),
+							renderer,
+							"text", 1,
+							NULL);
+	gtk_tree_view_column_set_resizable (column, FALSE);
+	gtk_tree_view_column_set_expand (column, TRUE);
+	gtk_tree_view_column_set_min_width (column, 140);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(pref_outputdev_tvw), column);
+	
+	gtk_tree_view_set_model (GTK_TREE_VIEW(pref_outputdev_tvw), GTK_TREE_MODEL(store));
 	
 	return;
 }
@@ -91,6 +122,10 @@ gimmix_prefs_dialog_show (void)
 	gchar 		*port;
 	gint		crossfade_time;
 	gboolean	syst = FALSE;
+	MpdData		*d = NULL;
+	GtkListStore	*store = NULL;
+	GtkTreeIter	iter;
+	GtkTreeModel	*model = NULL;
 	
 	port = g_strdup_printf ("%s", cfg_get_key_value (conf, "mpd_port"));
 
@@ -145,6 +180,7 @@ gimmix_prefs_dialog_show (void)
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_upd_startup_check), FALSE);
 	
+	/* crossfade */
 	crossfade_time = mpd_status_get_crossfade (gmo);
 	if (crossfade_time != 0)
 	{
@@ -160,12 +196,51 @@ gimmix_prefs_dialog_show (void)
 		gtk_spin_button_set_value (GTK_SPIN_BUTTON(pref_crossfade_spin), (gdouble)crossfade_time);
 	}
 	
+	/* output devices */
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW(pref_outputdev_tvw));
+	store = GTK_LIST_STORE (model);
+	gtk_list_store_clear (store);
+	d = mpd_server_get_output_devices (gmo);
+	while (d!=NULL)
+	{
+		gboolean enabled = d->output_dev->enabled;
+		gtk_list_store_append (GTK_LIST_STORE(model), &iter);
+		gtk_list_store_set (GTK_LIST_STORE(model), &iter,
+						0, enabled,
+						1, g_strdup(d->output_dev->name),
+						2, d->output_dev->id,
+						-1);
+		d = mpd_data_get_next (d);
+	}
+	
 	if (strncasecmp(cfg_get_key_value(conf, "enable_search"), "true", 4) == 0)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_search_check), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_search_check), FALSE);
 	
 	gtk_widget_show (GTK_WIDGET(pref_window));
+	
+	return;
+}
+
+static void
+cb_pref_outputdev_enable_toggled (GtkCellRendererToggle *toggle, gchar *path_str, gpointer data)
+{
+	GtkTreeModel	*model = NULL;
+	GtkTreeIter	iter;
+	GtkTreePath	*path;
+	gboolean	enabled;
+	guint		id;
+	guint		state = 0;
+
+	model = (GtkTreeModel *)data;
+	path = gtk_tree_path_new_from_string (path_str);
+	gtk_tree_model_get_iter (model, &iter, path);
+	gtk_tree_model_get (model, &iter, 0, &enabled, 2, &id, -1);
+	enabled ^= 1;
+	gtk_list_store_set (GTK_LIST_STORE(model), &iter, 0, enabled, -1);
+	state = (enabled)?1:0;
+	mpd_server_set_output_device (gmo, id, state);
 	
 	return;
 }
