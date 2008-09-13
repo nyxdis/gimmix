@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
+#include <glib/gstdio.h>
 #include <curl/curl.h>
 #include <curl/types.h>
 #include <curl/easy.h>
@@ -72,8 +73,6 @@ static void cb_gimmix_lyrics_get_btn_clicked (GtkWidget *widget, gpointer data);
 void
 gimmix_lyrics_plugin_init (void)
 {
-	GtkWidget	*widget = NULL;
-	char		*path = ".gimmix/lyrics";
 	char		*cpath = NULL;
 	
 	lyrics_textview = glade_xml_get_widget (xml, "lyrics_textview");
@@ -88,7 +87,7 @@ gimmix_lyrics_plugin_init (void)
 				NULL);
 
 	/* check if .gimmix/lyrics exists */
-	cpath = cfg_get_path_to_config_file (path);
+	cpath = cfg_get_path_to_config_file (LYRICS_DIR);
 	g_mkdir_with_parents (cpath, 00755);
 
 	return;
@@ -205,17 +204,17 @@ lyrics_process_fetch_result (xmlTextReaderPtr *reader, LYRICS_NODE *lnode)
 		do {
 			value = xmlTextReaderConstName ((*reader));
 			/* see if we have the writer name available for the lyric */
-			if (!strcmp(value,"writer"))
+			if (!strcmp((char*)value,"writer"))
 			{
 				xmlTextReaderRead ((*reader));
 				value = xmlTextReaderConstValue ((*reader));
 				if (value != NULL)
 				{
-					strcpy (lnode->writer, value);
+					strcpy (lnode->writer, (char*)value);
 				}
 				continue;
 			}
-			if (!strcmp(value,"text"))
+			if (!strcmp((char*)value,"text"))
 			{
 				break;
 			}
@@ -226,7 +225,7 @@ lyrics_process_fetch_result (xmlTextReaderPtr *reader, LYRICS_NODE *lnode)
 			return;
 		else
 		{
-			temp = g_strdup (value);
+			temp = g_strdup ((gchar*)value);
    		 	g_strstrip (temp);
 			if (strlen(temp)>0)
 			{
@@ -266,7 +265,7 @@ lyrics_parse_fetch_result_xml (const char *filename, LYRICS_NODE *ptr)
 		/* Process response code */
 		for (i=0;i<3;i++) xmlTextReaderRead ((reader));
 		/* read response code */
-		value = xmlTextReaderConstValue((reader));
+		value = (char*)xmlTextReaderConstValue((reader));
 
 		if (value == NULL)
 			return;
@@ -339,9 +338,8 @@ lyrics_process_search_result (xmlTextReaderPtr *reader)
 {
 	const		xmlChar *name, *value;
 	char		*temp = NULL;
-	char		*hid = NULL;
+	xmlChar		*hid = NULL;
 	char		*match = NULL;
-	static int	found = 0;
 	int		i;
 	LYRICS_NODE	*lnode;
 
@@ -359,13 +357,13 @@ lyrics_process_search_result (xmlTextReaderPtr *reader)
 
 		for (i=0;i<4;i++) xmlTextReaderRead ((*reader)); /* <searchResults> */
 		xmlTextReaderRead ((*reader));	/* <result> */
-		hid = xmlTextReaderGetAttribute ((*reader), "hid");
+		hid = xmlTextReaderGetAttribute ((*reader), (xmlChar*)"hid");
 		if (hid != NULL)
 		{
-			strncpy (lnode->hid, hid, strlen(hid));
+			strncpy (lnode->hid, (char*)hid, strlen((char*)hid));
 			printf ("HID: %s\n", lnode->hid);
 		}
-		match = xmlTextReaderGetAttribute ((*reader), "exactMatch");
+		match = (char*)xmlTextReaderGetAttribute ((*reader), (xmlChar*)"exactMatch");
 		if (match != NULL)
 		{
 			if (!strcmp(match,"true"))
@@ -383,7 +381,7 @@ lyrics_process_search_result (xmlTextReaderPtr *reader)
 		value = xmlTextReaderConstValue((*reader));
 		if (value != NULL)
 		{
-			temp = g_strdup (value);
+			temp = g_strdup ((char*)value);
    		 	g_strstrip (temp);
 			if (strlen(temp)>0)
 			{
@@ -397,7 +395,7 @@ lyrics_process_search_result (xmlTextReaderPtr *reader)
 		value = xmlTextReaderConstValue((*reader));
 		if (value != NULL)
 		{
-			temp = g_strdup (value);
+			temp = g_strdup ((char*)value);
    		 	g_strstrip (temp);
 			if (strlen(temp)>0)
 			{
@@ -466,10 +464,10 @@ lyrics_parse_search_result_xml (const char *filename)
 		/* Process response code */
 		for (i=0;i<3;i++) xmlTextReaderRead ((reader));
 		/* read response code */
-		value = xmlTextReaderConstValue((reader));
+		value = (char*)xmlTextReaderConstValue((reader));
 
 		if (value == NULL)
-			return;
+			return FALSE;
 		else
 		{
 			temp = g_strdup (value);
