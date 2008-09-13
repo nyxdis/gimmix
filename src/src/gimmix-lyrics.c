@@ -535,6 +535,7 @@ lyrics_search (void)
 			FILE *fp = NULL;
 			char line[PATH_MAX+1] = "";
 			lyrics_node = (LYRICS_NODE*) malloc(sizeof(LYRICS_NODE));
+			memset (lyrics_node, 0, sizeof(LYRICS_NODE));
 			strncpy (lyrics_node->artist, search_artist, strlen(search_artist));
 			strncpy (lyrics_node->title, search_title, strlen(search_title));
 			fp = fopen (path, "r");
