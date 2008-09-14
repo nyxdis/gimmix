@@ -345,6 +345,7 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 					gimmix_covers_plugin_download(node->img_small,temp))
 				{
 					gimmix_cover_plugin_save_cover (s->artist, s->album);
+					gimmix_covers_plugin_set_cover (s);
 				}
 			
 				g_free (node);
@@ -352,9 +353,20 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 			else
 			{
 				node = gimmix_covers_plugin_get_metadata ("Performer", s->performer, "Title", s->album);
+				if (node!=NULL)
+				{
+					if (gimmix_covers_plugin_download(node->img_large,temp) ||
+					gimmix_covers_plugin_download(node->img_medium,temp) ||
+					gimmix_covers_plugin_download(node->img_small,temp))
+					{
+						gimmix_cover_plugin_save_cover (s->artist, s->album);
+						gimmix_covers_plugin_set_cover (s);
+					}	
+					g_free (node);
+				}
 			}
 		}
 	}
-	
+
 	return;
 }
