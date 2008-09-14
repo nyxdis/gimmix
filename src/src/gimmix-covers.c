@@ -30,6 +30,7 @@
 #include <curl/types.h>
 #include <curl/easy.h>
 #include <libxml/xmlreader.h>
+#include "gimmix-covers.h"
 
 #define COVERS_DIR	".gimmix/covers"
 #define COVERS_DBF	".gimmix/covers/covers.db"
@@ -74,6 +75,7 @@ gimmix_covers_plugin_download (const char *url, const char *file)
 	if (curl)
 	{
 		FILE *outfile = NULL;
+		char *path = NULL;
 
 		path = g_strdup_printf ("%s/%s", cfg_get_path_to_config_file(COVERS_DIR), file);
 		outfile = fopen (path, "w");
