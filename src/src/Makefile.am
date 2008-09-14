@@ -18,6 +18,7 @@ gimmix_SOURCES=	wejpconfig.c \
 		gimmix-firstrun.c \
 		gimmix-tagedit.c \
 		gimmix-lyrics.c \
+		gimmix-covers.c \
 		gimmix.c
 
 
