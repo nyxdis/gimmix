@@ -33,6 +33,7 @@
 #include "wejpconfig.h"
 #include "gimmix-covers.h"
 
+#define DEFAULT_COVER	"gimmix-album.png"
 #define COVERS_DIR	".gimmix/covers"
 #define COVERS_DBF	".gimmix/covers/covers.db"
 #define RESULT_XML	"cvr.xml"
@@ -209,7 +210,7 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 	u_artist = gimmix_url_encode (arg1d);
 	u_title = gimmix_url_encode (arg2d);
 	url = g_strdup_printf (AMAZON_URL, AMAZON_KEY, arg1, u_artist, arg2, u_title);
-	g_print ("%s\n", url);
+	//g_print ("%s\n", url);
 	rxml = g_strdup_printf ("%s/%s", cfg_get_path_to_config_file(COVERS_DIR), RESULT_XML);
 	if (gimmix_covers_plugin_download(url,rxml))
 	{
@@ -302,7 +303,17 @@ gimmix_covers_plugin_set_plcbox_image (char *path)
 	GdkPixbuf	*pixbuf = NULL;
 	guint		height = pr_size + h3_size;
 	
-	pixbuf = gdk_pixbuf_new_from_file_at_size (path, 64, height, NULL);
+	if (path == NULL)
+	{
+		/* set default image */
+		path = gimmix_get_full_image_path (DEFAULT_COVER);
+		pixbuf = gdk_pixbuf_new_from_file_at_size (path, 64, height, NULL);
+		g_free (path);
+	}
+	else
+	{
+		pixbuf = gdk_pixbuf_new_from_file_at_size (path, 64, height, NULL);
+	}
 	gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
 	
 	return;
@@ -340,8 +351,8 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 					gimmix_cover_plugin_save_cover (s->artist, s->album);
 					gimmix_covers_plugin_set_cover (s);
 				}
-
 				g_free (node);
+				return;
 			}
 			else
 			{
@@ -356,10 +367,17 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 						gimmix_covers_plugin_set_cover (s);
 					}
 					g_free (node);
+					return;
+				}
+				else
+				{
+					/* set default icon */
+					gimmix_covers_plugin_set_plcbox_image (NULL);
 				}
 			}
 		}
 	}
+	gimmix_covers_plugin_set_plcbox_image (NULL);
 
 	return;
 }
