@@ -62,4 +62,7 @@ bool is_gimmix_shuffle (MpdObj *);
 /* strips file extension */
 void gimmix_strip_file_ext (char *string);
 
+/* replace character c1 by c2 in string */
+void gimmix_strcrep (char *string, char c1, char c2);
+
 #endif

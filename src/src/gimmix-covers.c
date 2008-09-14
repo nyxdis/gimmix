@@ -39,7 +39,12 @@
 #define AMAZON_KEY	"14TBPBEBTPCVM7BY0C02"
 #define AMAZON_URL	"http://ecs.amazonaws.com/onca/xml?Service=AWSECommerceService&Operation=ItemSearch&SearchIndex=Music&ResponseGroup=Images,EditorialReview&AWSAccessKeyId=%s&%s=%s&%s=%s"
 
-static ConfigFile cover_db;
+extern GladeXML		*xml;
+extern guint		pr_size;
+extern guint		h3_size;
+
+static ConfigFile	cover_db;
+static GtkWidget	*gimmix_plcbox_image;	
 
 static gboolean gimmix_covers_plugin_download (const char *url, const char *file);
 static CoverNode* gimmix_cover_node_new (void);
@@ -64,7 +69,7 @@ gimmix_covers_plugin_init (void)
 		FILE *fp = fopen (cpath, "w");
 		fclose (fp);
 	}
-	
+	gimmix_plcbox_image = glade_xml_get_widget (xml, "gimmix_plcbox_image");
 	gimmix_covers_plugin_cover_db_init ();
 	
 	return;
@@ -278,6 +283,7 @@ gimmix_cover_plugin_save_cover (char *artist, char *album)
 	
 	/* okay, add an entry to covers.db */
 	key = g_strdup_printf ("%s-%s", artist, album);
+	gimmix_strcrep (key, ' ', '_');
 	cfg_add_key (&cover_db, key, new_path);
 	gimmix_covers_plugin_cover_db_save ();
 	
@@ -287,6 +293,18 @@ gimmix_cover_plugin_save_cover (char *artist, char *album)
 	g_free (new_path);
 	g_free (key);
 
+	return;
+}
+
+static void
+gimmix_covers_plugin_set_plcbox_image (char *path)
+{
+	GdkPixbuf	*pixbuf = NULL;
+	guint		height = pr_size + h3_size;
+	
+	pixbuf = gdk_pixbuf_new_from_file_at_size (path, 64, height, NULL);
+	gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
+	
 	return;
 }
 
@@ -302,11 +320,16 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 		
 		/* first look into the local cover database */
 		temp = g_strdup_printf ("%s-%s", s->artist, s->album);
+		gimmix_strcrep (temp, ' ', '_');
+		g_print ("searching for %s\n", temp);
 		result = cfg_get_key_value (cover_db, temp);
 		if (result!=NULL)
 		{
 			g_print ("found: %s\n", result);
+			gimmix_covers_plugin_set_plcbox_image (result);
+			return;
 		}
+		/* otherwise fetch it from amazon */
 		else
 		{	temp = g_strdup_printf ("%s/temp.jpg", cfg_get_path_to_config_file(COVERS_DIR));
 			node = gimmix_covers_plugin_get_metadata ("Artist", s->artist, "Title", s->album);

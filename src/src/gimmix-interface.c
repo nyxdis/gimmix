@@ -60,24 +60,24 @@ GtkWidget		*image_play;
 GtkWidget		*play_button;
 GtkTooltips 		*play_button_tooltip = NULL;
 
-extern MpdObj 			*gmo;
-extern GladeXML 		*xml;
-extern ConfigFile		conf;
-extern GimmixTooltip 		*tooltip;
-extern GtkWidget		*current_playlist_treeview;
+extern MpdObj 		*gmo;
+extern GladeXML 	*xml;
+extern ConfigFile	conf;
+extern GimmixTooltip 	*tooltip;
+extern GtkWidget	*current_playlist_treeview;
 
-static guint			h3_size;
-static guint			pr_size;
+guint			h3_size;
+guint			pr_size;
 
-static void			gimmix_update_volume (void);
-static void			gimmix_update_repeat (void);
-static void			gimmix_update_shuffle (void);
+static void		gimmix_update_volume (void);
+static void		gimmix_update_repeat (void);
+static void		gimmix_update_shuffle (void);
 
-static gboolean			is_user_searching (void);
-static gboolean 		gimmix_timer (void);
+static gboolean		is_user_searching (void);
+static gboolean 	gimmix_timer (void);
 
 #ifdef HAVE_LYRICS
-gboolean			gimmix_update_lyrics (void);
+gboolean		gimmix_update_lyrics (void);
 #endif
 
 /* Callbacks */
@@ -420,7 +420,7 @@ gimmix_init (void)
 	g_signal_connect (widget, "size-allocate", G_CALLBACK(size_allocated_progressbox), NULL);
 	
 	widget = glade_xml_get_widget (xml, "gimmix_plcbox_image");
-	gtk_image_set_from_pixbuf (widget, gdk_pixbuf_new_from_file_at_size ("/home/priyank/.gimmix/covers/Santana-Abraxas.jpg", 64, 57, NULL));
+	//gtk_image_set_from_pixbuf (widget, gdk_pixbuf_new_from_file_at_size ("/home/priyank/.gimmix/covers/Santana-Abraxas.jpg", 64, 57, NULL));
 	
 	/* initialize preferences dialog */
 	gimmix_prefs_init ();

@@ -335,3 +335,20 @@ gimmix_strip_file_ext (char *string)
 	return;
 }
 
+void
+gimmix_strcrep (char *string, char c1, char c2)
+{
+	char *ptr = NULL;
+	
+	ptr = string;
+	while (*ptr!=0)
+	{
+		if (*ptr == c1)
+			*ptr = c2;
+		ptr++;
+	}
+	
+	return;
+}
+
+
