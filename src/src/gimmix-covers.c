@@ -126,10 +126,13 @@ gimmix_url_encode (const char *string)
 	CURL	*curl = NULL;
 	gchar	*ret = NULL;
 	
-	curl = curl_easy_init ();
-	ret = curl_easy_escape (curl, string, 0);
-	curl_easy_cleanup (curl);
-	
+	if (string)
+	{
+		curl = curl_easy_init ();
+		ret = curl_easy_escape (curl, string, 0);
+		curl_easy_cleanup (curl);
+	}
+
 	return ret;
 }
 
@@ -226,21 +229,18 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 					{
 						xmlChar *temp = xmlNodeGetContent(get_first_node_by_name(child, "URL"));
 						node->img_large = g_strdup((char *)temp);
-						g_print ("b: %s\n", temp);
 						xmlFree(temp);
 					}
 					if ((child = get_first_node_by_name(cnode, "MediumImage")))
 					{
 						xmlChar *temp = xmlNodeGetContent(get_first_node_by_name(child, "URL"));
 						node->img_medium = g_strdup((char *)temp);
-						g_print ("m: %s\n", temp);
 						xmlFree(temp);
 					}
 					if ((child = get_first_node_by_name(cnode, "SmallImage")))
 					{
 						xmlChar *temp = xmlNodeGetContent(get_first_node_by_name(child, "URL"));
 						node->img_small = g_strdup((char *)temp);
-						g_print ("s: %s\n", temp);
 						xmlFree(temp);
 					}	
 
@@ -321,11 +321,9 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 		/* first look into the local cover database */
 		temp = g_strdup_printf ("%s-%s", s->artist, s->album);
 		gimmix_strcrep (temp, ' ', '_');
-		g_print ("searching for %s\n", temp);
 		result = cfg_get_key_value (cover_db, temp);
 		if (result!=NULL)
 		{
-			g_print ("found: %s\n", result);
 			gimmix_covers_plugin_set_plcbox_image (result);
 			return;
 		}
@@ -335,11 +333,6 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 			node = gimmix_covers_plugin_get_metadata ("Artist", s->artist, "Title", s->album);
 			if (node!=NULL)
 			{
-				g_print ("%s\n%s\n%s\n",
-					node->img_large,
-					node->img_medium,
-					node->img_small);
-			
 				if (gimmix_covers_plugin_download(node->img_large,temp) ||
 					gimmix_covers_plugin_download(node->img_medium,temp) ||
 					gimmix_covers_plugin_download(node->img_small,temp))
@@ -347,7 +340,7 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 					gimmix_cover_plugin_save_cover (s->artist, s->album);
 					gimmix_covers_plugin_set_cover (s);
 				}
-			
+
 				g_free (node);
 			}
 			else
@@ -361,7 +354,7 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 					{
 						gimmix_cover_plugin_save_cover (s->artist, s->album);
 						gimmix_covers_plugin_set_cover (s);
-					}	
+					}
 					g_free (node);
 				}
 			}
