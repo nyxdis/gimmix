@@ -64,7 +64,7 @@ static gchar*	search_artist = NULL;
 static gchar*	search_title = NULL;
 static LYRICS_NODE* lyrics_node = NULL;
 
-static gchar * lyrics_url_encode (const char *string);
+static gchar *lyrics_url_encode (const char *string);
 static LYRICS_STATUS lyrics_perform_curl (const char *url, gint action);
 static void lyrics_process_fetch_result (xmlTextReaderPtr *reader, LYRICS_NODE *lnode);
 static gboolean lyrics_process_lyrics_node (LYRICS_NODE *ptr);
@@ -93,6 +93,20 @@ gimmix_lyrics_plugin_init (void)
 	g_mkdir_with_parents (cpath, 00755);
 
 	return;
+}
+
+/* URL encodes a string */
+static gchar *
+lyrics_url_encode (const char *string)
+{
+	CURL	*curl = NULL;
+	gchar	*ret = NULL;
+	
+	curl = curl_easy_init ();
+	ret = curl_easy_escape (curl, string, 0);
+	curl_easy_cleanup (curl);
+	
+	return ret;
 }
 
 LYRICS_NODE*
@@ -496,20 +510,6 @@ lyrics_parse_search_result_xml (const char *filename)
 	}
 	
 	return TRUE;
-}
-
-/* URL encodes a string */
-static gchar *
-lyrics_url_encode (const char *string)
-{
-	CURL	*curl = NULL;
-	gchar	*ret = NULL;
-	
-	curl = curl_easy_init ();
-	ret = curl_easy_escape (curl, string, 0);
-	curl_easy_cleanup (curl);
-	
-	return ret;
 }
 
 gboolean

@@ -209,6 +209,11 @@ gimmix_get_song_info (MpdObj *mo)
 		s->artist = strdup (ms->artist);
 	else
 		s->artist = NULL;
+		
+	if (ms->performer != NULL)
+		s->performer = strdup (ms->performer);
+	else
+		s->performer = NULL;
 
 	if (ms->album != NULL)
 		s->album = strdup (ms->album);
@@ -329,5 +334,4 @@ gimmix_strip_file_ext (char *string)
 
 	return;
 }
-
 

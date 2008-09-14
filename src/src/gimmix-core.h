@@ -14,6 +14,7 @@ typedef struct songinfo
 {
 	char *title;
 	char *artist;
+	char *performer;
 	char *album;
 	char *genre;
 	char *file;
