@@ -24,8 +24,8 @@ AC_CHECK_HEADERS([locale.h stdlib.h string.h sys/ioctl.h unistd.h])
 
 AC_ARG_ENABLE(lyrics,
     AC_HELP_STRING([  --enable-lyrics], [Enable lyrics plugin]), [lyrics="yes"])
-dnl Check for Iconcache monitor support
-AC_MSG_CHECKING(if lyrics plugin is enabled)
+dnl Check for Lyrics plugin support
+AC_MSG_CHECKING(whether lyrics plugin is enabled)
 if test "x$lyrics" = "xyes" ; then
 	enable_lyrics=yes
 	AC_MSG_RESULT(yes)
@@ -39,6 +39,26 @@ else
 fi
 AC_SUBST([GFPM_LYRICS])
 AM_CONDITIONAL(HAVE_LYRICS, test "x$enable_lyrics" = "xyes")
+
+AC_ARG_ENABLE(cover,
+    AC_HELP_STRING([  --enable-cover], [Enable Amazon cover fetcher plugin]), [cover="yes"])
+dnl Check for Amazon cover fetcher plugin support
+AC_MSG_CHECKING(whether amazon cover fetcher plugin is enabled)
+if test "x$cover" = "xyes" ; then
+	enable_cover=yes
+	AC_MSG_RESULT(yes)
+	if test "x$enable_lyrics" = "xno" ; then
+		pkg_modules="libxml-2.0 >= 2.0 libcurl"
+	fi
+	CFLAGS="${CFLAGS} -DHAVE_COVER_PLUGIN"
+	AC_DEFINE(HAVE_COVER_PLUGIN, 1, [building gimmix with cover plugin support])
+else
+	enable_cover=no
+	AC_MSG_RESULT(no)
+fi
+AC_SUBST([GFPM_COVER])
+AM_CONDITIONAL(HAVE_COVER_PLUGIN, test "x$enable_cover" = "xyes")
+
 
 if test "${GCC}" = "yes"
 then
@@ -83,4 +103,5 @@ gimmix $VERSION configuration summary:
         compiler                 : ${CC}
         compiler flags           : ${CFLAGS}
 	lyrics support		 : ${enable_lyrics}
+	covers support		 : ${enable_cover}
 "

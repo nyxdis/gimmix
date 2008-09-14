@@ -21,6 +21,8 @@
  * Author: Priyank Gosalia <priyankmg@gmail.com>
  */
 
+#ifdef HAVE_COVER_PLUGIN
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -381,3 +383,5 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 
 	return;
 }
+
+#endif

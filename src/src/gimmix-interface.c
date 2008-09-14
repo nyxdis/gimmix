@@ -39,7 +39,9 @@
 #	include "gimmix-lyrics.h"
 #endif
 
-#include "gimmix-covers.h"
+#ifdef HAVE_COVER_PLUGIN
+#	include "gimmix-covers.h"
+#endif
 
 #define GIMMIX_APP_ICON  	"gimmix.png"
 
@@ -80,6 +82,10 @@ static gboolean 	gimmix_timer (void);
 gboolean		gimmix_update_lyrics (void);
 #endif
 
+#ifdef HAVE_COVER_PLUGIN
+gboolean		gimmix_update_covers (void);
+#endif
+
 /* Callbacks */
 static gboolean cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data);
 static gboolean cb_gimmix_main_window_configure_event (GtkWidget *widget, GdkEventConfigure *event, gpointer data);
@@ -104,7 +110,6 @@ static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpoin
 static void 	gimmix_status_changed (MpdObj *mo, ChangedStatusType id);
 static void	gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata);
 
-gboolean gimmix_update_covers (void);
 
 static void
 gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
@@ -115,6 +120,8 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		gimmix_update_current_playlist ();
 		#ifdef HAVE_LYRICS
 		g_timeout_add (300, (GSourceFunc)gimmix_update_lyrics, NULL);
+		#endif
+		#ifdef HAVE_COVER_PLUGIN
 		g_timeout_add (1000, (GSourceFunc)gimmix_update_covers, NULL);
 		#endif
 	}
@@ -129,6 +136,8 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			gimmix_set_song_info ();
 			#ifdef HAVE_LYRICS
 			g_timeout_add (300, (GSourceFunc)gimmix_update_lyrics, NULL);
+			#endif
+			#ifdef HAVE_COVER_PLUGIN
 			g_timeout_add (1000, (GSourceFunc)gimmix_update_covers, NULL);
 			#endif
 		}
@@ -216,6 +225,7 @@ gimmix_update_lyrics (void)
 }
 #endif
 
+#ifdef HAVE_COVER_PLUGIN
 gboolean
 gimmix_update_covers (void)
 {
@@ -223,6 +233,7 @@ gimmix_update_covers (void)
 	
 	return FALSE;
 }
+#endif
 
 static gboolean
 cb_playlist_button_press (GtkWidget *widget, GdkEventButton *event, gpointer data)
@@ -410,17 +421,15 @@ gimmix_init (void)
 	gtk_widget_hide (widget);
 	#endif
 	
+	#ifdef HAVE_COVER_PLUGIN
 	gimmix_covers_plugin_init ();
-	gint w, h;
+	#endif
 	
 	/* an ugly way to calculate size of the album picture placeholder */
 	widget = glade_xml_get_widget(xml,"hbox3");
 	g_signal_connect (widget, "size-allocate", G_CALLBACK(size_allocated_hbox3), NULL);
 	widget = glade_xml_get_widget(xml,"progress_event_box");
 	g_signal_connect (widget, "size-allocate", G_CALLBACK(size_allocated_progressbox), NULL);
-	
-	widget = glade_xml_get_widget (xml, "gimmix_plcbox_image");
-	//gtk_image_set_from_pixbuf (widget, gdk_pixbuf_new_from_file_at_size ("/home/priyank/.gimmix/covers/Santana-Abraxas.jpg", 64, 57, NULL));
 	
 	/* initialize preferences dialog */
 	gimmix_prefs_init ();
