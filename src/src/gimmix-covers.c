@@ -300,35 +300,18 @@ gimmix_cover_plugin_save_cover (char *artist, char *album)
 	return;
 }
 
-/*
-static void
-gimmix_covers_plugin_set_plcbox_image (char *path)
-{
-	GdkPixbuf	*pixbuf = NULL;
-	guint		height = pr_size + h3_size;
-	
-	if (path == NULL)
-	{
-		path = gimmix_get_full_image_path (DEFAULT_COVER);
-		pixbuf = gdk_pixbuf_new_from_file_at_size (path, 64, height, NULL);
-		g_free (path);
-	}
-	else
-	{
-		pixbuf = gdk_pixbuf_new_from_file_at_size (path, 64, height, NULL);
-	}
-	gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
-	
-	return;
-}
-*/
-
 static void
 gimmix_covers_plugin_set_cover_image_path (const char *path)
 {
 	if (cover_image_path)
+	{
 		g_free (cover_image_path);
-	cover_image_path = g_strdup (path);
+		cover_image_path = NULL;
+	}
+	if (path)
+	{
+		cover_image_path = g_strdup (path);
+	}
 
 	return;
 }
@@ -340,12 +323,13 @@ gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 	gchar		*path = NULL;
 	SongInfo	*s = NULL;
 	
-	g_print ("i entered gimmix_covers_plugin_get_cover_image_of_size()\n");
 	if (gimmix_get_status(gmo)==STOP)
 	{
 		/* set default image */
 		path = gimmix_get_full_image_path (DEFAULT_COVER);
+		gdk_threads_enter ();
 		pixbuf = gdk_pixbuf_new_from_file_at_size (path, width, height, NULL);
+		gdk_threads_leave ();
 		g_free (path);
 	}
 	else
@@ -353,21 +337,24 @@ gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 		s = gimmix_get_song_info (gmo);
 		if (s == NULL)
 		return NULL;
-		g_print ("Artist: %s\nAlbum: %s\n", s->artist, s->album);
 		gimmix_covers_plugin_find_cover (s);
 		if (cover_image_path == NULL)
 		{
 			/* set default image */
 			path = gimmix_get_full_image_path (DEFAULT_COVER);
+			gdk_threads_enter ();
 			pixbuf = gdk_pixbuf_new_from_file_at_size (path, width, height, NULL);
+			gdk_threads_leave ();
 			g_free (path);
 		}
 		else
 		{
+			gdk_threads_enter ();
 			pixbuf = gdk_pixbuf_new_from_file_at_size (cover_image_path, width, height, NULL);
+			gdk_threads_leave ();
 		}
 	}
-	g_print ("i left gimmix_covers_plugin_get_cover_image_of_size()\n");
+
 	g_free (s);
 	return pixbuf;
 }

@@ -122,12 +122,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		#ifdef HAVE_LYRICS
 		g_timeout_add (300, (GSourceFunc)gimmix_update_lyrics, NULL);
 		#endif
-		#ifdef HAVE_COVER_PLUGIN
-		g_thread_create ((GThreadFunc)gimmix_update_covers,
-			NULL,
-			FALSE,
-			NULL);
-		#endif
+		
 	}
 
 	if (id&MPD_CST_STATE)
@@ -141,12 +136,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			#ifdef HAVE_LYRICS
 			g_timeout_add (300, (GSourceFunc)gimmix_update_lyrics, NULL);
 			#endif
-			#ifdef HAVE_COVER_PLUGIN
-			g_thread_create ((GThreadFunc)gimmix_update_covers,
-				NULL,
-				FALSE,
-				NULL);
-			#endif
+			
 		}
 		if (state == MPD_PLAYER_PAUSE)
 		{
@@ -163,12 +153,6 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 				gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
 			}
 			gimmix_show_ver_info ();
-			#ifdef HAVE_COVER_PLUGIN
-			g_thread_create ((GThreadFunc)gimmix_update_covers,
-				NULL,
-				FALSE,
-				NULL);
-			#endif
 			
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Play <x or c>"), NULL);
@@ -243,8 +227,7 @@ gimmix_update_covers (void)
 	guint		height;
 	GdkPixbuf	*pixbuf = NULL;
 	SongInfo	*s = NULL;
-	
-	g_print ("entered gimmix_update_covers()\n");
+
 	height = h3_size + pr_size;
 	pixbuf = gimmix_covers_plugin_get_cover_image_of_size (64, height);
 	if (pixbuf == NULL)
@@ -252,7 +235,6 @@ gimmix_update_covers (void)
 	gdk_threads_enter ();
 	gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
 	gdk_threads_leave ();
-	g_print ("left gimmix_update_covers()\n");
 	
 	return;
 }
@@ -848,6 +830,12 @@ gimmix_set_song_info (void)
 
 	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
 		gimmix_update_systray_tooltip (song);
+	#ifdef HAVE_COVER_PLUGIN
+		g_thread_create ((GThreadFunc)gimmix_update_covers,
+			NULL,
+			FALSE,
+			NULL);
+		#endif
 	gimmix_free_song_info (song);
 	
 	return;

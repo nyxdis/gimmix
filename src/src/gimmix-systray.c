@@ -356,7 +356,7 @@ gimmix_destroy_systray_icon (void)
 
 #ifdef HAVE_COVER_PLUGIN
 static void
-gimmix_systray_tooltip_image_updater_thread (gpointer s)
+gimmix_systray_update_tooltip_image (void)
 {
 	GdkPixbuf	*pixbuf = NULL;
 	
@@ -403,11 +403,10 @@ gimmix_update_systray_tooltip (SongInfo *s)
 		gimmix_tooltip_set_text2 (tooltip, NULL, FALSE);
 	
 	#ifdef HAVE_COVER_PLUGIN
-	//g_print ("creating updater thread\n");
-	/*g_thread_create ((GThreadFunc)gimmix_systray_tooltip_image_updater_thread,
+	g_thread_create ((GThreadFunc)gimmix_systray_update_tooltip_image,
 			NULL,
 			FALSE,
-			NULL);*/
+			NULL);
 	#endif
 	
 	return;
