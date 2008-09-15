@@ -79,7 +79,8 @@ AC_MSG_RESULT([ooh, there's one!])
 pkg_modules="${pkg_modules} gtk+-2.0 >= 2.6.0 \
 			 libmpd >= 0.12.0 \
 			 libglade-2.0 >= 2.6.0 \
-			 taglib >= 1.4"
+			 taglib >= 1.4 \
+			 gthread-2.0"
 			 
 PKG_CHECK_MODULES([GIMMIX], [$pkg_modules])
     

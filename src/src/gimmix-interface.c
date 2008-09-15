@@ -60,6 +60,7 @@ GtkWidget		*playlist_button;
 GtkWidget		*playlist_box;
 GtkWidget		*image_play;
 GtkWidget		*play_button;
+GtkWidget		*gimmix_plcbox_image;
 GtkTooltips 		*play_button_tooltip = NULL;
 
 extern MpdObj 		*gmo;
@@ -83,7 +84,7 @@ gboolean		gimmix_update_lyrics (void);
 #endif
 
 #ifdef HAVE_COVER_PLUGIN
-gboolean		gimmix_update_covers (void);
+void		gimmix_update_covers (void);
 #endif
 
 /* Callbacks */
@@ -122,7 +123,10 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		g_timeout_add (300, (GSourceFunc)gimmix_update_lyrics, NULL);
 		#endif
 		#ifdef HAVE_COVER_PLUGIN
-		g_timeout_add (1000, (GSourceFunc)gimmix_update_covers, NULL);
+		g_thread_create ((GThreadFunc)gimmix_update_covers,
+			NULL,
+			FALSE,
+			NULL);
 		#endif
 	}
 
@@ -138,7 +142,10 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			g_timeout_add (300, (GSourceFunc)gimmix_update_lyrics, NULL);
 			#endif
 			#ifdef HAVE_COVER_PLUGIN
-			g_timeout_add (1000, (GSourceFunc)gimmix_update_covers, NULL);
+			g_thread_create ((GThreadFunc)gimmix_update_covers,
+				NULL,
+				FALSE,
+				NULL);
 			#endif
 		}
 		if (state == MPD_PLAYER_PAUSE)
@@ -156,6 +163,12 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 				gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
 			}
 			gimmix_show_ver_info ();
+			#ifdef HAVE_COVER_PLUGIN
+			g_thread_create ((GThreadFunc)gimmix_update_covers,
+				NULL,
+				FALSE,
+				NULL);
+			#endif
 			
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Play <x or c>"), NULL);
@@ -207,11 +220,9 @@ gimmix_update_lyrics (void)
 		lyrics_set_songtitle (s->title);
 		gimmix_free_song_info (s);
 	}
-	while (gtk_events_pending())
-		gtk_main_iteration ();
+	
 	lyrics_search ();
-	while (gtk_events_pending())
-		gtk_main_iteration ();
+	
 	node = lyrics_get_lyrics ();
 	gimmix_lyrics_populate_textview (node);
 	if (node)
@@ -226,12 +237,24 @@ gimmix_update_lyrics (void)
 #endif
 
 #ifdef HAVE_COVER_PLUGIN
-gboolean
+void
 gimmix_update_covers (void)
 {
-	gimmix_covers_plugin_set_cover (gimmix_get_song_info(gmo));
+	guint		height;
+	GdkPixbuf	*pixbuf = NULL;
+	SongInfo	*s = NULL;
 	
-	return FALSE;
+	g_print ("entered gimmix_update_covers()\n");
+	height = h3_size + pr_size;
+	pixbuf = gimmix_covers_plugin_get_cover_image_of_size (64, height);
+	if (pixbuf == NULL)
+		return;
+	gdk_threads_enter ();
+	gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
+	gdk_threads_leave ();
+	g_print ("left gimmix_update_covers()\n");
+	
+	return;
 }
 #endif
 
@@ -339,7 +362,8 @@ gimmix_init (void)
 	search_entry = glade_xml_get_widget (xml, "search_label");
 	play_button = glade_xml_get_widget (xml, "play_button");
 	image_play = glade_xml_get_widget (xml, "image_play");
-	
+	gimmix_plcbox_image = glade_xml_get_widget (xml, "gimmix_plcbox_image");
+
 	g_signal_connect (G_OBJECT(playlist_button), "button-press-event", G_CALLBACK(cb_playlist_button_press), NULL);
 
 	if (is_gimmix_repeat (gmo))
@@ -438,7 +462,6 @@ gimmix_init (void)
 	
 	/* show the main window */
 	gtk_widget_show (main_window);
-	//printf ("%d\n", (pr_size+h3_size));
 	
 	/* check if library needs to be updated on startup */
 	if (strncasecmp(cfg_get_key_value(conf, "update_on_startup"), "true", 4) == 0)

@@ -45,15 +45,17 @@
 extern GladeXML		*xml;
 extern guint		pr_size;
 extern guint		h3_size;
+extern MpdObj		*gmo;
+static ConfigFile	cover_db;	
 
-static ConfigFile	cover_db;
-static GtkWidget	*gimmix_plcbox_image;	
+static char		*cover_image_path;
 
 static gboolean gimmix_covers_plugin_download (const char *url, const char *file);
 static CoverNode* gimmix_cover_node_new (void);
 static gchar *gimmix_url_encode (const char *string);
 static void gimmix_covers_plugin_cover_db_init (void);
 static void gimmix_covers_plugin_cover_db_save (void);
+static void gimmix_covers_plugin_find_cover (SongInfo *s);
 
 void
 gimmix_covers_plugin_init (void)
@@ -72,7 +74,6 @@ gimmix_covers_plugin_init (void)
 		FILE *fp = fopen (cpath, "w");
 		fclose (fp);
 	}
-	gimmix_plcbox_image = glade_xml_get_widget (xml, "gimmix_plcbox_image");
 	gimmix_covers_plugin_cover_db_init ();
 	
 	return;
@@ -299,6 +300,7 @@ gimmix_cover_plugin_save_cover (char *artist, char *album)
 	return;
 }
 
+/*
 static void
 gimmix_covers_plugin_set_plcbox_image (char *path)
 {
@@ -307,7 +309,6 @@ gimmix_covers_plugin_set_plcbox_image (char *path)
 	
 	if (path == NULL)
 	{
-		/* set default image */
 		path = gimmix_get_full_image_path (DEFAULT_COVER);
 		pixbuf = gdk_pixbuf_new_from_file_at_size (path, 64, height, NULL);
 		g_free (path);
@@ -320,9 +321,59 @@ gimmix_covers_plugin_set_plcbox_image (char *path)
 	
 	return;
 }
+*/
 
-void
-gimmix_covers_plugin_set_cover (SongInfo *s)
+static void
+gimmix_covers_plugin_set_cover_image_path (const char *path)
+{
+	if (cover_image_path)
+		g_free (cover_image_path);
+	cover_image_path = g_strdup (path);
+
+	return;
+}
+
+GdkPixbuf*
+gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
+{
+	GdkPixbuf	*pixbuf = NULL;
+	gchar		*path = NULL;
+	SongInfo	*s = NULL;
+	
+	g_print ("i entered gimmix_covers_plugin_get_cover_image_of_size()\n");
+	if (gimmix_get_status(gmo)==STOP)
+	{
+		/* set default image */
+		path = gimmix_get_full_image_path (DEFAULT_COVER);
+		pixbuf = gdk_pixbuf_new_from_file_at_size (path, width, height, NULL);
+		g_free (path);
+	}
+	else
+	{
+		s = gimmix_get_song_info (gmo);
+		if (s == NULL)
+		return NULL;
+		g_print ("Artist: %s\nAlbum: %s\n", s->artist, s->album);
+		gimmix_covers_plugin_find_cover (s);
+		if (cover_image_path == NULL)
+		{
+			/* set default image */
+			path = gimmix_get_full_image_path (DEFAULT_COVER);
+			pixbuf = gdk_pixbuf_new_from_file_at_size (path, width, height, NULL);
+			g_free (path);
+		}
+		else
+		{
+			pixbuf = gdk_pixbuf_new_from_file_at_size (cover_image_path, width, height, NULL);
+		}
+	}
+	g_print ("i left gimmix_covers_plugin_get_cover_image_of_size()\n");
+	g_free (s);
+	return pixbuf;
+}
+
+static void
+gimmix_covers_plugin_find_cover (SongInfo *s)
 {
 	CoverNode	*node = NULL;
 	char		*temp = NULL;
@@ -332,12 +383,18 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 		char *result = NULL;
 		
 		/* first look into the local cover database */
+		if (!s->artist || !s->album)
+		{
+			gimmix_covers_plugin_set_cover_image_path (result);
+			return;
+		}
 		temp = g_strdup_printf ("%s-%s", s->artist, s->album);
 		gimmix_strcrep (temp, ' ', '_');
 		result = cfg_get_key_value (cover_db, temp);
 		if (result!=NULL)
 		{
-			gimmix_covers_plugin_set_plcbox_image (result);
+			gimmix_covers_plugin_set_cover_image_path (result);
+			g_print ("found on localdist\n");
 			return;
 		}
 		/* otherwise fetch it from amazon */
@@ -351,7 +408,7 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 					gimmix_covers_plugin_download(node->img_small,temp))
 				{
 					gimmix_cover_plugin_save_cover (s->artist, s->album);
-					gimmix_covers_plugin_set_cover (s);
+					gimmix_covers_plugin_find_cover (s);
 				}
 				g_free (node);
 				return;
@@ -366,7 +423,7 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 					gimmix_covers_plugin_download(node->img_small,temp))
 					{
 						gimmix_cover_plugin_save_cover (s->artist, s->album);
-						gimmix_covers_plugin_set_cover (s);
+						gimmix_covers_plugin_find_cover (s);
 					}
 					g_free (node);
 					return;
@@ -374,12 +431,12 @@ gimmix_covers_plugin_set_cover (SongInfo *s)
 				else
 				{
 					/* set default icon */
-					gimmix_covers_plugin_set_plcbox_image (NULL);
+					gimmix_covers_plugin_set_cover_image_path (NULL);
 				}
 			}
 		}
 	}
-	gimmix_covers_plugin_set_plcbox_image (NULL);
+	gimmix_covers_plugin_set_cover_image_path (NULL);
 
 	return;
 }

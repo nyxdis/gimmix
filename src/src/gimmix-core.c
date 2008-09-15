@@ -190,7 +190,10 @@ gimmix_get_song_info (MpdObj *mo)
 	SongInfo *s = (SongInfo *)malloc(sizeof(SongInfo));
 	
 	mpd_status_update (mo);
-	ms = mpd_playlist_get_current_song (mo);
+	if (gimmix_get_status(mo)!=STOP)
+		ms = mpd_playlist_get_current_song (mo);
+	else
+		ms = NULL;
 	
 	if (!ms)
 	return NULL;

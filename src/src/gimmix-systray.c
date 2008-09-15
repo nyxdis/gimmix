@@ -25,13 +25,18 @@
 #include "gimmix-systray.h"
 #include "gimmix-tooltip.h"
 #include "sexy-tooltip.h"
+#include <glib.h>
 
-#define GIMMIX_ICON  			"gimmix_logo_small.png"
+#ifdef HAVE_COVER_PLUGIN
+#	include	"gimmix-covers.h"
+#endif
+
+#define GIMMIX_ICON  		"gimmix_logo_small.png"
 #define GIMMIX_TOOLTIP_ICON 	"gimmix.png"
 
-EggTrayIcon			*icon = NULL;
+EggTrayIcon		*icon = NULL;
 GimmixTooltip		*tooltip = NULL;
-GtkWidget			*stooltip;
+GtkWidget		*stooltip;
 extern GtkWidget 	*progress;
 
 extern MpdObj		*gmo;
@@ -65,12 +70,12 @@ gimmix_create_systray_icon (void)
 	GtkWidget	*systray_icon;
 	GdkColor 	color;
 	
-	icon_file = gimmix_get_full_image_path (GIMMIX_ICON);
 	/* create the tray icon */
 	icon = egg_tray_icon_new (APPNAME);
+	icon_file = gimmix_get_full_image_path (GIMMIX_ICON);
 	icon_image = gdk_pixbuf_new_from_file_at_size (icon_file, 20, 20, NULL);
-	systray_icon = gtk_image_new_from_pixbuf (icon_image);
 	g_free (icon_file);
+	systray_icon = gtk_image_new_from_pixbuf (icon_image);
 	gtk_container_add (GTK_CONTAINER (icon), systray_icon);
 	g_object_unref (icon_image);
 	
@@ -349,11 +354,23 @@ gimmix_destroy_systray_icon (void)
 	return;
 }	
 
+#ifdef HAVE_COVER_PLUGIN
+static void
+gimmix_systray_tooltip_image_updater_thread (gpointer s)
+{
+	GdkPixbuf	*pixbuf = NULL;
+	
+	pixbuf = gimmix_covers_plugin_get_cover_image_of_size (48, 48);
+	gimmix_tooltip_set_icon (tooltip, pixbuf);
+	
+	return;
+}
+#endif
 
 void
 gimmix_update_systray_tooltip (SongInfo *s)
 {
-	gchar *text;
+	gchar		*text;
 	
 	if (icon == NULL)
 		return;
@@ -385,6 +402,16 @@ gimmix_update_systray_tooltip (SongInfo *s)
 	else
 		gimmix_tooltip_set_text2 (tooltip, NULL, FALSE);
 	
+	#ifdef HAVE_COVER_PLUGIN
+	//g_print ("creating updater thread\n");
+	/*g_thread_create ((GThreadFunc)gimmix_systray_tooltip_image_updater_thread,
+			NULL,
+			FALSE,
+			NULL);*/
+	#endif
+	
 	return;
 }
+
+
 
