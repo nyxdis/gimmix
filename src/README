@@ -11,9 +11,10 @@ Features:
 * Library search. (search by artist, album, filename, etc)
 * Playlist management (manage mpd playlists)
 * ID3v2 tag editing support.
+* Support for fetching Covers from Amazon
 * Support for fetching Lyrics from Leoslyrics.com
 * System tray icon support.
-* Support for controlling gimmix through Keyboard.
+* Support for controlling Gimmix through Keyboard.
 * Notification support (Displays the currently playing song in systray).
 * Small memory footprint.
 
@@ -24,8 +25,8 @@ Requirements:
 * libglade-2.6.x
 * taglib-1.4 (C bindings)
 
-The lyrics plugin requires the following two libraries:
-* libxml2-2.0
+The lyrics/cover plugin(s) require the following two libraries:
+* libnxml
 * libcurl
 
 Installation:
