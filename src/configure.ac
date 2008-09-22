@@ -29,7 +29,7 @@ AC_MSG_CHECKING(whether lyrics plugin is enabled)
 if test "x$lyrics" = "xyes" ; then
 	enable_lyrics=yes
 	AC_MSG_RESULT(yes)
-	pkg_modules="libxml-2.0 >= 2.0 libcurl"
+	pkg_modules="libxml-2.0 >= 2.0 nxml libcurl"
 	CFLAGS="${CFLAGS} -DHAVE_LYRICS"
 	AC_DEFINE(HAVE_LYRICS, 1, [building gimmix with lyrics support])
 else

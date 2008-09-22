@@ -186,18 +186,20 @@ gimmix_seek (MpdObj *mo, int seektime)
 SongInfo *
 gimmix_get_song_info (MpdObj *mo)
 {
-	mpd_Song *ms;
-	SongInfo *s = (SongInfo *)malloc(sizeof(SongInfo));
+	mpd_Song *ms = NULL;
+	SongInfo *s = NULL;
 	
 	mpd_status_update (mo);
 	if (gimmix_get_status(mo)!=STOP)
+	{
 		ms = mpd_playlist_get_current_song (mo);
-	else
-		ms = NULL;
+	}
 	
 	if (!ms)
-	return NULL;
-	
+	{
+		return NULL;
+	}
+	s = (SongInfo *)malloc(sizeof(SongInfo));
 	if (ms->file != NULL)
 		s->file = strdup (ms->file);
 	else

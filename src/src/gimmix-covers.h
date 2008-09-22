@@ -19,6 +19,8 @@ void gimmix_covers_plugin_init (void);
 
 CoverNode* gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *arg2d);
 
+GdkPixbuf* gimmix_covers_plugin_get_default_cover (guint width, guint height);
+
 GdkPixbuf* gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height);
 
 #endif

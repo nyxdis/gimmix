@@ -245,13 +245,16 @@ gimmix_update_current_playlist (void)
 	MpdData 	*data;
 	gint		current_song_id = -1;
 
+	g_print ("I entered gimmix_update_current_playlist()\n");
 	new = mpd_playlist_get_playlist_id (gmo);
-	data = mpd_playlist_get_changes (gmo, 0);
 	current_song_id = mpd_player_get_current_song_id (gmo);
-
+	
 	current_playlist_store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW(current_playlist_treeview)));
 	gtk_list_store_clear (current_playlist_store);
 	
+	data = mpd_playlist_get_changes (gmo, 0);
+	if (data == NULL)
+		data = mpd_playlist_get_changes (gmo, 0);
 	while (data != NULL)
 	{
 		gchar 	*title;
@@ -313,6 +316,7 @@ gimmix_update_current_playlist (void)
 	
 	mpd_data_free (data);
 	
+	g_print ("exited function()\n");
 	return;
 }
 

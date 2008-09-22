@@ -401,14 +401,14 @@ gimmix_update_systray_tooltip (SongInfo *s)
 	}
 	else
 		gimmix_tooltip_set_text2 (tooltip, NULL, FALSE);
-	
+	/*
 	#ifdef HAVE_COVER_PLUGIN
 	g_thread_create ((GThreadFunc)gimmix_systray_update_tooltip_image,
 			NULL,
 			FALSE,
 			NULL);
 	#endif
-	
+	*/
 	return;
 }
 

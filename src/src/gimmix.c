@@ -197,7 +197,9 @@ main (int argc, char *argv[])
 		gimmix_show_firstrun_dialog (); 
 	}
 	
+	gdk_threads_enter ();
 	gtk_main ();
+	gdk_threads_leave ();
 
 	exit_cleanup ();
 	

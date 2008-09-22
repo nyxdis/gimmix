@@ -31,6 +31,7 @@
 #include <curl/curl.h>
 #include <curl/types.h>
 #include <curl/easy.h>
+#include <nxml.h>
 #include <libxml/xmlreader.h>
 #include "wejpconfig.h"
 #include "gimmix-covers.h"
@@ -46,7 +47,8 @@ extern GladeXML		*xml;
 extern guint		pr_size;
 extern guint		h3_size;
 extern MpdObj		*gmo;
-static ConfigFile	cover_db;	
+extern SongInfo		*glob_song_info;
+static ConfigFile	cover_db;
 
 static char		*cover_image_path;
 
@@ -55,7 +57,7 @@ static CoverNode* gimmix_cover_node_new (void);
 static gchar *gimmix_url_encode (const char *string);
 static void gimmix_covers_plugin_cover_db_init (void);
 static void gimmix_covers_plugin_cover_db_save (void);
-static void gimmix_covers_plugin_find_cover (SongInfo *s);
+static void gimmix_covers_plugin_find_cover (mpd_Song *s);
 
 void
 gimmix_covers_plugin_init (void)
@@ -215,6 +217,58 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 	url = g_strdup_printf (AMAZON_URL, AMAZON_KEY, arg1, u_artist, arg2, u_title);
 	//g_print ("%s\n", url);
 	rxml = g_strdup_printf ("%s/%s", cfg_get_path_to_config_file(COVERS_DIR), RESULT_XML);
+	gchar *path = NULL;
+	nxml_t *nxml = NULL;
+	nxml_data_t *nroot = NULL;
+	nxml_data_t *ndata = NULL;
+	nxml_data_t *nndata = NULL;
+	char *str = NULL;
+	nxml_error_t e;
+
+	e = nxml_new (&nxml);
+	nxml_parse_url (nxml, url);
+	nxml_root_element (nxml, &nroot);
+	nxml_find_element (nxml, nroot, "Items", &ndata);
+	nxml_find_element (nxml, ndata, "Item", &nndata);
+	if (nndata)
+	{
+		nxml_data_t *child = NULL;
+		nxml_data_t *d = NULL;
+		nxml_data_t *t = NULL;
+		child = nndata;
+		node = gimmix_cover_node_new ();
+		
+		/* title */
+		nxml_find_element (nxml, child, "LargeImage", &d);
+		nxml_find_element (nxml, d, "URL", &t);
+		nxml_get_string (t, &str);
+		node->img_large = g_strdup (str);
+		free (str);
+		
+		/* link */
+		nxml_find_element (nxml, child, "MediumImage", &d);
+		nxml_find_element (nxml, d, "URL", &t);
+		nxml_get_string (t, &str);
+		node->img_medium = g_strdup (str);
+		free (str);
+		
+		/* description */
+		nxml_find_element (nxml, child, "SmallImage", &d);
+		nxml_find_element (nxml, d, "URL", &t);
+		nxml_get_string (t, &str);
+		node->img_small = g_strdup (str);
+		free (str);
+		
+		/* pubdate */
+		nxml_find_element (nxml, child, "EditorialReviews", &d);
+		nxml_find_element (nxml, d, "EditorialReview", &t);
+		nxml_get_string (d, &str);
+		node->album_info = g_strdup (str);
+		free (str);
+		
+	}
+	nxml_free (nxml);
+	/*
 	if (gimmix_covers_plugin_download(url,rxml))
 	{
 		xmlDocPtr dptr = xmlParseFile (rxml);
@@ -263,7 +317,7 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 			xmlFreeDoc (dptr);
 		}
 	}
-
+	*/
 	g_free (url);
 	g_free (rxml);
 
@@ -317,50 +371,57 @@ gimmix_covers_plugin_set_cover_image_path (const char *path)
 }
 
 GdkPixbuf*
+gimmix_covers_plugin_get_default_cover (guint width, guint height)
+{
+	GdkPixbuf	*ret = NULL;
+	gchar		*path = NULL;
+	
+	path = gimmix_get_full_image_path (DEFAULT_COVER);
+	ret = gdk_pixbuf_new_from_file_at_size (path, width, height, NULL);
+	g_free (path);
+	
+	return ret;
+}
+
+GdkPixbuf*
 gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 {
 	GdkPixbuf	*pixbuf = NULL;
 	gchar		*path = NULL;
-	SongInfo	*s = NULL;
 	
+	g_print ("i was called\n");
 	if (gimmix_get_status(gmo)==STOP)
 	{
 		/* set default image */
-		path = gimmix_get_full_image_path (DEFAULT_COVER);
-		gdk_threads_enter ();
-		pixbuf = gdk_pixbuf_new_from_file_at_size (path, width, height, NULL);
-		gdk_threads_leave ();
-		g_free (path);
+		pixbuf = gimmix_covers_plugin_get_default_cover (width, height);
 	}
 	else
 	{
-		s = gimmix_get_song_info (gmo);
+		mpd_Song *s = NULL;
+		do {
+			s = mpd_playlist_get_current_song (gmo);
+		} while (s==NULL);
 		if (s == NULL)
-		return NULL;
+		g_print ("s = NULL\n");
 		gimmix_covers_plugin_find_cover (s);
-		if (cover_image_path == NULL)
+		
+		if (s == NULL || cover_image_path == NULL)
 		{
 			/* set default image */
-			path = gimmix_get_full_image_path (DEFAULT_COVER);
-			gdk_threads_enter ();
-			pixbuf = gdk_pixbuf_new_from_file_at_size (path, width, height, NULL);
-			gdk_threads_leave ();
-			g_free (path);
+			g_print ("cover_image_path NOT NULL\n");
+			pixbuf = gimmix_covers_plugin_get_default_cover (width, height);
 		}
 		else
 		{
-			gdk_threads_enter ();
 			pixbuf = gdk_pixbuf_new_from_file_at_size (cover_image_path, width, height, NULL);
-			gdk_threads_leave ();
 		}
 	}
 
-	g_free (s);
 	return pixbuf;
 }
 
 static void
-gimmix_covers_plugin_find_cover (SongInfo *s)
+gimmix_covers_plugin_find_cover (mpd_Song *s)
 {
 	CoverNode	*node = NULL;
 	char		*temp = NULL;
