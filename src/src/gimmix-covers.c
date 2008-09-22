@@ -190,19 +190,6 @@ gimmix_covers_plugin_download (const char *url, const char *file)
 	return ret;
 }
 
-/* Copyright Qball */
-static xmlNodePtr get_first_node_by_name(xmlNodePtr xml, gchar *name) {
-	if(xml) {
-		xmlNodePtr c = xml->xmlChildrenNode;
-		for(;c;c=c->next) {
-			if(xmlStrEqual(c->name, (xmlChar *) name))
-				return c;
-		}
-	}
-	return NULL;
-}
-/* end of snippet */
-
 CoverNode*
 gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *arg2d)
 {
@@ -211,19 +198,19 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 	CoverNode	*node = NULL;
 	char		*u_artist = NULL;
 	char		*u_title = NULL;
+	nxml_t		*nxml = NULL;
+	nxml_data_t	*nroot = NULL;
+	nxml_data_t	*ndata = NULL;
+	nxml_data_t	*nndata = NULL;
+	char		*str = NULL;
+	nxml_error_t	e;
 	
 	u_artist = gimmix_url_encode (arg1d);
 	u_title = gimmix_url_encode (arg2d);
 	url = g_strdup_printf (AMAZON_URL, AMAZON_KEY, arg1, u_artist, arg2, u_title);
 	//g_print ("%s\n", url);
 	rxml = g_strdup_printf ("%s/%s", cfg_get_path_to_config_file(COVERS_DIR), RESULT_XML);
-	gchar *path = NULL;
-	nxml_t *nxml = NULL;
-	nxml_data_t *nroot = NULL;
-	nxml_data_t *ndata = NULL;
-	nxml_data_t *nndata = NULL;
-	char *str = NULL;
-	nxml_error_t e;
+	
 
 	e = nxml_new (&nxml);
 	nxml_parse_url (nxml, url);
@@ -268,56 +255,6 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 		
 	}
 	nxml_free (nxml);
-	/*
-	if (gimmix_covers_plugin_download(url,rxml))
-	{
-		xmlDocPtr dptr = xmlParseFile (rxml);
-		if (dptr!=NULL)
-		{
-			xmlNodePtr rnode = xmlDocGetRootElement (dptr);
-			xmlNodePtr cnode = get_first_node_by_name(rnode, "Items");
-			if (cnode!=NULL)
-			{
-				cnode = get_first_node_by_name(cnode, "Item");
-				if (cnode!=NULL)
-				{
-					xmlNodePtr child = NULL;
-					node = gimmix_cover_node_new ();
-					if((child = get_first_node_by_name(cnode, "LargeImage")))
-					{
-						xmlChar *temp = xmlNodeGetContent(get_first_node_by_name(child, "URL"));
-						node->img_large = g_strdup((char *)temp);
-						xmlFree(temp);
-					}
-					if ((child = get_first_node_by_name(cnode, "MediumImage")))
-					{
-						xmlChar *temp = xmlNodeGetContent(get_first_node_by_name(child, "URL"));
-						node->img_medium = g_strdup((char *)temp);
-						xmlFree(temp);
-					}
-					if ((child = get_first_node_by_name(cnode, "SmallImage")))
-					{
-						xmlChar *temp = xmlNodeGetContent(get_first_node_by_name(child, "URL"));
-						node->img_small = g_strdup((char *)temp);
-						xmlFree(temp);
-					}	
-
-					if((child = get_first_node_by_name(cnode, "EditorialReviews")))
-					{
-						child = get_first_node_by_name (child, "EditorialReview");
-						if(child)
-						{
-							xmlChar *temp = xmlNodeGetContent(get_first_node_by_name(child, "Content"));
-							node->album_info = g_strdup((char *)temp);
-							xmlFree(temp);
-						}
-					}
-				}
-			}
-			xmlFreeDoc (dptr);
-		}
-	}
-	*/
 	g_free (url);
 	g_free (rxml);
 
