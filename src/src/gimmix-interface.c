@@ -138,11 +138,10 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 	{
 		gimmix_update_current_playlist ();
 		#ifdef HAVE_COVER_PLUGIN
-			g_print ("starting on SONGID\n");
-			GThread *thread = g_thread_create ((GThreadFunc)gimmix_update_covers,
-							NULL,
-							FALSE,
-							NULL);
+		g_thread_create ((GThreadFunc)gimmix_update_covers,
+				NULL,
+				FALSE,
+				NULL);
 		#endif
 		gimmix_set_song_info ();
 		#ifdef HAVE_LYRICS
@@ -161,11 +160,10 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
 			
 			#ifdef HAVE_COVER_PLUGIN
-			g_print ("starting on PLAY\n");
-			GThread *thread = g_thread_create ((GThreadFunc)gimmix_update_covers,
-							NULL,
-							FALSE,
-							NULL);
+			g_thread_create ((GThreadFunc)gimmix_update_covers,
+					NULL,
+					FALSE,
+					NULL);
 			#endif
 			gimmix_set_song_info ();
 			#ifdef HAVE_LYRICS
@@ -189,11 +187,10 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			}
 			gimmix_show_ver_info ();
 			#ifdef HAVE_COVER_PLUGIN
-			g_print ("begginning thread\n");
-			GThread *thread = g_thread_create ((GThreadFunc)gimmix_update_covers,
-							NULL,
-							FALSE,
-							NULL);
+			g_thread_create ((GThreadFunc)gimmix_update_covers,
+					NULL,
+					FALSE,
+					NULL);
 			#endif
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Play <x or c>"), NULL);
@@ -268,12 +265,8 @@ gimmix_update_covers (SongInfo *s)
 
 	height = h3_size + pr_size;
 	pixbuf = gimmix_covers_plugin_get_cover_image_of_size (64, height);
-	if (pixbuf == NULL)
-	{
-		g_print ("pixbuf is nUll\n");
-		return;
-	}
-	gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
+	if (pixbuf != NULL)
+		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
 	
 	return;
 }
@@ -460,7 +453,7 @@ gimmix_init (void)
 	}
 
 	g_timeout_add (300, (GSourceFunc)gimmix_timer, NULL);
-
+	
 	/* connect the main mpd callbacks */
 	mpd_signal_connect_status_changed (gmo, (StatusChangedCallback)gimmix_status_changed, NULL);
 	mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_mpd_error, NULL);
@@ -484,10 +477,17 @@ gimmix_init (void)
 	
 	/* show the main window */
 	gtk_widget_show (main_window);
+	#ifdef HAVE_COVER_PLUGIN
+	
+	g_thread_create ((GThreadFunc)gimmix_update_covers,
+			NULL,
+			FALSE,
+			NULL);
+	#endif
 	
 	/* check if library needs to be updated on startup */
 	if (strncasecmp(cfg_get_key_value(conf, "update_on_startup"), "true", 4) == 0)
-	gimmix_library_update ();
+		gimmix_library_update ();
 	
 	return;
 }
