@@ -225,33 +225,47 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 		child = nndata;
 		node = gimmix_cover_node_new ();
 		
-		/* title */
+		/* large image */
 		nxml_find_element (nxml, child, "LargeImage", &d);
 		nxml_find_element (nxml, d, "URL", &t);
 		nxml_get_string (t, &str);
-		node->img_large = g_strdup (str);
-		free (str);
+		if (str!=NULL)
+		{
+			node->img_large = g_strdup (str);
+			free (str);
+		}
 		
-		/* link */
+		/* medium image */
 		nxml_find_element (nxml, child, "MediumImage", &d);
 		nxml_find_element (nxml, d, "URL", &t);
 		nxml_get_string (t, &str);
-		node->img_medium = g_strdup (str);
-		free (str);
-		
-		/* description */
+		if (str!=NULL)
+		{
+			node->img_medium = g_strdup (str);
+			free (str);
+			str = NULL;
+		}
+				
+		/* small image */
 		nxml_find_element (nxml, child, "SmallImage", &d);
 		nxml_find_element (nxml, d, "URL", &t);
 		nxml_get_string (t, &str);
-		node->img_small = g_strdup (str);
-		free (str);
+		if (str!=NULL)
+		{
+			node->img_small = g_strdup (str);
+			free (str);
+			str = NULL;
+		}
 		
-		/* pubdate */
+		/* editorial reviews */
 		nxml_find_element (nxml, child, "EditorialReviews", &d);
 		nxml_find_element (nxml, d, "EditorialReview", &t);
 		nxml_get_string (d, &str);
-		node->album_info = g_strdup (str);
-		free (str);
+		if (str!=NULL)
+		{
+			node->album_info = g_strdup (str);
+			free (str);
+		}
 		
 	}
 	nxml_free (nxml);

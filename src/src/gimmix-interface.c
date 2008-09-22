@@ -82,7 +82,7 @@ static gboolean		is_user_searching (void);
 static gboolean 	gimmix_timer (void);
 
 #ifdef HAVE_LYRICS
-gboolean		gimmix_update_lyrics (void);
+void			gimmix_update_lyrics (void);
 #endif
 
 #ifdef HAVE_COVER_PLUGIN
@@ -145,7 +145,10 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		#endif
 		gimmix_set_song_info ();
 		#ifdef HAVE_LYRICS
-		g_timeout_add (300, (GSourceFunc)gimmix_update_lyrics, NULL);
+		g_thread_create ((GThreadFunc)gimmix_update_lyrics,
+				NULL,
+				FALSE,
+				NULL);
 		#endif
 		
 		return;
@@ -167,7 +170,10 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			#endif
 			gimmix_set_song_info ();
 			#ifdef HAVE_LYRICS
-			g_timeout_add (300, (GSourceFunc)gimmix_update_lyrics, NULL);
+			g_thread_create ((GThreadFunc)gimmix_update_lyrics,
+				NULL,
+				FALSE,
+				NULL);
 			#endif
 			
 		}
@@ -229,7 +235,7 @@ gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
 }
 
 #ifdef HAVE_LYRICS
-gboolean
+void
 gimmix_update_lyrics (void)
 {
 	LYRICS_NODE	*node = NULL;
@@ -252,7 +258,7 @@ gimmix_update_lyrics (void)
 		g_free (node);
 	}
 	
-	return FALSE;
+	return;
 }
 #endif
 
