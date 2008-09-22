@@ -981,6 +981,10 @@ gimmix_interface_cleanup (void)
 	/* destroy system tray icon */
 	gimmix_destroy_systray_icon ();
 	
+	#if HAVE_COVERS_PLUGIN
+	gimmix_covers_plugin_cleanup ();
+	#endif
+
 	return;
 }
 

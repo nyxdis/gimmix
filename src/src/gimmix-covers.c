@@ -49,7 +49,7 @@ extern guint		h3_size;
 extern MpdObj		*gmo;
 extern SongInfo		*glob_song_info;
 static ConfigFile	cover_db;
-
+static CURL		*curl;
 static char		*cover_image_path;
 
 static gboolean gimmix_covers_plugin_download (const char *url, const char *file);
@@ -76,7 +76,20 @@ gimmix_covers_plugin_init (void)
 		FILE *fp = fopen (cpath, "w");
 		fclose (fp);
 	}
+	
+	/* initialize curl */
+	curl = curl_easy_init ();
+	
+	/* initialize cover database */
 	gimmix_covers_plugin_cover_db_init ();
+	
+	return;
+}
+
+void
+gimmix_covers_plugin_cleanup (void)
+{
+	curl_easy_cleanup (curl);
 	
 	return;
 }
@@ -134,9 +147,7 @@ gimmix_url_encode (const char *string)
 	
 	if (string)
 	{
-		curl = curl_easy_init ();
 		ret = curl_easy_escape (curl, string, 0);
-		curl_easy_cleanup (curl);
 	}
 
 	return ret;
@@ -157,13 +168,11 @@ __curl_read_func (void *ptr, size_t size, size_t nmemb, FILE *stream)
 static gboolean
 gimmix_covers_plugin_download (const char *url, const char *file)
 {
-	CURL		*curl;
 	CURLcode	res;
 	gboolean	ret = FALSE;
 	
 	if (url!=NULL && file!=NULL)
 	{
-		curl = curl_easy_init ();
 		if (curl)
 		{
 			FILE *outfile = NULL;
@@ -182,7 +191,6 @@ gimmix_covers_plugin_download (const char *url, const char *file)
 				ret = TRUE;
 			}
 			fclose (outfile);
-			curl_easy_cleanup (curl);
 			g_free (path);
 		}
 	}
@@ -208,9 +216,8 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 	u_artist = gimmix_url_encode (arg1d);
 	u_title = gimmix_url_encode (arg2d);
 	url = g_strdup_printf (AMAZON_URL, AMAZON_KEY, arg1, u_artist, arg2, u_title);
-	//g_print ("%s\n", url);
+	g_print ("%s\n", url);
 	rxml = g_strdup_printf ("%s/%s", cfg_get_path_to_config_file(COVERS_DIR), RESULT_XML);
-	
 
 	e = nxml_new (&nxml);
 	nxml_parse_url (nxml, url);
@@ -359,7 +366,7 @@ gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 		if (s == NULL || cover_image_path == NULL)
 		{
 			/* set default image */
-			g_print ("cover_image_path NOT NULL\n");
+			g_print ("cover_image_path is NULL\n");
 			pixbuf = gimmix_covers_plugin_get_default_cover (width, height);
 		}
 		else

@@ -15,12 +15,19 @@ typedef struct _covers_node {
 	char	*album_info;
 } CoverNode;
 
+/* Initialize the covers plugin */
 void gimmix_covers_plugin_init (void);
 
+/* De-initialize the covers plugin */
+void gimmix_covers_plugin_cleanup (void);
+
+/* Get metadata for the specified arguments */
 CoverNode* gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *arg2d);
 
+/* Get the fallback cover image of specified size */
 GdkPixbuf* gimmix_covers_plugin_get_default_cover (guint width, guint height);
 
+/* Get a cover image of specified size */
 GdkPixbuf* gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height);
 
 #endif
