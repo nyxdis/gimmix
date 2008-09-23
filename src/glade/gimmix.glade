@@ -11,7 +11,7 @@
           <widget class="GtkHBox" id="hbox17">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkAspectFrame" id="aspectframe1">
+              <widget class="GtkAspectFrame" id="gimmix_plc_image_frame">
                 <property name="visible">True</property>
                 <property name="border_width">3</property>
                 <property name="label_xalign">0</property>

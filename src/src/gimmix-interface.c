@@ -407,6 +407,9 @@ gimmix_init (void)
 	
 	#ifdef HAVE_COVER_PLUGIN
 	gimmix_covers_plugin_init ();
+	#else
+	widget = glade_xml_get_widget (xml, "gimmix_plc_image_frame");
+	gtk_widget_hide (widget);
 	#endif
 	
 	mpd_status_update (gmo);
