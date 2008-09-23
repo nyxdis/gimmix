@@ -832,13 +832,13 @@ gimmix_set_song_info (void)
 		title = g_strdup_printf ("%s - %s", "Gimmix", song->title);
 		gtk_window_set_title (GTK_WINDOW(main_window), title);
 		g_free (title);
-		markup = g_markup_printf_escaped ("<span size=\"larger\"weight=\"bold\">%s</span>", song->title);
+		markup = g_markup_printf_escaped ("<span size=\"x-large\"weight=\"bold\">%s</span>", song->title);
 	}
 	else
 	{
 		title = g_path_get_basename (song->file);
 		gimmix_strip_file_ext (title);
-		markup = g_markup_printf_escaped ("<span size=\"larger\"weight=\"bold\">%s</span>", title);
+		markup = g_markup_printf_escaped ("<span size=\"x-large\"weight=\"bold\">%s</span>", title);
 		g_free (title);
 		gtk_window_set_title (GTK_WINDOW(main_window), "Gimmix");
 	}

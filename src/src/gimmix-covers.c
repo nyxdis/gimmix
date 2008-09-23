@@ -382,14 +382,14 @@ gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 		do {
 			s = mpd_playlist_get_current_song (gmo);
 		} while (s==NULL);
-		if (s == NULL)
-		g_print ("s = NULL\n");
+		//if (s == NULL)
+		//g_print ("s = NULL\n");
 		gimmix_covers_plugin_find_cover (s);
 		
 		if (s == NULL || cover_image_path == NULL)
 		{
 			/* set default image */
-			g_print ("cover_image_path is NULL\n");
+			//g_print ("cover_image_path is NULL\n");
 			pixbuf = gimmix_covers_plugin_get_default_cover (width, height);
 		}
 		else
@@ -488,7 +488,10 @@ gimmix_covers_plugin_update_cover (SongInfo *s)
 	pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, height);
 	if (pixbuf != NULL)
 	{
+		/* main window cover art */
 		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
+		
+		/* metadata cover art */
 		gimmix_covers_plugin_set_metadata_image (pixbuf);
 		g_object_unref (pixbuf);
 		
