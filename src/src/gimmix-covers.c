@@ -56,6 +56,18 @@ static char		*cover_image_path;
 static GtkWidget	*gimmix_metadata_image;
 static GtkWidget	*gimmix_plcbox_image;
 
+/* Get metadata for the specified arguments */
+static CoverNode* gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *arg2d);
+
+/* Get the fallback cover image of specified size */
+static GdkPixbuf* gimmix_covers_plugin_get_default_cover (guint width, guint height);
+
+/* Get a cover image of specified size */
+static GdkPixbuf* gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height);
+
+/* Set the cover image for metadata section */
+static void gimmix_covers_plugin_set_metadata_image (GdkPixbuf *pixbuf);
+
 static gboolean gimmix_covers_plugin_download (const char *url, const char *file);
 static CoverNode* gimmix_cover_node_new (void);
 static gchar *gimmix_url_encode (const char *string);
@@ -223,7 +235,7 @@ gimmix_covers_plugin_download (const char *url, const char *file)
 	return ret;
 }
 
-CoverNode*
+static CoverNode*
 gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *arg2d)
 {
 	char		*url = NULL;
@@ -350,7 +362,7 @@ gimmix_covers_plugin_set_cover_image_path (const char *path)
 	return;
 }
 
-GdkPixbuf*
+static GdkPixbuf*
 gimmix_covers_plugin_get_default_cover (guint width, guint height)
 {
 	GdkPixbuf	*ret = NULL;
@@ -363,7 +375,7 @@ gimmix_covers_plugin_get_default_cover (guint width, guint height)
 	return ret;
 }
 
-GdkPixbuf*
+static GdkPixbuf*
 gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 {
 	GdkPixbuf	*pixbuf = NULL;
@@ -468,7 +480,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 	return;
 }
 
-void
+static void
 gimmix_covers_plugin_set_metadata_image (GdkPixbuf *pixbuf)
 {
 	gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_metadata_image), pixbuf);
