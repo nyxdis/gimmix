@@ -47,6 +47,8 @@ guint h3_size = 0;
 extern GladeXML		*xml;
 extern MpdObj		*gmo;
 extern SongInfo		*glob_song_info;
+extern GimmixTooltip 	*tooltip;
+
 static ConfigFile	cover_db;
 static CURL		*curl;
 static char		*cover_image_path;
@@ -59,7 +61,6 @@ static gchar *gimmix_url_encode (const char *string);
 static void gimmix_covers_plugin_cover_db_init (void);
 static void gimmix_covers_plugin_cover_db_save (void);
 static void gimmix_covers_plugin_find_cover (mpd_Song *s);
-
 
 static void
 cb_gimmix_covers_plugin_plcbox_size_allocated (GtkWidget *widget, GtkAllocation *a, gpointer data)
@@ -424,7 +425,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 			//g_print ("found on localdisk\n");
 			return;
 		}
-		/* otherwise fetch it from amazon */
+		/* if not found locally, fetch it from amazon */
 		else
 		{	temp = g_strdup_printf ("%s/temp.jpg", cfg_get_path_to_config_file(COVERS_DIR));
 			node = gimmix_covers_plugin_get_metadata ("Artist", s->artist, "Title", s->album);
@@ -488,6 +489,15 @@ gimmix_covers_plugin_update_cover (SongInfo *s)
 	{
 		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
 		gimmix_covers_plugin_set_metadata_image (pixbuf);
+		
+		/* also system tray tooltip image */
+		if (!strncasecmp(cfg_get_key_value(conf,"enable_systray"),"true",4))
+		{
+			if (!strncasecmp(cfg_get_key_value(conf,"enable_notification"),"true",4))
+			{
+				gimmix_tooltip_set_icon (tooltip, pixbuf);
+			}
+		}
 	}
 	
 	return;

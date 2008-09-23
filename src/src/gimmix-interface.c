@@ -429,7 +429,7 @@ gimmix_init (void)
 	else if (status == MPD_PLAYER_STOP)
 	{
 		//gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
-		if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
+		if (!strncasecmp(cfg_get_key_value(conf, "enable_systray"),"true",4))
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
 		gimmix_show_ver_info ();
 	}
