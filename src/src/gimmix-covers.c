@@ -39,7 +39,6 @@
 #define DEFAULT_COVER	"gimmix-album.png"
 #define COVERS_DIR	".gimmix/covers"
 #define COVERS_DBF	".gimmix/covers/covers.db"
-#define RESULT_XML	"cvr.xml"
 #define AMAZON_KEY	"14TBPBEBTPCVM7BY0C02"
 #define AMAZON_URL	"http://ecs.amazonaws.com/onca/xml?Service=AWSECommerceService&Operation=ItemSearch&SearchIndex=Music&ResponseGroup=Images,EditorialReview&AWSAccessKeyId=%s&%s=%s&%s=%s"
 
@@ -240,8 +239,7 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 	u_artist = gimmix_url_encode (arg1d);
 	u_title = gimmix_url_encode (arg2d);
 	url = g_strdup_printf (AMAZON_URL, AMAZON_KEY, arg1, u_artist, arg2, u_title);
-	g_print ("%s\n", url);
-	rxml = g_strdup_printf ("%s/%s", cfg_get_path_to_config_file(COVERS_DIR), RESULT_XML);
+	//g_print ("%s\n", url);
 
 	e = nxml_new (&nxml);
 	nxml_parse_url (nxml, url);
@@ -301,7 +299,6 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 	}
 	nxml_free (nxml);
 	g_free (url);
-	g_free (rxml);
 
 	return node;
 }
