@@ -141,9 +141,7 @@ void gimmix_tooltip_set_text2 (GimmixTooltip *tooltip, const gchar *text, gboole
 void
 gimmix_tooltip_set_icon (GimmixTooltip *tooltip, GdkPixbuf *pixbuf)
 {
-	//gdk_threads_enter ();
 	gtk_image_set_from_pixbuf (GTK_IMAGE(tooltip->icon), pixbuf);
-	//gdk_threads_leave ();
 
 	return;
 }
