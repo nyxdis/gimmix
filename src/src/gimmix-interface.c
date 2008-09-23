@@ -857,16 +857,6 @@ gimmix_set_song_info (void)
 
 	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
 		gimmix_update_systray_tooltip (song);
-	/*
-	#ifdef HAVE_COVER_PLUGIN
-	g_print ("begginning thread\n");
-	GThread *thread = g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-					NULL,
-					FALSE,
-					NULL);
-	#endif
-	*/
-	//gimmix_free_song_info (song);
 	
 	return;
 }
@@ -878,7 +868,7 @@ gimmix_show_ver_info (void)
 	gchar 		*appver;
 
 	appver = g_strdup_printf ("%s %s", APPNAME, VERSION);
-	markup = g_markup_printf_escaped ("<span size=\"large\"weight=\"bold\">%s</span>", appver);
+	markup = g_markup_printf_escaped ("<span size=\"x-large\"weight=\"bold\">%s</span>", appver);
 	gtk_label_set_markup (GTK_LABEL(song_label), markup);
 	gtk_label_set_text (GTK_LABEL(artist_label), APPURL);
 	gtk_window_set_title (GTK_WINDOW(main_window), APPNAME);

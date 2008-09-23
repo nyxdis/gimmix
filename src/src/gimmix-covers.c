@@ -42,7 +42,7 @@
 #define AMAZON_KEY	"14TBPBEBTPCVM7BY0C02"
 #define AMAZON_URL	"http://ecs.amazonaws.com/onca/xml?Service=AWSECommerceService&Operation=ItemSearch&SearchIndex=Music&ResponseGroup=Images,EditorialReview&AWSAccessKeyId=%s&%s=%s&%s=%s"
 
-guint h3_size = 0;
+static guint h3_size = 0;
 
 extern GladeXML		*xml;
 extern ConfigFile	conf;
@@ -227,7 +227,6 @@ CoverNode*
 gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *arg2d)
 {
 	char		*url = NULL;
-	char		*rxml = NULL;
 	CoverNode	*node = NULL;
 	char		*u_artist = NULL;
 	char		*u_title = NULL;
@@ -368,7 +367,6 @@ GdkPixbuf*
 gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 {
 	GdkPixbuf	*pixbuf = NULL;
-	gchar		*path = NULL;
 	
 	//g_print ("gimmix_covers_plugin_get_cover_image_of_size() called\n");
 	if (gimmix_get_status(gmo)==STOP)
