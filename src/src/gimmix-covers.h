@@ -30,6 +30,12 @@ GdkPixbuf* gimmix_covers_plugin_get_default_cover (guint width, guint height);
 /* Get a cover image of specified size */
 GdkPixbuf* gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height);
 
+/* Set the cover image for metadata section */
+void gimmix_covers_plugin_set_metadata_image (GdkPixbuf *pixbuf);
+
+/* Update cover */
+void gimmix_covers_plugin_update_cover (SongInfo *s);
+
 #endif
 
 #endif

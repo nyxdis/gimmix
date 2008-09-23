@@ -43,14 +43,16 @@
 #define AMAZON_KEY	"14TBPBEBTPCVM7BY0C02"
 #define AMAZON_URL	"http://ecs.amazonaws.com/onca/xml?Service=AWSECommerceService&Operation=ItemSearch&SearchIndex=Music&ResponseGroup=Images,EditorialReview&AWSAccessKeyId=%s&%s=%s&%s=%s"
 
+guint h3_size = 0;
+
 extern GladeXML		*xml;
-extern guint		pr_size;
-extern guint		h3_size;
 extern MpdObj		*gmo;
 extern SongInfo		*glob_song_info;
 static ConfigFile	cover_db;
 static CURL		*curl;
 static char		*cover_image_path;
+static GtkWidget	*gimmix_metadata_image;
+static GtkWidget	*gimmix_plcbox_image;
 
 static gboolean gimmix_covers_plugin_download (const char *url, const char *file);
 static CoverNode* gimmix_cover_node_new (void);
@@ -59,10 +61,23 @@ static void gimmix_covers_plugin_cover_db_init (void);
 static void gimmix_covers_plugin_cover_db_save (void);
 static void gimmix_covers_plugin_find_cover (mpd_Song *s);
 
+
+static void
+cb_gimmix_covers_plugin_plcbox_size_allocated (GtkWidget *widget, GtkAllocation *a, gpointer data)
+{
+	if (!h3_size)
+	{
+		h3_size = a->height;
+	}
+	
+	return;
+}
+
 void
 gimmix_covers_plugin_init (void)
 {
-	gchar	*cpath = NULL;
+	gchar		*cpath = NULL;
+	GtkWidget	*widget = NULL;
 
 	/* check if .gimmix/covers exists */
 	cpath = cfg_get_path_to_config_file (COVERS_DIR);
@@ -82,6 +97,15 @@ gimmix_covers_plugin_init (void)
 	
 	/* initialize cover database */
 	gimmix_covers_plugin_cover_db_init ();
+	
+	/* initialize metadata widgets */
+	gimmix_plcbox_image = glade_xml_get_widget (xml, "gimmix_plcbox_image");
+	gimmix_metadata_image = glade_xml_get_widget (xml, "gimmix_metadata_image");
+	
+	/* some signals */
+	/* an ugly way to calculate size of the album picture placeholder */
+	widget = glade_xml_get_widget (xml,"plcvbox");
+	g_signal_connect (widget, "size-allocate", G_CALLBACK(cb_gimmix_covers_plugin_plcbox_size_allocated), NULL);
 	
 	return;
 }
@@ -444,6 +468,31 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 	}
 	gimmix_covers_plugin_set_cover_image_path (NULL);
 
+	return;
+}
+
+void
+gimmix_covers_plugin_set_metadata_image (GdkPixbuf *pixbuf)
+{
+	gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_metadata_image), pixbuf);
+	
+	return;
+}
+
+void
+gimmix_covers_plugin_update_cover (SongInfo *s)
+{
+	guint		height;
+	GdkPixbuf	*pixbuf = NULL;
+
+	height = h3_size;
+	pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, height);
+	if (pixbuf != NULL)
+	{
+		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
+		gimmix_covers_plugin_set_metadata_image (pixbuf);
+	}
+	
 	return;
 }
 

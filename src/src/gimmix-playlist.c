@@ -245,7 +245,6 @@ gimmix_update_current_playlist (void)
 	MpdData 	*data;
 	gint		current_song_id = -1;
 
-	g_print ("I entered gimmix_update_current_playlist()\n");
 	new = mpd_playlist_get_playlist_id (gmo);
 	current_song_id = mpd_player_get_current_song_id (gmo);
 	
@@ -315,8 +314,6 @@ gimmix_update_current_playlist (void)
 	gimmix_display_total_playlist_time ();
 	
 	mpd_data_free (data);
-	
-	g_print ("exited function()\n");
 	return;
 }
 

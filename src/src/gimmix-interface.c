@@ -62,7 +62,6 @@ GtkWidget		*playlist_button;
 GtkWidget		*playlist_box;
 GtkWidget		*image_play;
 GtkWidget		*play_button;
-GtkWidget		*gimmix_plcbox_image;
 GtkTooltips 		*play_button_tooltip = NULL;
 
 extern MpdObj 		*gmo;
@@ -70,8 +69,6 @@ extern GladeXML 	*xml;
 extern ConfigFile	conf;
 extern GimmixTooltip 	*tooltip;
 extern GtkWidget	*current_playlist_treeview;
-
-guint			h3_size = 0;
 
 SongInfo		*glob_song_info;
 
@@ -84,10 +81,6 @@ static gboolean 	gimmix_timer (void);
 
 #ifdef HAVE_LYRICS
 void			gimmix_update_lyrics (void);
-#endif
-
-#ifdef HAVE_COVER_PLUGIN
-void		gimmix_update_covers (SongInfo *s);
 #endif
 
 /* Callbacks */
@@ -139,7 +132,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 	{
 		gimmix_update_current_playlist ();
 		#ifdef HAVE_COVER_PLUGIN
-		g_thread_create ((GThreadFunc)gimmix_update_covers,
+		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 				NULL,
 				FALSE,
 				NULL);
@@ -164,7 +157,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
 			
 			#ifdef HAVE_COVER_PLUGIN
-			g_thread_create ((GThreadFunc)gimmix_update_covers,
+			g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 					NULL,
 					FALSE,
 					NULL);
@@ -194,7 +187,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			}
 			gimmix_show_ver_info ();
 			#ifdef HAVE_COVER_PLUGIN
-			g_thread_create ((GThreadFunc)gimmix_update_covers,
+			g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 					NULL,
 					FALSE,
 					NULL);
@@ -263,22 +256,6 @@ gimmix_update_lyrics (void)
 }
 #endif
 
-#ifdef HAVE_COVER_PLUGIN
-void
-gimmix_update_covers (SongInfo *s)
-{
-	guint		height;
-	GdkPixbuf	*pixbuf = NULL;
-
-	height = h3_size;
-	pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, height);
-	if (pixbuf != NULL)
-		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
-	
-	return;
-}
-#endif
-
 static void
 gimmix_toggle_playlist_show (gboolean show)
 {
@@ -323,25 +300,6 @@ cb_playlist_button_press (GtkWidget *widget, GdkEventButton *event, gpointer dat
 		gimmix_toggle_playlist_show (FALSE);
 
 	return TRUE;
-}
-
-static void
-size_allocated_hbox3 (GtkWidget *widget, GtkAllocation *a, gpointer data)
-{
-	if (!h3_size)
-	{
-		h3_size = a->height;
-	}
-	
-	return;
-}
-
-static void
-size_allocated_progressbox (GtkWidget *widget, GtkAllocation *a, gpointer data)
-{
-	//pr_size = a->height;
-	
-	return;
 }
 
 void
@@ -403,7 +361,6 @@ gimmix_init (void)
 	search_entry = glade_xml_get_widget (xml, "search_label");
 	play_button = glade_xml_get_widget (xml, "play_button");
 	image_play = glade_xml_get_widget (xml, "image_play");
-	gimmix_plcbox_image = glade_xml_get_widget (xml, "gimmix_plcbox_image");
 
 	g_signal_connect (G_OBJECT(playlist_button), "button-press-event", G_CALLBACK(cb_playlist_button_press), NULL);
 
@@ -439,22 +396,14 @@ gimmix_init (void)
 	}
 	if (strncasecmp(cfg_get_key_value(conf, "full_view_mode"), "true", 4) == 0)
 	{
-		g_print ("FULL VIEW MODE = TRUE\n");
 		gtk_widget_show (playlist_box);
 		gimmix_toggle_playlist_show (TRUE);
 	}
 	else
 	{
-		g_print ("FULL VIEW MODE = FALSE\n");
 		gtk_widget_hide (playlist_box);
 		gimmix_toggle_playlist_show (FALSE);
 	}
-	
-	/* an ugly way to calculate size of the album picture placeholder */
-	widget = glade_xml_get_widget(xml,"plcvbox");
-	g_signal_connect (widget, "size-allocate", G_CALLBACK(size_allocated_hbox3), NULL);
-	widget = glade_xml_get_widget(xml,"progress_event_box");
-	g_signal_connect (widget, "size-allocate", G_CALLBACK(size_allocated_progressbox), NULL);
 	
 	#ifdef HAVE_COVER_PLUGIN
 	gimmix_covers_plugin_init ();
@@ -465,7 +414,6 @@ gimmix_init (void)
 	gimmix_update_global_song_info ();
 	if (status == MPD_PLAYER_PLAY)
 	{
-		g_print ("im here\n");
 		gimmix_set_song_info ();
 		status = -1;
 		gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
@@ -510,7 +458,7 @@ gimmix_init (void)
 	gtk_widget_show (main_window);
 	#ifdef HAVE_COVER_PLUGIN
 	
-	g_thread_create ((GThreadFunc)gimmix_update_covers,
+	g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 			NULL,
 			FALSE,
 			NULL);
@@ -881,13 +829,13 @@ gimmix_set_song_info (void)
 		title = g_strdup_printf ("%s - %s", "Gimmix", song->title);
 		gtk_window_set_title (GTK_WINDOW(main_window), title);
 		g_free (title);
-		markup = g_markup_printf_escaped ("<span size=\"large\"weight=\"bold\">%s</span>", song->title);
+		markup = g_markup_printf_escaped ("<span size=\"larger\"weight=\"bold\">%s</span>", song->title);
 	}
 	else
 	{
 		title = g_path_get_basename (song->file);
 		gimmix_strip_file_ext (title);
-		markup = g_markup_printf_escaped ("<span size=\"large\"weight=\"bold\">%s</span>", title);
+		markup = g_markup_printf_escaped ("<span size=\"larger\"weight=\"bold\">%s</span>", title);
 		g_free (title);
 		gtk_window_set_title (GTK_WINDOW(main_window), "Gimmix");
 	}
@@ -909,7 +857,7 @@ gimmix_set_song_info (void)
 	/*
 	#ifdef HAVE_COVER_PLUGIN
 	g_print ("begginning thread\n");
-	GThread *thread = g_thread_create ((GThreadFunc)gimmix_update_covers,
+	GThread *thread = g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 					NULL,
 					FALSE,
 					NULL);
