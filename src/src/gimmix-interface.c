@@ -53,6 +53,8 @@ GtkWidget		*repeat_toggle_button;
 GtkWidget		*volume_window;
 GtkWidget		*volume_scale;
 GtkWidget		*volume_button;
+GtkWidget		*volume_hscalebox;
+GtkWidget		*volume_hscale;
 GtkWidget		*song_label;
 GtkWidget		*artist_label;
 GtkWidget		*search_entry;
@@ -69,8 +71,7 @@ extern ConfigFile	conf;
 extern GimmixTooltip 	*tooltip;
 extern GtkWidget	*current_playlist_treeview;
 
-guint			h3_size;
-guint			pr_size;
+guint			h3_size = 0;
 
 SongInfo		*glob_song_info;
 
@@ -185,7 +186,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		if (state == MPD_PLAYER_STOP)
 		{
 			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
-			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
+			//gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
 			if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
 			{
 				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), 0.0);
@@ -269,8 +270,8 @@ gimmix_update_covers (SongInfo *s)
 	guint		height;
 	GdkPixbuf	*pixbuf = NULL;
 
-	height = h3_size + pr_size;
-	pixbuf = gimmix_covers_plugin_get_cover_image_of_size (64, height);
+	height = h3_size;
+	pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, height);
 	if (pixbuf != NULL)
 		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
 	
@@ -278,18 +279,16 @@ gimmix_update_covers (SongInfo *s)
 }
 #endif
 
-static gboolean
-cb_playlist_button_press (GtkWidget *widget, GdkEventButton *event, gpointer data)
+static void
+gimmix_toggle_playlist_show (gboolean show)
 {
 	static int height;
 	static int width;
-	
-	if (event != NULL)
-	if (event->button != 1)
-		return FALSE;
 
-	if( !GTK_WIDGET_VISIBLE (playlist_box) )
-	{	
+	if (show)
+	{
+		gtk_widget_show (volume_hscalebox);
+		gtk_widget_hide (volume_button);
 		gtk_widget_show (GTK_WIDGET(playlist_box));
 		if (height>0 && width>0)
 			gtk_window_resize (GTK_WINDOW(main_window), width, height);
@@ -299,12 +298,29 @@ cb_playlist_button_press (GtkWidget *widget, GdkEventButton *event, gpointer dat
 	else
 	{
 		gint w;
+		gtk_widget_hide (volume_hscalebox);
+		gtk_widget_show (volume_button);
 		w = main_window->allocation.width;
 		gtk_widget_hide (GTK_WIDGET(playlist_box));
 		gtk_window_get_size (GTK_WINDOW(main_window), &width, &height);
 		gtk_window_resize (GTK_WINDOW(main_window), 1, 1);
 		gtk_window_set_resizable (GTK_WINDOW(main_window), FALSE);
 	}
+	
+	return;
+}
+
+static gboolean
+cb_playlist_button_press (GtkWidget *widget, GdkEventButton *event, gpointer data)
+{	
+	if (event != NULL)
+	if (event->button != 1)
+		return FALSE;
+	
+	if (!GTK_WIDGET_VISIBLE(playlist_box))
+		gimmix_toggle_playlist_show (TRUE);
+	else
+		gimmix_toggle_playlist_show (FALSE);
 
 	return TRUE;
 }
@@ -312,7 +328,10 @@ cb_playlist_button_press (GtkWidget *widget, GdkEventButton *event, gpointer dat
 static void
 size_allocated_hbox3 (GtkWidget *widget, GtkAllocation *a, gpointer data)
 {
-	h3_size = a->height;
+	if (!h3_size)
+	{
+		h3_size = a->height;
+	}
 	
 	return;
 }
@@ -320,7 +339,7 @@ size_allocated_hbox3 (GtkWidget *widget, GtkAllocation *a, gpointer data)
 static void
 size_allocated_progressbox (GtkWidget *widget, GtkAllocation *a, gpointer data)
 {
-	pr_size = a->height;
+	//pr_size = a->height;
 	
 	return;
 }
@@ -374,6 +393,8 @@ gimmix_init (void)
 	repeat_toggle_button = glade_xml_get_widget (xml, "repeat_toggle");
 	volume_window = glade_xml_get_widget (xml, "volume_window");
 	volume_scale = glade_xml_get_widget (xml, "volume_scale");
+	volume_hscalebox = glade_xml_get_widget (xml, "volume_hscalebox");
+	volume_hscale = glade_xml_get_widget (xml, "volume_hscale");
 	volume_button = glade_xml_get_widget (xml, "volume_button");
 	playlist_button = glade_xml_get_widget (xml, "playlist_button");
 	playlist_box = glade_xml_get_widget (xml, "playlistbox");
@@ -399,7 +420,9 @@ gimmix_init (void)
 
 	g_signal_connect (G_OBJECT(volume_scale), "value_changed", G_CALLBACK(cb_volume_scale_changed), NULL);
 	g_signal_connect (G_OBJECT(volume_scale), "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
+	g_signal_connect (G_OBJECT(volume_hscale), "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
 	vol_adj = gtk_range_get_adjustment (GTK_RANGE(volume_scale));
+	gtk_range_set_adjustment (GTK_RANGE(volume_hscale), vol_adj);
 	gtk_adjustment_set_value (GTK_ADJUSTMENT(vol_adj), mpd_status_get_volume (gmo));
 	g_signal_connect (G_OBJECT(volume_button), "clicked", G_CALLBACK(cb_volume_button_clicked), volume_window);
 	g_signal_connect (G_OBJECT(volume_button), "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
@@ -415,18 +438,20 @@ gimmix_init (void)
 		gimmix_create_systray_icon ();
 	}
 	if (strncasecmp(cfg_get_key_value(conf, "full_view_mode"), "true", 4) == 0)
-	{	
+	{
+		g_print ("FULL VIEW MODE = TRUE\n");
 		gtk_widget_show (playlist_box);
-		gtk_window_set_resizable (GTK_WINDOW(main_window), TRUE);
+		gimmix_toggle_playlist_show (TRUE);
 	}
 	else
-	{	
+	{
+		g_print ("FULL VIEW MODE = FALSE\n");
 		gtk_widget_hide (playlist_box);
-		gtk_window_set_resizable (GTK_WINDOW(main_window), FALSE);
+		gimmix_toggle_playlist_show (FALSE);
 	}
 	
 	/* an ugly way to calculate size of the album picture placeholder */
-	widget = glade_xml_get_widget(xml,"hbox3");
+	widget = glade_xml_get_widget(xml,"plcvbox");
 	g_signal_connect (widget, "size-allocate", G_CALLBACK(size_allocated_hbox3), NULL);
 	widget = glade_xml_get_widget(xml,"progress_event_box");
 	g_signal_connect (widget, "size-allocate", G_CALLBACK(size_allocated_progressbox), NULL);
@@ -452,7 +477,7 @@ gimmix_init (void)
 	}
 	else if (status == MPD_PLAYER_STOP)
 	{
-		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
+		//gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
 		if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
 		gimmix_show_ver_info ();
@@ -576,7 +601,7 @@ gimmix_timer (void)
 			gimmix_get_progress_status (gmo, &fraction, time);
 			if (fraction >= 0.0 && fraction <= 1.0)
 				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), fraction);
-			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), time);
+			//gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), time);
 			
 			/* Update the system tray tooltip progress bar */
 			if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
@@ -584,7 +609,7 @@ gimmix_timer (void)
 				{
 					if (fraction >= 0.0 && fraction <= 1.0)
 						gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), fraction);
-					gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), time);
+					//gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), time);
 				}
 		}
 		return TRUE;
@@ -775,7 +800,7 @@ gimmix_update_shuffle (void)
 static void
 gimmix_update_volume ()
 {
-	gint 			volume;
+	gint 		volume;
 	GtkAdjustment	*volume_adj;
 	
 	volume_adj = gtk_range_get_adjustment (GTK_RANGE(volume_scale));

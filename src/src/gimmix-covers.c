@@ -400,7 +400,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 		if (result!=NULL)
 		{
 			gimmix_covers_plugin_set_cover_image_path (result);
-			g_print ("found on localdist\n");
+			g_print ("found on localdisk\n");
 			return;
 		}
 		/* otherwise fetch it from amazon */
