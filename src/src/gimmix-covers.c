@@ -371,7 +371,7 @@ gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 	GdkPixbuf	*pixbuf = NULL;
 	gchar		*path = NULL;
 	
-	g_print ("i was called\n");
+	//g_print ("gimmix_covers_plugin_get_cover_image_of_size() called\n");
 	if (gimmix_get_status(gmo)==STOP)
 	{
 		/* set default image */
@@ -384,13 +384,13 @@ gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 			s = mpd_playlist_get_current_song (gmo);
 		} while (s==NULL);
 		if (s == NULL)
-		g_print ("s = NULL\n");
+		//g_print ("s = NULL\n");
 		gimmix_covers_plugin_find_cover (s);
 		
 		if (s == NULL || cover_image_path == NULL)
 		{
 			/* set default image */
-			g_print ("cover_image_path is NULL\n");
+			//g_print ("cover_image_path is NULL\n");
 			pixbuf = gimmix_covers_plugin_get_default_cover (width, height);
 		}
 		else
@@ -424,7 +424,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 		if (result!=NULL)
 		{
 			gimmix_covers_plugin_set_cover_image_path (result);
-			g_print ("found on localdisk\n");
+			//g_print ("found on localdisk\n");
 			return;
 		}
 		/* otherwise fetch it from amazon */
