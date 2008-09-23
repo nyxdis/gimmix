@@ -45,6 +45,7 @@
 guint h3_size = 0;
 
 extern GladeXML		*xml;
+extern ConfigFile	conf;
 extern MpdObj		*gmo;
 extern SongInfo		*glob_song_info;
 extern GimmixTooltip 	*tooltip;
@@ -382,13 +383,13 @@ gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 			s = mpd_playlist_get_current_song (gmo);
 		} while (s==NULL);
 		if (s == NULL)
-		//g_print ("s = NULL\n");
+		g_print ("s = NULL\n");
 		gimmix_covers_plugin_find_cover (s);
 		
 		if (s == NULL || cover_image_path == NULL)
 		{
 			/* set default image */
-			//g_print ("cover_image_path is NULL\n");
+			g_print ("cover_image_path is NULL\n");
 			pixbuf = gimmix_covers_plugin_get_default_cover (width, height);
 		}
 		else
@@ -489,13 +490,16 @@ gimmix_covers_plugin_update_cover (SongInfo *s)
 	{
 		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
 		gimmix_covers_plugin_set_metadata_image (pixbuf);
+		g_object_unref (pixbuf);
 		
 		/* also system tray tooltip image */
 		if (!strncasecmp(cfg_get_key_value(conf,"enable_systray"),"true",4))
 		{
 			if (!strncasecmp(cfg_get_key_value(conf,"enable_notification"),"true",4))
 			{
+				pixbuf = gimmix_covers_plugin_get_cover_image_of_size (48, 48);
 				gimmix_tooltip_set_icon (tooltip, pixbuf);
+				g_object_unref (pixbuf);
 			}
 		}
 	}
