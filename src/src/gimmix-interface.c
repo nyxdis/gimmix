@@ -28,6 +28,7 @@
 #include "gimmix-tooltip.h"
 #include "gimmix-playlist.h"
 #include "gimmix-tagedit.h"
+#include "gimmix-metadata.h"
 #include "gimmix-prefs.h"
 #include "gimmix.h"
 
@@ -132,10 +133,12 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 	{
 		gimmix_update_current_playlist ();
 		#ifdef HAVE_COVER_PLUGIN
+		g_print ("i am creating thread\n");
 		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 				NULL,
 				FALSE,
 				NULL);
+		
 		#endif
 		gimmix_set_song_info ();
 		#ifdef HAVE_LYRICS
@@ -404,6 +407,9 @@ gimmix_init (void)
 		gtk_widget_hide (playlist_box);
 		gimmix_toggle_playlist_show (FALSE);
 	}
+	
+	/* initialize metadata */
+	gimmix_metadata_init ();
 	
 	#ifdef HAVE_COVER_PLUGIN
 	gimmix_covers_plugin_init ();

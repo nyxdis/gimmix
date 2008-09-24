@@ -14,6 +14,7 @@ gimmix_SOURCES=	wejpconfig.c \
 		gimmix-tooltip.c \
 		gimmix-systray.c \
 		gimmix-prefs.c \
+		gimmix-metadata.c \
 		gimmix-interface.c \
 		gimmix-firstrun.c \
 		gimmix-tagedit.c \

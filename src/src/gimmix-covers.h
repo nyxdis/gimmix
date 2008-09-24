@@ -22,7 +22,7 @@ void gimmix_covers_plugin_init (void);
 void gimmix_covers_plugin_cleanup (void);
 
 /* Update cover */
-void gimmix_covers_plugin_update_cover (SongInfo *s);
+void gimmix_covers_plugin_update_cover (void);
 
 #endif
 

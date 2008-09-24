@@ -46,8 +46,6 @@
 extern GladeXML		*xml;
 
 static GtkWidget	*lyrics_textview = NULL;
-static GtkWidget	*lyrics_song_label = NULL;
-static GtkWidget	*lyrics_artist_label = NULL;
 static GtkWidget	*lyrics_song_box = NULL;
 static GtkWidget	*lyrics_artist_box = NULL;
 
@@ -65,10 +63,6 @@ gimmix_lyrics_plugin_init (void)
 	char		*cpath = NULL;
 	
 	lyrics_textview = glade_xml_get_widget (xml, "lyrics_textview");
-	lyrics_song_label = glade_xml_get_widget (xml, "lyrics_song_label");
-	lyrics_artist_label = glade_xml_get_widget (xml, "lyrics_artist_label");
-	lyrics_artist_box = glade_xml_get_widget (xml, "lyrics_artistbox");
-	lyrics_song_box = glade_xml_get_widget (xml, "lyrics_songbox");
 	
 	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"lyrics_get_btn")),
 				"clicked",
@@ -308,16 +302,10 @@ gimmix_lyrics_populate_textview (LYRICS_NODE *node)
 	/* display the lyrics */
 	if (node && node->lyrics)
 	{
-		gtk_widget_show (lyrics_song_box);
-		gtk_widget_show (lyrics_artist_box);
-		gtk_label_set_text (GTK_LABEL(lyrics_song_label), node->title);
-		gtk_label_set_text (GTK_LABEL(lyrics_artist_label), node->artist);
 		gtk_text_buffer_insert (buffer, &iter, node->lyrics, -1);
 	}
 	else
 	{
-		gtk_widget_hide (lyrics_song_box);
-		gtk_widget_hide (lyrics_artist_box);
 		gtk_text_buffer_insert (buffer, &iter, _("Lyrics not found"), -1);
 	}
 

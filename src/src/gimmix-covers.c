@@ -302,9 +302,11 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 		/* editorial reviews */
 		nxml_find_element (nxml, child, "EditorialReviews", &d);
 		nxml_find_element (nxml, d, "EditorialReview", &t);
+		nxml_find_element (nxml, t, "Content", &d);
 		nxml_get_string (d, &str);
 		if (str!=NULL)
 		{
+			g_print ("%s\n", str);
 			node->album_info = g_strdup (str);
 			free (str);
 		}
@@ -324,9 +326,12 @@ gimmix_cover_plugin_save_cover (char *artist, char *album)
 	char	*old_path = NULL;
 	char	*new_path = NULL;
 	char	*key = NULL;
+	FILE	*fp = NULL;
 	
 	artist_e = gimmix_url_encode (artist);
 	album_e = gimmix_url_encode (album);
+	
+	/* save cover art */
 	old_path = g_strdup_printf ("%s/temp.jpg", cfg_get_path_to_config_file(COVERS_DIR));
 	new_path = g_strdup_printf ("%s/%s-%s.jpg", cfg_get_path_to_config_file(COVERS_DIR), artist_e, album_e);
 	g_rename (old_path, new_path);
@@ -337,13 +342,87 @@ gimmix_cover_plugin_save_cover (char *artist, char *album)
 	cfg_add_key (&cover_db, key, new_path);
 	gimmix_covers_plugin_cover_db_save ();
 	
-	g_free (artist_e);
-	g_free (album_e);
 	g_free (old_path);
 	g_free (new_path);
+	g_free (artist_e);
+	g_free (album_e);
 	g_free (key);
 
 	return;
+}
+
+static void
+gimmix_covers_plugin_save_albuminfo (char *artist, char *album, char *info)
+{
+	FILE	*fp = NULL;
+	char	*path = NULL;
+	char	*artist_e = NULL;
+	char	*album_e = NULL;
+	
+	if (info == NULL || !strlen(info))
+		return;
+	
+	/* save album info */
+	artist_e = gimmix_url_encode (artist);
+	album_e = gimmix_url_encode (album);
+	path = g_strdup_printf ("%s/%s-%s.albuminfo", cfg_get_path_to_config_file(COVERS_DIR), artist_e, album_e);
+	fp = fopen (path, "w");
+	fprintf (fp, info);
+	fclose (fp);
+	g_free (path);
+	g_free (artist_e);
+	g_free (album_e);
+	
+	return;
+}
+
+gchar*
+gimmix_covers_plugin_get_albuminfo (mpd_Song *s)
+{
+	FILE	*fp = NULL;
+	char	*artist_e = NULL;
+	char	*album_e = NULL;
+	char	*path = NULL;
+	char	line[256] = "";
+	char	*ret = NULL;
+	
+	if (s==NULL)
+	return NULL;
+	artist_e = gimmix_url_encode (s->artist);
+	album_e = gimmix_url_encode (s->album);
+	path = g_strdup_printf ("%s/%s-%s.albuminfo", cfg_get_path_to_config_file(COVERS_DIR), artist_e, album_e);
+	g_free (artist_e);
+	g_free (album_e);
+	
+	if ((fp=fopen(path,"r")))
+	{
+		GString *str = g_string_new ("");
+		while (fgets(line,255,fp))
+		{
+			str = g_string_append (str, line);
+		}
+		ret = g_strdup (str->str);
+		return ret;
+	}
+	
+	artist_e = gimmix_url_encode (s->performer);
+	album_e = gimmix_url_encode (s->album);
+	path = g_strdup_printf ("%s/%s-%s.albuminfo", cfg_get_path_to_config_file(COVERS_DIR), artist_e, album_e);
+	g_free (artist_e);
+	g_free (album_e);
+	
+	if ((fp=fopen(path,"r")))
+	{
+		GString *str = g_string_new ("");
+		while (fgets(line,255,fp))
+		{
+			str = g_string_append (str, line);
+		}
+		ret = g_strdup (str->str);
+		return ret;
+	}
+	
+	return ret;
 }
 
 static void
@@ -417,6 +496,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 	CoverNode	*node = NULL;
 	char		*temp = NULL;
 	
+	g_print ("called \n");
 	if (s != NULL)
 	{
 		char *result = NULL;
@@ -438,7 +518,9 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 		}
 		/* if not found locally, fetch it from amazon */
 		else
-		{	temp = g_strdup_printf ("%s/temp.jpg", cfg_get_path_to_config_file(COVERS_DIR));
+		{
+			g_print ("beginning to fetch \n");	
+			temp = g_strdup_printf ("%s/temp.jpg", cfg_get_path_to_config_file(COVERS_DIR));
 			node = gimmix_covers_plugin_get_metadata ("Artist", s->artist, "Title", s->album);
 			if (node!=NULL)
 			{
@@ -447,6 +529,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 					gimmix_covers_plugin_download(node->img_small,temp))
 				{
 					gimmix_cover_plugin_save_cover (s->artist, s->album);
+					gimmix_covers_plugin_save_albuminfo (s->artist, s->album, node->album_info);
 					gimmix_covers_plugin_find_cover (s);
 				}
 				g_free (node);
@@ -462,6 +545,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 					gimmix_covers_plugin_download(node->img_small,temp))
 					{
 						gimmix_cover_plugin_save_cover (s->artist, s->album);
+						gimmix_covers_plugin_save_albuminfo (s->artist, s->album, node->album_info);
 						gimmix_covers_plugin_find_cover (s);
 					}
 					g_free (node);
@@ -489,21 +573,36 @@ gimmix_covers_plugin_set_metadata_image (GdkPixbuf *pixbuf)
 }
 
 void
-gimmix_covers_plugin_update_cover (SongInfo *s)
+gimmix_covers_plugin_update_cover (void)
 {
 	guint		height;
 	GdkPixbuf	*pixbuf = NULL;
+	mpd_Song	*s = NULL;
 
 	height = h3_size;
 	pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, height);
+	
+	if (mpd_player_get_state(gmo)!=MPD_PLAYER_STOP)
+	do {
+		s = mpd_playlist_get_current_song (gmo);
+	} while (s==NULL);
+	
 	if (pixbuf != NULL)
 	{
+		char *areview = NULL;
+		
 		/* main window cover art */
 		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
 		
 		/* metadata cover art */
 		gimmix_covers_plugin_set_metadata_image (pixbuf);
 		g_object_unref (pixbuf);
+		
+		/* metadata albuminfo */
+		areview = gimmix_covers_plugin_get_albuminfo (s);
+		gimmix_metadata_set_song_details (s, areview);
+		if (areview)
+			g_free (areview);
 		
 		/* also system tray tooltip image */
 		if (!strncasecmp(cfg_get_key_value(conf,"enable_systray"),"true",4))
