@@ -80,10 +80,6 @@ static void		gimmix_update_shuffle (void);
 static gboolean		is_user_searching (void);
 static gboolean 	gimmix_timer (void);
 
-#ifdef HAVE_LYRICS
-void			gimmix_update_lyrics (void);
-#endif
-
 /* Callbacks */
 static gboolean cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data);
 static gboolean cb_gimmix_main_window_configure_event (GtkWidget *widget, GdkEventConfigure *event, gpointer data);
@@ -142,7 +138,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		#endif
 		gimmix_set_song_info ();
 		#ifdef HAVE_LYRICS
-		g_thread_create ((GThreadFunc)gimmix_update_lyrics,
+		g_thread_create ((GThreadFunc)gimmix_lyrics_plugin_update_lyrics,
 				NULL,
 				FALSE,
 				NULL);
@@ -167,7 +163,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			#endif
 			gimmix_set_song_info ();
 			#ifdef HAVE_LYRICS
-			g_thread_create ((GThreadFunc)gimmix_update_lyrics,
+			g_thread_create ((GThreadFunc)gimmix_lyrics_plugin_update_lyrics ,
 				NULL,
 				FALSE,
 				NULL);
@@ -230,34 +226,6 @@ gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
 	
 	return;
 }
-
-#ifdef HAVE_LYRICS
-void
-gimmix_update_lyrics (void)
-{
-	LYRICS_NODE	*node = NULL;
-	SongInfo	*s;
-	
-	s = gimmix_get_song_info (gmo);
-	if (s != NULL)
-	{
-		lyrics_set_artist (s->artist);
-		lyrics_set_songtitle (s->title);
-		gimmix_free_song_info (s);
-	}
-	
-	node = lyrics_search ();
-	gimmix_lyrics_populate_textview (node);
-	if (node)
-	{
-		if (node->lyrics)
-		g_free (node->lyrics);
-		g_free (node);
-	}
-	
-	return;
-}
-#endif
 
 static void
 gimmix_toggle_playlist_show (gboolean show)

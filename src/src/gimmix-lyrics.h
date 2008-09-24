@@ -21,6 +21,9 @@ typedef struct lnode
 /* Initialize the gimmix lyrics plugin */
 void gimmix_lyrics_plugin_init (void);
 
+/* update lyrics for current song */
+void gimmix_lyrics_plugin_update_lyrics (void);
+
 void lyrics_set_artist (const char *artist);
 void lyrics_set_songtitle (const char *title);
 LYRICS_NODE* lyrics_search (void);

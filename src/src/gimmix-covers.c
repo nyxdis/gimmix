@@ -582,11 +582,14 @@ gimmix_covers_plugin_update_cover (void)
 	height = h3_size;
 	pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, height);
 	
+	int i =0;
 	if (mpd_player_get_state(gmo)!=MPD_PLAYER_STOP)
 	do {
 		s = mpd_playlist_get_current_song (gmo);
+		i++;
 	} while (s==NULL);
 	
+	printf ("looped: %d\n", i);
 	if (pixbuf != NULL)
 	{
 		char *areview = NULL;

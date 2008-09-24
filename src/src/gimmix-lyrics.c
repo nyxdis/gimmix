@@ -44,6 +44,7 @@
 #define FETCHL		0
 
 extern GladeXML		*xml;
+extern MpdObj		*gmo;
 
 static GtkWidget	*lyrics_textview = NULL;
 static GtkWidget	*lyrics_song_box = NULL;
@@ -312,10 +313,43 @@ gimmix_lyrics_populate_textview (LYRICS_NODE *node)
 	return;
 }
 
+#ifdef HAVE_LYRICS
+void
+gimmix_lyrics_plugin_update_lyrics (void)
+{
+	LYRICS_NODE	*node = NULL;
+	mpd_Song	*s = NULL;
+	
+	if (mpd_player_get_state(gmo)!=MPD_PLAYER_STOP)
+	do {
+		s = mpd_playlist_get_current_song (gmo);
+	} while (s==NULL);
+	
+	if (s)
+	{
+		if (s->artist)
+			lyrics_set_artist (s->artist);
+		if (s->title)
+			lyrics_set_songtitle (s->title);
+	}
+
+	node = lyrics_search ();
+	gimmix_lyrics_populate_textview (node);
+	if (node)
+	{
+		if (node->lyrics)
+		g_free (node->lyrics);
+		g_free (node);
+	}
+	
+	return;
+}
+#endif
+
 static void
 cb_gimmix_lyrics_get_btn_clicked (GtkWidget *widget, gpointer data)
 {
-	gimmix_update_lyrics ();
+	gimmix_lyrics_plugin_update_lyrics ();
 
 	return;
 }
