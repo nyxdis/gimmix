@@ -48,14 +48,23 @@ GtkWidget *pref_dir_chooser;
 GtkWidget *pref_search_check;
 GtkWidget *pref_outputdev_tvw;
 
+#ifdef HAVE_COVER_PLUGIN
+static GtkWidget *pref_coverart_check;
+extern GtkWidget *gimmix_plcbox_frame;
+#endif
+
 extern GtkWidget *search_box;
 
 static void 	cb_pref_apply_clicked (GtkWidget *widget, gpointer data);
-static void		cb_pref_systray_toggled (GtkToggleButton *button, gpointer data);
-static void		cb_pref_notification_toggled (GtkToggleButton *button, gpointer data);
-static void		cb_pref_search_toggled (GtkToggleButton *button, gpointer data);
-static void		cb_pref_crossfade_toggled (GtkToggleButton *button, gpointer data);
-static void		cb_pref_outputdev_enable_toggled (GtkCellRendererToggle *toggle, gchar *path_str, gpointer data);
+static void	cb_pref_systray_toggled (GtkToggleButton *button, gpointer data);
+static void	cb_pref_notification_toggled (GtkToggleButton *button, gpointer data);
+static void	cb_pref_search_toggled (GtkToggleButton *button, gpointer data);
+static void	cb_pref_crossfade_toggled (GtkToggleButton *button, gpointer data);
+static void	cb_pref_outputdev_enable_toggled (GtkCellRendererToggle *toggle, gchar *path_str, gpointer data);
+
+#ifdef HAVE_COVER_PLUGIN
+static void	cb_pref_coverart_disp_toggled (GtkToggleButton *button, gpointer data);
+#endif
 
 void
 gimmix_prefs_init (void)
@@ -81,6 +90,11 @@ gimmix_prefs_init (void)
 	pref_search_check = glade_xml_get_widget (xml, "search_checkbutton");
 	pref_notebook = glade_xml_get_widget (xml, "pref_notebook");
 	pref_outputdev_tvw = glade_xml_get_widget (xml, "pref_outputdev_tvw");
+	#ifdef HAVE_COVER_PLUGIN
+	pref_coverart_check = glade_xml_get_widget (xml, "coverart_checkbutton");
+	#else
+	gtk_widget_hide (glade_xml_get_widget(xml,"pref_interface_ifacebox"));
+	#endif
 	
 	g_signal_connect (G_OBJECT(pref_systray_check), "toggled", G_CALLBACK(cb_pref_systray_toggled), (gpointer)pref_notification_check);
 	g_signal_connect (G_OBJECT(pref_notification_check), "toggled", G_CALLBACK(cb_pref_notification_toggled), NULL);
@@ -88,6 +102,9 @@ gimmix_prefs_init (void)
 	g_signal_connect (G_OBJECT(pref_button_apply), "clicked", G_CALLBACK(cb_pref_apply_clicked), NULL);
 	g_signal_connect (G_OBJECT(pref_search_check), "toggled", G_CALLBACK(cb_pref_search_toggled), NULL);
 	g_signal_connect (G_OBJECT(pref_window), "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+	#ifdef HAVE_COVER_PLUGIN
+	g_signal_connect (G_OBJECT(pref_coverart_check), "toggled", G_CALLBACK(cb_pref_coverart_disp_toggled), NULL);
+	#endif
 	
 	/* setup output devices treeview */
 	store = gtk_list_store_new (3, G_TYPE_BOOLEAN, G_TYPE_STRING, G_TYPE_INT);
@@ -363,3 +380,24 @@ cb_pref_search_toggled (GtkToggleButton *button, gpointer data)
 	return;
 }
 
+#ifdef HAVE_COVER_PLUGIN
+static void
+cb_pref_coverart_disp_toggled (GtkToggleButton *button, gpointer data)
+{
+	if (gtk_toggle_button_get_active(button) == TRUE)
+	{
+		gtk_widget_show (gimmix_plcbox_frame);
+		cfg_add_key (&conf, "show_coverart", "true");
+	}
+	else
+	if (gtk_toggle_button_get_active(button) == FALSE)
+	{
+		gtk_widget_hide (gimmix_plcbox_frame);
+		cfg_add_key (&conf, "show_coverart", "false");
+	}
+	
+	gimmix_config_save ();
+
+	return;
+}
+#endif

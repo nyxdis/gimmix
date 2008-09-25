@@ -36,8 +36,6 @@
 #include "gimmix-lyrics.h"
 
 #define LYRICS_DIR	".gimmix/lyrics/"
-#define TEMP_XML	"lyt.xml"
-#define LYRC_XML	"lyc.xml"
 #define SEARCH_URL	"http://api.leoslyrics.com/api_search.php?auth=Gimmix"
 #define LYRICS_URL	"http://api.leoslyrics.com/api_lyrics.php?auth=Gimmix&hid="
 #define SEARCH		1
@@ -47,8 +45,6 @@ extern GladeXML		*xml;
 extern MpdObj		*gmo;
 
 static GtkWidget	*lyrics_textview = NULL;
-static GtkWidget	*lyrics_song_box = NULL;
-static GtkWidget	*lyrics_artist_box = NULL;
 
 static gchar*		search_artist = NULL;
 static gchar*		search_title = NULL;
@@ -128,7 +124,7 @@ lyrics_process_lyrics_node (LYRICS_NODE *ptr)
 		return ret;
 	
 	url = g_strdup_printf ("%s%s", LYRICS_URL, node->hid);
-	printf ("%s\n", url);
+	//printf ("%s\n", url);
 	
 	e = nxml_new (&nxml);
 	nxml_parse_url (nxml, url);
@@ -271,12 +267,12 @@ lyrics_search (void)
 		url = g_strdup_printf ("%s&artist=%s&songtitle=%s", SEARCH_URL, artist_e, title_e);
 		g_free (artist_e);
 		g_free (title_e);
-		g_print ("%s\n", url);
+		//g_print ("%s\n", url);
 		ret = lyrics_perform_search (url);
 		g_free (url);
 		if (ret)
 		{
-			g_print ("everything ok\n");
+			//g_print ("everything ok\n");
 			if (ret->lyrics != NULL)
 			{
 				FILE *fp = fopen (path, "w");

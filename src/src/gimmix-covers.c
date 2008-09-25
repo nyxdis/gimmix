@@ -56,6 +56,8 @@ static char		*cover_image_path;
 static GtkWidget	*gimmix_metadata_image;
 static GtkWidget	*gimmix_plcbox_image;
 
+GtkWidget		*gimmix_plcbox_frame;
+
 /* Get metadata for the specified arguments */
 static CoverNode* gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *arg2d);
 
@@ -114,11 +116,16 @@ gimmix_covers_plugin_init (void)
 	/* initialize metadata widgets */
 	gimmix_plcbox_image = glade_xml_get_widget (xml, "gimmix_plcbox_image");
 	gimmix_metadata_image = glade_xml_get_widget (xml, "gimmix_metadata_image");
+	gimmix_plcbox_frame = glade_xml_get_widget (xml, "gimmix_plc_image_frame");
 	
 	/* some signals */
 	/* an ugly way to calculate size of the album picture placeholder */
 	widget = glade_xml_get_widget (xml,"plcvbox");
 	g_signal_connect (widget, "size-allocate", G_CALLBACK(cb_gimmix_covers_plugin_plcbox_size_allocated), NULL);
+	
+	/* configuration init */
+	if (!strncasecmp(cfg_get_key_value(conf,"show_coverart"),"false",4))
+		gtk_widget_hide (gimmix_plcbox_frame);
 	
 	return;
 }
