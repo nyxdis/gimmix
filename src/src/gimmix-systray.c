@@ -370,7 +370,8 @@ gimmix_systray_update_tooltip_image (void)
 void
 gimmix_update_systray_tooltip (mpd_Song *s)
 {
-	gchar		*text;
+	gchar		*text = NULL;
+	gchar		*artist_str = NULL;
 	
 	if (icon == NULL)
 		return;
@@ -384,20 +385,16 @@ gimmix_update_systray_tooltip (mpd_Song *s)
 	
 	if (s->title != NULL)
 	{
-		g_print ("s->title is not NULL\n");
-		g_print ("setting %s\n", s->title);
 		gimmix_tooltip_set_text1 (tooltip, s->title, TRUE);
 	}
 	else
 	{
-		g_print ("s->title is NULL\n");
 		text = g_path_get_basename (s->file);
 		gimmix_strip_file_ext (text);
 		gimmix_tooltip_set_text1 (tooltip, text, TRUE);
 		g_free (text);
 	}
 	
-	gchar *artist_str;
 	if (s->artist != NULL)
 	{	
 		artist_str = g_strdup_printf ("%s %s", _("by"), s->artist);
@@ -406,14 +403,7 @@ gimmix_update_systray_tooltip (mpd_Song *s)
 	}
 	else
 		gimmix_tooltip_set_text2 (tooltip, NULL, FALSE);
-	/*
-	#ifdef HAVE_COVER_PLUGIN
-	g_thread_create ((GThreadFunc)gimmix_systray_update_tooltip_image,
-			NULL,
-			FALSE,
-			NULL);
-	#endif
-	*/
+
 	return;
 }
 

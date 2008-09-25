@@ -125,7 +125,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 {
 	gimmix_update_global_song_info ();
 	
-	if (id&MPD_CST_SONGID)
+	if (!(id&MPD_CST_STATE) && id&MPD_CST_SONGID)
 	{
 		gimmix_update_current_playlist ();
 		#ifdef HAVE_COVER_PLUGIN
@@ -177,6 +177,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		}
 		if (state == MPD_PLAYER_STOP)
 		{
+			gimmix_show_ver_info ();
 			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
 			//gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
 			if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
@@ -184,7 +185,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), 0.0);
 				gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
 			}
-			gimmix_show_ver_info ();
+			
 			#ifdef HAVE_COVER_PLUGIN
 			g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 					NULL,
