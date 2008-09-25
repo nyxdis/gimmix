@@ -313,7 +313,6 @@ gimmix_lyrics_populate_textview (LYRICS_NODE *node)
 	return;
 }
 
-#ifdef HAVE_LYRICS
 void
 gimmix_lyrics_plugin_update_lyrics (void)
 {
@@ -344,7 +343,6 @@ gimmix_lyrics_plugin_update_lyrics (void)
 	
 	return;
 }
-#endif
 
 static void
 cb_gimmix_lyrics_get_btn_clicked (GtkWidget *widget, gpointer data)

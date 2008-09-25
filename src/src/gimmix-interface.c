@@ -129,7 +129,6 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 	{
 		gimmix_update_current_playlist ();
 		#ifdef HAVE_COVER_PLUGIN
-		g_print ("i am creating thread\n");
 		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 				NULL,
 				FALSE,
@@ -179,7 +178,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		{
 			gimmix_show_ver_info ();
 			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
-			//gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
+			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
 			if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
 			{
 				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), 0.0);
@@ -403,7 +402,7 @@ gimmix_init (void)
 	}
 	else if (status == MPD_PLAYER_STOP)
 	{
-		//gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
+		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
 		if (!strncasecmp(cfg_get_key_value(conf, "enable_systray"),"true",4))
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
 		gimmix_show_ver_info ();
@@ -527,7 +526,7 @@ gimmix_timer (void)
 			gimmix_get_progress_status (gmo, &fraction, time);
 			if (fraction >= 0.0 && fraction <= 1.0)
 				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), fraction);
-			//gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), time);
+			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), time);
 			
 			/* Update the system tray tooltip progress bar */
 			if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
@@ -535,7 +534,7 @@ gimmix_timer (void)
 				{
 					if (fraction >= 0.0 && fraction <= 1.0)
 						gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), fraction);
-					//gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), time);
+					gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), time);
 				}
 		}
 		return TRUE;
