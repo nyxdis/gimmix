@@ -17,7 +17,7 @@ void gimmix_disable_systray_icon (void);
 void gimmix_enable_systray_icon (void);
 
 /* update notification tooltip */
-void gimmix_update_systray_tooltip (SongInfo *s);
+void gimmix_update_systray_tooltip (mpd_Song *s);
 
 /* destroy system tray icon */
 void gimmix_destroy_systray_icon (void);

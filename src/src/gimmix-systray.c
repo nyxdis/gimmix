@@ -368,7 +368,7 @@ gimmix_systray_update_tooltip_image (void)
 #endif
 
 void
-gimmix_update_systray_tooltip (SongInfo *s)
+gimmix_update_systray_tooltip (mpd_Song *s)
 {
 	gchar		*text;
 	
@@ -383,9 +383,14 @@ gimmix_update_systray_tooltip (SongInfo *s)
 	}
 	
 	if (s->title != NULL)
+	{
+		g_print ("s->title is not NULL\n");
+		g_print ("setting %s\n", s->title);
 		gimmix_tooltip_set_text1 (tooltip, s->title, TRUE);
+	}
 	else
 	{
+		g_print ("s->title is NULL\n");
 		text = g_path_get_basename (s->file);
 		gimmix_strip_file_ext (text);
 		gimmix_tooltip_set_text1 (tooltip, text, TRUE);
