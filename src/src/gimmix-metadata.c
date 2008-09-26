@@ -44,9 +44,6 @@ static GtkWidget *metadata_song_cover;
 void
 gimmix_metadata_init (void)
 {
-	GtkWidget *widget1 = NULL;
-	GtkWidget *widget2 = NULL;
-	
 	metadata_song_title = glade_xml_get_widget (xml, "metadata_song_label");
 	metadata_song_artist = glade_xml_get_widget (xml, "metadata_artist_label");
 	metadata_song_album = glade_xml_get_widget (xml, "metadata_album_label");

@@ -90,7 +90,6 @@ static void		cb_repeat_menu_toggled (GtkCheckMenuItem *item, gpointer data);
 static void		cb_shuffle_menu_toggled (GtkCheckMenuItem *item, gpointer data);
 static void		cb_current_playlist_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
 static void 		cb_add_button_clicked (GtkWidget *widget, gpointer data);
-static void		cb_playlists_button_toggled (GtkToggleButton *button, gpointer data);
 
 static void		gimmix_current_playlist_remove_song (void);
 static void		gimmix_current_playlist_crop_song (void);

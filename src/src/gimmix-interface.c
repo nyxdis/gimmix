@@ -435,7 +435,7 @@ gimmix_init (void)
 	/* initialize preferences dialog */
 	gimmix_prefs_init ();
 	
-	g_object_unref (xml);
+	
 	
 	/* show the main window */
 	gtk_widget_show (main_window);
@@ -458,6 +458,16 @@ gimmix_init (void)
 				NULL);
 	}
 	#endif
+	
+	widget = glade_xml_get_widget (xml, "metadata_container");
+	#ifdef HAVE_COVER_PLUGIN
+	gtk_widget_show (widget);
+	#elif defined(HAVE_LYRICS)
+	gtk_widget_show (widget);
+	#else
+	gtk_widget_hide (widget);
+	#endif
+	g_object_unref (xml);
 	
 	/* check if library needs to be updated on startup */
 	if (strncasecmp(cfg_get_key_value(conf, "update_on_startup"), "true", 4) == 0)
