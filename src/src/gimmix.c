@@ -23,6 +23,7 @@
 
 #include <gtk/gtk.h>
 #include <locale.h>
+#include <getopt.h>
 
 #ifdef HAVE_CONFIG_H
 #	include "config.h"
@@ -152,6 +153,8 @@ main (int argc, char *argv[])
 {
 	gchar 		*path;
 	char		*lang;
+	int		opt;
+	int		longopt_index;
 	
 	lang = getenv ("LC_ALL");
 	if (lang==NULL || lang[0]=='\0')
@@ -161,6 +164,35 @@ main (int argc, char *argv[])
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
+	
+	static struct option long_options[] = {
+		{"help", 0, NULL, 'h'},
+		{"version", 0, NULL, 'v'},
+		{NULL, 0, NULL, 0}
+	};
+	
+	while ((opt = getopt_long(argc, argv, "h:v", long_options, &longopt_index)) > 0)
+	{
+		switch (opt)
+		{
+			char *vstr = NULL;
+			case 'v':
+				vstr = g_strdup_printf ("%s %s\n%s\n",
+							g_ascii_strdown(APPNAME,strlen(APPNAME)),
+							VERSION,
+							"Copyright 2006, 2007, 2008 Priyank Gosalia");
+				fprintf (stdout, vstr);
+				g_free (vstr);
+				goto cleanup;
+				break;
+			case 'h':
+			default:
+				fprintf(stderr, "usage: %s [options]\n", basename(argv[0]));
+				fprintf(stderr, "  -h, --help			display this help\n");
+				fprintf(stderr, "  -v, --version			version information\n");
+				return 1;
+		}
+	}
 	
 	g_thread_init (NULL);
 	gdk_threads_init ();
@@ -200,7 +232,8 @@ main (int argc, char *argv[])
 	gdk_threads_enter ();
 	gtk_main ();
 	gdk_threads_leave ();
-
+	
+	cleanup:
 	exit_cleanup ();
 	
 	return 0;
