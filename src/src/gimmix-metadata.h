@@ -9,5 +9,7 @@
 /* initialize gimmix-metadata */
 void gimmix_metadata_init (void);
 
+/* show/hide metadata song cover */
+void gimmix_metadata_show_song_cover (gboolean show);
 
 #endif

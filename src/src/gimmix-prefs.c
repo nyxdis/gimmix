@@ -24,6 +24,7 @@
 #include "gimmix-prefs.h"
 #include "gimmix-systray.h"
 #include "gimmix-interface.h"
+#include "gimmix-covers.h"
 #include "gimmix.h"
 
 extern MpdObj		*gmo;
@@ -47,10 +48,13 @@ GtkWidget *pref_button_close;
 GtkWidget *pref_dir_chooser;
 GtkWidget *pref_search_check;
 GtkWidget *pref_outputdev_tvw;
+GtkWidget *pref_coverart_vbox;
 
 #ifdef HAVE_COVER_PLUGIN
 static GtkWidget *pref_coverart_check;
 extern GtkWidget *gimmix_plcbox_frame;
+extern char *cover_locations[6][2];
+static GtkWidget *pref_coverart_loc_combo;
 #endif
 
 extern GtkWidget *search_box;
@@ -63,6 +67,7 @@ static void	cb_pref_crossfade_toggled (GtkToggleButton *button, gpointer data);
 static void	cb_pref_outputdev_enable_toggled (GtkCellRendererToggle *toggle, gchar *path_str, gpointer data);
 
 #ifdef HAVE_COVER_PLUGIN
+static void	gimmix_prefs_setup_covers_location_combo (void);
 static void	cb_pref_coverart_disp_toggled (GtkToggleButton *button, gpointer data);
 #endif
 
@@ -92,8 +97,12 @@ gimmix_prefs_init (void)
 	pref_outputdev_tvw = glade_xml_get_widget (xml, "pref_outputdev_tvw");
 	#ifdef HAVE_COVER_PLUGIN
 	pref_coverart_check = glade_xml_get_widget (xml, "coverart_checkbutton");
+	pref_coverart_loc_combo = glade_xml_get_widget (xml, "pref_coverart_location");
+	pref_coverart_vbox = glade_xml_get_widget(xml,"pref_coverart_vbox");
+	gimmix_prefs_setup_covers_location_combo ();
 	#else
 	gtk_widget_hide (glade_xml_get_widget(xml,"pref_interface_ifacebox"));
+	gtk_widget_hide (glade_xml_get_widget(xml,"pref_coverart_vbox"));
 	#endif
 	
 	g_signal_connect (G_OBJECT(pref_systray_check), "toggled", G_CALLBACK(cb_pref_systray_toggled), (gpointer)pref_notification_check);
@@ -235,6 +244,31 @@ gimmix_prefs_dialog_show (void)
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_search_check), FALSE);
 	
+	#ifdef HAVE_COVER_PLUGIN
+	/* cover art enable check */
+	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
+	{
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_coverart_check), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_coverart_check), FALSE);
+	}
+	/* cover art location */
+	char *loc = cfg_get_key_value (conf, "coverart_location");
+	if (loc!=NULL)
+	{
+		int i;
+		for (i=0;i<5;i++)
+		{
+			if (!strcmp(cover_locations[i][0],loc))
+				break;
+		}
+		gtk_combo_box_set_active (pref_coverart_loc_combo, i);
+	}
+	#else
+	gtk_widget_hide (GTK_WIDGET(pref_coverart_vbox));
+	#endif
 	gtk_widget_show (GTK_WIDGET(pref_window));
 	
 	return;
@@ -306,6 +340,11 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 	{
 		mpd_status_set_crossfade (gmo, 0);
 	}
+	
+	#ifdef HAVE_COVER_PLUGIN
+	guint locid = gtk_combo_box_get_active (GTK_COMBO_BOX(pref_coverart_loc_combo));
+	cfg_add_key (&conf, "coverart_location", cover_locations[locid][0]);
+	#endif
 	
 	gimmix_config_save ();
 
@@ -386,18 +425,48 @@ cb_pref_coverart_disp_toggled (GtkToggleButton *button, gpointer data)
 {
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{
+		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
+						NULL,
+						FALSE,
+						NULL);
 		gtk_widget_show (gimmix_plcbox_frame);
-		cfg_add_key (&conf, "show_coverart", "true");
+		gimmix_metadata_show_song_cover (TRUE);
+		cfg_add_key (&conf, "coverart_enable", "true");
 	}
 	else
 	if (gtk_toggle_button_get_active(button) == FALSE)
 	{
 		gtk_widget_hide (gimmix_plcbox_frame);
-		cfg_add_key (&conf, "show_coverart", "false");
+		gimmix_metadata_show_song_cover (FALSE);
+		cfg_add_key (&conf, "coverart_enable", "false");
 	}
 	
 	gimmix_config_save ();
 
 	return;
 }
+
+static void
+gimmix_prefs_setup_covers_location_combo (void)
+{
+	GtkListStore		*store = NULL;
+	GtkTreeIter		iter;
+	guint			i = 0;
+	
+	store = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_STRING); /* LOCID, LOCATION */
+	gtk_combo_box_set_model (GTK_COMBO_BOX(pref_coverart_loc_combo), GTK_TREE_MODEL(store));
+	
+	/* populate */
+	store = GTK_LIST_STORE (gtk_combo_box_get_model (GTK_COMBO_BOX(pref_coverart_loc_combo)));
+	gtk_list_store_clear (store);
+	for (i=0;i<5;i++)
+	{
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter, 0, cover_locations[i][1], 1, cover_locations[i][0], -1);
+	}
+	gtk_combo_box_set_model (GTK_COMBO_BOX(pref_coverart_loc_combo), GTK_TREE_MODEL(store));
+	
+	return;
+}
+
 #endif

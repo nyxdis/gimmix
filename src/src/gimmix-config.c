@@ -54,9 +54,11 @@ gimmix_config_init (void)
 	cfg_add_key (&conf, "full_view_mode",	"false");
 	cfg_add_key (&conf, "enable_search",	"true");
 	#ifdef HAVE_COVER_PLUGIN
-	cfg_add_key (&conf, "show_coverart",	"true");
+	cfg_add_key (&conf, "coverart_enable",	"true");
+	/* set United States as the default cover location */
+	cfg_add_key (&conf, "coverart_location","us");
 	#else
-	cfg_add_key (&conf, "show_coverart",	"false");
+	cfg_add_key (&conf, "coverart_enable",	"false");
 	#endif
 	cfg_add_key (&conf, "update_on_startup","false");
 	

@@ -43,6 +43,7 @@
 
 extern GladeXML		*xml;
 extern MpdObj		*gmo;
+extern ConfigFile	conf;
 
 static GtkWidget	*lyrics_textview = NULL;
 
@@ -326,6 +327,14 @@ gimmix_lyrics_plugin_update_lyrics (void)
 			lyrics_set_artist (s->artist);
 		if (s->title)
 			lyrics_set_songtitle (s->title);
+		#ifndef HAVE_COVER_PLUGIN
+		gimmix_metadata_set_song_details (s, NULL);
+		#else
+		if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"false",4))
+		{
+			gimmix_metadata_set_song_details (s, NULL);
+		}
+		#endif
 	}
 
 	node = lyrics_search ();

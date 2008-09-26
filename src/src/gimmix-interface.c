@@ -155,10 +155,13 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
 			
 			#ifdef HAVE_COVER_PLUGIN
-			g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-					NULL,
-					FALSE,
-					NULL);
+			if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
+			{
+				g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
+						NULL,
+						FALSE,
+						NULL);
+			}
 			#endif
 			gimmix_set_song_info ();
 			#ifdef HAVE_LYRICS
@@ -186,10 +189,13 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			}
 			
 			#ifdef HAVE_COVER_PLUGIN
-			g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-					NULL,
-					FALSE,
-					NULL);
+			if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
+			{
+				g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
+						NULL,
+						FALSE,
+						NULL);
+			}
 			#endif
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Play <x or c>"), NULL);
@@ -434,11 +440,23 @@ gimmix_init (void)
 	/* show the main window */
 	gtk_widget_show (main_window);
 	#ifdef HAVE_COVER_PLUGIN
-	
-	g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-			NULL,
-			FALSE,
-			NULL);
+	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
+	{
+		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
+				NULL,
+				FALSE,
+				NULL);
+	}
+	#endif
+	#ifdef HAVE_LYRICS
+	status = mpd_player_get_state (gmo);
+	if (status == MPD_PLAYER_PLAY || status == MPD_PLAYER_PAUSE)
+	{
+		g_thread_create ((GThreadFunc)gimmix_lyrics_plugin_update_lyrics,
+				NULL,
+				FALSE,
+				NULL);
+	}
 	#endif
 	
 	/* check if library needs to be updated on startup */

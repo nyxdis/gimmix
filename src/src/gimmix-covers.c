@@ -40,7 +40,17 @@
 #define COVERS_DIR	".gimmix/covers"
 #define COVERS_DBF	".gimmix/covers/covers.db"
 #define AMAZON_KEY	"14TBPBEBTPCVM7BY0C02"
-#define AMAZON_URL	"http://ecs.amazonaws.com/onca/xml?Service=AWSECommerceService&Operation=ItemSearch&SearchIndex=Music&ResponseGroup=Images,EditorialReview&AWSAccessKeyId=%s&%s=%s&%s=%s"
+#define AMAZON_URL	"http://ecs.amazonaws.%s/onca/xml?Service=AWSECommerceService&Operation=ItemSearch&SearchIndex=Music&ResponseGroup=Images,EditorialReview&AWSAccessKeyId=%s&%s=%s&%s=%s"
+
+char *cover_locations[6][2] = 
+{ 
+	{"com", "United States"},
+	{"co.uk", "United Kingdom"},
+	{"jp", "Japan"},
+	{"fr", "France"},
+	{"ca", "Canada"},
+	{"de", "Germany"}
+};
 
 static guint h3_size = 0;
 
@@ -124,7 +134,7 @@ gimmix_covers_plugin_init (void)
 	g_signal_connect (widget, "size-allocate", G_CALLBACK(cb_gimmix_covers_plugin_plcbox_size_allocated), NULL);
 	
 	/* configuration init */
-	if (!strncasecmp(cfg_get_key_value(conf,"show_coverart"),"false",4))
+	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"false",4))
 		gtk_widget_hide (gimmix_plcbox_frame);
 	
 	return;
@@ -254,12 +264,14 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 	nxml_data_t	*ndata = NULL;
 	nxml_data_t	*nndata = NULL;
 	char		*str = NULL;
+	char		*location = NULL;
 	nxml_error_t	e;
 	
 	u_artist = gimmix_url_encode (arg1d);
 	u_title = gimmix_url_encode (arg2d);
-	url = g_strdup_printf (AMAZON_URL, AMAZON_KEY, arg1, u_artist, arg2, u_title);
-	//g_print ("%s\n", url);
+	location = cfg_get_key_value(conf,"coverart_location");
+	url = g_strdup_printf (AMAZON_URL, location, AMAZON_KEY, arg1, u_artist, arg2, u_title);
+	g_print ("%s\n", url);
 
 	e = nxml_new (&nxml);
 	nxml_parse_url (nxml, url);
@@ -503,7 +515,6 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 	CoverNode	*node = NULL;
 	char		*temp = NULL;
 	
-	g_print ("called \n");
 	if (s != NULL)
 	{
 		char *result = NULL;
@@ -526,7 +537,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 		/* if not found locally, fetch it from amazon */
 		else
 		{
-			g_print ("beginning to fetch \n");	
+			//g_print ("beginning to fetch \n");	
 			temp = g_strdup_printf ("%s/temp.jpg", cfg_get_path_to_config_file(COVERS_DIR));
 			node = gimmix_covers_plugin_get_metadata ("Artist", s->artist, "Title", s->album);
 			if (node!=NULL)
@@ -596,15 +607,17 @@ gimmix_covers_plugin_update_cover (void)
 		i++;
 	} while (s==NULL);
 	
-	printf ("looped: %d\n", i);
+	//printf ("looped: %d\n", i);
 	if (pixbuf != NULL)
 	{
 		char *areview = NULL;
 		
 		/* main window cover art */
 		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
+		g_object_unref (pixbuf);
 		
 		/* metadata cover art */
+		pixbuf = gimmix_covers_plugin_get_cover_image_of_size (64, 64);
 		gimmix_covers_plugin_set_metadata_image (pixbuf);
 		g_object_unref (pixbuf);
 		

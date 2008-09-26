@@ -29,6 +29,7 @@
 
 extern GladeXML		*xml;
 extern MpdObj		*gmo;
+extern ConfigFile	conf;
 
 static GtkWidget *metadata_song_title;
 static GtkWidget *metadata_song_artistbox;
@@ -38,6 +39,7 @@ static GtkWidget *metadata_song_album;
 static GtkWidget *metadata_song_genrebox;
 static GtkWidget *metadata_song_genre;
 static GtkWidget *metadata_song_albumreview;
+static GtkWidget *metadata_song_cover;
 
 void
 gimmix_metadata_init (void)
@@ -53,7 +55,32 @@ gimmix_metadata_init (void)
 	metadata_song_albumbox = glade_xml_get_widget (xml, "metadata_album_box");
 	metadata_song_artistbox = glade_xml_get_widget (xml, "metadata_artist_box");
 	metadata_song_genrebox = glade_xml_get_widget (xml, "metadata_genre_box");
+	metadata_song_cover = glade_xml_get_widget (xml, "metadata_albumart");
 	
+	#ifndef HAVE_COVER_PLUGIN
+	gimmix_metadata_show_song_cover (FALSE);
+	#else
+	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
+	{
+		gimmix_metadata_show_song_cover (TRUE);
+	}
+	else
+	{
+		gimmix_metadata_show_song_cover (FALSE);
+	}
+	#endif
+
+	return;
+}
+
+void
+gimmix_metadata_show_song_cover (gboolean show)
+{
+	if (show)
+		gtk_widget_show (metadata_song_cover);
+	else
+		gtk_widget_hide (metadata_song_cover);
+		
 	return;
 }
 
