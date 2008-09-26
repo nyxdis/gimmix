@@ -407,5 +407,18 @@ gimmix_update_systray_tooltip (mpd_Song *s)
 	return;
 }
 
-
+void
+gimmix_systray_tooltip_set_default_image (void)
+{
+	GdkPixbuf	*pixbuf = NULL;
+	gchar		*icon_file = NULL;
+	
+	icon_file = gimmix_get_full_image_path (GIMMIX_TOOLTIP_ICON);
+	pixbuf = gdk_pixbuf_new_from_file_at_size (icon_file, 32, 32, NULL);
+	g_free (icon_file);
+	gimmix_tooltip_set_icon (tooltip, pixbuf);
+	g_object_unref (pixbuf);
+	
+	return;
+}
 

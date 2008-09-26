@@ -438,6 +438,7 @@ cb_pref_coverart_disp_toggled (GtkToggleButton *button, gpointer data)
 	{
 		gtk_widget_hide (gimmix_plcbox_frame);
 		gimmix_metadata_show_song_cover (FALSE);
+		gimmix_systray_tooltip_set_default_image ();
 		cfg_add_key (&conf, "coverart_enable", "false");
 	}
 	

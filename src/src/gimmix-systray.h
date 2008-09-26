@@ -22,4 +22,7 @@ void gimmix_update_systray_tooltip (mpd_Song *s);
 /* destroy system tray icon */
 void gimmix_destroy_systray_icon (void);
 
+/* set default image of systray tooltip */
+void gimmix_systray_tooltip_set_default_image (void);
+
 #endif
