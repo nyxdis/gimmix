@@ -88,8 +88,8 @@ lyrics_url_encode (const char *string)
 	return ret;
 }
 
-void
-lyrics_set_artist (const char *artist)
+static void
+gimmix_covers_plugin_set_artist (const char *artist)
 {
 	if (search_artist != NULL)
 		g_free (search_artist);
@@ -98,8 +98,8 @@ lyrics_set_artist (const char *artist)
 	return;
 }
 
-void
-lyrics_set_songtitle (const char *title)
+static void
+gimmix_covers_plugin_set_songtitle (const char *title)
 {
 	if (search_title != NULL)
 		g_free (search_title);
@@ -324,9 +324,9 @@ gimmix_lyrics_plugin_update_lyrics (void)
 	if (s)
 	{
 		if (s->artist)
-			lyrics_set_artist (s->artist);
+			gimmix_covers_plugin_set_artist (s->artist);
 		if (s->title)
-			lyrics_set_songtitle (s->title);
+			gimmix_covers_plugin_set_songtitle (s->title);
 		#ifndef HAVE_COVER_PLUGIN
 		gimmix_metadata_set_song_details (s, NULL);
 		#else
