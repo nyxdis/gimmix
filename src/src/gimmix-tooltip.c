@@ -145,29 +145,7 @@ gimmix_tooltip_set_icon (GimmixTooltip *tooltip, GdkPixbuf *pixbuf)
 
 	return;
 }
-/*
-void gimmix_tooltip_attach_to_widget (GimmixTooltip *tooltip, GtkWidget *widget)
-{
-	if (widget == NULL)
-		return;
-	
-	gint x, y;
-	gint wheight, wwidth;
-	GtkRequisition req;
-	gint height, width;
-	GdkScreen *screen;
-	
-	screen = gdk_screen_get_default ();
-	width = gdk_screen_get_width (screen);
-	height = gdk_screen_get_height (screen);
-	gdk_window_get_geometry (tooltip->window, NULL, NULL, &wwidth, &wheight, NULL);
-	printf ("tooltip size: %d x %d\n", wwidth, wheight);
-	printf ("screen size: %d x %d\n", width, height);
-	
-	gdk_window_get_origin (widget->window, &x, &y);
-	gtk_window_move (GTK_WINDOW(tooltip->window), x-150, y-75);
-}
-*/
+
 void gimmix_tooltip_show (GimmixTooltip *tooltip)
 {
 	if (tooltip != NULL)
