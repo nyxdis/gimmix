@@ -29,7 +29,7 @@ AC_MSG_CHECKING(whether lyrics plugin is enabled)
 if test "x$lyrics" = "xyes" ; then
 	enable_lyrics=yes
 	AC_MSG_RESULT(yes)
-	pkg_modules="libxml-2.0 >= 2.0 nxml libcurl"
+	pkg_modules="nxml libcurl"
 	CFLAGS="${CFLAGS} -DHAVE_LYRICS"
 	AC_DEFINE(HAVE_LYRICS, 1, [building gimmix with lyrics support])
 else
@@ -48,7 +48,7 @@ if test "x$cover" = "xyes" ; then
 	enable_cover=yes
 	AC_MSG_RESULT(yes)
 	if test "x$enable_lyrics" = "xno" ; then
-		pkg_modules="libxml-2.0 >= 2.0 libcurl"
+		pkg_modules="nxml libcurl"
 	fi
 	CFLAGS="${CFLAGS} -DHAVE_COVER_PLUGIN"
 	AC_DEFINE(HAVE_COVER_PLUGIN, 1, [building gimmix with cover plugin support])

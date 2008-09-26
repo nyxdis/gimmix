@@ -428,7 +428,7 @@ gimmix_init (void)
 	#ifdef HAVE_LYRICS
 	gimmix_lyrics_plugin_init ();
 	#else
-	widget = glade_xml_get_widget (xml, "lyricsvbox");
+	widget = glade_xml_get_widget (xml, "lyrics_container");
 	gtk_widget_hide (widget);
 	#endif
 	
