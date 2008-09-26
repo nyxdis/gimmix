@@ -43,7 +43,7 @@ Keybindings:
 Gimmix keybindings are not yet configurable unless you manually edit the source.
 
 'z'			-> Previous song
-'x' / 'c'	-> Play/Pause (Toggle)
+'x' / 'c'		-> Play/Pause (Toggle)
 'v'			-> Stop
 'b'			-> Next song
 'i'			-> Song information
@@ -117,6 +117,12 @@ window_width and window_height
 these represt the window geometry of gimmix.
 (These values are automatically set, so, its not necessary to set these
 values)
+
+coverart_enable = true or false
+enable/disable amazon cover art plugin
+
+coverart_location = com | co.uk | jp | fr | ca | de
+amazon's server location to fetch covers from
 
 Bugs:
 =====
