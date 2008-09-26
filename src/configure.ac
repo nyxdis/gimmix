@@ -2,7 +2,7 @@ ENV_CFLAGS=$CFLAGS
 
 AC_PREREQ(2.59)
 dnl Update it right before new releases
-AC_INIT([Gimmix], 0.5.0a, [priyankmg@gmail.com], gimmix)
+AC_INIT([Gimmix], 0.5.0, [priyankmg@gmail.com], gimmix)
 AC_CONFIG_SRCDIR([src/gimmix.c])
 AC_LANG(C)
 AM_CONFIG_HEADER(config.h)
