@@ -214,13 +214,15 @@ main (int argc, char *argv[])
 	if (gimmix_config_exists())
 	{
 		gimmix_config_init (); /* initialize configuration */
+		gimmix_interface_widgets_init ();
+		gimmix_interface_disable_controls ();
 		if (gimmix_connect())
 		{
 			gimmix_init ();
 		}
 		else
 		{
-			gimmix_connect_error ();
+			//gimmix_connect_error ();
 		}
 	}
 	else

@@ -9,7 +9,15 @@
 #include <libmpd/libmpdclient.h>
 #include <gtk/gtk.h>
 
-/* Initialize the playlist interface, file browser and setup signals */
+/* Initialize the playlist widgets and setup signals */
+void gimmix_playlist_widgets_init (void);
+
+/* Disable widgets */
+void gimmix_playlist_disable_controls (void);
+
+void gimmix_playlist_enable_controls (void);
+
+/* Initialize and populate playlists */
 void gimmix_playlist_init (void);
 
 /* update current playlist depending on the mpd playlist */

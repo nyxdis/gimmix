@@ -60,7 +60,7 @@ static void cb_gimmix_tag_editor_error_response (GtkDialog *dialog, gint arg1, g
 const gchar *dir_error = "You have specified an invalid music directory. Do you want to specify the correct music directory now ?";
 	
 void
-gimmix_tag_editor_init (void)
+gimmix_tag_editor_widgets_init (void)
 {
 	GtkWidget *widget;
 	

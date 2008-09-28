@@ -40,6 +40,7 @@ static GtkWidget *metadata_song_genrebox;
 static GtkWidget *metadata_song_genre;
 static GtkWidget *metadata_song_albumreview;
 static GtkWidget *metadata_song_cover;
+static GtkWidget *metadata_container;
 
 void
 gimmix_metadata_init (void)
@@ -53,6 +54,7 @@ gimmix_metadata_init (void)
 	metadata_song_artistbox = glade_xml_get_widget (xml, "metadata_artist_box");
 	metadata_song_genrebox = glade_xml_get_widget (xml, "metadata_genre_box");
 	metadata_song_cover = glade_xml_get_widget (xml, "metadata_albumart");
+	metadata_container = glade_xml_get_widget (xml, "metadata_container");
 	
 	#ifndef HAVE_COVER_PLUGIN
 	gimmix_metadata_show_song_cover (FALSE);
@@ -69,6 +71,23 @@ gimmix_metadata_init (void)
 
 	return;
 }
+
+void
+gimmix_metadata_disable_controls (void)
+{
+	gtk_widget_set_sensitive (metadata_container, FALSE);
+
+	return;
+}
+
+void
+gimmix_metadata_enable_controls (void)
+{
+	gtk_widget_set_sensitive (metadata_container, TRUE);
+
+	return;
+}
+
 
 void
 gimmix_metadata_show_song_cover (gboolean show)

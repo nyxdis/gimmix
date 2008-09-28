@@ -477,9 +477,10 @@ static GdkPixbuf*
 gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 {
 	GdkPixbuf	*pixbuf = NULL;
-	
+	int		status;
 	//g_print ("gimmix_covers_plugin_get_cover_image_of_size() called\n");
-	if (gimmix_get_status(gmo)==STOP)
+	status = gimmix_get_status (gmo);
+	if (status == STOP || status == ERROR)
 	{
 		/* set default image */
 		pixbuf = gimmix_covers_plugin_get_default_cover (width, height);
@@ -590,15 +591,38 @@ gimmix_covers_plugin_set_metadata_image (GdkPixbuf *pixbuf)
 	return;
 }
 
+/* if default = TRUE, set the default cover */
 void
-gimmix_covers_plugin_update_cover (void)
+gimmix_covers_plugin_update_cover (gboolean defaultc)
 {
 	guint		height;
 	GdkPixbuf	*pixbuf = NULL;
 	mpd_Song	*s = NULL;
 
 	height = h3_size;
-	pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, height);
+	if (defaultc)
+	{
+		pixbuf = gimmix_covers_plugin_get_default_cover (96, height);
+		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
+		g_object_unref (pixbuf);
+		pixbuf = gimmix_covers_plugin_get_default_cover (64, 64);
+		gimmix_covers_plugin_set_metadata_image (pixbuf);
+		g_object_unref (pixbuf);
+		if (!strncasecmp(cfg_get_key_value(conf,"enable_systray"),"true",4))
+		{
+			if (!strncasecmp(cfg_get_key_value(conf,"enable_notification"),"true",4))
+			{
+				pixbuf = gimmix_covers_plugin_get_default_cover (48, 48);
+				gimmix_tooltip_set_icon (tooltip, pixbuf);
+				g_object_unref (pixbuf);
+			}
+		}
+		return;
+	}
+	else
+	{
+		pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, height);
+	}
 	
 	int i =0;
 	if (mpd_player_get_state(gmo)!=MPD_PLAYER_STOP)

@@ -63,6 +63,12 @@ GtkWidget		*playlist_button;
 GtkWidget		*playlist_box;
 GtkWidget		*image_play;
 GtkWidget		*play_button;
+GtkWidget		*prev_button;
+GtkWidget		*info_button;
+GtkWidget		*next_button;
+GtkWidget		*pref_button;
+GtkWidget		*stop_button;
+GtkWidget		*plcontrolshbox;
 GtkTooltips 		*play_button_tooltip = NULL;
 
 extern MpdObj 		*gmo;
@@ -102,7 +108,7 @@ static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpoin
 
 /* mpd callbacks */
 static void 	gimmix_status_changed (MpdObj *mo, ChangedStatusType id);
-static void	gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata);
+static int	gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata);
 
 static void
 gimmix_update_global_song_info (void)
@@ -130,7 +136,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		gimmix_update_current_playlist ();
 		#ifdef HAVE_COVER_PLUGIN
 		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-				NULL,
+				FALSE,
 				FALSE,
 				NULL);
 		
@@ -158,7 +164,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
 			{
 				g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-						NULL,
+						FALSE,
 						FALSE,
 						NULL);
 			}
@@ -199,6 +205,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			#endif
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Play <x or c>"), NULL);
+			gimmix_update_current_playlist ();
 		}
 		g_object_ref_sink (play_button_tooltip);
 		gimmix_update_current_playlist ();
@@ -219,18 +226,22 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 	return;
 }
 
-static void
+static int
 gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
 {
-	if (id&MPD_STATUS_FAILED || id&MPD_STATS_FAILED || id&MPD_SERVER_ERROR || id&MPD_FATAL_ERROR)
+	g_print ("error:%s\n", msg);
+	if (id & MPD_STATUS_FAILED)
+		return FALSE;
+
+	if (id&MPD_STATS_FAILED || id&MPD_SERVER_ERROR || id&MPD_FATAL_ERROR)
 	{
 		mpd_free (gmo);
 		gmo = gimmix_mpd_connect ();
 		mpd_signal_connect_status_changed (gmo, (StatusChangedCallback)gimmix_status_changed, NULL);
 		mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_mpd_error, NULL);
 	}
-	
-	return;
+
+	return FALSE;
 }
 
 static void
@@ -280,13 +291,14 @@ cb_playlist_button_press (GtkWidget *widget, GdkEventButton *event, gpointer dat
 }
 
 void
-gimmix_init (void)
+gimmix_interface_widgets_init (void)
 {
 	GtkWidget 		*widget;
 	GtkWidget		*progressbox;
 	GtkAdjustment		*vol_adj;
 	GdkPixbuf		*app_icon;
 	gchar			*path;
+	GdkPixbuf		*pixbuf = NULL;
 	
 	/* Set the application icon */
 	main_window = glade_xml_get_widget (xml, "main_window");
@@ -338,6 +350,12 @@ gimmix_init (void)
 	search_entry = glade_xml_get_widget (xml, "search_label");
 	play_button = glade_xml_get_widget (xml, "play_button");
 	image_play = glade_xml_get_widget (xml, "image_play");
+	plcontrolshbox = glade_xml_get_widget (xml, "plcontrolshbox");
+	next_button = glade_xml_get_widget (xml, "next_button");
+	prev_button = glade_xml_get_widget (xml, "prev_button");
+	pref_button = glade_xml_get_widget (xml, "pref_button");
+	info_button = glade_xml_get_widget (xml, "info_button");
+	stop_button = glade_xml_get_widget (xml, "stop_button");
 
 	g_signal_connect (G_OBJECT(playlist_button), "button-press-event", G_CALLBACK(cb_playlist_button_press), NULL);
 
@@ -392,6 +410,91 @@ gimmix_init (void)
 	gtk_widget_hide (widget);
 	#endif
 	
+	#ifdef HAVE_LYRICS
+	gimmix_lyrics_plugin_init ();
+	#else
+	widget = glade_xml_get_widget (xml, "lyrics_container");
+	gtk_widget_hide (widget);
+	#endif
+	
+	widget = glade_xml_get_widget (xml, "metadata_container");
+	#ifdef HAVE_COVER_PLUGIN
+	gtk_widget_show (widget);
+	#elif defined(HAVE_LYRICS)
+	gtk_widget_show (widget);
+	#else
+	gtk_widget_hide (widget);
+	#endif
+	
+	/* initialize preferences dialog */
+	gimmix_prefs_init ();
+	
+	/* playlist widgets */
+	gimmix_playlist_widgets_init ();
+	
+	/* tag editor widgets */
+	gimmix_tag_editor_widgets_init ();
+	
+	/* show version info */
+	gimmix_show_ver_info ();
+	
+	/* show the main window */
+	gtk_widget_show (main_window);
+	
+	#ifdef HAVE_COVER_PLUGIN
+	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
+	{
+		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
+				TRUE,
+				FALSE,
+				NULL);
+	}
+	#endif
+}
+
+void
+gimmix_interface_disable_controls (void)
+{
+	gtk_widget_set_sensitive (repeat_toggle_button, FALSE);
+	gtk_widget_set_sensitive (shuffle_toggle_button, FALSE);
+	gtk_widget_set_sensitive (play_button, FALSE);
+	gtk_widget_set_sensitive (stop_button, FALSE);
+	gtk_widget_set_sensitive (next_button, FALSE);
+	gtk_widget_set_sensitive (prev_button, FALSE);
+	gtk_widget_set_sensitive (info_button, FALSE);
+	gtk_widget_set_sensitive (pref_button, FALSE);
+	gtk_widget_set_sensitive (volume_button, FALSE);
+	gtk_widget_set_sensitive (volume_hscalebox, FALSE);
+	
+	gimmix_playlist_disable_controls ();
+	gimmix_metadata_disable_controls ();
+}
+
+void
+gimmix_interface_enable_controls (void)
+{
+	gtk_widget_set_sensitive (repeat_toggle_button, TRUE);
+	gtk_widget_set_sensitive (shuffle_toggle_button, TRUE);
+	gtk_widget_set_sensitive (play_button, TRUE);
+	gtk_widget_set_sensitive (stop_button, TRUE);
+	gtk_widget_set_sensitive (next_button, TRUE);
+	gtk_widget_set_sensitive (prev_button, TRUE);
+	gtk_widget_set_sensitive (info_button, TRUE);
+	gtk_widget_set_sensitive (pref_button, TRUE);
+	gtk_widget_set_sensitive (volume_button, TRUE);
+	gtk_widget_set_sensitive (volume_hscalebox, TRUE);
+	
+	gimmix_playlist_enable_controls ();
+	gimmix_metadata_enable_controls ();
+}
+
+void
+gimmix_init (void)
+{
+	GtkWidget *widget = NULL;
+	
+	gimmix_interface_disable_controls ();
+	
 	mpd_status_update (gmo);
 	status = mpd_player_get_state (gmo);
 	gimmix_update_global_song_info ();
@@ -422,28 +525,13 @@ gimmix_init (void)
 	
 	/* initialize playlist and tag editor */
 	gimmix_playlist_init ();
-	gimmix_tag_editor_init ();
 	gimmix_update_current_playlist ();
-	
-	#ifdef HAVE_LYRICS
-	gimmix_lyrics_plugin_init ();
-	#else
-	widget = glade_xml_get_widget (xml, "lyrics_container");
-	gtk_widget_hide (widget);
-	#endif
-	
-	/* initialize preferences dialog */
-	gimmix_prefs_init ();
-	
-	
-	
-	/* show the main window */
-	gtk_widget_show (main_window);
+
 	#ifdef HAVE_COVER_PLUGIN
 	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
 	{
 		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-				NULL,
+				FALSE,
 				FALSE,
 				NULL);
 	}
@@ -458,20 +546,12 @@ gimmix_init (void)
 				NULL);
 	}
 	#endif
-	
-	widget = glade_xml_get_widget (xml, "metadata_container");
-	#ifdef HAVE_COVER_PLUGIN
-	gtk_widget_show (widget);
-	#elif defined(HAVE_LYRICS)
-	gtk_widget_show (widget);
-	#else
-	gtk_widget_hide (widget);
-	#endif
-	g_object_unref (xml);
-	
+
 	/* check if library needs to be updated on startup */
 	if (strncasecmp(cfg_get_key_value(conf, "update_on_startup"), "true", 4) == 0)
 		gimmix_library_update ();
+		
+	g_object_unref (xml);
 	
 	return;
 }

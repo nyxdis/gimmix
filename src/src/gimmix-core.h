@@ -21,9 +21,10 @@ typedef struct songinfo
 } SongInfo;
 
 typedef enum { 	PLAY = 1,
-				PAUSE,
-				STOP,
-				UNKNOWN,
+		PAUSE,
+		STOP,
+		UNKNOWN,
+		ERROR
 } GimmixStatus;
 
 /* create a mpd object and connect to mpd using the conf */

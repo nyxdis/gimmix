@@ -8,7 +8,7 @@
 #include "gimmix-prefs.h"
 
 /* Initialize the tag editor signals */
-void gimmix_tag_editor_init (void);
+void gimmix_tag_editor_widgets_init (void);
 
 /* populate the tag editor window */
 gboolean gimmix_tag_editor_populate (const gchar *);

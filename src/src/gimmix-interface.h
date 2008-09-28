@@ -8,6 +8,9 @@
 #include "gimmix-systray.h"
 #include "gimmix-playlist.h"
 
+/* Initialize all interface widgets */
+void gimmix_interface_widgets_init (void);
+
 /* Initializes default interface signals */
 void gimmix_init (void);
 
