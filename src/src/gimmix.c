@@ -38,8 +38,10 @@
 
 MpdObj 		*gmo = NULL;
 GladeXML 	*xml = NULL;
+GtkWidget	*connection_box = NULL;
 
 static void error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog);
+static void gimmix_mpd_connection_changed (MpdObj *mo, int connect, void *userdata);
 
 bool
 gimmix_connect (void)
@@ -51,11 +53,34 @@ gimmix_connect (void)
 	if (mo != NULL)
 	{
 		gmo = mo;
+		mpd_signal_connect_connection_changed (gmo, (ConnectionChangedCallback)gimmix_mpd_connection_changed, NULL);
 		return true;
 	}
 	
 	gmo = NULL;
 	return false;
+}
+
+static void
+gimmix_mpd_connection_changed (MpdObj *mo, int connect, void *userdata)
+{
+	if (!connect) /* disconnected */
+	{
+		g_print ("i got disconnected\n");
+		mpd_free (gmo);
+		gmo = NULL;
+		gimmix_interface_disable_controls ();
+		gtk_widget_show (connection_box);
+	}
+	else /* connected */
+	{
+		g_print ("i got connected\n");
+		gimmix_interface_enable_controls ();
+		gtk_widget_hide (connection_box);
+		gimmix_init ();
+	}
+	
+	return;
 }
 
 void
@@ -88,6 +113,19 @@ error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog)
 {
 	gtk_widget_destroy (GTK_WIDGET(dialog));
 	gtk_main_quit ();
+	
+	return;
+}
+
+static void
+cb_gimmix_connect_button_clicked (GtkWidget *widget, gpointer data)
+{
+	if (gimmix_connect())
+	{
+		gimmix_interface_enable_controls ();
+		gimmix_init ();
+		gtk_widget_hide (connection_box);
+	}
 	
 	return;
 }
@@ -210,7 +248,11 @@ main (int argc, char *argv[])
 	}
 	
 	glade_xml_signal_autoconnect (xml);
-	
+	connection_box = glade_xml_get_widget (xml, "gimmix_connectionbox");
+	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"gimmix_connect_button")),
+			"clicked",
+			G_CALLBACK(cb_gimmix_connect_button_clicked),
+			NULL);
 	if (gimmix_config_exists())
 	{
 		gimmix_config_init (); /* initialize configuration */
@@ -219,10 +261,12 @@ main (int argc, char *argv[])
 		if (gimmix_connect())
 		{
 			gimmix_init ();
+			gimmix_interface_enable_controls ();
+			gtk_widget_hide (connection_box);
 		}
 		else
 		{
-			//gimmix_connect_error ();
+			gtk_widget_show (connection_box);
 		}
 	}
 	else

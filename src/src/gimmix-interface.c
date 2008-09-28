@@ -235,10 +235,11 @@ gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
 
 	if (id&MPD_STATS_FAILED || id&MPD_SERVER_ERROR || id&MPD_FATAL_ERROR)
 	{
-		mpd_free (gmo);
-		gmo = gimmix_mpd_connect ();
-		mpd_signal_connect_status_changed (gmo, (StatusChangedCallback)gimmix_status_changed, NULL);
-		mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_mpd_error, NULL);
+		//mpd_free (gmo);
+		//gmo = gimmix_mpd_connect ();
+		//mpd_signal_connect_status_changed (gmo, (StatusChangedCallback)gimmix_status_changed, NULL);
+		//mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_mpd_error, NULL);
+		return TRUE;
 	}
 
 	return FALSE;
@@ -493,8 +494,6 @@ gimmix_init (void)
 {
 	GtkWidget *widget = NULL;
 	
-	gimmix_interface_disable_controls ();
-	
 	mpd_status_update (gmo);
 	status = mpd_player_get_state (gmo);
 	gimmix_update_global_song_info ();
@@ -624,7 +623,11 @@ gimmix_timer (void)
 	int 	new_status;
 	float 	fraction;
 	
+	if (mpd_check_connected(gmo)==FALSE)
+		return FALSE;
 	mpd_status_update (gmo);
+	if (mpd_check_connected(gmo)==FALSE)
+		return FALSE;
 	new_status = mpd_player_get_state (gmo);
 	
 	if (status == new_status)
