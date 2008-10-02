@@ -460,7 +460,7 @@ gimmix_prefs_setup_covers_location_combo (void)
 	/* populate */
 	store = GTK_LIST_STORE (gtk_combo_box_get_model (GTK_COMBO_BOX(pref_coverart_loc_combo)));
 	gtk_list_store_clear (store);
-	for (i=0;i<5;i++)
+	for (i=0;i<=5;i++)
 	{
 		gtk_list_store_append (store, &iter);
 		gtk_list_store_set (store, &iter, 0, cover_locations[i][1], 1, cover_locations[i][0], -1);
