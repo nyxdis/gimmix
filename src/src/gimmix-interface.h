@@ -20,6 +20,12 @@ void gimmix_set_song_info (void);
 /* Toggles visibility of main window */
 void gimmix_window_visible_toggle (void);
 
+/* Disable widgets */
+void gimmix_interface_disable_controls (void);
+
+/* Enable widgets */
+void gimmix_interface_enable_controls (void);
+
 /* interface cleanup */
 void gimmix_interface_cleanup (void);
 

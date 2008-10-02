@@ -197,7 +197,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
 			{
 				g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-						TRUE,
+						(gpointer)TRUE,
 						FALSE,
 						NULL);
 			}
@@ -299,7 +299,6 @@ gimmix_interface_widgets_init (void)
 	GtkAdjustment		*vol_adj;
 	GdkPixbuf		*app_icon;
 	gchar			*path;
-	GdkPixbuf		*pixbuf = NULL;
 	
 	/* Set the application icon */
 	main_window = glade_xml_get_widget (xml, "main_window");
@@ -446,7 +445,7 @@ gimmix_interface_widgets_init (void)
 	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
 	{
 		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-				TRUE,
+				(gpointer)TRUE,
 				FALSE,
 				NULL);
 	}
@@ -491,9 +490,7 @@ gimmix_interface_enable_controls (void)
 
 void
 gimmix_init (void)
-{
-	GtkWidget *widget = NULL;
-	
+{	
 	mpd_status_update (gmo);
 	status = mpd_player_get_state (gmo);
 	gimmix_update_global_song_info ();
@@ -634,7 +631,7 @@ gimmix_timer (void)
 		if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
 		{
 			g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-					TRUE, /* set default cover */
+					(gpointer)TRUE, /* set default cover */
 					FALSE,
 					NULL);
 		}

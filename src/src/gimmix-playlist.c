@@ -1024,7 +1024,7 @@ gimmix_update_library_with_dir (gchar *dir)
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 16, 16, NULL);
 	g_free (path);
 	
-	if (dir != "/")
+	if (strcmp(dir,"/"))
 	{	
 		parent = gimmix_path_get_parent_dir (dir);
 		gtk_list_store_append (dir_store, &dir_iter);

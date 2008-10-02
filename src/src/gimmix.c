@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 #include <locale.h>
 #include <getopt.h>
+#include <libgen.h>
 
 #ifdef HAVE_CONFIG_H
 #	include "config.h"

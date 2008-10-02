@@ -34,6 +34,7 @@
 #include <nxml.h>
 #include <libxml/xmlreader.h>
 #include "wejpconfig.h"
+#include "gimmix-metadata.h"
 #include "gimmix-covers.h"
 
 #define DEFAULT_COVER	"gimmix-album.png"
@@ -73,9 +74,6 @@ static CoverNode* gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, ch
 
 /* Get the fallback cover image of specified size */
 static GdkPixbuf* gimmix_covers_plugin_get_default_cover (guint width, guint height);
-
-/* Get a cover image of specified size */
-static GdkPixbuf* gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height);
 
 /* Set the cover image for metadata section */
 static void gimmix_covers_plugin_set_metadata_image (GdkPixbuf *pixbuf);
@@ -345,7 +343,6 @@ gimmix_cover_plugin_save_cover (char *artist, char *album)
 	char	*old_path = NULL;
 	char	*new_path = NULL;
 	char	*key = NULL;
-	FILE	*fp = NULL;
 	
 	artist_e = gimmix_url_encode (artist);
 	album_e = gimmix_url_encode (album);
@@ -473,7 +470,7 @@ gimmix_covers_plugin_get_default_cover (guint width, guint height)
 	return ret;
 }
 
-static GdkPixbuf*
+GdkPixbuf*
 gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 {
 	GdkPixbuf	*pixbuf = NULL;

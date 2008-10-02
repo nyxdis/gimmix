@@ -57,8 +57,8 @@ GimmixTooltip *gimmix_tooltip_new (void)
 	label1 = gtk_label_new (NULL);
 	g_object_set (G_OBJECT(label1), "use-markup", TRUE, NULL);
 	gtk_box_pack_start (GTK_BOX(tooltip->vbox), label1, TRUE, FALSE, 1);
-	gtk_label_set_ellipsize (label1, PANGO_ELLIPSIZE_END);
-	gtk_label_set_max_width_chars (label1, 25);
+	gtk_label_set_ellipsize (GTK_LABEL(label1), PANGO_ELLIPSIZE_END);
+	gtk_label_set_max_width_chars (GTK_LABEL(label1), 25);
 	gtk_misc_set_alignment (GTK_MISC(label1), 0, 0);
 	label2 = gtk_label_new (NULL);
 	g_object_set (G_OBJECT(label2), "use-markup", TRUE, NULL);

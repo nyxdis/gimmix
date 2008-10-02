@@ -6,6 +6,9 @@
 #include "eggtrayicon.h"
 #include "gimmix-tooltip.h"
 #include "sexy-tooltip.h"
+#ifdef HAVE_COVER_PLUGIN
+#	include	"gimmix-covers.h"
+#endif
 
 /* create system tray icon */
 void gimmix_create_systray_icon (void);
