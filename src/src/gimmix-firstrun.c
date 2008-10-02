@@ -23,8 +23,8 @@
  
 #include <gtk/gtk.h>
 #include <sys/stat.h>
-#include "gimmix-firstrun.h"
 #include "gimmix.h"
+#include "gimmix-firstrun.h"
 
 #define CONFIG_FILE ".gimmixrc"
 
@@ -41,7 +41,6 @@ gimmix_show_firstrun_dialog (void)
 {
 	GtkWidget *window;
 	GtkWidget *button;
-	GtkWidget *check;
 	GtkWidget *entry;
 
 	cfg_init_config_file_struct (&cf);

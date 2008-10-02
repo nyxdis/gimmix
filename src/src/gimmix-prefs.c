@@ -264,7 +264,7 @@ gimmix_prefs_dialog_show (void)
 			if (!strcmp(cover_locations[i][0],loc))
 				break;
 		}
-		gtk_combo_box_set_active (pref_coverart_loc_combo, i);
+		gtk_combo_box_set_active (GTK_COMBO_BOX(pref_coverart_loc_combo), i);
 	}
 	#else
 	gtk_widget_hide (GTK_WIDGET(pref_coverart_vbox));

@@ -31,6 +31,7 @@
 #endif
 
 #include "gimmix.h"
+#include "gimmix-firstrun.h"
 #include "gimmix-interface.h"
 #include "gimmix-playlist.h"
 

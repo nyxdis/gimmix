@@ -156,7 +156,7 @@ lyrics_perform_search (const char *url)
 	LYRICS_NODE	*lnode = NULL;
 	
 	e = nxml_new (&nxml);
-	nxml_parse_url (nxml, url);
+	nxml_parse_url (nxml, (char*)url);
 	nxml_root_element (nxml, &nroot);
 	nxml_find_element (nxml, nroot, "response", &child);
 	nxml_get_string (child, &str);
