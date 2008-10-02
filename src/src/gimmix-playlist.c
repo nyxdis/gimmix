@@ -291,8 +291,7 @@ gimmix_update_current_playlist (MpdObj *mo, MpdData *pdata)
 	gint 		new;
 	gint		current_song_id = -1;
 	MpdData		*data = pdata;
-	
-	g_print ("gimmix_update_current_playlist() called\n");
+
 	if (mo!=NULL && mpd_check_connected(mo))
 	{
 		new = mpd_playlist_get_playlist_id (mo);
@@ -380,7 +379,6 @@ gimmix_display_total_playlist_time (MpdObj *mo)
 	guint		len = 0;
 	MpdData		*data;
 	
-	g_print ("called total\n");
 	len = mpd_playlist_get_playlist_length (mo);
 	data = mpd_playlist_get_changes (mo, 0);
 	if (!len)
@@ -399,7 +397,7 @@ gimmix_display_total_playlist_time (MpdObj *mo)
 	if (time > 0)
 	{
 		time_string = g_strdup_printf ("%d %s, %s%d %s", len, _("Items"), _("Total Duration: "), time/60, _("minutes"));
-		g_print ("%s\n",time_string);
+		//g_print ("%s\n",time_string);
 		gtk_label_set_text (GTK_LABEL(gimmix_statusbar), time_string);
 		gtk_widget_show (gimmix_statusbox);
 		g_free (time_string);
