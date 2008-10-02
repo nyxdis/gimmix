@@ -253,19 +253,19 @@ gimmix_tag_editor_error (const gchar *error_text)
 	GtkWidget 	*error_dialog;
 
 	error_dialog = gtk_message_dialog_new_with_markup (NULL,
-												GTK_DIALOG_DESTROY_WITH_PARENT,
-												GTK_MESSAGE_ERROR,
-												GTK_BUTTONS_YES_NO,
-												"<b>%s: </b><span size=\"large\">%s</span>",
-												_("ERROR"),
-												error_text);
+								GTK_DIALOG_DESTROY_WITH_PARENT,
+								GTK_MESSAGE_ERROR,
+								GTK_BUTTONS_YES_NO,
+								"<b>%s: </b><span size=\"large\">%s</span>",
+								_("ERROR"),
+								error_text);
 	gtk_window_set_resizable (GTK_WINDOW(error_dialog), FALSE);
-    g_signal_connect (error_dialog,
-					"response",
-					G_CALLBACK (cb_gimmix_tag_editor_error_response),
-					NULL);
+	g_signal_connect (error_dialog,
+			"response",
+			G_CALLBACK (cb_gimmix_tag_editor_error_response),
+			NULL);
 	
-    gtk_widget_show_all (error_dialog);
+	gtk_widget_show_all (error_dialog);
     
     return;
 }
