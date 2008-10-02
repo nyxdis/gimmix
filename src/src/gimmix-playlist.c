@@ -86,7 +86,7 @@ static void		gimmix_library_popup_menu (void);
 static void		gimmix_playlists_popup_menu (void);
 static gchar*		gimmix_path_get_parent_dir (gchar *);
 static void		gimmix_load_playlist (gchar *);
-static void		gimmix_display_total_playlist_time (void);
+static void		gimmix_display_total_playlist_time (MpdObj *);
 
 /* Callbacks */
 /* Current playlist callbacks */
@@ -106,7 +106,7 @@ static gboolean		gimmix_update_player_status (gpointer data);
 /* Library browser callbacks */
 static void		cb_library_dir_activated (gpointer data);
 static void		gimmix_library_song_info (void);
-static void 	cb_playlist_activated (GtkTreeView *);
+static void		cb_playlist_activated (GtkTreeView *);
 static void		cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_library_popup_add_clicked (GtkWidget *widget, gpointer data);
 static void		cd_library_popup_replace_clicked (GtkWidget *widget, gpointer data);
@@ -116,12 +116,25 @@ static void		cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer
 /* Playlist browser callbacks */
 static void		gimmix_update_playlists_treeview (void);
 static void		gimmix_playlist_save_dialog_show (void);
-static void 	cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog);
+static void		cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog);
 static void		cb_playlists_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static bool		cb_all_playlist_button_press (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_gimmix_playlist_remove ();
 static void		cb_gimmix_playlist_load ();
 static void		cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
+
+static void
+gimmix_playlist_search_widgets_init (void)
+{
+	search_box = glade_xml_get_widget (xml, "search_box");
+	search_combo = glade_xml_get_widget (xml, "search_combo");
+	search_entry = glade_xml_get_widget (xml, "search_entry");
+	
+	gtk_combo_box_set_active (GTK_COMBO_BOX(search_combo), 0);
+	g_signal_connect (G_OBJECT(search_entry), "key_release_event", G_CALLBACK(cb_search_keypress), NULL);
+	
+	return;
+}
 
 void
 gimmix_playlist_widgets_init (void)
@@ -221,7 +234,8 @@ gimmix_playlist_widgets_init (void)
 		   G_CALLBACK(onDragDataRecived),
 		   current_playlist_store);
 	loaded_playlist = NULL;
- 
+	
+	gimmix_playlist_search_widgets_init ();
 }
 
 void
@@ -248,6 +262,15 @@ gimmix_playlist_enable_controls (void)
 	gtk_widget_set_sensitive (current_playlist_treeview, TRUE);
 }
 
+static void
+gimmix_search_init (void)
+{
+	if (strncasecmp(cfg_get_key_value(conf, "enable_search"), "true", 4) != 0)
+		gtk_widget_hide (search_box);
+		
+	return;
+}
+
 void
 gimmix_playlist_init (void)
 {
@@ -260,44 +283,28 @@ gimmix_playlist_init (void)
 	return;
 }
 
-static void
-gimmix_search_init (void)
-{
-	search_box = glade_xml_get_widget (xml, "search_box");
-	search_combo = glade_xml_get_widget (xml, "search_combo");
-	search_entry = glade_xml_get_widget (xml, "search_entry");
-	
-	gtk_combo_box_set_active (GTK_COMBO_BOX(search_combo), 0);
-	g_signal_connect (G_OBJECT(search_entry), "key_release_event", G_CALLBACK(cb_search_keypress), NULL);
-	
-	if (strncasecmp(cfg_get_key_value(conf, "enable_search"), "true", 4) != 0)
-		gtk_widget_hide (search_box);
-	
-	return;
-}
-
 void
-gimmix_update_current_playlist (void)
+gimmix_update_current_playlist (MpdObj *mo, MpdData *pdata)
 {
 	GtkListStore	*current_playlist_store;
 	GtkTreeIter	current_playlist_iter;
 	gint 		new;
-	MpdData 	*data;
 	gint		current_song_id = -1;
-
-	new = mpd_playlist_get_playlist_id (gmo);
-	current_song_id = mpd_player_get_current_song_id (gmo);
+	MpdData		*data = pdata;
 	
+	g_print ("gimmix_update_current_playlist() called\n");
+	if (mo!=NULL && mpd_check_connected(mo))
+	{
+		new = mpd_playlist_get_playlist_id (mo);
+		current_song_id = mpd_player_get_current_song_id (mo);
+	}
+	else
+	{
+		return;
+	}
 	current_playlist_store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW(current_playlist_treeview)));
 	gtk_list_store_clear (current_playlist_store);
 	
-	if (mpd_check_connected(gmo))
-		data = mpd_playlist_get_changes (gmo, 0);
-	else
-		return;
-	if (data == NULL)
-		data = mpd_playlist_get_changes (gmo, 0);
-
 	while (data != NULL)
 	{
 		gchar 	*title;
@@ -315,12 +322,12 @@ gimmix_update_current_playlist (void)
 			}
 			else
 			{
-				gchar *file = g_path_get_basename(data->song->file);
+				gchar *file = g_path_get_basename (data->song->file);
 				gimmix_strip_file_ext (file);
 				title = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s</span>", file);
 				g_free (file);
 			}
-			gimmix_get_total_time_for_song (gmo, data->song, time);
+			gimmix_get_total_time_for_song (mo, data->song, time);
 			ti = g_markup_printf_escaped ("<span size=\"medium\" weight=\"bold\">%s</span>", time);
 		}
 		else
@@ -337,7 +344,7 @@ gimmix_update_current_playlist (void)
 				title = g_markup_printf_escaped (g_path_get_basename(data->song->file));
 				gimmix_strip_file_ext (title);
 			}
-			gimmix_get_total_time_for_song (gmo, data->song, time);
+			gimmix_get_total_time_for_song (mo, data->song, time);
 			ti = NULL;
 		}
 		
@@ -355,24 +362,28 @@ gimmix_update_current_playlist (void)
 		g_free (title);
 	}
 	gtk_tree_view_set_model (GTK_TREE_VIEW (current_playlist_treeview), GTK_TREE_MODEL(current_playlist_store));
-	gimmix_display_total_playlist_time ();
-	
-	if (data)
+	gimmix_display_total_playlist_time (mo);
+	/*
+	if (pdata)
 	{
-		mpd_data_free (data);
+		mpd_data_free (pdata);
 	}
+	*/
 	return;
 }
 
 static void
-gimmix_display_total_playlist_time (void)
+gimmix_display_total_playlist_time (MpdObj *mo)
 {
-	MpdData 	*data = NULL;
 	gchar		*time_string;
 	gint		time = 0;
+	guint		len = 0;
+	MpdData		*data;
 	
-	data = mpd_playlist_get_changes (gmo, 0);
-	if (mpd_playlist_get_playlist_length(gmo) == 0)
+	g_print ("called total\n");
+	len = mpd_playlist_get_playlist_length (mo);
+	data = mpd_playlist_get_changes (mo, 0);
+	if (!len)
 	{
 		gtk_widget_hide (gimmix_statusbox);
 		return;
@@ -380,22 +391,26 @@ gimmix_display_total_playlist_time (void)
 	
 	while (data != NULL)
 	{
-		time += data->song->time;
+		if (data->song)
+			time += data->song->time;
 		data = mpd_data_get_next (data);
 	}
 	
 	if (time > 0)
 	{
-		time_string = g_strdup_printf ("%d %s, %s%d %s", mpd_playlist_get_playlist_length(gmo), _("Items"), _("Total Duration: "), time/60, _("minutes"));
+		time_string = g_strdup_printf ("%d %s, %s%d %s", len, _("Items"), _("Total Duration: "), time/60, _("minutes"));
+		g_print ("%s\n",time_string);
 		gtk_label_set_text (GTK_LABEL(gimmix_statusbar), time_string);
 		gtk_widget_show (gimmix_statusbox);
 		g_free (time_string);
 	}
+	/*
 	else
 	{
+		g_print ("called totla\n");
 		gtk_widget_hide (gimmix_statusbox);
 	}
-	
+	*/
 	return;
 }
 
@@ -1488,7 +1503,7 @@ gimmix_update_player_status (gpointer data)
 	if (mpd_status_db_is_updating (gmo))
 		return TRUE;
 		
-	gimmix_display_total_playlist_time ();		
+	gimmix_display_total_playlist_time (NULL);		
 	gimmix_update_library_with_dir ("/");
 	/* re-enable the update button on the toolbar */
 	gtk_widget_set_sensitive (button_update, TRUE);	
