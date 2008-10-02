@@ -512,7 +512,7 @@ gimmix_init (void)
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
 		gimmix_show_ver_info ();
 	}
-
+	gtk_adjustment_set_value (GTK_ADJUSTMENT(gtk_range_get_adjustment(GTK_RANGE(volume_scale))), mpd_status_get_volume (gmo));
 	g_timeout_add (300, (GSourceFunc)gimmix_timer, NULL);
 	
 	/* initialize playlist and tag editor */
