@@ -225,14 +225,14 @@ void
 gimmix_tag_editor_show (void)
 {
 	GimmixStatus 	status;
-	SongInfo		*info;
-	gchar			*song;
+	mpd_Song	*info;
+	gchar		*song = NULL;
 	
 	status = gimmix_get_status (gmo);
 	
 	if (status == PLAY || status == PAUSE)
 	{
-		info = gimmix_get_song_info (gmo);
+		info = mpd_playlist_get_current_song (gmo);
 		song = g_strdup_printf ("%s/%s", cfg_get_key_value(conf, "music_directory"), info->file);
 		if (gimmix_tag_editor_populate (song))
 			gtk_widget_show (GTK_WIDGET(tag_editor_window));
@@ -241,7 +241,6 @@ gimmix_tag_editor_show (void)
 			g_warning (_("Invalid music directory."));
 			gimmix_tag_editor_error (dir_error);
 		}	
-		gimmix_free_song_info (info);
 		g_free (song);
 	}
 	

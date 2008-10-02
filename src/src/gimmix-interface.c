@@ -113,13 +113,11 @@ static int	gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata);
 static void
 gimmix_update_global_song_info (void)
 {
-	SongInfo *tsi = NULL;
+	mpd_Song *tsi = NULL;
 
-	tsi = gimmix_get_song_info (gmo);
+	tsi = mpd_playlist_get_current_song (gmo);
 	if (tsi!=NULL)
 	{
-		if (glob_song_info!=NULL)
-			gimmix_free_song_info (glob_song_info);
 		glob_song_info = tsi;
 	}
 	
