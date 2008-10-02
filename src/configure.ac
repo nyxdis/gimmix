@@ -22,11 +22,13 @@ AC_PROG_CC
 AC_HEADER_STDC
 AC_CHECK_HEADERS([locale.h stdlib.h string.h sys/ioctl.h unistd.h])
 
-AC_ARG_ENABLE(lyrics,
-    AC_HELP_STRING([  --enable-lyrics], [Enable lyrics plugin]), [lyrics="yes"])
+AC_ARG_ENABLE(	lyrics,
+		AC_HELP_STRING([--disable-lyrics], [Disable lyrics plugin]),
+		[lyrics=${enableval}],
+		[lyrics="yes"])
 dnl Check for Lyrics plugin support
 AC_MSG_CHECKING(whether lyrics plugin is enabled)
-if test "x$lyrics" = "xyes" ; then
+if test "$lyrics" = "yes"; then
 	enable_lyrics=yes
 	AC_MSG_RESULT(yes)
 	pkg_modules="nxml libcurl"
@@ -40,11 +42,13 @@ fi
 AC_SUBST([GFPM_LYRICS])
 AM_CONDITIONAL(HAVE_LYRICS, test "x$enable_lyrics" = "xyes")
 
-AC_ARG_ENABLE(cover,
-    AC_HELP_STRING([  --enable-cover], [Enable Amazon cover fetcher plugin]), [cover="yes"])
+AC_ARG_ENABLE(	cover,
+		AC_HELP_STRING([--disable-cover], [Disable Amazon cover fetcher plugin]),
+		[cover=${enableval}],
+		[cover="yes"])
 dnl Check for Amazon cover fetcher plugin support
 AC_MSG_CHECKING(whether amazon cover fetcher plugin is enabled)
-if test "x$cover" = "xyes" ; then
+if test "$cover" = "yes"; then
 	enable_cover=yes
 	AC_MSG_RESULT(yes)
 	if test "x$enable_lyrics" = "xno" ; then
