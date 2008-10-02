@@ -183,7 +183,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		}
 		if (state == MPD_PLAYER_STOP)
 		{
-			g_print ("stopped\n");
+			//g_print ("stopped\n");
 			gimmix_show_ver_info ();
 			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
