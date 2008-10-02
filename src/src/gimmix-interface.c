@@ -627,9 +627,22 @@ gimmix_timer (void)
 	gchar 	time[32] = "";
 	int 	new_status;
 	float 	fraction;
-	
 	if (mpd_check_connected(gmo)==FALSE)
+	{
+		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
+		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), "");
+		gimmix_show_ver_info ();
+		#ifdef HAVE_COVER_PLUGIN
+		if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
+		{
+			g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
+					TRUE, /* set default cover */
+					FALSE,
+					NULL);
+		}
+		#endif
 		return FALSE;
+	}
 	if (gmo)
 	{
 		mpd_status_update (gmo);

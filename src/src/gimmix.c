@@ -66,15 +66,15 @@ gimmix_mpd_connection_changed (MpdObj *mo, int connect, void *userdata)
 {
 	if (!connect) /* disconnected */
 	{
-		g_print ("i got disconnected\n");
-		mpd_free (gmo);
-		gmo = NULL;
+		g_print ("disconnected from mpd\n");
+		//mpd_free (gmo);
+		//gmo = NULL;
 		gimmix_interface_disable_controls ();
 		gtk_widget_show (connection_box);
 	}
 	else /* connected */
 	{
-		g_print ("i got connected\n");
+		g_print ("connected to mpd\n");
 		gimmix_interface_enable_controls ();
 		gtk_widget_hide (connection_box);
 		gimmix_init ();

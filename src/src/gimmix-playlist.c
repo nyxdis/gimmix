@@ -53,6 +53,7 @@ static GtkWidget	*library_treeview;
 GtkWidget		*playlists_treeview;
 GtkTreeSelection	*current_playlist_selection;
 GtkTreeSelection	*library_selection;
+GtkWidget		*library_window;
 GtkWidget		*current_pl_window;
 GtkWidget		*pls_playlist_window;
 GtkWidget		*pls_button_add;
@@ -147,6 +148,7 @@ gimmix_playlist_widgets_init (void)
 	current_playlist_treeview = glade_xml_get_widget (xml, "current_playlist_treeview");
 	playlists_treeview = glade_xml_get_widget (xml, "playlists_treeview");
 	library_treeview = glade_xml_get_widget (xml, "album");
+	library_window = glade_xml_get_widget (xml,"library_window");
 	
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
 	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Title"),
@@ -431,7 +433,7 @@ gimmix_library_and_playlists_populate (void)
 
 	library_selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(library_treeview));
 	gtk_tree_selection_set_mode (library_selection, GTK_SELECTION_MULTIPLE);
-	dir_renderer		= gtk_cell_renderer_pixbuf_new();
+	dir_renderer = gtk_cell_renderer_pixbuf_new();
 	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (library_treeview),
 							-1,
 							"Icon",
@@ -464,14 +466,14 @@ gimmix_library_and_playlists_populate (void)
 							NULL);
 	
 	dir_store 	= gtk_list_store_new (4, 
-								GDK_TYPE_PIXBUF, 	/* icon (0) */
-								G_TYPE_STRING, 		/* name (1) */
-								G_TYPE_STRING,		/* path (2) */
-								G_TYPE_INT);		/* type DIR/SONG (3) */
+						GDK_TYPE_PIXBUF, 	/* icon (0) */
+						G_TYPE_STRING, 		/* name (1) */
+						G_TYPE_STRING,		/* path (2) */
+						G_TYPE_INT);		/* type DIR/SONG (3) */
 	
 	pls_store 	= gtk_list_store_new (2, 
-								GDK_TYPE_PIXBUF, 	/* icon (0) */
-								G_TYPE_STRING);		/* name (1) */
+						GDK_TYPE_PIXBUF, 	/* icon (0) */
+						G_TYPE_STRING);		/* name (1) */
 	
 	path = gimmix_get_full_image_path (GIMMIX_MEDIA_ICON);
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 16, 16, NULL);
@@ -545,14 +547,15 @@ gimmix_library_and_playlists_populate (void)
 	g_signal_connect (playlists_treeview, "row-activated", G_CALLBACK(cb_playlist_activated), NULL);
 	g_signal_connect (library_treeview, "button-press-event", G_CALLBACK(cb_all_playlist_button_press), NULL);
 	g_signal_connect (library_treeview, "button-release-event", G_CALLBACK(cb_library_right_click), NULL);
-	g_signal_connect (glade_xml_get_widget(xml,"library_window"), "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+	g_signal_connect (library_window, "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 
 	g_object_unref (dir_model);
 	g_object_unref (pls_model);
+	/*
 	g_object_unref (dir_pixbuf);
 	g_object_unref (song_pixbuf);
 	g_object_unref (pls_pixbuf);
-	
+	*/
 	return;
 }
 
