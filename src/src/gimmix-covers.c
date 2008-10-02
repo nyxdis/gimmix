@@ -277,7 +277,7 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 	{
 		url = g_strdup_printf (AMAZON_URL2, location, AMAZON_KEY, arg1, u_artist, arg2, u_title);
 	}
-	g_print ("%s\n", url);
+	//g_print ("%s\n", url);
 
 	e = nxml_new (&nxml);
 	nxml_parse_url (nxml, url);
