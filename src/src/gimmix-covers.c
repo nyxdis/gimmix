@@ -57,7 +57,7 @@ static guint h3_size = 0;
 extern GladeXML		*xml;
 extern ConfigFile	conf;
 extern MpdObj		*gmo;
-extern SongInfo		*glob_song_info;
+extern mpd_Song		*glob_song_info;
 extern GimmixTooltip 	*tooltip;
 
 static ConfigFile	cover_db;

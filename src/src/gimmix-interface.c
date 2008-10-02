@@ -77,7 +77,7 @@ extern ConfigFile	conf;
 extern GimmixTooltip 	*tooltip;
 extern GtkWidget	*current_playlist_treeview;
 
-SongInfo		*glob_song_info;
+mpd_Song		*glob_song_info;
 
 static void		gimmix_update_volume (void);
 static void		gimmix_update_repeat (void);

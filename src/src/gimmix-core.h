@@ -9,17 +9,6 @@
 #include <libmpd/libmpdclient.h>
 #include "gimmix-config.h"
 
-/* the SongInfo structure */
-typedef struct songinfo
-{
-	char *title;
-	char *artist;
-	char *performer;
-	char *album;
-	char *genre;
-	char *file;
-} SongInfo;
-
 typedef enum { 	PLAY = 1,
 		PAUSE,
 		STOP,
@@ -40,12 +29,6 @@ bool gimmix_seek (MpdObj *, int);
 
 /* get full image path (returned string should be freed) */
 char *gimmix_get_full_image_path (const char *);
-
-/* Gets the information of currently playing song (artist, title, genre.etc)*/
-SongInfo * gimmix_get_song_info (MpdObj *);
-
-/* Free memory allocated by gimmix_get_song_info() */
-void gimmix_free_song_info (SongInfo *);
 
 /* Get the "elapsed time / total time" as a string */
 void gimmix_get_progress_status (MpdObj *, float *, char *);
