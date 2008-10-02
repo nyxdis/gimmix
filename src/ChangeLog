@@ -1,3 +1,14 @@
+Version 0.5.1 (02-10-2008)
+* Gimmix is now compatible with libmpd >= v0.16.0
+* Improved cover art search function
+* Numerous crash fixes
+* Cover and Lyrics plugins are now enabled by default. use --disable-lyrics and --disable-cover to 
+  disable them.
+* Gimmix now continues to run even if mpd is not running. Users can reconnect to mpd from Gimmix by
+  clicking the "Connect" button
+* Fixed a bug where "Germany" was not being displayed in cover art location in preferences
+* Minor tweaks
+
 Version 0.5.0 (26-09-2008) Happy 2nd Birthday GIMMIX! \o/
 * Bug #234739: Progress bar shows garbage next to time (in case of songs of length over 99 minutes)
 * Bug #253140: Gimmix sometimes displays "assertion `percentage >= 0 && percentage <= 1.0' failed"
@@ -100,7 +111,6 @@ quits.
 * Completely re-organized code and lots of code cleanups.
 * Lots of other fixes and improvements.
 * Better error handling.
-
 
 Version 0.2 (16-11-2006)
 * A l33t-new logo.
