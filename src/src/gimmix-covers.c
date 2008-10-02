@@ -41,7 +41,8 @@
 #define COVERS_DIR	".gimmix/covers"
 #define COVERS_DBF	".gimmix/covers/covers.db"
 #define AMAZON_KEY	"14TBPBEBTPCVM7BY0C02"
-#define AMAZON_URL	"http://ecs.amazonaws.%s/onca/xml?Service=AWSECommerceService&Operation=ItemSearch&SearchIndex=Music&ResponseGroup=Images,EditorialReview&AWSAccessKeyId=%s&%s=%s&%s=%s"
+#define AMAZON_URL1	"http://ecs.amazonaws.%s/onca/xml?Service=AWSECommerceService&Operation=ItemSearch&SearchIndex=Music&ResponseGroup=Images,EditorialReview&AWSAccessKeyId=%s&%s=%s"
+#define AMAZON_URL2	"http://ecs.amazonaws.%s/onca/xml?Service=AWSECommerceService&Operation=ItemSearch&SearchIndex=Music&ResponseGroup=Images,EditorialReview&AWSAccessKeyId=%s&%s=%s&%s=%s"
 
 char *cover_locations[6][2] = 
 { 
@@ -268,7 +269,14 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 	u_artist = gimmix_url_encode (arg1d);
 	u_title = gimmix_url_encode (arg2d);
 	location = cfg_get_key_value(conf,"coverart_location");
-	url = g_strdup_printf (AMAZON_URL, location, AMAZON_KEY, arg1, u_artist, arg2, u_title);
+	if (!arg1 && !arg1d)
+	{
+		url = g_strdup_printf (AMAZON_URL1, location, AMAZON_KEY, arg2, u_title);
+	}
+	else
+	{
+		url = g_strdup_printf (AMAZON_URL2, location, AMAZON_KEY, arg1, u_artist, arg2, u_title);
+	}
 	g_print ("%s\n", url);
 
 	e = nxml_new (&nxml);
@@ -538,6 +546,20 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 			//g_print ("beginning to fetch \n");	
 			temp = g_strdup_printf ("%s/temp.jpg", cfg_get_path_to_config_file(COVERS_DIR));
 			node = gimmix_covers_plugin_get_metadata ("Artist", s->artist, "Title", s->album);
+			if (node!=NULL)
+			{
+				if (gimmix_covers_plugin_download(node->img_large,temp) ||
+					gimmix_covers_plugin_download(node->img_medium,temp) ||
+					gimmix_covers_plugin_download(node->img_small,temp))
+				{
+					gimmix_cover_plugin_save_cover (s->artist, s->album);
+					gimmix_covers_plugin_save_albuminfo (s->artist, s->album, node->album_info);
+					gimmix_covers_plugin_find_cover (s);
+				}
+				g_free (node);
+				return;
+			}
+			node = gimmix_covers_plugin_get_metadata (NULL, NULL, "Title", s->album);
 			if (node!=NULL)
 			{
 				if (gimmix_covers_plugin_download(node->img_large,temp) ||
