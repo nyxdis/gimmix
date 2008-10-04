@@ -318,7 +318,10 @@ gimmix_lyrics_plugin_update_lyrics (void)
 	
 	if (mpd_player_get_state(gmo)!=MPD_PLAYER_STOP)
 	do {
-		s = mpd_playlist_get_current_song (gmo);
+		if (mpd_playlist_get_playlist_length(gmo))
+			s = mpd_playlist_get_current_song (gmo);
+		else
+			break;
 	} while (s==NULL);
 	
 	if (s)

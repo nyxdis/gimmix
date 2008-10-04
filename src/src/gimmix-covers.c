@@ -493,9 +493,11 @@ gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 	else
 	{
 		mpd_Song *s = NULL;
-		do {
+		/*do {
 			s = mpd_playlist_get_current_song (gmo);
-		} while (s==NULL);
+		} while (s==NULL);*/
+		sleep (2);
+		s = mpd_playlist_get_current_song (gmo);
 		//if (s == NULL)
 		//g_print ("s = NULL\n");
 		gimmix_covers_plugin_find_cover (s);
@@ -643,12 +645,20 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 		pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, height);
 	}
 	
-	int i =0;
+	int i = 0;
+	sleep (2);
 	if (mpd_player_get_state(gmo)!=MPD_PLAYER_STOP)
-	do {
+	{
+		if (mpd_playlist_get_playlist_length(gmo))
+			s = mpd_playlist_get_current_song (gmo);
+		else
+			s = NULL;
+	}
+	/*do {
 		s = mpd_playlist_get_current_song (gmo);
 		i++;
-	} while (s==NULL);
+	} while (s==NULL);*/
+	
 	
 	//printf ("looped: %d\n", i);
 	if (pixbuf != NULL)
@@ -660,7 +670,10 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 		g_object_unref (pixbuf);
 		
 		/* metadata cover art */
-		pixbuf = gimmix_covers_plugin_get_cover_image_of_size (64, 64);
+		if (s!=NULL)
+			pixbuf = gimmix_covers_plugin_get_cover_image_of_size (64, 64);
+		else
+			pixbuf = gimmix_covers_plugin_get_default_cover (64, 64);
 		gimmix_covers_plugin_set_metadata_image (pixbuf);
 		g_object_unref (pixbuf);
 		
