@@ -69,6 +69,7 @@ static GtkWidget	*gimmix_metadata_image;
 static GtkWidget	*gimmix_plcbox_image;
 
 GtkWidget		*gimmix_plcbox_frame;
+static GMutex		*mutex = NULL;
 
 /* Get metadata for the specified arguments */
 static CoverNode* gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *arg2d);
@@ -118,6 +119,9 @@ gimmix_covers_plugin_init (void)
 	
 	/* initialize curl */
 	curl = curl_easy_init ();
+	
+	/* initialize mutex */
+	mutex = g_mutex_new ();
 	
 	/* initialize cover database */
 	gimmix_covers_plugin_cover_db_init ();
@@ -627,6 +631,7 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 	GdkPixbuf	*pixbuf = NULL;
 	mpd_Song	*s = NULL;
 
+	g_mutex_lock (mutex);
 	height = h3_size;
 	if (defaultc)
 	{
@@ -645,6 +650,7 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 				g_object_unref (pixbuf);
 			}
 		}
+		g_mutex_unlock (mutex);
 		return;
 	}
 	else
@@ -653,6 +659,7 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 	}
 	
 	int i = 0;
+	
 	sleep (2);
 	if (mpd_player_get_state(gmo)!=MPD_PLAYER_STOP)
 	{
@@ -701,6 +708,7 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 			}
 		}
 	}
+	g_mutex_unlock (mutex);
 	
 	return;
 }

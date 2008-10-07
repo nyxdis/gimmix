@@ -25,7 +25,7 @@
 #define TRUE 1
 #define FALSE 0
 #endif
-#define MAXKEYS 128
+#define MAXKEYS 2048
 
 typedef struct
 {
