@@ -356,7 +356,10 @@ gimmix_lyrics_plugin_update_lyrics (void)
 static void
 cb_gimmix_lyrics_get_btn_clicked (GtkWidget *widget, gpointer data)
 {
-	gimmix_lyrics_plugin_update_lyrics ();
+	g_thread_create ((GThreadFunc)gimmix_lyrics_plugin_update_lyrics ,
+				NULL,
+				FALSE,
+				NULL);
 
 	return;
 }
