@@ -176,11 +176,13 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			#endif
 			
 		}
+		else
 		if (state == MPD_PLAYER_PAUSE)
 		{
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Play <x or c>"), NULL);
 		}
+		else
 		if (state == MPD_PLAYER_STOP)
 		{
 			//g_print ("stopped\n");
