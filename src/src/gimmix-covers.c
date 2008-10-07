@@ -411,10 +411,14 @@ gimmix_covers_plugin_get_albuminfo (mpd_Song *s)
 	char	line[256] = "";
 	char	*ret = NULL;
 	
-	if (s==NULL)
-	return NULL;
-	if (s->artist == NULL || s->album == NULL)
+	if (s == NULL)
+	{
 		return NULL;
+	}
+	if (s->artist == NULL || s->album == NULL)
+	{
+		return NULL;
+	}
 	artist_e = gimmix_url_encode (s->artist);
 	album_e = gimmix_url_encode (s->album);
 	path = g_strdup_printf ("%s/%s-%s.albuminfo", cfg_get_path_to_config_file(COVERS_DIR), artist_e, album_e);
