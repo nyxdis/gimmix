@@ -363,6 +363,7 @@ gimmix_cover_plugin_save_cover (char *artist, char *album)
 	/* okay, add an entry to covers.db */
 	key = g_strdup_printf ("%s-%s", artist, album);
 	gimmix_strcrep (key, ' ', '_');
+	//g_print ("%s\n\n%s\n",key, new_path);
 	cfg_add_key (&cover_db, key, new_path);
 	gimmix_covers_plugin_cover_db_save ();
 	

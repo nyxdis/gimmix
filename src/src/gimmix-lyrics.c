@@ -316,13 +316,14 @@ gimmix_lyrics_plugin_update_lyrics (void)
 	LYRICS_NODE	*node = NULL;
 	mpd_Song	*s = NULL;
 	
+	sleep (2);
 	if (mpd_player_get_state(gmo)!=MPD_PLAYER_STOP)
-	do {
+	{
 		if (mpd_playlist_get_playlist_length(gmo))
 			s = mpd_playlist_get_current_song (gmo);
 		else
-			break;
-	} while (s==NULL);
+			s = NULL;
+	}
 	
 	if (s)
 	{
