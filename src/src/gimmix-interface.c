@@ -536,6 +536,13 @@ gimmix_init (void)
 	/* update current playlist */
 	gimmix_update_current_playlist (gmo, mpd_playlist_get_changes(gmo,0));
 
+	/* set song info */
+	status = mpd_player_get_state (gmo);
+	if (status == MPD_PLAYER_PLAY || status == MPD_PLAYER_PAUSE)
+	{
+		gimmix_set_song_info ();
+	}
+	
 	#ifdef HAVE_COVER_PLUGIN
 	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
 	{

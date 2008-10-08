@@ -111,7 +111,6 @@ gimmix_mpd_connection_changed_callback (MpdObj *mo, int connect, void *userdata)
 		g_print ("connected to mpd\n");
 		gimmix_interface_enable_controls ();
 		gtk_widget_hide (connection_box);
-		gimmix_init ();
 	}
 	
 	return;
