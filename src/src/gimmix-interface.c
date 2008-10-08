@@ -82,6 +82,7 @@ mpd_Song		*glob_song_info;
 static void		gimmix_update_volume (void);
 static void		gimmix_update_repeat (void);
 static void		gimmix_update_shuffle (void);
+static gboolean		inited = FALSE;
 
 static gboolean		is_user_searching (void);
 static gboolean 	gimmix_timer (void);
@@ -227,7 +228,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 
 	return;
 }
-
+/*
 static int
 gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
 {
@@ -246,7 +247,7 @@ gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
 
 	return FALSE;
 }
-
+*/
 static void
 gimmix_toggle_playlist_show (gboolean show)
 {
@@ -302,6 +303,10 @@ gimmix_interface_widgets_init (void)
 	GdkPixbuf		*app_icon;
 	gchar			*path;
 	
+	if (inited)
+	{
+		return;
+	}
 	/* Set the application icon */
 	main_window = glade_xml_get_widget (xml, "main_window");
 	g_signal_connect (G_OBJECT(main_window), "delete-event", G_CALLBACK(cb_gimmix_main_window_delete_event), NULL);
@@ -492,35 +497,44 @@ gimmix_interface_enable_controls (void)
 
 void
 gimmix_init (void)
-{	
-	mpd_status_update (gmo);
-	status = mpd_player_get_state (gmo);
-	gimmix_update_global_song_info ();
-	if (status == MPD_PLAYER_PLAY)
+{
+	if (!inited)
 	{
-		gimmix_set_song_info ();
-		status = -1;
-		gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
-		gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
+		inited = TRUE;
+		mpd_status_update (gmo);
+		status = mpd_player_get_state (gmo);
+		gimmix_update_global_song_info ();
+		if (status == MPD_PLAYER_PLAY)
+		{
+			gimmix_set_song_info ();
+			status = -1;
+			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
+			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
+		}
+		else if (status == MPD_PLAYER_PAUSE)
+		{
+			gimmix_set_song_info ();
+		}
+		else if (status == MPD_PLAYER_STOP)
+		{
+			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
+			if (!strncasecmp(cfg_get_key_value(conf, "enable_systray"),"true",4))
+			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
+			gimmix_show_ver_info ();
+		}
+		gtk_adjustment_set_value (GTK_ADJUSTMENT(gtk_range_get_adjustment(GTK_RANGE(volume_scale))), mpd_status_get_volume (gmo));
+		gimmix_playlist_init ();
+		/* check if library needs to be updated on startup */
+		if (strncasecmp(cfg_get_key_value(conf, "update_on_startup"), "true", 4) == 0)
+			gimmix_library_update ();
+		
+		g_object_unref (xml);
 	}
-	else if (status == MPD_PLAYER_PAUSE)
-	{
-		gimmix_set_song_info ();
-	}
-	else if (status == MPD_PLAYER_STOP)
-	{
-		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
-		if (!strncasecmp(cfg_get_key_value(conf, "enable_systray"),"true",4))
-		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
-		gimmix_show_ver_info ();
-	}
-	gtk_adjustment_set_value (GTK_ADJUSTMENT(gtk_range_get_adjustment(GTK_RANGE(volume_scale))), mpd_status_get_volume (gmo));
+	
 	g_timeout_add (300, (GSourceFunc)gimmix_timer, NULL);
 	
-	/* initialize playlist and tag editor */
-	gimmix_playlist_init ();
+	/* update current playlist */
 	gimmix_update_current_playlist (gmo, mpd_playlist_get_changes(gmo,0));
-	
 
 	#ifdef HAVE_COVER_PLUGIN
 	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
@@ -533,7 +547,6 @@ gimmix_init (void)
 	
 	#endif
 	#ifdef HAVE_LYRICS
-	//status = mpd_player_get_state (gmo);
 	if (status == MPD_PLAYER_PLAY || status == MPD_PLAYER_PAUSE)
 	{
 		g_thread_create ((GThreadFunc)gimmix_lyrics_plugin_update_lyrics,
@@ -542,17 +555,10 @@ gimmix_init (void)
 				NULL);
 	}
 	#endif
-	
-	
+
 	/* connect the main mpd callbacks */
 	mpd_signal_connect_status_changed (gmo, (StatusChangedCallback)gimmix_status_changed, NULL);
-	mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_mpd_error, NULL);
-
-	/* check if library needs to be updated on startup */
-	if (strncasecmp(cfg_get_key_value(conf, "update_on_startup"), "true", 4) == 0)
-		gimmix_library_update ();
-		
-	g_object_unref (xml);
+	//mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_mpd_error, NULL);
 	
 	return;
 }
@@ -640,7 +646,7 @@ gimmix_timer (void)
 		#endif
 		return FALSE;
 	}
-	if (gmo)
+	if (mpd_check_connected(gmo))
 	{
 		mpd_status_update (gmo);
 		new_status = mpd_player_get_state (gmo);
@@ -975,7 +981,7 @@ gimmix_show_ver_info (void)
 	appver = g_strdup_printf ("%s %s", APPNAME, VERSION);
 	markup = g_markup_printf_escaped ("<span size=\"x-large\"weight=\"bold\">%s</span>", appver);
 	gtk_label_set_markup (GTK_LABEL(song_label), markup);
-	//gtk_label_set_text (GTK_LABEL(artist_label), APPURL);
+	gtk_label_set_text (GTK_LABEL(artist_label), "");
 	gtk_window_set_title (GTK_WINDOW(main_window), APPNAME);
 	gimmix_update_systray_tooltip (NULL);
 	g_free (markup);

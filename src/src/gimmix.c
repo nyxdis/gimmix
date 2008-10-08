@@ -75,7 +75,7 @@ gimmix_error (const char *error_str)
 }
 
 static int
-gimmix_connection_error_callback (MpdObj *mi, int error_id, char *msg, void *data)
+gimmix_mpd_connection_error_callback (MpdObj *mi, int error_id, char *msg, void *data)
 {
 	gchar	*error = NULL;
 
@@ -96,13 +96,13 @@ gimmix_connection_error_callback (MpdObj *mi, int error_id, char *msg, void *dat
 }
 
 static void
-gimmix_mpd_connection_changed (MpdObj *mo, int connect, void *userdata)
+gimmix_mpd_connection_changed_callback (MpdObj *mo, int connect, void *userdata)
 {
 	if (!connect) /* disconnected */
 	{
 		g_print ("disconnected from mpd\n");
 		//mpd_free (gmo);
-		//gmo = NULL;
+		gmo = NULL;
 		gimmix_interface_disable_controls ();
 		gtk_widget_show (connection_box);
 	}
@@ -128,13 +128,13 @@ gimmix_connect (void)
 	pass = cfg_get_key_value (conf, "mpd_password");
 	port = atoi (cfg_get_key_value (conf, "mpd_port"));
 	gmo = mpd_new (host, port, pass);
-	mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_connection_error_callback, NULL);
+	mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_mpd_connection_error_callback, NULL);
 	
 	if (mpd_connect(gmo) == MPD_OK)
 	{
 		mpd_send_password (gmo);
 		printf ("connected to mpd\n");
-		mpd_signal_connect_connection_changed (gmo, (ConnectionChangedCallback)gimmix_mpd_connection_changed, NULL);
+		mpd_signal_connect_connection_changed (gmo, (ConnectionChangedCallback)gimmix_mpd_connection_changed_callback, NULL);
 		return true;
 	}
 	else
@@ -171,7 +171,10 @@ cb_gimmix_connect_button_clicked (GtkWidget *widget, gpointer data)
 static void
 cb_gimmix_error_details_button_clicked (GtkWidget *widget, gpointer data)
 {
-	gimmix_error (last_error);
+	if (last_error)
+	{
+		gimmix_error (last_error);
+	}
 
 	return;
 }
