@@ -78,7 +78,7 @@ static int
 gimmix_connection_error_callback (MpdObj *mi, int error_id, char *msg, void *data)
 {
 	gchar	*error = NULL;
-	
+
 	error = g_strdup_printf ("Error:(%d):%s\n", error_id, msg);
 	printf (error);
 	g_free (error);
@@ -140,6 +140,7 @@ gimmix_connect (void)
 	else
 	{
 		mpd_free (gmo);
+		gmo = NULL;
 	}
 
 	return false;

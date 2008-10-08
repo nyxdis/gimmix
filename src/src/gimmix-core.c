@@ -30,8 +30,9 @@ GimmixStatus
 gimmix_get_status (MpdObj *mo)
 {
 	int status;
-	if (!mpd_check_connected(mo))
+	if (!mo || !mpd_check_connected(mo))
 		return ERROR;
+	
 	mpd_status_queue_update (mo);
 	mpd_status_update (mo);
 	status = mpd_player_get_state (mo);
