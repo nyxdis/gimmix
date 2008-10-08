@@ -1,4 +1,4 @@
-Gimmix-0.5.1 README
+Gimmix-0.5.2 README
 ===================
 
 Gimmix is a graphical Music player daemon (MPD) client written in C
@@ -35,15 +35,15 @@ Read the INSTALL file for details on installation procedure.
 
 Configuration file:
 Gimmix stores its configuration settings in ~/.gimmixrc
-NOTE: The configuration file layout has changed in gimmix-0.3. Please
-delete your ~/.gimmixrc before running gimmix.
+NOTE: The configuration file layout has changed in gimmix-0.3 and higher. Please
+delete your ~/.gimmixrc (in case you are upgrading from a version prior to 0.3) before running gimmix.
 
 Keybindings:
 ============
 Gimmix keybindings are not yet configurable unless you manually edit the source.
 
 'z'			-> Previous song
-'x' / 'c'		-> Play/Pause (Toggle)
+'x' / 'c'	-> Play/Pause (Toggle)
 'v'			-> Stop
 'b'			-> Next song
 'i'			-> Song information
