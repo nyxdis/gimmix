@@ -1,3 +1,9 @@
+Version 0.5.2 (xx-10-2008)
+* Improved connection handling
+* Fix random crashes ocurring because of cover and lyrics plugins
+* Fixed a bug that caused Gimmix to freeze sometimes when the user clicked "Get Lyrics" button
+* Interface enhancement: Player control buttons made borderless
+
 Version 0.5.1 (02-10-2008)
 * Gimmix is now compatible with libmpd >= v0.16.0
 * Improved cover art search function
