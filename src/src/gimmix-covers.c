@@ -504,13 +504,9 @@ gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 	else
 	{
 		mpd_Song *s = NULL;
-		/*do {
-			s = mpd_playlist_get_current_song (gmo);
-		} while (s==NULL);*/
 		sleep (2);
 		s = mpd_playlist_get_current_song (gmo);
-		//if (s == NULL)
-		//g_print ("s = NULL\n");
+		
 		gimmix_covers_plugin_find_cover (s);
 		
 		if (s == NULL || cover_image_path == NULL)
@@ -668,13 +664,7 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 		else
 			s = NULL;
 	}
-	/*do {
-		s = mpd_playlist_get_current_song (gmo);
-		i++;
-	} while (s==NULL);*/
-	
-	
-	//printf ("looped: %d\n", i);
+
 	if (pixbuf != NULL)
 	{
 		char *areview = NULL;

@@ -39,28 +39,60 @@
 #define GIMMIX_ICON	"gimmix.png"
 
 MpdObj 		*gmo = NULL;
+gchar		*last_error = NULL;
 GladeXML 	*xml = NULL;
+GtkWidget	*error_label = NULL;
 GtkWidget	*connection_box = NULL;
+
+extern GtkWidget	*main_window;
+extern ConfigFile 	conf;
+
 
 static void error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog);
 static void gimmix_mpd_connection_changed (MpdObj *mo, int connect, void *userdata);
 
-bool
-gimmix_connect (void)
+void
+gimmix_error (const char *error_str)
 {
-	MpdObj *mo;
+	GtkWidget *error_dlg = NULL;
 
-	mo = gimmix_mpd_connect ();
+	if (!strlen(error_str))
+		return;
+
+	error_dlg = gtk_message_dialog_new (main_window,
+					GTK_DIALOG_DESTROY_WITH_PARENT,
+					GTK_MESSAGE_ERROR,
+					GTK_BUTTONS_CLOSE,
+					"%s",
+					error_str);
+	gtk_window_set_resizable (GTK_WINDOW(error_dlg), FALSE);
+	g_signal_connect_swapped (error_dlg, "response",
+                           G_CALLBACK (gtk_widget_destroy),
+                           error_dlg);
+	gtk_dialog_run (GTK_DIALOG(error_dlg));
+
+	return;
+}
+
+static int
+gimmix_connection_error_callback (MpdObj *mi, int error_id, char *msg, void *data)
+{
+	gchar	*error = NULL;
 	
-	if (mo != NULL)
+	error = g_strdup_printf ("Error:(%d):%s\n", error_id, msg);
+	printf (error);
+	g_free (error);
+	if (last_error!=NULL)
 	{
-		gmo = mo;
-		mpd_signal_connect_connection_changed (gmo, (ConnectionChangedCallback)gimmix_mpd_connection_changed, NULL);
-		return true;
+		g_free (last_error);
+		last_error = NULL;
 	}
+	last_error = g_strdup_printf ("Error %d: %s", error_id, msg);
+	error = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">Error: not connected</span>");
+	gtk_label_set_markup (GTK_LABEL(error_label), error);
+	g_free (error);
 	
-	gmo = NULL;
-	return false;
+	return 0;
 }
 
 static void
@@ -85,29 +117,32 @@ gimmix_mpd_connection_changed (MpdObj *mo, int connect, void *userdata)
 	return;
 }
 
-void
-gimmix_connect_error (void)
+bool
+gimmix_connect (void)
 {
-	GtkWidget	*error_dialog;
-	gchar		*error;
+	char 	*host = NULL;
+	char	*pass = NULL;
+	int	port;
+
+	host = cfg_get_key_value (conf, "mpd_hostname");
+	pass = cfg_get_key_value (conf, "mpd_password");
+	port = atoi (cfg_get_key_value (conf, "mpd_port"));
+	gmo = mpd_new (host, port, pass);
+	mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_connection_error_callback, NULL);
 	
-	error = _("Gimmix couldn't connect to mpd. \n\nCheck whether mpd is running.\nAlso check that you have specified the proper hostname, port and password in ~/.gimmixrc");
-	
-	error_dialog = gtk_message_dialog_new_with_markup (NULL,
-							GTK_DIALOG_DESTROY_WITH_PARENT,
-							GTK_MESSAGE_ERROR,
-							GTK_BUTTONS_CLOSE,
-							"<b>%s: </b><span size=\"large\">%s</span>",
-							_("ERROR"),
-							error);
-	g_signal_connect (error_dialog,
-			"response",
-			G_CALLBACK (error_dialog_response),
-			(gpointer)error_dialog);
-	
-	gtk_widget_show_all (error_dialog);
-    
-	return;
+	if (mpd_connect(gmo) == MPD_OK)
+	{
+		mpd_send_password (gmo);
+		printf ("connected to mpd\n");
+		mpd_signal_connect_connection_changed (gmo, (ConnectionChangedCallback)gimmix_mpd_connection_changed, NULL);
+		return true;
+	}
+	else
+	{
+		mpd_free (gmo);
+	}
+
+	return false;
 }
 
 static void
@@ -129,6 +164,14 @@ cb_gimmix_connect_button_clicked (GtkWidget *widget, gpointer data)
 		gtk_widget_hide (connection_box);
 	}
 	
+	return;
+}
+
+static void
+cb_gimmix_error_details_button_clicked (GtkWidget *widget, gpointer data)
+{
+	gimmix_error (last_error);
+
 	return;
 }
 
@@ -195,6 +238,7 @@ main (int argc, char *argv[])
 	char		*lang;
 	int		opt;
 	int		longopt_index;
+	bool		constatus = false;
 	
 	lang = getenv ("LC_ALL");
 	if (lang==NULL || lang[0]=='\0')
@@ -251,16 +295,23 @@ main (int argc, char *argv[])
 	
 	glade_xml_signal_autoconnect (xml);
 	connection_box = glade_xml_get_widget (xml, "gimmix_connectionbox");
+	main_window = glade_xml_get_widget (xml, "main_window");
+	error_label = glade_xml_get_widget (xml, "gimmix_error_label");
 	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"gimmix_connect_button")),
 			"clicked",
 			G_CALLBACK(cb_gimmix_connect_button_clicked),
+			NULL);
+	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"gimmix_error_details_button")),
+			"clicked",
+			G_CALLBACK(cb_gimmix_error_details_button_clicked),
 			NULL);
 	if (gimmix_config_exists())
 	{
 		gimmix_config_init (); /* initialize configuration */
 		gimmix_interface_widgets_init ();
 		gimmix_interface_disable_controls ();
-		if (gimmix_connect())
+		constatus = gimmix_connect ();
+		if (constatus)
 		{
 			gimmix_init ();
 			gimmix_interface_enable_controls ();
@@ -276,7 +327,6 @@ main (int argc, char *argv[])
 		/* display the first run dialog */
 		gimmix_show_firstrun_dialog (); 
 	}
-	
 	gdk_threads_enter ();
 	gtk_main ();
 	gdk_threads_leave ();

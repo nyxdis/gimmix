@@ -26,28 +26,6 @@
 
 extern ConfigFile 	conf;
 
-MpdObj *
-gimmix_mpd_connect (void)
-{
-	MpdObj 	*mo;
-	char 	*host;
-	char	*pass;
-	int		port;
-
-	host = cfg_get_key_value (conf, "mpd_hostname");
-	pass = cfg_get_key_value (conf, "mpd_password");
-	port = atoi (cfg_get_key_value (conf, "mpd_port"));
-	mo = mpd_new (host, port, pass);
-	
-	if (mpd_connect (mo) == MPD_OK)
-	{
-		mpd_send_password (mo);
-		return mo;
-	}
-	
-	return NULL;
-}
-
 GimmixStatus
 gimmix_get_status (MpdObj *mo)
 {

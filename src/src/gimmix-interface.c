@@ -975,7 +975,7 @@ gimmix_show_ver_info (void)
 	appver = g_strdup_printf ("%s %s", APPNAME, VERSION);
 	markup = g_markup_printf_escaped ("<span size=\"x-large\"weight=\"bold\">%s</span>", appver);
 	gtk_label_set_markup (GTK_LABEL(song_label), markup);
-	gtk_label_set_text (GTK_LABEL(artist_label), APPURL);
+	//gtk_label_set_text (GTK_LABEL(artist_label), APPURL);
 	gtk_window_set_title (GTK_WINDOW(main_window), APPNAME);
 	gimmix_update_systray_tooltip (NULL);
 	g_free (markup);

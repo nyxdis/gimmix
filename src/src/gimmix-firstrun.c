@@ -29,6 +29,7 @@
 #define CONFIG_FILE ".gimmixrc"
 
 extern GladeXML 	*xml;
+extern GtkWidget	*connection_box;
 
 /* config file object */
 ConfigFile	cf;
@@ -87,20 +88,20 @@ on_fr_close_clicked (GtkWidget *widget, gpointer data)
 	gtk_widget_destroy (data);
 	
 	cfg_free_config_file_struct (&cf);
-	if (gimmix_config_exists())
-	{	
-		gimmix_config_init ();
-		if (gimmix_connect())
-		{
-			gimmix_init ();
-		}
-		else
-		{
-			gimmix_connect_error ();
-		}
+	gimmix_config_init (); /* initialize configuration */
+	gimmix_interface_widgets_init ();
+	gimmix_interface_disable_controls ();
+	if (gimmix_connect())
+	{
+		gimmix_init ();
+		gimmix_interface_enable_controls ();
+		gtk_widget_hide (connection_box);
 	}
 	else
-	exit (0);
+	{
+		gtk_widget_show (connection_box);
+	}
+
 	return;
 }
 
