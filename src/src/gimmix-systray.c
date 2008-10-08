@@ -153,7 +153,7 @@ cb_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer da
 		rectangle.x = x-(w/4);
 		rectangle.y = y-120;
 	}
-
+	rectangle.y -= 5;
 	sexy_tooltip_position_to_rect (SEXY_TOOLTIP(stooltip), &rectangle, screen);
 
 	return TRUE;
