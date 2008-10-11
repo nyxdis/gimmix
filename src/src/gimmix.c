@@ -203,12 +203,12 @@ gimmix_about_show (void)
 	about_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
 	g_free (path);
 
-	gchar *authors[] = { "Priyank M. Gosalia <priyankmg@gmail.com>",
-					"Gimmix uses wejpconfig written by Johannes Heimansberg.",
-					_("A part of the song seek code borrowed from Pygmy."),
-					"Alex Smith: Autoconf 2.5 support",
-				 	"Rohan Dhruva: Extensive testing and bug reports",
-					 NULL
+	gchar *authors[] = { "Author(s):\nPriyank M. Gosalia <priyankmg@gmail.com>",
+				"\nwejpconfig (Gimmix's configuration system)\nJohannes Heimansberg <wejpilot@gmail.com>",
+				"\nA part of the song seek code borrowed from Pygmy.",
+				"\nGimmix's Build system\nAlex Smith",
+				"\nTesting & Bug Reporting (Gimmix 0.1x)\nRohan Dhruva <rohandhruva@gmail.com>",
+				 NULL
 					};
 	static gchar translators[] = \
 				"Deutsch (de) - Martin Stromberger <mstromberger@aon.at>\n"
