@@ -1,8 +1,13 @@
 Version 0.5.2 (xx-10-2008)
-* Improved connection handling
+* Improved connection handling and fixed almost all crashes
 * Fix random crashes ocurring because of cover and lyrics plugins
 * Fixed a bug that caused Gimmix to freeze sometimes when the user clicked "Get Lyrics" button
 * Interface enhancement: Player control buttons made borderless
+* Fixed delays/problems while updating song info when user updates an ID3 tag
+* Wejpconfig updated to 20061102
+* Previously Gimmix could handle only 128 covers in the database. This is now fixed.
+* Fixed a crash when saving newly fetched album covers whose album name(s) contained trailing whitespaces
+* The system tray tooltip is too close to the panel. make it display a little away from the panel.
 
 Version 0.5.1 (02-10-2008)
 * Gimmix is now compatible with libmpd >= v0.16.0
