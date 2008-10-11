@@ -134,7 +134,6 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 	{
 		gimmix_update_current_playlist (mo, mpd_playlist_get_changes(mo,0));
 		#ifdef HAVE_COVER_PLUGIN
-		g_print ("starting t1\n");
 		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 				FALSE,
 				FALSE,
@@ -143,7 +142,6 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		#endif
 		gimmix_set_song_info ();
 		#ifdef HAVE_LYRICS
-		g_print ("starting t2\n");
 		g_thread_create ((GThreadFunc)gimmix_lyrics_plugin_update_lyrics,
 				NULL,
 				FALSE,
@@ -162,7 +160,6 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
 			
 			#ifdef HAVE_COVER_PLUGIN
-			g_print ("starting t3\n");
 			if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
 			{
 				g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
@@ -173,7 +170,6 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			#endif
 			gimmix_set_song_info ();
 			#ifdef HAVE_LYRICS
-			g_print ("starting t4\n");
 			g_thread_create ((GThreadFunc)gimmix_lyrics_plugin_update_lyrics ,
 				NULL,
 				FALSE,
@@ -201,7 +197,6 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			}
 			
 			#ifdef HAVE_COVER_PLUGIN
-			g_print ("starting t5\n");
 			if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
 			{
 				g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
