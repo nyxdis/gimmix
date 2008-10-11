@@ -1,6 +1,6 @@
-Version 0.5.2 (xx-10-2008)
+Version 0.5.2 (11-10-2008)
 * Improved connection handling and fixed almost all crashes
-* Fix random crashes ocurring because of cover and lyrics plugins
+* Fix random crashes occurring because of cover and lyrics plugins
 * Fixed a bug that caused Gimmix to freeze sometimes when the user clicked "Get Lyrics" button
 * Interface enhancement: Player control buttons made borderless
 * Fixed delays/problems while updating song info when user updates an ID3 tag
