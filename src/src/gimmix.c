@@ -47,9 +47,7 @@ GtkWidget	*connection_box = NULL;
 extern GtkWidget	*main_window;
 extern ConfigFile 	conf;
 
-
-static void error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog);
-static void gimmix_mpd_connection_changed (MpdObj *mo, int connect, void *userdata);
+static void gimmix_mpd_connection_changed_callback (MpdObj *mo, int connect, void *userdata);
 
 void
 gimmix_error (const char *error_str)
@@ -59,7 +57,7 @@ gimmix_error (const char *error_str)
 	if (!strlen(error_str))
 		return;
 
-	error_dlg = gtk_message_dialog_new (main_window,
+	error_dlg = gtk_message_dialog_new (GTK_WINDOW(main_window),
 					GTK_DIALOG_DESTROY_WITH_PARENT,
 					GTK_MESSAGE_ERROR,
 					GTK_BUTTONS_CLOSE,
@@ -143,15 +141,6 @@ gimmix_connect (void)
 	}
 
 	return false;
-}
-
-static void
-error_dialog_response (GtkDialog *err_dialog, gint arg1, gpointer dialog)
-{
-	gtk_widget_destroy (GTK_WIDGET(dialog));
-	gtk_main_quit ();
-	
-	return;
 }
 
 static void
