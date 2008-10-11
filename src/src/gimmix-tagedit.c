@@ -51,9 +51,6 @@ static void	gimmix_tag_editor_save (GtkWidget *button, gpointer data);
 /* Close action */
 static void gimmix_tag_editor_close (GtkWidget *widget, gpointer data);
 
-/* Update action */
-static gboolean	gimmix_update_song_info (gpointer data);
-
 /* error dialog callback */
 static void cb_gimmix_tag_editor_error_response (GtkDialog *dialog, gint arg1, gpointer data);
 
@@ -191,7 +188,6 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 	
 	/* set the song info a few seconds after update */
 	mpd_status_update (gmo);
-	//g_timeout_add (300, (GSourceFunc)gimmix_update_song_info, NULL);
 	
 	/* free the strings */
 	taglib_tag_free_strings ();
@@ -202,24 +198,6 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 	g_free (comment);
 	
 	return;
-}
-
-static gboolean
-gimmix_update_song_info (gpointer data)
-{
-	GimmixStatus status;
-	
-	if (mpd_status_db_is_updating (gmo))
-		return TRUE;
-	else
-		return FALSE;
-	
-	/* Set the new song info */
-	status = gimmix_get_status (gmo);
-	if (status == PLAY || status == PAUSE)
-		gimmix_set_song_info ();
-
-	return FALSE;
 }
 
 void
