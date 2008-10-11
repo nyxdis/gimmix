@@ -174,8 +174,10 @@ gimmix_covers_plugin_cover_db_save (void)
 
 	rcfile = cfg_get_path_to_config_file (COVERS_DBF);
 	cfg_write_config_file (&cover_db, rcfile);
+	cfg_read_config_file (&cover_db, rcfile);
 	cfg_free_config_file_struct (&cover_db);
 	gimmix_covers_plugin_cover_db_init ();
+
 	g_free (rcfile);
 	
 	return;
@@ -272,7 +274,7 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 	
 	u_artist = gimmix_url_encode (arg1d);
 	u_title = gimmix_url_encode (arg2d);
-	location = cfg_get_key_value(conf,"coverart_location");
+	location = cfg_get_key_value (conf,"coverart_location");
 	if (!arg1 && !arg1d)
 	{
 		url = g_strdup_printf (AMAZON_URL1, location, AMAZON_KEY, arg2, u_title);
@@ -356,6 +358,8 @@ gimmix_cover_plugin_save_cover (char *artist, char *album)
 	char	*new_path = NULL;
 	char	*key = NULL;
 	
+	if (artist == NULL || album == NULL)
+		return;
 	artist_e = gimmix_url_encode (artist);
 	album_e = gimmix_url_encode (album);
 	
@@ -375,7 +379,7 @@ gimmix_cover_plugin_save_cover (char *artist, char *album)
 	g_free (new_path);
 	g_free (artist_e);
 	g_free (album_e);
-	g_free (key);
+	//g_free (key);
 
 	return;
 }
@@ -529,6 +533,9 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 {
 	CoverNode	*node = NULL;
 	char		*temp = NULL;
+	char		salbum[256] = "";
+	char		sartist[256] = "";
+	char		sperformer[256] = "";
 	
 	if (s != NULL)
 	{
@@ -540,7 +547,16 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 			gimmix_covers_plugin_set_cover_image_path (result);
 			return;
 		}
-		temp = g_strdup_printf ("%s-%s", s->artist, s->album);
+		strncpy (sartist, s->artist, strlen(s->artist));
+		g_strstrip (sartist);
+		strncpy (salbum, s->album, strlen(s->album));
+		g_strstrip (salbum);
+		if (s->performer)
+		{
+			strncpy (sperformer, s->performer, strlen(s->performer));
+			g_strstrip (sperformer);
+		}
+		temp = g_strdup_printf ("%s-%s", sartist, salbum);
 		gimmix_strcrep (temp, ' ', '_');
 		result = cfg_get_key_value (cover_db, temp);
 		if (result!=NULL)
@@ -552,31 +568,31 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 		/* if not found locally, fetch it from amazon */
 		else
 		{
-			//g_print ("beginning to fetch \n");	
+			//g_print ("beginning to fetch \n");
 			temp = g_strdup_printf ("%s/temp.jpg", cfg_get_path_to_config_file(COVERS_DIR));
-			node = gimmix_covers_plugin_get_metadata ("Artist", s->artist, "Title", s->album);
+			node = gimmix_covers_plugin_get_metadata ("Artist", sartist, "Title", salbum);
 			if (node!=NULL)
 			{
 				if (gimmix_covers_plugin_download(node->img_large,temp) ||
 					gimmix_covers_plugin_download(node->img_medium,temp) ||
 					gimmix_covers_plugin_download(node->img_small,temp))
 				{
-					gimmix_cover_plugin_save_cover (s->artist, s->album);
-					gimmix_covers_plugin_save_albuminfo (s->artist, s->album, node->album_info);
+					gimmix_cover_plugin_save_cover (sartist, salbum);
+					gimmix_covers_plugin_save_albuminfo (sartist, salbum, node->album_info);
 					gimmix_covers_plugin_find_cover (s);
 				}
 				g_free (node);
 				return;
 			}
-			node = gimmix_covers_plugin_get_metadata (NULL, NULL, "Title", s->album);
+			node = gimmix_covers_plugin_get_metadata (NULL, NULL, "Title", salbum);
 			if (node!=NULL)
 			{
 				if (gimmix_covers_plugin_download(node->img_large,temp) ||
 					gimmix_covers_plugin_download(node->img_medium,temp) ||
 					gimmix_covers_plugin_download(node->img_small,temp))
 				{
-					gimmix_cover_plugin_save_cover (s->artist, s->album);
-					gimmix_covers_plugin_save_albuminfo (s->artist, s->album, node->album_info);
+					gimmix_cover_plugin_save_cover (sartist, salbum);
+					gimmix_covers_plugin_save_albuminfo (sartist, salbum, node->album_info);
 					gimmix_covers_plugin_find_cover (s);
 				}
 				g_free (node);
@@ -584,15 +600,15 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 			}
 			else
 			{
-				node = gimmix_covers_plugin_get_metadata ("Performer", s->performer, "Title", s->album);
+				node = gimmix_covers_plugin_get_metadata ("Performer", sperformer, "Title", salbum);
 				if (node!=NULL)
 				{
 					if (gimmix_covers_plugin_download(node->img_large,temp) ||
 					gimmix_covers_plugin_download(node->img_medium,temp) ||
 					gimmix_covers_plugin_download(node->img_small,temp))
 					{
-						gimmix_cover_plugin_save_cover (s->artist, s->album);
-						gimmix_covers_plugin_save_albuminfo (s->artist, s->album, node->album_info);
+						gimmix_cover_plugin_save_cover (sartist, salbum);
+						gimmix_covers_plugin_save_albuminfo (sartist, salbum, node->album_info);
 						gimmix_covers_plugin_find_cover (s);
 					}
 					g_free (node);
@@ -653,8 +669,6 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 	{
 		pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, height);
 	}
-	
-	int i = 0;
 	
 	sleep (2);
 	if (mpd_player_get_state(gmo)!=MPD_PLAYER_STOP)

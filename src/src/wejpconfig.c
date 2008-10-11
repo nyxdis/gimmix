@@ -2,8 +2,9 @@
  * Wejp's Config File Parser
  *
  * File: wejpconfig.c
+ * Version: 061102
  *
- * Copyright (c) 2003-2004 Johannes Heimansberg
+ * Copyright (c) 2003-2006 Johannes Heimansberg
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -19,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#define VERSION 20051026
+#define VERSION 20061102
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -127,11 +128,17 @@ int cfg_read_config_file(ConfigFile *cf, char *filename)
 		{
 			ch = fgetc(file);
 			/* Skip blanks... */
-			if (ch == ' ' || ch == '\t')
-				while (ch == ' ' || ch == '\t') ch = fgetc(file);
+			if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n')
+				while (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n') ch = fgetc(file);
 			/* ...and comments (#)... */
-			if (ch == '#')
-				while (ch != '\n' && ch != '\r') ch = fgetc(file);
+			do {
+				if (ch == '#') {
+					while (ch != '\n' && ch != '\r') ch = fgetc(file);
+					ch = fgetc(file);
+				}
+				if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')
+					ch = fgetc(file);
+			} while (ch == '#' || ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r');
 
 			bufcnt = 0;
 			/* Read key name: */
@@ -184,7 +191,6 @@ int cfg_write_config_file(ConfigFile *cf, char *filename)
 	FILE *file;
 	int  i = 0, result = 0;
 	char buffer[128];
-
 	file = fopen(filename, "w");
 	if (file != NULL)
 	{

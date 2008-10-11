@@ -2,8 +2,9 @@
  * Wejp's Config File Parser
  *
  * File: wejpconfig.h
+ * Version: 061102
  *
- * Copyright (c) 2003-2004 Johannes Heimansberg
+ * Copyright (c) 2003-2006 Johannes Heimansberg
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -19,13 +20,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef _CONFIG_H
-#define _CONFIG_H
+#ifndef _WEJPCONFIG_H
+#define _WEJPCONFIG_H
 #ifndef TRUE
 #define TRUE 1
 #define FALSE 0
 #endif
-#define MAXKEYS 2048
+#define MAXKEYS 128
 
 typedef struct
 {
@@ -35,12 +36,12 @@ typedef struct
 } ConfigFile;
 #endif
 
-void cfg_init_config_file_struct(ConfigFile *cf);
-int  cfg_add_key(ConfigFile *cf, char *key, char *value);
-void cfg_free_config_file_struct(ConfigFile *cf);
-int  cfg_read_config_file(ConfigFile *cf, char *filename);
-int  cfg_write_config_file(ConfigFile *cf, char *filename);
+void  cfg_init_config_file_struct(ConfigFile *cf);
+int   cfg_add_key(ConfigFile *cf, char *key, char *value);
+void  cfg_free_config_file_struct(ConfigFile *cf);
+int   cfg_read_config_file(ConfigFile *cf, char *filename);
+int   cfg_write_config_file(ConfigFile *cf, char *filename);
 char *cfg_get_key_value(ConfigFile cf, char *key);
-int  cfg_check_config_file(char *filename);
+int   cfg_check_config_file(char *filename);
 char *cfg_get_path_to_config_file(char *filename);
-int  cfg_is_key_available(ConfigFile cf, char *key);
+int   cfg_is_key_available(ConfigFile cf, char *key);
