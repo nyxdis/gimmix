@@ -130,7 +130,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 {
 	gimmix_update_global_song_info ();
 	
-	if (!(id&MPD_CST_STATE) && id&MPD_CST_SONGID)
+	if (!(id&MPD_CST_STATE) && (id&MPD_CST_SONGID || id&MPD_CST_DATABASE))
 	{
 		gimmix_update_current_playlist (mo, mpd_playlist_get_changes(mo,0));
 		#ifdef HAVE_COVER_PLUGIN

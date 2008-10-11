@@ -190,7 +190,8 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 	mpd_database_update_dir (gmo, "/");
 	
 	/* set the song info a few seconds after update */
-	g_timeout_add (300, (GSourceFunc)gimmix_update_song_info, NULL);
+	mpd_status_update (gmo);
+	//g_timeout_add (300, (GSourceFunc)gimmix_update_song_info, NULL);
 	
 	/* free the strings */
 	taglib_tag_free_strings ();
