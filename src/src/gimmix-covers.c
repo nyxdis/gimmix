@@ -458,8 +458,10 @@ gimmix_covers_plugin_get_albuminfo (mpd_Song *s)
 			str = g_string_append (str, line);
 		}
 		ret = g_strdup (str->str);
+		g_free (path);
 		return ret;
 	}
+	g_free (path);
 	
 	return ret;
 }

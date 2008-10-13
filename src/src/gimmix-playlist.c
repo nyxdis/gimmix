@@ -35,9 +35,19 @@ typedef enum {
 	PLAYLIST
 } GimmixFileType;
 
+enum { TARGET_STRING, TARGET_ROOTWIN };
+  	GtkTargetEntry targetentries[] =
+    	{
+     		{ "text/plain", 0, TARGET_STRING },
+      		{ "application/x-rootwindow-drop", 0, TARGET_ROOTWIN }
+	};
+	guint n_targets = sizeof(targetentries) / sizeof(targetentries[0]);
+	
 extern MpdObj		*gmo;
 extern GladeXML 	*xml;
 extern ConfigFile	conf;
+extern GtkWidget	*main_window;
+
 
 static gchar *invalid_dir_error = "You have specified an invalid music directory. Do you want to specify the correct music directory now ?";
 
@@ -67,15 +77,114 @@ extern GtkWidget	*tag_editor_window;
 
 gchar			*loaded_playlist;
 
-void
-onDragDataRecived(GtkWidget *widget,
-		  GdkDragContext *context,
-		  int x, int y,
-		  GtkSelectionData *seldata,
-		  guint info, guint time,
-		  gpointer userdata)
+static void
+on_drag_data_received (GtkWidget *widget, GdkDragContext *context, gint x, gint y, 
+	GtkSelectionData *selection_data, guint target_type, guint time, 
+	gpointer data)
 {
-	g_print ("Dropped.\n");
+	gchar		*path;
+	gboolean	dnd_success = FALSE;
+	gboolean	delete_selection_data = FALSE;
+
+	if((selection_data != NULL) && (selection_data->length >= 0))
+        {
+		switch (target_type)
+		{
+			case TARGET_STRING:
+			{
+				path = (gchar*) selection_data->data;
+				mpd_playlist_queue_add (gmo, path);
+				mpd_playlist_queue_commit (gmo);
+				dnd_success = TRUE;
+				break;
+			}
+                                        
+			default:
+			{
+				g_print ("default");
+			}
+                }
+        }
+
+	if (dnd_success == FALSE)
+	{
+		g_print ("DnD data transfer failed!\n");
+	}
+        gtk_drag_finish (context, dnd_success, delete_selection_data, time);
+	
+	return;
+}
+
+static void
+on_drag_data_get (GtkWidget *widget, GdkDragContext *context, GtkSelectionData *selection_data,
+	guint target_type, guint time, gpointer user_data)
+{
+	GtkTreeSelection	*selection = NULL;
+	GtkTreeModel		*model = NULL;
+	GList			*list = NULL;
+	GimmixFileType		type = -1;
+	gchar			*path = NULL;
+	GtkTreeIter		iter;
+
+        g_assert (selection_data != NULL);
+        
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(library_treeview));
+	list = gtk_tree_selection_get_selected_rows (library_selection, &model);
+	while (list != NULL)
+	{
+		gtk_tree_model_get_iter (model, &iter, list->data);
+		gtk_tree_model_get (model, &iter, 2, &path, 3, &type, -1);
+		
+		if (type == DIR || type == SONG)
+		{
+			switch (target_type)
+			{
+				case TARGET_STRING:	
+				{
+					gtk_selection_data_set (selection_data, selection_data-> target, 8, (guchar*) path, strlen (path));
+					break;
+				}
+                	
+				case TARGET_ROOTWIN:
+				{
+					g_print ("Dropped on the root window!\n");
+					break;
+				}
+                	
+				default:
+				{
+					g_assert_not_reached ();
+				}
+			}
+			g_free (path);
+		}
+		list = g_list_next (list);
+	}
+
+	return;
+}
+
+static gboolean
+on_drag_drop (GtkWidget *widget, GdkDragContext *context, gint x, gint y, guint time,
+	gpointer user_data)
+{
+	gboolean ret = TRUE;
+
+        /* If a target is offerred */
+        if (context->targets)
+        {
+		/* Request the data from the source. */
+		gtk_drag_get_data (widget,
+				context,
+				TARGET_STRING,
+				time);
+        }
+        else
+        {
+                ret = FALSE;
+        }
+        
+        return  ret;
 }
 
 static void		gimmix_search_init (void);
@@ -215,26 +324,29 @@ gimmix_playlist_widgets_init (void)
 	pls_playlist_window = glade_xml_get_widget (xml, "pls_playlist_window");
 
 	/* Drag and Drop */
-	enum { TARGET_STRING, TARGET_URI };
-  	GtkTargetEntry targetentries[] =
-    	{
-     		{ "STRING",        0, TARGET_STRING },
-      		{ "text/plain",    0, TARGET_STRING },      		
-		{ "text/uri-list", 0, TARGET_URI },
-	};
-
 	gtk_drag_dest_set(GTK_WIDGET(current_playlist_treeview),
-		    GTK_DEST_DEFAULT_ALL,
-		    targetentries, 3,
-		    GDK_ACTION_COPY|GDK_ACTION_MOVE);
-	gtk_drag_source_set(GTK_WIDGET(current_playlist_treeview),
-		    GDK_BUTTON1_MASK,
-		    targetentries, 3,
-		    GDK_ACTION_COPY|GDK_ACTION_MOVE);
+				GTK_DEST_DEFAULT_ALL,
+				targetentries, n_targets - 1,
+				GDK_ACTION_COPY|GDK_ACTION_MOVE);
+	
+	gtk_drag_source_set (GTK_WIDGET(library_treeview),
+				GDK_BUTTON1_MASK,
+				targetentries, n_targets-1,
+				GDK_ACTION_COPY);
+
 	g_signal_connect(GTK_WIDGET(current_playlist_treeview),
-		   "drag_data_received",
-		   G_CALLBACK(onDragDataRecived),
-		   current_playlist_store);
+			"drag_data_received",
+			G_CALLBACK(on_drag_data_received),
+			NULL);
+	g_signal_connect (current_playlist_treeview,
+			"drag-drop",
+			G_CALLBACK (on_drag_drop),
+			NULL);
+	g_signal_connect (library_treeview,
+			"drag-data-get",
+			G_CALLBACK (on_drag_data_get),
+			NULL);
+
 	loaded_playlist = NULL;
 	
 	gimmix_playlist_search_widgets_init ();
@@ -997,15 +1109,15 @@ gimmix_update_playlists_treeview (void)
 static void
 gimmix_update_library_with_dir (gchar *dir)
 {
-	GtkTreeModel		*directory_model;
-	GtkListStore		*dir_store;
-	GtkTreeIter			dir_iter;
-	GdkPixbuf			*dir_pixbuf;
-	GdkPixbuf			*song_pixbuf;
-	MpdData				*data;
-	gchar				*parent;
-	gchar				*path;
-	gchar				*directory;
+	GtkTreeModel	*directory_model;
+	GtkListStore	*dir_store;
+	GtkTreeIter	dir_iter;
+	GdkPixbuf	*dir_pixbuf;
+	GdkPixbuf	*song_pixbuf;
+	MpdData		*data;
+	gchar		*parent;
+	gchar		*path;
+	gchar		*directory;
 	
 	directory_model = gtk_tree_view_get_model (GTK_TREE_VIEW (library_treeview));
 	dir_store 	= GTK_LIST_STORE (directory_model);
@@ -1017,9 +1129,9 @@ gimmix_update_library_with_dir (gchar *dir)
 	gtk_list_store_clear (dir_store);
 
 	dir_pixbuf 	= gtk_widget_render_icon (GTK_WIDGET(library_treeview),
-										GTK_STOCK_DIRECTORY,
-										GTK_ICON_SIZE_BUTTON,
-										NULL);
+							GTK_STOCK_DIRECTORY,
+							GTK_ICON_SIZE_BUTTON,
+							NULL);
 	path = gimmix_get_full_image_path (GIMMIX_MEDIA_ICON);
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 16, 16, NULL);
 	g_free (path);
@@ -1029,11 +1141,11 @@ gimmix_update_library_with_dir (gchar *dir)
 		parent = gimmix_path_get_parent_dir (dir);
 		gtk_list_store_append (dir_store, &dir_iter);
 		gtk_list_store_set (dir_store, &dir_iter,
-								0, dir_pixbuf,
-								1, "..",
-								2, parent,
-								3, DIR,
-								-1);
+					0, dir_pixbuf,
+					1, "..",
+					2, parent,
+					3, DIR,
+					-1);
 		g_free (parent);
 	}
 	

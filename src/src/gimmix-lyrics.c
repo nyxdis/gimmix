@@ -139,7 +139,7 @@ lyrics_process_lyrics_node (LYRICS_NODE *ptr)
 		g_free (str);
 		ret = TRUE;
 	}
-	
+	nxml_free (nxml);
 	g_free (url);
 	
 	return ret;
@@ -225,6 +225,7 @@ lyrics_perform_search (const char *url)
 			}
 		}
 	}
+	nxml_free (nxml);
 	
 	return lnode;
 }
