@@ -148,6 +148,10 @@ void
 gimmix_covers_plugin_cleanup (void)
 {
 	curl_easy_cleanup (curl);
+	if (mutex)
+	{
+		g_mutex_free (mutex);
+	}
 	
 	return;
 }
@@ -443,9 +447,11 @@ gimmix_covers_plugin_get_albuminfo (mpd_Song *s)
 		{
 			str = g_string_append (str, line);
 		}
+		fclose (fp);
 		ret = g_strdup (str->str);
 		g_free (path);
 		g_free (temp);
+		g_string_free (str, TRUE);
 		return ret;
 	}
 	
@@ -464,8 +470,10 @@ gimmix_covers_plugin_get_albuminfo (mpd_Song *s)
 		{
 			str = g_string_append (str, line);
 		}
+		fclose (fp);
 		ret = g_strdup (str->str);
 		g_free (path);
+		g_string_free (str, TRUE);
 		return ret;
 	}
 	g_free (path);
