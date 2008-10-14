@@ -70,6 +70,7 @@ gimmix_lyrics_plugin_init (void)
 	/* check if .gimmix/lyrics exists */
 	cpath = cfg_get_path_to_config_file (LYRICS_DIR);
 	g_mkdir_with_parents (cpath, 00755);
+	g_free (cpath);
 
 	return;
 }
