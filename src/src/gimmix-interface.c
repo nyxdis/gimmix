@@ -156,7 +156,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		int state = mpd_player_get_state (gmo);
 		if (state == MPD_PLAYER_PLAY)
 		{
-			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
+			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_MENU);
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
 			
 			#ifdef HAVE_COVER_PLUGIN
@@ -180,7 +180,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		else
 		if (state == MPD_PLAYER_PAUSE)
 		{
-			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
+			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_MENU);
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Play <x or c>"), NULL);
 		}
 		else
@@ -205,7 +205,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 						NULL);
 			}
 			#endif
-			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
+			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_MENU);
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Play <x or c>"), NULL);
 			gimmix_update_current_playlist (mo, mpd_playlist_get_changes(mo,0));
 			return;
@@ -328,10 +328,18 @@ gimmix_interface_widgets_init (void)
 	g_signal_connect(G_OBJECT(main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
 	/* set icons for buttons */
-	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_prev")), "gtk-media-previous", GTK_ICON_SIZE_BUTTON);
-	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_play")), "gtk-media-play", GTK_ICON_SIZE_BUTTON);
-	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_next")), "gtk-media-next", GTK_ICON_SIZE_BUTTON);
-	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_stop")), "gtk-media-stop", GTK_ICON_SIZE_BUTTON);
+	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_prev")), "gtk-media-previous", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_play")), "gtk-media-play", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_next")), "gtk-media-next", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_stop")), "gtk-media-stop", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_info")), "gtk-info", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_prefs")), "gtk-preferences", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_fullmode")), "gtk-justify-fill", GTK_ICON_SIZE_MENU);
+	
+	gtk_image_set_from_icon_name (GTK_IMAGE(glade_xml_get_widget(xml, "image_shuffle")), "stock_shuffle", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(glade_xml_get_widget(xml, "image_repeat")), "stock_repeat", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(glade_xml_get_widget(xml, "image_volume")), "stock_volume", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(glade_xml_get_widget(xml, "image_fmodevolume")), "stock_volume", GTK_ICON_SIZE_MENU);
 	
 	g_signal_connect (G_OBJECT(glade_xml_get_widget (xml, "prev_button")), "clicked", G_CALLBACK(cb_prev_button_clicked), NULL);
 
@@ -508,7 +516,7 @@ gimmix_init (void)
 		{
 			gimmix_set_song_info ();
 			status = -1;
-			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
+			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_MENU);
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
 		}
 		else if (status == MPD_PLAYER_PAUSE)
