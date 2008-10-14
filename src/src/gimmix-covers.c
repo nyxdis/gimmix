@@ -419,6 +419,7 @@ gimmix_covers_plugin_get_albuminfo (mpd_Song *s)
 	char	*path = NULL;
 	char	line[256] = "";
 	char	*ret = NULL;
+	char	*temp = NULL;
 	
 	if (s == NULL)
 	{
@@ -430,7 +431,8 @@ gimmix_covers_plugin_get_albuminfo (mpd_Song *s)
 	}
 	artist_e = gimmix_url_encode (s->artist);
 	album_e = gimmix_url_encode (s->album);
-	path = g_strdup_printf ("%s/%s-%s.albuminfo", cfg_get_path_to_config_file(COVERS_DIR), artist_e, album_e);
+	temp = cfg_get_path_to_config_file (COVERS_DIR);
+	path = g_strdup_printf ("%s/%s-%s.albuminfo", temp, artist_e, album_e);
 	g_free (artist_e);
 	g_free (album_e);
 	
@@ -442,12 +444,16 @@ gimmix_covers_plugin_get_albuminfo (mpd_Song *s)
 			str = g_string_append (str, line);
 		}
 		ret = g_strdup (str->str);
+		g_free (path);
+		g_free (temp);
 		return ret;
 	}
 	
 	artist_e = gimmix_url_encode (s->performer);
 	album_e = gimmix_url_encode (s->album);
+	g_free (path);
 	path = g_strdup_printf ("%s/%s-%s.albuminfo", cfg_get_path_to_config_file(COVERS_DIR), artist_e, album_e);
+	g_free (temp);
 	g_free (artist_e);
 	g_free (album_e);
 	
