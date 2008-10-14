@@ -116,6 +116,7 @@ gimmix_covers_plugin_init (void)
 		FILE *fp = fopen (cpath, "w");
 		fclose (fp);
 	}
+	g_free (cpath);
 	
 	/* initialize curl */
 	curl = curl_easy_init ();
