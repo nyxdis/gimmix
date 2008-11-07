@@ -415,7 +415,8 @@ gimmix_systray_tooltip_set_default_image (void)
 	icon_file = gimmix_get_full_image_path (GIMMIX_TOOLTIP_ICON);
 	pixbuf = gdk_pixbuf_new_from_file_at_size (icon_file, 32, 32, NULL);
 	g_free (icon_file);
-	gimmix_tooltip_set_icon (tooltip, pixbuf);
+	if (!strncasecmp(cfg_get_key_value(conf, "enable_notification"),"true",4))
+		gimmix_tooltip_set_icon (tooltip, pixbuf);
 	g_object_unref (pixbuf);
 	
 	return;
