@@ -291,6 +291,8 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 	//g_print ("%s\n", url);
 
 	e = nxml_new (&nxml);
+	nxml_set_timeout (nxml, 20);
+	g_print("set to 20\n");
 	nxml_parse_url (nxml, url);
 	nxml_root_element (nxml, &nroot);
 	nxml_find_element (nxml, nroot, "Items", &ndata);
@@ -553,7 +555,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 	char		salbum[256] = "";
 	char		sartist[256] = "";
 	char		sperformer[256] = "";
-	
+	g_print ("i'm called\n");
 	if (s != NULL)
 	{
 		char *result = NULL;
@@ -576,10 +578,11 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 		temp = g_strdup_printf ("%s-%s", sartist, salbum);
 		gimmix_strcrep (temp, ' ', '_');
 		result = cfg_get_key_value (cover_db, temp);
+		g_print ("result: %s\n", result);
 		if (result!=NULL)
 		{
 			gimmix_covers_plugin_set_cover_image_path (result);
-			//g_print ("found on localdisk\n");
+			g_print ("found on localdisk\n");
 			return;
 		}
 		/* if not found locally, fetch it from amazon */
@@ -713,6 +716,7 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 		g_object_unref (pixbuf);
 		
 		/* metadata albuminfo */
+		s = mpd_playlist_get_current_song (gmo);
 		areview = gimmix_covers_plugin_get_albuminfo (s);
 		gimmix_metadata_set_song_details (s, areview);
 		if (areview)
