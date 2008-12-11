@@ -190,13 +190,13 @@ int cfg_write_config_file(ConfigFile *cf, char *filename)
 {
 	FILE *file;
 	int  i = 0, result = 0;
-	char buffer[128];
+	char buffer[256];
 	file = fopen(filename, "w");
 	if (file != NULL)
 	{
 		while (i < cf->lastkey)
 		{
-			sprintf(buffer, "%s=%s\n", cf->key[i], cf->value[i]);
+			snprintf(buffer, 255, "%s=%s\n", cf->key[i], cf->value[i]);
 			fwrite(buffer, strlen(buffer) * sizeof(char), 1, file);
 			i++;
 		}
