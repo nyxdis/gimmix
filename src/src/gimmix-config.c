@@ -42,25 +42,27 @@ gimmix_config_init (void)
 	cfg_add_key (&conf, "mpd_hostname",		"localhost");
 	cfg_add_key (&conf, "mpd_port", 		"6600");
 	cfg_add_key (&conf, "mpd_password",		"");
-	cfg_add_key (&conf, "music_directory",	"");
-	cfg_add_key (&conf, "enable_systray",	"true");
-	cfg_add_key (&conf, "enable_notification", "true");
+	cfg_add_key (&conf, "proxy_host",		"");
+	cfg_add_key (&conf, "proxy_port",		"");
+	cfg_add_key (&conf, "music_directory",		"");
+	cfg_add_key (&conf, "enable_systray",		"true");
+	cfg_add_key (&conf, "enable_notification",	"true");
 	cfg_add_key (&conf, "play_on_add",		"false");
 	cfg_add_key (&conf, "stop_on_exit",		"false");
 	cfg_add_key (&conf, "window_xpos",		"200");
 	cfg_add_key (&conf, "window_ypos",		"300");
 	cfg_add_key (&conf, "window_width",		"335");
-	cfg_add_key (&conf, "window_height",	"65");
-	cfg_add_key (&conf, "full_view_mode",	"false");
-	cfg_add_key (&conf, "enable_search",	"true");
+	cfg_add_key (&conf, "window_height",		"65");
+	cfg_add_key (&conf, "full_view_mode",		"false");
+	cfg_add_key (&conf, "enable_search",		"true");
 	#ifdef HAVE_COVER_PLUGIN
-	cfg_add_key (&conf, "coverart_enable",	"true");
+	cfg_add_key (&conf, "coverart_enable",		"true");
 	/* set United States as the default cover location */
-	cfg_add_key (&conf, "coverart_location","us");
+	cfg_add_key (&conf, "coverart_location",	"us");
 	#else
-	cfg_add_key (&conf, "coverart_enable",	"false");
+	cfg_add_key (&conf, "coverart_enable",		"false");
 	#endif
-	cfg_add_key (&conf, "update_on_startup","false");
+	cfg_add_key (&conf, "update_on_startup",	"false");
 	
 	rcfile = cfg_get_path_to_config_file (CONFIG_FILE);
 	
@@ -105,6 +107,26 @@ gimmix_config_exists (void)
 
 	free (config_file);
 	return status;
+}
+
+const char*
+gimmix_config_get_proxy_string (void)
+{
+	char	*ret = NULL;
+	
+	if (strlen(cfg_get_key_value(conf,"proxy_host")))
+	{
+		if (strlen(cfg_get_key_value(conf,"proxy_port")))
+		{
+			ret = g_strdup_printf ("%s:%s", cfg_get_key_value(conf,"proxy_host"), cfg_get_key_value(conf,"proxy_port"));
+		}
+		else
+		{
+			ret = g_strdup_printf (cfg_get_key_value(conf,"proxy_host"));
+		}
+	}
+
+	return ret;
 }
 
 void

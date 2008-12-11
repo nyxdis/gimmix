@@ -1,6 +1,5 @@
 /*
  * gimmix.c
- * test test svn test
  *
  * Copyright (C) 2006-2008 Priyank Gosalia
  *

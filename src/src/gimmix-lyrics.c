@@ -130,6 +130,7 @@ lyrics_process_lyrics_node (LYRICS_NODE *ptr)
 	
 	e = nxml_new (&nxml);
 	nxml_parse_url (nxml, url);
+	nxml_set_timeout (nxml, 20);
 	nxml_root_element (nxml, &nroot);
 	nxml_find_element (nxml, nroot, "lyric", &ndata);
 	nxml_find_element (nxml, ndata, "text", &nndata);
@@ -157,6 +158,7 @@ lyrics_perform_search (const char *url)
 	LYRICS_NODE	*lnode = NULL;
 	
 	e = nxml_new (&nxml);
+	nxml_set_timeout (nxml, 20);
 	nxml_parse_url (nxml, (char*)url);
 	nxml_root_element (nxml, &nroot);
 	nxml_find_element (nxml, nroot, "response", &child);
@@ -225,6 +227,7 @@ lyrics_perform_search (const char *url)
 				lnode = NULL;
 			}
 		}
+		g_free (str);
 	}
 	nxml_free (nxml);
 	
