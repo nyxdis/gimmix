@@ -257,10 +257,18 @@ gimmix_covers_plugin_download (const char *url, const char *file)
 		{
 			FILE *outfile = NULL;
 			char *path = NULL;
+			char *proxy = NULL;
 
 			//path = g_strdup_printf ("%s/%s", cfg_get_path_to_config_file(COVERS_DIR), file);
 			//g_print (path);
 			outfile = fopen (file, "w");
+			/* use a proxy if enabled */
+			if (!strncasecmp(cfg_get_key_value(conf,"proxy_enable"),"true",4))
+			{
+				proxy = gimmix_config_get_proxy_string ();
+				curl_easy_setopt (curl, CURLOPT_PROXY, proxy);
+				g_free (proxy);
+			}
 			curl_easy_setopt (curl, CURLOPT_URL, url);
 			curl_easy_setopt (curl, CURLOPT_WRITEDATA, outfile);
 			curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, __curl_write_func);
