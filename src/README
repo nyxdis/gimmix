@@ -1,5 +1,5 @@
 Gimmix README
-===================
+==============
 
 Gimmix is a graphical Music player daemon (MPD) client written in C
 using GTK+2.
@@ -20,8 +20,8 @@ Features:
 
 Requirements:
 =============
-* gtk+-2.6.x
-* libmpd-0.12
+* gtk+ >= 2.8
+* libmpd >= 0.12 
 * libglade-2.6.x
 * taglib-1.4 (C bindings)
 

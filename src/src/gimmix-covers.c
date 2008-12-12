@@ -125,6 +125,17 @@ cb_gimmix_covers_plugin_cover_file_preview (GtkFileChooser *file_chooser, gpoint
 }
 
 static void
+cb_gimmix_covers_plugin_refetch_cover (void)
+{
+	g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
+				FALSE,
+				FALSE,
+				NULL);
+
+	return;
+}
+
+static void
 cb_gimmix_covers_plugin_set_cover_from_file (void)
 {
 	GtkWidget	*dialog;
@@ -171,6 +182,8 @@ cb_gimmix_covers_plugin_set_cover_from_file (void)
 							FALSE,
 							FALSE,
 							NULL);
+					g_free (artist);
+					g_free (album);
 				}
 			}
 			else
@@ -207,7 +220,7 @@ cb_gimmix_covers_plugin_plc_popup (GtkWidget *widget, GdkEventButton *event, gpo
 		image = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_MENU);
 		menu_item = gtk_image_menu_item_new_with_label (_("Re-fetch cover"));
 		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), image);
-		//g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (), NULL);
+		g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK(cb_gimmix_covers_plugin_refetch_cover), NULL);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 		gtk_widget_show (menu_item);
 		

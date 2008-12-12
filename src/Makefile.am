@@ -12,7 +12,10 @@ icon_DATA = data/gimmix.png \
 desktopdir = $(datadir)/applications
 desktop_DATA = data/gimmix.desktop
 
+man_MANS = gimmix.1
+
 EXTRA_DIST =                            \
         $(icon_DATA)                    \
         $(share_DATA)                   \
-        $(desktop_DATA)
+        $(desktop_DATA)					\
+		$(man_MANS)

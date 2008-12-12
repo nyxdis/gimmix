@@ -1,0 +1,103 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH Gimmix 1 "July 20, 2008"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+Gimmix \- a graphical music player daemon (MPD) client
+.SH SYNOPSIS
+.B gimmix
+.SH DESCRIPTION
+This manual page documents briefly the
+.B gimmix
+command.
+.PP
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics,
+.\" respectively.
+\fBgimmix\fR is a graphical music player daemon (MPD) client written in C using GTK+2.
+It's very simple and easy to use, yet offers many features to make your audio experience a pleasant one.
+
+.SH CONFIGURATION
+Default configuration file location is $HOME/.gimmixrc.
+.PP
+List of valid configuration options :
+.TP
+\fBmpd_hostname (mandatory)\fR
+hostname
+
+.TP
+\fBmpd_port (mandatory)\fR
+port number
+
+.TP
+\fBmpd_port (mandatory)\fR
+mpd password. Leave blank for no password
+
+.TP
+\fBenable_systray (mandatory)\fR
+Enable/Disable the system tray icon. Enable is true, Disable is false.
+
+.TP
+\fBenable_notification (mandatory)\fR
+Enable/Disable the notification tooltip. Enable is true, Disable is false.
+
+.TP
+\fBmusic_directory (mandatory)\fR
+The absolute path to the directory where your music is stored. This is same as the one you specified in your mpd.conf. This setting is required for the tag editor to function properly.
+
+.TP
+\fBplay_on_add\fR
+If true, songs will automatically be played when you add them to the playlist. If false, songs will just be added to the playlist. Default value is false.
+
+.TP
+\fBstop_on_exit\fR
+If true, gimmix will stop playing when user quits gimmix. If false, gimmix will not stop playing when user quits gimmix. Default value is false.
+
+.TP
+\fBenable_search\fR
+If true, search mode is enabled in library browser. If false, search mode will be disabled. Default value is true.
+
+.TP
+\fBupdate_on_startup\fR
+If true, gimmix will update the mpd database everytime on startup. If false, gimmix won't update the mpd database on startup. Default value is false.
+
+.TP
+\fBfull_view_mode\fR
+If true, the playlist will be expanded by default when gimmix starts. If false, gimmix will start in compact mode (This is automatically set by gimmix, so, its not necessary to set this value always)
+
+.TP
+\fBwindow_xpos and window_ypos\fR
+x and y co-ordinates representing window position of gimmix (These values are automatically set, so, its not necessary to set these values)
+
+.TP
+\fBwindow_width and window_height\fR
+These represt the window geometry of gimmix (These values are automatically set, so, its not necessary to set these values)
+
+.TP
+\fBcoverart_enable\fR
+Enable/disable amazon cover art plugin
+
+.TP
+\fBcoverart_location\fR
+Amazon's server location to fetch covers from. Values : com | co.uk | jp | fr | ca | de
+
+.SH SEE ALSO
+Website: http://gimmix.berlios.de
+.SH AUTHOR
+Gimmix was written by Priyank Gosalia <priyankmg@gmail.com>.
+.PP
+This manual page was written by Vincent Legout <vincent@legout.info>,
+for the Debian project (but may be used by others).
