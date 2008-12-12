@@ -83,13 +83,8 @@ gimmix_lyrics_plugin_proxy_init (nxml_t *n)
 	if (!strncasecmp(cfg_get_key_value(conf,"proxy_enable"),"true",4))
 	{
 		proxy = gimmix_config_get_proxy_string ();
-		g_print ("proxyis : %s\n", proxy);
 		nxml_set_proxy (n, proxy, NULL);
 		g_free (proxy);
-	}
-	else
-	{
-		g_print ("prox is disabled\n");
 	}
 	
 	return;

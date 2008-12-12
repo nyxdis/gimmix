@@ -395,7 +395,6 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 		host = gtk_entry_get_text (GTK_ENTRY(pref_proxy_host_entry));
 		if (host == NULL || !strlen(host))
 		{
-			g_print ("Error !!!! \n");
 			gimmix_error ("Please specify a valid proxy server hostname / ip address");
 			return;
 		}
