@@ -196,6 +196,7 @@ gimmix_about_show (void)
 				"\nwejpconfig (Gimmix's configuration system)\nJohannes Heimansberg <wejpilot@gmail.com>",
 				"\nA part of the song seek code borrowed from Pygmy.",
 				"\nGimmix's Build system\nAlex Smith",
+				"\nManual page\nVincent Legout <vincent@legout.info>",
 				"\nTesting & Bug Reporting (Gimmix 0.1x)\nRohan Dhruva <rohandhruva@gmail.com>",
 				 NULL
 					};
