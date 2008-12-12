@@ -75,6 +75,26 @@ gimmix_lyrics_plugin_init (void)
 	return;
 }
 
+static void
+gimmix_lyrics_plugin_proxy_init (nxml_t *n)
+{
+	char	*proxy = NULL;
+	
+	if (!strncasecmp(cfg_get_key_value(conf,"proxy_enable"),"true",4))
+	{
+		proxy = gimmix_config_get_proxy_string ();
+		g_print ("proxyis : %s\n", proxy);
+		nxml_set_proxy (n, proxy, NULL);
+		g_free (proxy);
+	}
+	else
+	{
+		g_print ("prox is disabled\n");
+	}
+	
+	return;
+}
+
 /* URL encodes a string */
 static gchar *
 lyrics_url_encode (const char *string)
@@ -129,8 +149,9 @@ lyrics_process_lyrics_node (LYRICS_NODE *ptr)
 	//printf ("%s\n", url);
 	
 	e = nxml_new (&nxml);
-	nxml_parse_url (nxml, url);
 	nxml_set_timeout (nxml, 20);
+	gimmix_lyrics_plugin_proxy_init (nxml);
+	nxml_parse_url (nxml, url);
 	nxml_root_element (nxml, &nroot);
 	nxml_find_element (nxml, nroot, "lyric", &ndata);
 	nxml_find_element (nxml, ndata, "text", &nndata);
@@ -159,6 +180,7 @@ lyrics_perform_search (const char *url)
 	
 	e = nxml_new (&nxml);
 	nxml_set_timeout (nxml, 20);
+	gimmix_lyrics_plugin_proxy_init (nxml);
 	nxml_parse_url (nxml, (char*)url);
 	nxml_root_element (nxml, &nroot);
 	nxml_find_element (nxml, nroot, "response", &child);
@@ -339,7 +361,7 @@ gimmix_lyrics_plugin_update_lyrics (void)
 		#ifndef HAVE_COVER_PLUGIN
 		gimmix_metadata_set_song_details (s, NULL);
 		#else
-		if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"false",4))
+		if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"false",5))
 		{
 			gimmix_metadata_set_song_details (s, NULL);
 		}

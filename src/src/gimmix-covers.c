@@ -98,6 +98,22 @@ cb_gimmix_covers_plugin_plcbox_size_allocated (GtkWidget *widget, GtkAllocation 
 	return;
 }
 
+static void
+gimmix_covers_plugin_proxy_init (nxml_t *n)
+{
+	char	*proxy = NULL;
+	
+	if (!strncasecmp(cfg_get_key_value(conf,"proxy_enable"),"true",4))
+	{
+		proxy = gimmix_config_get_proxy_string ();
+		g_print ("proxyis : %s\n", proxy);
+		nxml_set_proxy (n, proxy, NULL);
+		g_free (proxy);
+	}
+	
+	return;
+}
+
 void
 gimmix_covers_plugin_init (void)
 {
@@ -292,7 +308,7 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 
 	e = nxml_new (&nxml);
 	nxml_set_timeout (nxml, 20);
-	g_print("set to 20\n");
+	gimmix_covers_plugin_proxy_init (nxml);
 	nxml_parse_url (nxml, url);
 	nxml_root_element (nxml, &nroot);
 	nxml_find_element (nxml, nroot, "Items", &ndata);

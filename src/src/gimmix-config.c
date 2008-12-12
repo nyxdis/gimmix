@@ -42,8 +42,9 @@ gimmix_config_init (void)
 	cfg_add_key (&conf, "mpd_hostname",		"localhost");
 	cfg_add_key (&conf, "mpd_port", 		"6600");
 	cfg_add_key (&conf, "mpd_password",		"");
+	cfg_add_key (&conf, "proxy_enable",		"false");
 	cfg_add_key (&conf, "proxy_host",		"");
-	cfg_add_key (&conf, "proxy_port",		"");
+	cfg_add_key (&conf, "proxy_port",		"8080");
 	cfg_add_key (&conf, "music_directory",		"");
 	cfg_add_key (&conf, "enable_systray",		"true");
 	cfg_add_key (&conf, "enable_notification",	"true");
@@ -109,20 +110,24 @@ gimmix_config_exists (void)
 	return status;
 }
 
-const char*
+char*
 gimmix_config_get_proxy_string (void)
 {
 	char	*ret = NULL;
+	char	*host = NULL;
 	
-	if (strlen(cfg_get_key_value(conf,"proxy_host")))
+	host = cfg_get_key_value (conf,"proxy_host");
+	if ((host != NULL) && strlen(host))
 	{
-		if (strlen(cfg_get_key_value(conf,"proxy_port")))
+		char *port = NULL;
+		port = cfg_get_key_value (conf,"proxy_port"); 
+		if (port && strlen(port))
 		{
-			ret = g_strdup_printf ("%s:%s", cfg_get_key_value(conf,"proxy_host"), cfg_get_key_value(conf,"proxy_port"));
+			ret = g_strdup_printf ("%s:%s", host, port);
 		}
 		else
 		{
-			ret = g_strdup_printf (cfg_get_key_value(conf,"proxy_host"));
+			ret = g_strdup_printf (host);
 		}
 	}
 

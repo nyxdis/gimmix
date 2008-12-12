@@ -49,6 +49,9 @@ GtkWidget *pref_dir_chooser;
 GtkWidget *pref_search_check;
 GtkWidget *pref_outputdev_tvw;
 GtkWidget *pref_coverart_vbox;
+GtkWidget *pref_use_proxy_check;
+GtkWidget *pref_proxy_host_entry;
+GtkWidget *pref_proxy_port_spin;
 
 #ifdef HAVE_COVER_PLUGIN
 static GtkWidget *pref_coverart_check;
@@ -65,6 +68,7 @@ static void	cb_pref_notification_toggled (GtkToggleButton *button, gpointer data
 static void	cb_pref_search_toggled (GtkToggleButton *button, gpointer data);
 static void	cb_pref_crossfade_toggled (GtkToggleButton *button, gpointer data);
 static void	cb_pref_outputdev_enable_toggled (GtkCellRendererToggle *toggle, gchar *path_str, gpointer data);
+static void	cb_pref_use_proxy_toggled (GtkToggleButton *button, gpointer data);
 
 #ifdef HAVE_COVER_PLUGIN
 static void	gimmix_prefs_setup_covers_location_combo (void);
@@ -95,6 +99,9 @@ gimmix_prefs_init (void)
 	pref_search_check = glade_xml_get_widget (xml, "search_checkbutton");
 	pref_notebook = glade_xml_get_widget (xml, "pref_notebook");
 	pref_outputdev_tvw = glade_xml_get_widget (xml, "pref_outputdev_tvw");
+	pref_use_proxy_check = glade_xml_get_widget (xml, "use_proxy_checkbtn");
+	pref_proxy_host_entry = glade_xml_get_widget (xml, "proxy_host_entry");
+	pref_proxy_port_spin = glade_xml_get_widget (xml, "proxy_port_spin");
 	#ifdef HAVE_COVER_PLUGIN
 	pref_coverart_check = glade_xml_get_widget (xml, "coverart_checkbutton");
 	pref_coverart_loc_combo = glade_xml_get_widget (xml, "pref_coverart_location");
@@ -105,6 +112,7 @@ gimmix_prefs_init (void)
 	gtk_widget_hide (glade_xml_get_widget(xml,"pref_coverart_vbox"));
 	#endif
 	
+	g_signal_connect (G_OBJECT(pref_use_proxy_check), "toggled", G_CALLBACK(cb_pref_use_proxy_toggled), NULL);
 	g_signal_connect (G_OBJECT(pref_systray_check), "toggled", G_CALLBACK(cb_pref_systray_toggled), (gpointer)pref_notification_check);
 	g_signal_connect (G_OBJECT(pref_notification_check), "toggled", G_CALLBACK(cb_pref_notification_toggled), NULL);
 	g_signal_connect (G_OBJECT(pref_crossfade_check), "toggled", G_CALLBACK(cb_pref_crossfade_toggled), pref_crossfade_spin);
@@ -145,13 +153,15 @@ gimmix_prefs_init (void)
 void
 gimmix_prefs_dialog_show (void)
 {
-	gchar 		*port;
+	gchar 		*port = NULL;
+	gchar		*phost = NULL;
 	gint		crossfade_time;
 	gboolean	syst = FALSE;
 	MpdData		*d = NULL;
 	GtkListStore	*store = NULL;
 	GtkTreeIter	iter;
 	GtkTreeModel	*model = NULL;
+	gint		proxy_port;
 	
 	port = g_strdup_printf ("%s", cfg_get_key_value (conf, "mpd_port"));
 
@@ -159,6 +169,7 @@ gimmix_prefs_dialog_show (void)
 
 	gtk_entry_set_text (GTK_ENTRY(pref_port_entry), port);
 	g_free (port);
+	port = NULL;
 	
 	gtk_entry_set_visibility (GTK_ENTRY(pref_pass_entry), FALSE);
 	gtk_entry_set_invisible_char (GTK_ENTRY(pref_pass_entry), g_utf8_get_char("*"));
@@ -244,14 +255,51 @@ gimmix_prefs_dialog_show (void)
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_search_check), FALSE);
 	
+	/* proxy stuff */
+	if (!strncasecmp(cfg_get_key_value(conf,"proxy_enable"),"true",4))
+	{
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_use_proxy_check), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET(pref_proxy_host_entry), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET(pref_proxy_port_spin), TRUE);
+		
+	}
+	else
+	{
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_use_proxy_check), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET(pref_proxy_host_entry), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET(pref_proxy_port_spin), FALSE);
+	}
+	phost = cfg_get_key_value (conf, "proxy_host");
+	if (phost != NULL)
+	{
+		gtk_entry_set_text (GTK_ENTRY(pref_proxy_host_entry), phost);
+	}
+	else
+	{
+		gtk_entry_set_text (GTK_ENTRY(pref_proxy_host_entry), "");
+	}
+	port = 	cfg_get_key_value (conf, "proxy_port");
+	if (port != NULL && strlen(port))
+	{
+		proxy_port = atoi (port);
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON(pref_proxy_port_spin), (gdouble)proxy_port);
+	}
+	else
+	{
+		proxy_port = 8080;
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON(pref_proxy_port_spin), (gdouble)proxy_port);
+	}
+	
 	#ifdef HAVE_COVER_PLUGIN
 	/* cover art enable check */
 	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
 	{
+		
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_coverart_check), TRUE);
 	}
 	else
 	{
+		
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_coverart_check), FALSE);
 	}
 	/* cover art location */
@@ -341,6 +389,18 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 		mpd_status_set_crossfade (gmo, 0);
 	}
 	
+	/* proxy server stuff */
+	if (gtk_toggle_button_get_active(pref_use_proxy_check))
+	{
+		host = gtk_entry_get_text (GTK_ENTRY(pref_proxy_host_entry));
+		if (host == NULL)
+		{
+			g_print ("Error !!!! \n");
+			gimmix_error ("Please specify a valid proxy server hostname / ip address");
+			return;
+		}
+	}
+
 	#ifdef HAVE_COVER_PLUGIN
 	guint locid = gtk_combo_box_get_active (GTK_COMBO_BOX(pref_coverart_loc_combo));
 	cfg_add_key (&conf, "coverart_location", cover_locations[locid][0]);
@@ -348,6 +408,25 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 	
 	gimmix_config_save ();
 
+	return;
+}
+
+static void
+cb_pref_use_proxy_toggled (GtkToggleButton *button, gpointer data)
+{
+	if (gtk_toggle_button_get_active(button) == TRUE)
+	{
+		cfg_add_key (&conf, "proxy_enable", "true");
+		gtk_widget_set_sensitive (GTK_WIDGET(pref_proxy_host_entry), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET(pref_proxy_port_spin), TRUE);
+	}
+	else
+	{
+		cfg_add_key (&conf, "proxy_enable", "false");
+		gtk_widget_set_sensitive (GTK_WIDGET(pref_proxy_host_entry), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET(pref_proxy_port_spin), FALSE);
+	}
+	
 	return;
 }
 
