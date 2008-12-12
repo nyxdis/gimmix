@@ -1,4 +1,4 @@
-Gimmix-0.5.2 README
+Gimmix README
 ===================
 
 Gimmix is a graphical Music player daemon (MPD) client written in C
@@ -83,6 +83,15 @@ Make sure your .gimmixrc has all these configuration values set.
 
 Other optional configuration file options:
 ==========================================
+proxy_enable = true or false
+sets whether to use a proxy server to connect to the internet when
+downloading lyrics and/or covers
+
+proxy_host
+the hostname/ip address of the proxy server
+
+proxy_port
+proxy server port
 
 play_on_add = true or false
 if true, songs will automatically be played when you add them to the playlist.

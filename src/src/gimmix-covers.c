@@ -578,7 +578,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 	char		salbum[256] = "";
 	char		sartist[256] = "";
 	char		sperformer[256] = "";
-	g_print ("i'm called\n");
+	
 	if (s != NULL)
 	{
 		char *result = NULL;
@@ -601,11 +601,11 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 		temp = g_strdup_printf ("%s-%s", sartist, salbum);
 		gimmix_strcrep (temp, ' ', '_');
 		result = cfg_get_key_value (cover_db, temp);
-		g_print ("result: %s\n", result);
+		//g_print ("result: %s\n", result);
 		if (result!=NULL)
 		{
 			gimmix_covers_plugin_set_cover_image_path (result);
-			g_print ("found on localdisk\n");
+			g_print ("cover found on disk\n");
 			return;
 		}
 		/* if not found locally, fetch it from amazon */
