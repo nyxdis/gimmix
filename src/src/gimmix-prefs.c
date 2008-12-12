@@ -390,14 +390,22 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 	}
 	
 	/* proxy server stuff */
-	if (gtk_toggle_button_get_active(pref_use_proxy_check))
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pref_use_proxy_check)))
 	{
 		host = gtk_entry_get_text (GTK_ENTRY(pref_proxy_host_entry));
-		if (host == NULL)
+		if (host == NULL || !strlen(host))
 		{
 			g_print ("Error !!!! \n");
 			gimmix_error ("Please specify a valid proxy server hostname / ip address");
 			return;
+		}
+		else
+		{
+			port = NULL;
+			port = g_strdup_printf ("%d", (gint)gtk_spin_button_get_value(GTK_SPIN_BUTTON(pref_proxy_port_spin)));
+			cfg_add_key (&conf, "proxy_host", (char*) host);
+			cfg_add_key (&conf, "proxy_port", (char*) port);
+			g_free (port);
 		}
 	}
 
