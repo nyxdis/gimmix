@@ -61,12 +61,14 @@ extern ConfigFile	conf;
 extern MpdObj		*gmo;
 extern mpd_Song		*glob_song_info;
 extern GimmixTooltip 	*tooltip;
+extern GtkWidget	*main_window;
 
 static ConfigFile	cover_db;
 static CURL		*curl;
 static char		*cover_image_path;
 static GtkWidget	*gimmix_metadata_image;
 static GtkWidget	*gimmix_plcbox_image;
+static GtkWidget	*gimmix_plcbox_eventbox;
 
 GtkWidget		*gimmix_plcbox_frame;
 static GMutex		*mutex = NULL;
@@ -86,6 +88,7 @@ static gchar *gimmix_url_encode (const char *string);
 static void gimmix_covers_plugin_cover_db_init (void);
 static void gimmix_covers_plugin_cover_db_save (void);
 static void gimmix_covers_plugin_find_cover (mpd_Song *s);
+static void gimmix_cover_plugin_save_cover (char *artist, char *album);
 
 static void
 cb_gimmix_covers_plugin_plcbox_size_allocated (GtkWidget *widget, GtkAllocation *a, gpointer data)
@@ -96,6 +99,127 @@ cb_gimmix_covers_plugin_plcbox_size_allocated (GtkWidget *widget, GtkAllocation 
 	}
 	
 	return;
+}
+
+static void
+cb_gimmix_covers_plugin_cover_file_preview (GtkFileChooser *file_chooser, gpointer data)
+{
+	GtkWidget	*preview = NULL;
+	char		*filename = NULL;
+	GdkPixbuf	*pixbuf = NULL;
+	gboolean	have_preview;
+	
+	preview = GTK_WIDGET (data);
+	filename = gtk_file_chooser_get_preview_filename (file_chooser);
+	pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
+	have_preview = (pixbuf != NULL);
+	g_free (filename);
+	gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);
+	if (pixbuf != NULL)
+	{
+		g_object_unref (pixbuf);
+	}
+	gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
+
+	return;
+}
+
+static void
+cb_gimmix_covers_plugin_set_cover_from_file (void)
+{
+	GtkWidget	*dialog;
+	GtkFileFilter	*filter = NULL;
+	GtkImage	*preview;
+	mpd_Song	*song = NULL;
+	gchar		*artist = NULL;
+	gchar		*album = NULL;
+	
+	if (!(song=mpd_playlist_get_current_song(gmo)))
+		return;
+	
+	artist = (song->artist != NULL) ? g_strdup (song->artist) : NULL;
+	album = (song->album != NULL) ? g_strdup (song->album) : NULL;
+	dialog = gtk_file_chooser_dialog_new ("Open File",
+					main_window,
+					GTK_FILE_CHOOSER_ACTION_OPEN,
+					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+					NULL);
+	preview = gtk_image_new ();
+	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER(dialog), preview);
+	g_signal_connect (GTK_FILE_CHOOSER(dialog), "update-preview", G_CALLBACK (cb_gimmix_covers_plugin_cover_file_preview), preview);
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, "Images (.jpg)");
+	gtk_file_filter_add_pattern (filter, "*.jpg");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER(dialog), filter);
+	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+	{
+		char	*filename = NULL;
+		gchar	*contents = NULL;
+		gsize	len = 0;
+		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+		if (g_file_get_contents(filename, &contents, &len, NULL))
+		{
+			gchar	*temp = NULL;
+			temp = g_strdup_printf ("%s/temp.jpg", cfg_get_path_to_config_file(COVERS_DIR));
+			if (g_file_set_contents (temp, contents, len, NULL))
+			{
+				if (artist!=NULL && album!=NULL)
+				{
+					gimmix_cover_plugin_save_cover (artist, album);
+					g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
+							FALSE,
+							FALSE,
+							NULL);
+				}
+			}
+			else
+			{
+				gimmix_error ("There was an error while setting the album cover. Please try using a different image.");
+			}
+			g_free (temp);
+		}
+		g_free (filename);
+	}
+	gtk_widget_destroy (dialog);
+	
+	return;
+}
+
+static void
+cb_gimmix_covers_plugin_plc_popup (GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+	GtkWidget 	*menu = NULL;
+	GtkWidget 	*menu_item = NULL;
+	GtkWidget	*image = NULL;
+
+	if (event->button == 3) /* If right click */
+	{
+		menu = gtk_menu_new ();
+
+		image = gtk_image_new_from_stock ("gtk-open", GTK_ICON_SIZE_MENU);
+		menu_item = gtk_image_menu_item_new_with_label (_("Set cover from file"));
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), image);
+		g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_gimmix_covers_plugin_set_cover_from_file), NULL);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+		gtk_widget_show (menu_item);
+		
+		image = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_MENU);
+		menu_item = gtk_image_menu_item_new_with_label (_("Re-fetch cover"));
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), image);
+		//g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (), NULL);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+		gtk_widget_show (menu_item);
+		
+		gtk_widget_show (menu);
+		gtk_menu_popup (GTK_MENU(menu),
+					NULL,
+					NULL,
+					NULL,
+					NULL,
+					3,
+					gtk_get_current_event_time());
+	}
 }
 
 static void
@@ -143,11 +267,14 @@ gimmix_covers_plugin_init (void)
 	gimmix_covers_plugin_cover_db_init ();
 	
 	/* initialize metadata widgets */
+	gimmix_plcbox_eventbox = glade_xml_get_widget (xml, "cover_event_box");
 	gimmix_plcbox_image = glade_xml_get_widget (xml, "gimmix_plcbox_image");
 	gimmix_metadata_image = glade_xml_get_widget (xml, "gimmix_metadata_image");
 	gimmix_plcbox_frame = glade_xml_get_widget (xml, "gimmix_plc_image_frame");
 	
 	/* some signals */
+	g_signal_connect (gimmix_plcbox_eventbox, "button_press_event", G_CALLBACK(cb_gimmix_covers_plugin_plc_popup), NULL);
+	
 	/* an ugly way to calculate size of the album picture placeholder */
 	widget = glade_xml_get_widget (xml,"plcvbox");
 	g_signal_connect (widget, "size-allocate", G_CALLBACK(cb_gimmix_covers_plugin_plcbox_size_allocated), NULL);
