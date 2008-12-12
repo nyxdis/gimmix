@@ -1,6 +1,6 @@
 Note: Dates are in dd-mm-yyyy format
 
-Version 0.5.3 (xx-12-2008)
+Version 0.5.3 (12-12-2008)
 * Bug #293908: Segfaults when disabling coverart plugin
 * Bug #305662: Segfault with accents and long filename
 * Added support for manually setting cover images from files
