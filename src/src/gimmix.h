@@ -27,6 +27,9 @@ bool gimmix_connect (void);
 /* display connection error */
 void gimmix_connect_error (void);
 
+/* display general error */
+void gimmix_error (const char *error_str);
+
 /* displays the about dialog */
 void gimmix_about_show (void);
 
