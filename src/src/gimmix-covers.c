@@ -172,7 +172,9 @@ cb_gimmix_covers_plugin_set_cover_from_file (void)
 		if (g_file_get_contents(filename, &contents, &len, NULL))
 		{
 			gchar	*temp = NULL;
-			temp = g_strdup_printf ("%s/temp.jpg", cfg_get_path_to_config_file(COVERS_DIR));
+			char	*p = cfg_get_path_to_config_file (COVERS_DIR);
+			temp = g_strdup_printf ("%s/temp.jpg", p);
+			g_free (p);
 			if (g_file_set_contents (temp, contents, len, NULL))
 			{
 				if (artist!=NULL && album!=NULL)
@@ -527,6 +529,7 @@ gimmix_cover_plugin_save_cover (char *artist, char *album)
 	char	*old_path = NULL;
 	char	*new_path = NULL;
 	char	*key = NULL;
+	char	*temp = NULL;
 	
 	if (artist == NULL || album == NULL)
 		return;
@@ -534,9 +537,11 @@ gimmix_cover_plugin_save_cover (char *artist, char *album)
 	album_e = gimmix_url_encode (album);
 	
 	/* save cover art */
-	old_path = g_strdup_printf ("%s/temp.jpg", cfg_get_path_to_config_file(COVERS_DIR));
-	new_path = g_strdup_printf ("%s/%s-%s.jpg", cfg_get_path_to_config_file(COVERS_DIR), artist_e, album_e);
+	temp = cfg_get_path_to_config_file (COVERS_DIR);
+	old_path = g_strdup_printf ("%s/temp.jpg", temp);
+	new_path = g_strdup_printf ("%s/%s-%s.jpg", temp, artist_e, album_e);
 	g_rename (old_path, new_path);
+	g_free (temp);
 	
 	/* okay, add an entry to covers.db */
 	key = g_strdup_printf ("%s-%s", artist, album);
@@ -561,6 +566,7 @@ gimmix_covers_plugin_save_albuminfo (char *artist, char *album, char *info)
 	char	*path = NULL;
 	char	*artist_e = NULL;
 	char	*album_e = NULL;
+	char	*temp = NULL;
 	
 	if (info == NULL || !strlen(info))
 		return;
@@ -568,10 +574,12 @@ gimmix_covers_plugin_save_albuminfo (char *artist, char *album, char *info)
 	/* save album info */
 	artist_e = gimmix_url_encode (artist);
 	album_e = gimmix_url_encode (album);
-	path = g_strdup_printf ("%s/%s-%s.albuminfo", cfg_get_path_to_config_file(COVERS_DIR), artist_e, album_e);
+	temp = cfg_get_path_to_config_file (COVERS_DIR);
+	path = g_strdup_printf ("%s/%s-%s.albuminfo", temp, artist_e, album_e);
 	fp = fopen (path, "w");
 	fprintf (fp, info);
 	fclose (fp);
+	g_free (temp);
 	g_free (path);
 	g_free (artist_e);
 	g_free (album_e);
