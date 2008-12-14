@@ -741,6 +741,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 		temp = g_strdup_printf ("%s-%s", sartist, salbum);
 		gimmix_strcrep (temp, ' ', '_');
 		result = cfg_get_key_value (cover_db, temp);
+		g_free (temp);
 		//g_print ("result: %s\n", result);
 		if (result!=NULL)
 		{
@@ -854,6 +855,7 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 	}
 	
 	sleep (2);
+	g_print ("sleep over\n");
 	if (mpd_player_get_state(gmo)!=MPD_PLAYER_STOP)
 	{
 		if (mpd_playlist_get_playlist_length(gmo))

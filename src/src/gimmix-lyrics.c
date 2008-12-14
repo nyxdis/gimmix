@@ -261,7 +261,9 @@ lyrics_search (void)
 	if (search_artist != NULL && search_title != NULL)
 	{
 		/* first check if the lyrics exist in ~/.lyrics/ */
-		path = g_strdup_printf ("%s/%s-%s.txt", cfg_get_path_to_config_file(LYRICS_DIR), search_artist, search_title);
+		char *temp_path = cfg_get_path_to_config_file (LYRICS_DIR);
+		path = g_strdup_printf ("%s/%s-%s.txt", temp_path, search_artist, search_title);
+		g_free (temp_path);
 		if (g_file_test(path,G_FILE_TEST_EXISTS))
 		{
 			GString	*str = g_string_new ("");
@@ -285,6 +287,7 @@ lyrics_search (void)
 			g_free (path);
 			return ret;
 		}
+		g_free (path);
 		char *artist_e = lyrics_url_encode (search_artist);
 		char *title_e = lyrics_url_encode (search_title);
 		url = g_strdup_printf ("%s&artist=%s&songtitle=%s", SEARCH_URL, artist_e, title_e);
