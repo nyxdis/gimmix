@@ -333,7 +333,7 @@ gimmix_lyrics_populate_textview (LYRICS_NODE *node)
 	if (node && node->lyrics)
 	{
 		g_print ("setting lyrics\n");
-		gtk_text_buffer_insert (buffer, &iter, node->lyrics, -1);
+		gtk_text_buffer_set_text (buffer, node->lyrics, -1);
 		g_print ("done setting lyrics\n");
 	}
 	else
