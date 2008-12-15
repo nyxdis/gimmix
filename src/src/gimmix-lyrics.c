@@ -302,8 +302,15 @@ lyrics_search (void)
 			if (ret->lyrics != NULL)
 			{
 				FILE *fp = fopen (path, "w");
-				fprintf (fp, "%s", ret->lyrics);
-				fclose (fp);
+				if (fp)
+				{
+					fprintf (fp, "%s", ret->lyrics);
+					fclose (fp);
+				}
+				else
+				{
+					g_print ("error fetching lyrics. please try again.\n");
+				}
 			}
 		}
 	}
@@ -325,7 +332,9 @@ gimmix_lyrics_populate_textview (LYRICS_NODE *node)
 	/* display the lyrics */
 	if (node && node->lyrics)
 	{
+		g_print ("setting lyrics\n");
 		gtk_text_buffer_insert (buffer, &iter, node->lyrics, -1);
+		g_print ("done setting lyrics\n");
 	}
 	else
 	{
