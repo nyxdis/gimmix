@@ -247,7 +247,7 @@ gimmix_playlist_search_widgets_init (void)
 }
 
 void
-gimmix_playlist_widgets_init (void)
+gimmix_playlist_setup_current_playlist_tvw (void)
 {
 	GtkTreeModel		*current_playlist_model;
 	GtkListStore		*current_playlist_store;
@@ -265,26 +265,81 @@ gimmix_playlist_widgets_init (void)
 										"markup", 0,
 										NULL);
 	gtk_tree_view_column_set_resizable (current_playlist_column, TRUE);
-	gtk_tree_view_column_set_min_width (current_playlist_column, 200);
+	//gtk_tree_view_column_set_min_width (current_playlist_column, 200);
+	g_object_set (G_OBJECT(current_playlist_column), "expand", TRUE, "spacing", 4, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
+	
+	current_playlist_renderer = gtk_cell_renderer_text_new ();
+	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Artist"),
+										current_playlist_renderer,
+										"markup", 3,
+										NULL);
+	gtk_tree_view_column_set_resizable (current_playlist_column, TRUE);
+	//gtk_tree_view_column_set_min_width (current_playlist_column, 100);
+	g_object_set (G_OBJECT(current_playlist_column), "expand", TRUE, "spacing", 4, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
+	
+	current_playlist_renderer = gtk_cell_renderer_text_new ();
+	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Album"),
+										current_playlist_renderer,
+										"markup", 4,
+										NULL);
+	gtk_tree_view_column_set_resizable (current_playlist_column, TRUE);
+	//gtk_tree_view_column_set_min_width (current_playlist_column, 100);
 	g_object_set (G_OBJECT(current_playlist_column), "expand", TRUE, "spacing", 4, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
 							
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
 	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Length"),
 										current_playlist_renderer,
-										"markup", 3,
+										"markup", 5,
 										NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
 
-	current_playlist_store = gtk_list_store_new (4,
+	current_playlist_store = gtk_list_store_new (6,
 						G_TYPE_STRING, 	/* name (0) */
 						G_TYPE_STRING, 	/* path (1) */
-						G_TYPE_INT,		/* id	(2) */
-						G_TYPE_STRING); /* length (3) */
+						G_TYPE_INT,	/* id	(2) */
+						G_TYPE_STRING,  /* artist (3) */
+						G_TYPE_STRING,  /* album (4) */
+						G_TYPE_STRING); /* length (5) */
 	current_playlist_model	= GTK_TREE_MODEL (current_playlist_store);
 	current_playlist_selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(current_playlist_treeview));
 	gtk_tree_selection_set_mode (current_playlist_selection, GTK_SELECTION_MULTIPLE);
 	gtk_tree_view_set_model (GTK_TREE_VIEW (current_playlist_treeview), current_playlist_model);
+	
+	/* Drag and Drop */
+	gtk_drag_dest_set(GTK_WIDGET(current_playlist_treeview),
+				GTK_DEST_DEFAULT_ALL,
+				targetentries, n_targets - 1,
+				GDK_ACTION_COPY|GDK_ACTION_MOVE);
+	
+	gtk_drag_source_set (GTK_WIDGET(library_treeview),
+				GDK_BUTTON1_MASK,
+				targetentries, n_targets-1,
+				GDK_ACTION_COPY);
+
+	g_signal_connect(GTK_WIDGET(current_playlist_treeview),
+			"drag_data_received",
+			G_CALLBACK(on_drag_data_received),
+			NULL);
+	g_signal_connect (current_playlist_treeview,
+			"drag-drop",
+			G_CALLBACK (on_drag_drop),
+			NULL);
+	g_signal_connect (library_treeview,
+			"drag-data-get",
+			G_CALLBACK (on_drag_data_get),
+			NULL);
+			
+	g_object_unref (current_playlist_model);
+}
+
+void
+gimmix_playlist_widgets_init (void)
+{
+	gimmix_playlist_setup_current_playlist_tvw ();
+	
 	gimmix_statusbar = glade_xml_get_widget (xml, "gimmix_status");
 	gimmix_statusbox = glade_xml_get_widget (xml, "gimmix_statusbox");
 	
@@ -292,7 +347,7 @@ gimmix_playlist_widgets_init (void)
 	g_signal_connect (current_playlist_treeview, "button-press-event", G_CALLBACK(cb_all_playlist_button_press), NULL);
 	g_signal_connect (current_playlist_treeview, "button-release-event", G_CALLBACK (cb_current_playlist_right_click), NULL);
 	g_signal_connect (current_playlist_treeview, "key_release_event", G_CALLBACK (cb_current_playlist_delete_press), NULL);
-	g_object_unref (current_playlist_model);
+	
 	g_signal_connect (playlists_treeview, "button-release-event", G_CALLBACK (cb_playlists_right_click), NULL);
 	g_signal_connect (playlists_treeview, "key_release_event", G_CALLBACK (cb_playlists_delete_press), NULL);
 	
@@ -323,29 +378,7 @@ gimmix_playlist_widgets_init (void)
 	current_pl_window = glade_xml_get_widget (xml, "current_pl_window");
 	pls_playlist_window = glade_xml_get_widget (xml, "pls_playlist_window");
 
-	/* Drag and Drop */
-	gtk_drag_dest_set(GTK_WIDGET(current_playlist_treeview),
-				GTK_DEST_DEFAULT_ALL,
-				targetentries, n_targets - 1,
-				GDK_ACTION_COPY|GDK_ACTION_MOVE);
 	
-	gtk_drag_source_set (GTK_WIDGET(library_treeview),
-				GDK_BUTTON1_MASK,
-				targetentries, n_targets-1,
-				GDK_ACTION_COPY);
-
-	g_signal_connect(GTK_WIDGET(current_playlist_treeview),
-			"drag_data_received",
-			G_CALLBACK(on_drag_data_received),
-			NULL);
-	g_signal_connect (current_playlist_treeview,
-			"drag-drop",
-			G_CALLBACK (on_drag_drop),
-			NULL);
-	g_signal_connect (library_treeview,
-			"drag-data-get",
-			G_CALLBACK (on_drag_data_get),
-			NULL);
 
 	loaded_playlist = NULL;
 	
@@ -420,7 +453,9 @@ gimmix_update_current_playlist (MpdObj *mo, MpdData *pdata)
 	
 	while (data != NULL)
 	{
-		gchar 	*title;
+		gchar 	*title = NULL;
+		gchar	*artist = NULL;
+		gchar	*album = NULL;
 		gchar 	*ti;
 		gchar	time[15];
 		
@@ -428,10 +463,12 @@ gimmix_update_current_playlist (MpdObj *mo, MpdData *pdata)
 		{
 			if (data->song->title != NULL)
 			{
+				/*
 				if (data->song->artist)
 				title = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s - %s</span>", data->song->artist, data->song->title);
 				else
-					title = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s</span>", data->song->title);
+				*/
+				title = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s</span>", data->song->title);
 			}
 			else
 			{
@@ -440,6 +477,14 @@ gimmix_update_current_playlist (MpdObj *mo, MpdData *pdata)
 				title = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s</span>", file);
 				g_free (file);
 			}
+			if (data->song->artist != NULL)
+			{
+				artist = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s</span>", data->song->artist);
+			}
+			if (data->song->album != NULL)
+			{
+				album = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s</span>", data->song->album);
+			}
 			gimmix_get_total_time_for_song (mo, data->song, time);
 			ti = g_markup_printf_escaped ("<span size=\"medium\" weight=\"bold\">%s</span>", time);
 		}
@@ -447,15 +492,23 @@ gimmix_update_current_playlist (MpdObj *mo, MpdData *pdata)
 		{	
 			if (data->song->title != NULL)
 			{
-				if (data->song->artist)
+				/*if (data->song->artist)
 				title = g_markup_printf_escaped ("%s - %s", data->song->artist, data->song->title);
-				else
-					title = g_markup_printf_escaped ("%s", data->song->title);
+				else*/
+				title = g_markup_printf_escaped ("%s", data->song->title);
 			}
 			else
 			{
 				title = g_markup_printf_escaped (g_path_get_basename(data->song->file));
 				gimmix_strip_file_ext (title);
+			}
+			if (data->song->artist)
+			{
+				artist = g_markup_printf_escaped ("%s", data->song->artist);
+			}
+			if (data->song->album)
+			{
+				album = g_markup_printf_escaped ("%s", data->song->album);
 			}
 			gimmix_get_total_time_for_song (mo, data->song, time);
 			ti = NULL;
@@ -465,14 +518,18 @@ gimmix_update_current_playlist (MpdObj *mo, MpdData *pdata)
 		gtk_list_store_set (current_playlist_store, 
 							&current_playlist_iter,
 							0, title,
-							3, (ti!=NULL) ? ti : time,
+							5, (ti!=NULL) ? ti : time,
 							1, data->song->file,
 							2, data->song->id,
+							3, artist,
+							4, album,
 							-1);
 		data = mpd_data_get_next (data);
 		if (ti)
 		g_free (ti);
 		g_free (title);
+		g_free (album);
+		g_free (artist);
 	}
 	gtk_tree_view_set_model (GTK_TREE_VIEW (current_playlist_treeview), GTK_TREE_MODEL(current_playlist_store));
 	gimmix_display_total_playlist_time (mo);
@@ -663,11 +720,11 @@ gimmix_library_and_playlists_populate (void)
 
 	g_object_unref (dir_model);
 	g_object_unref (pls_model);
-	/*
+	
 	g_object_unref (dir_pixbuf);
 	g_object_unref (song_pixbuf);
 	g_object_unref (pls_pixbuf);
-	*/
+	
 	return;
 }
 

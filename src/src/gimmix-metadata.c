@@ -150,6 +150,7 @@ gimmix_metadata_set_song_details (mpd_Song *song, char* albumreview)
 	{
 		markup = g_markup_escape_text (albumreview, strlen(albumreview));
 		gtk_label_set_markup (GTK_LABEL(metadata_song_albumreview), markup);
+		g_free (markup);
 		return;
 	}
 	

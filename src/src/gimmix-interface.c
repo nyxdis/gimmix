@@ -512,6 +512,7 @@ gimmix_init (void)
 		mpd_status_update (gmo);
 		status = mpd_player_get_state (gmo);
 		gimmix_update_global_song_info ();
+		
 		if (status == MPD_PLAYER_PLAY)
 		{
 			gimmix_set_song_info ();
