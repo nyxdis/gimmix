@@ -265,6 +265,7 @@ gimmix_playlist_setup_current_playlist_tvw (void)
 										"markup", 0,
 										NULL);
 	gtk_tree_view_column_set_resizable (current_playlist_column, TRUE);
+	gtk_tree_view_column_set_clickable (current_playlist_column, TRUE);
 	//gtk_tree_view_column_set_min_width (current_playlist_column, 200);
 	g_object_set (G_OBJECT(current_playlist_column), "expand", TRUE, "spacing", 4, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
@@ -275,6 +276,7 @@ gimmix_playlist_setup_current_playlist_tvw (void)
 										"markup", 3,
 										NULL);
 	gtk_tree_view_column_set_resizable (current_playlist_column, TRUE);
+	gtk_tree_view_column_set_clickable (current_playlist_column, TRUE);
 	//gtk_tree_view_column_set_min_width (current_playlist_column, 100);
 	g_object_set (G_OBJECT(current_playlist_column), "expand", TRUE, "spacing", 4, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
@@ -285,6 +287,7 @@ gimmix_playlist_setup_current_playlist_tvw (void)
 										"markup", 4,
 										NULL);
 	gtk_tree_view_column_set_resizable (current_playlist_column, TRUE);
+	gtk_tree_view_column_set_clickable (current_playlist_column, TRUE);
 	//gtk_tree_view_column_set_min_width (current_playlist_column, 100);
 	g_object_set (G_OBJECT(current_playlist_column), "expand", TRUE, "spacing", 4, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);

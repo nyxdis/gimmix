@@ -730,6 +730,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 	if (s != NULL)
 	{
 		char *result = NULL;
+		guint len = 0;
 		
 		/* first look into the local cover database */
 		if (!s->artist || !s->album)
@@ -737,7 +738,9 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 			gimmix_covers_plugin_set_cover_image_path (result);
 			return;
 		}
-		strncpy (sartist, s->artist, strlen(s->artist));
+		if (s->artist)
+			len = strlen (s->artist);
+		strncpy (sartist, s->artist, len);
 		g_strstrip (sartist);
 		strncpy (salbum, s->album, strlen(s->album));
 		g_strstrip (salbum);
