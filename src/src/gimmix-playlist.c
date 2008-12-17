@@ -26,8 +26,15 @@
 #include "gimmix-playlist.h"
 #include "gimmix-tagedit.h"
 
-#define GIMMIX_MEDIA_ICON 		"gimmix_logo_small.png"
+#define GIMMIX_MEDIA_ICON 	"gimmix_logo_small.png"
 #define GIMMIX_PLAYLIST_ICON 	"gimmix_playlist.png"
+
+typedef enum {
+	COLUMN_TITLE = 0,
+	COLUMN_ARTIST,
+	COLUMN_ALBUM,
+	COLUMN_LENGTH
+} GimmixColumnType;
 
 typedef enum {
 	SONG = 1,
@@ -1465,9 +1472,59 @@ gimmix_current_playlist_clear (void)
 }
 
 static void
+cb_gimmix_playlist_column_show_toggled (GtkCheckMenuItem *menu_item, gpointer data)
+{
+	gint		column = (gint) data;
+	gchar		*kval;
+	gboolean	value;
+	
+	g_print ("i was called\n");
+	if (gtk_check_menu_item_get_active(menu_item))
+	{
+		kval = "true";
+		value = TRUE;
+	}
+	else
+	{
+		kval = "false";
+		value = FALSE;
+		g_print ("SBZ\n");
+	}
+	
+	switch (column)
+	{
+		case COLUMN_TITLE:
+		{
+			printf ("%d: chaning title\n", column);
+			cfg_add_key (&conf, "pl_column_title_show", kval);
+			break;
+		}
+		case COLUMN_ARTIST:
+		{
+			cfg_add_key (&conf, "pl_column_artist_show", kval);
+			break;
+		}
+		case COLUMN_ALBUM:
+		{
+			cfg_add_key (&conf, "pl_column_album_show", kval);
+			break;
+		}
+		case COLUMN_LENGTH:
+		{
+			cfg_add_key (&conf, "pl_column_length_show", kval);
+			break;
+		}
+		default:
+		break;
+	}
+	gimmix_config_save ();
+}
+
+static void
 gimmix_current_playlist_popup_menu (void)
 {
 	GtkWidget *menu, *menu_item, *image;
+	GtkWidget *submenu = NULL;
 
 	menu = gtk_menu_new ();
 	image = gtk_image_new_from_stock ("gtk-cut", GTK_ICON_SIZE_MENU); 
@@ -1525,13 +1582,48 @@ gimmix_current_playlist_popup_menu (void)
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 
+	submenu = gtk_menu_new ();
+	menu_item = gtk_check_menu_item_new_with_label (_("Title"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (submenu), menu_item);
+	if (gimmix_config_get_bool("pl_column_title_show"))
+		gtk_check_menu_item_set_active (menu_item, TRUE);
+	g_signal_connect (G_OBJECT (menu_item), "toggled", G_CALLBACK (cb_gimmix_playlist_column_show_toggled), (gpointer)COLUMN_TITLE);
+	gtk_widget_show (menu_item);
+	
+	menu_item = gtk_check_menu_item_new_with_label (_("Artist"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (submenu), menu_item);
+	if (gimmix_config_get_bool("pl_column_artist_show"))
+		gtk_check_menu_item_set_active (menu_item, TRUE);
+	g_signal_connect (G_OBJECT (menu_item), "toggled", G_CALLBACK (cb_gimmix_playlist_column_show_toggled), (gpointer)COLUMN_ARTIST);
+	gtk_widget_show (menu_item);
+	
+	menu_item = gtk_check_menu_item_new_with_label (_("Album"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (submenu), menu_item);
+	if (gimmix_config_get_bool("pl_column_album_show"))
+		gtk_check_menu_item_set_active (menu_item, TRUE);
+	g_signal_connect (G_OBJECT (menu_item), "toggled", G_CALLBACK (cb_gimmix_playlist_column_show_toggled), (gpointer)COLUMN_ALBUM);
+	gtk_widget_show (menu_item);
+	
+	menu_item = gtk_check_menu_item_new_with_label (_("Length"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (submenu), menu_item);
+	if (gimmix_config_get_bool("pl_column_length_show"))
+		gtk_check_menu_item_set_active (menu_item, TRUE);
+	g_signal_connect (G_OBJECT (menu_item), "toggled", G_CALLBACK (cb_gimmix_playlist_column_show_toggled), (gpointer)COLUMN_LENGTH);
+	gtk_widget_show (menu_item);
+	
+	menu_item = gtk_menu_item_new_with_label (_("Columns"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
+	
+	gtk_menu_item_set_submenu (menu_item, submenu);
+	
 	gtk_widget_show (menu);
 	gtk_menu_popup (GTK_MENU(menu),
 					NULL,
 					NULL,
 					NULL,
 					NULL,
-					3,
+					0,
 					gtk_get_current_event_time());
 	
 	return;

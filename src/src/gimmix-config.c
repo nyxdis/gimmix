@@ -56,6 +56,10 @@ gimmix_config_init (void)
 	cfg_add_key (&conf, "window_height",		"65");
 	cfg_add_key (&conf, "full_view_mode",		"false");
 	cfg_add_key (&conf, "enable_search",		"true");
+	cfg_add_key (&conf, "pl_column_title_show",	"true");
+	cfg_add_key (&conf, "pl_column_artist_show",	"false");
+	cfg_add_key (&conf, "pl_column_album_show",	"false");
+	cfg_add_key (&conf, "pl_column_length_show",	"true");
 	#ifdef HAVE_COVER_PLUGIN
 	cfg_add_key (&conf, "coverart_enable",		"true");
 	/* set United States as the default cover location */
@@ -79,6 +83,21 @@ gimmix_config_init (void)
 	}
 
 	return false;
+}
+
+bool
+gimmix_config_get_bool (const char *key)
+{
+	bool ret = false;
+	//g_print ("%s:%s\n", key, cfg_get_key_value(conf,key));
+	int cmpval = strncasecmp (cfg_get_key_value(conf,key), "true", 4);
+	if (cmpval == 0)
+	{
+		g_print ("");
+		ret = true;
+	}
+	
+	return ret;
 }
 
 void
