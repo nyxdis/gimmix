@@ -90,7 +90,7 @@ gimmix_config_get_bool (const char *key)
 {
 	bool ret = false;
 	//g_print ("%s:%s\n", key, cfg_get_key_value(conf,key));
-	int cmpval = strncasecmp (cfg_get_key_value(conf,key), "true", 4);
+	int cmpval = strncasecmp (cfg_get_key_value(conf,(char*)key), "true", 4);
 	if (cmpval == 0)
 	{
 		g_print ("");

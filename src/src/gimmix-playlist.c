@@ -282,7 +282,7 @@ gimmix_playlist_setup_current_playlist_tvw (void)
 	//gtk_tree_view_column_set_min_width (current_playlist_column, 200);
 	g_object_set (G_OBJECT(current_playlist_column), "expand", TRUE, "spacing", 4, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
-	cpl_tvw_title_column = current_playlist_column;
+	cpl_tvw_title_column = (GtkWidget*)current_playlist_column;
 	
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
 	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Artist"),
@@ -294,7 +294,7 @@ gimmix_playlist_setup_current_playlist_tvw (void)
 	//gtk_tree_view_column_set_min_width (current_playlist_column, 100);
 	g_object_set (G_OBJECT(current_playlist_column), "expand", TRUE, "spacing", 4, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
-	cpl_tvw_artist_column = current_playlist_column;
+	cpl_tvw_artist_column = (GtkWidget*)current_playlist_column;
 	
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
 	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Album"),
@@ -306,7 +306,7 @@ gimmix_playlist_setup_current_playlist_tvw (void)
 	//gtk_tree_view_column_set_min_width (current_playlist_column, 100);
 	g_object_set (G_OBJECT(current_playlist_column), "expand", TRUE, "spacing", 4, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
-	cpl_tvw_album_column = current_playlist_column;
+	cpl_tvw_album_column = (GtkWidget*)current_playlist_column;
 							
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
 	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Length"),
@@ -314,7 +314,7 @@ gimmix_playlist_setup_current_playlist_tvw (void)
 										"markup", 5,
 										NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(current_playlist_treeview), current_playlist_column);
-	cpl_tvw_length_column = current_playlist_column;
+	cpl_tvw_length_column = (GtkWidget*)current_playlist_column;
 	
 	current_playlist_store = gtk_list_store_new (6,
 						G_TYPE_STRING, 	/* name (0) */
@@ -820,7 +820,7 @@ gimmix_library_search (gint type, gchar *text)
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 12, 12, NULL);
 	g_free (path);
 
-	for (data; data!=NULL; data = mpd_data_get_next (data))
+	for (; data!=NULL; data = mpd_data_get_next (data))
 	{
 		if (data->type == MPD_DATA_TYPE_SONG)
 		{
@@ -1609,28 +1609,28 @@ gimmix_current_playlist_popup_menu (void)
 	menu_item = gtk_check_menu_item_new_with_label (_("Title"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (submenu), menu_item);
 	if (gimmix_config_get_bool("pl_column_title_show"))
-		gtk_check_menu_item_set_active (menu_item, TRUE);
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
 	g_signal_connect (G_OBJECT (menu_item), "toggled", G_CALLBACK (cb_gimmix_playlist_column_show_toggled), (gpointer)COLUMN_TITLE);
 	gtk_widget_show (menu_item);
 	
 	menu_item = gtk_check_menu_item_new_with_label (_("Artist"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (submenu), menu_item);
 	if (gimmix_config_get_bool("pl_column_artist_show"))
-		gtk_check_menu_item_set_active (menu_item, TRUE);
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
 	g_signal_connect (G_OBJECT (menu_item), "toggled", G_CALLBACK (cb_gimmix_playlist_column_show_toggled), (gpointer)COLUMN_ARTIST);
 	gtk_widget_show (menu_item);
 	
 	menu_item = gtk_check_menu_item_new_with_label (_("Album"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (submenu), menu_item);
 	if (gimmix_config_get_bool("pl_column_album_show"))
-		gtk_check_menu_item_set_active (menu_item, TRUE);
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
 	g_signal_connect (G_OBJECT (menu_item), "toggled", G_CALLBACK (cb_gimmix_playlist_column_show_toggled), (gpointer)COLUMN_ALBUM);
 	gtk_widget_show (menu_item);
 	
 	menu_item = gtk_check_menu_item_new_with_label (_("Length"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (submenu), menu_item);
 	if (gimmix_config_get_bool("pl_column_length_show"))
-		gtk_check_menu_item_set_active (menu_item, TRUE);
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
 	g_signal_connect (G_OBJECT (menu_item), "toggled", G_CALLBACK (cb_gimmix_playlist_column_show_toggled), (gpointer)COLUMN_LENGTH);
 	gtk_widget_show (menu_item);
 	
@@ -1638,7 +1638,7 @@ gimmix_current_playlist_popup_menu (void)
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
-	gtk_menu_item_set_submenu (menu_item, submenu);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM(menu_item), submenu);
 	
 	gtk_widget_show (menu);
 	gtk_menu_popup (GTK_MENU(menu),

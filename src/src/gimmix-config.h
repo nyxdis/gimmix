@@ -11,6 +11,9 @@ bool gimmix_config_exists (void);
 /* Parse config file and set the initial config values */
 bool gimmix_config_init (void);
 
+/* Returns true/false depending on config key value */
+bool gimmix_config_get_bool (const char *);
+
 /* Save current settings back to gimmixrc */
 void gimmix_config_save (void);
 
