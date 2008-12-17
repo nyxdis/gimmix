@@ -241,7 +241,7 @@ static void		gimmix_update_playlists_treeview (void);
 static void		gimmix_playlist_save_dialog_show (void);
 static void		cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog);
 static void		cb_playlists_right_click (GtkTreeView *treeview, GdkEventButton *event);
-static bool		cb_all_playlist_button_press (GtkTreeView *treeview, GdkEventButton *event);
+static bool		cb_all_playlist_button_press (GtkTreeView *treeview, GdkEventButton *event, gpointer data);
 static void		cb_gimmix_playlist_remove ();
 static void		cb_gimmix_playlist_load ();
 static void		cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
@@ -374,8 +374,8 @@ gimmix_playlist_widgets_init (void)
 	gimmix_statusbox = glade_xml_get_widget (xml, "gimmix_statusbox");
 	
 	g_signal_connect (current_playlist_treeview, "row-activated", G_CALLBACK(cb_current_playlist_double_click), NULL);
-	g_signal_connect (current_playlist_treeview, "button-press-event", G_CALLBACK(cb_all_playlist_button_press), NULL);
-	g_signal_connect (current_playlist_treeview, "button-release-event", G_CALLBACK (cb_current_playlist_right_click), NULL);
+	g_signal_connect (current_playlist_treeview, "button-press-event", G_CALLBACK(cb_all_playlist_button_press), (gpointer)TRUE);
+	//g_signal_connect (current_playlist_treeview, "button-release-event", G_CALLBACK (cb_current_playlist_right_click), NULL);
 	g_signal_connect (current_playlist_treeview, "key_release_event", G_CALLBACK (cb_current_playlist_delete_press), NULL);
 	
 	g_signal_connect (playlists_treeview, "button-release-event", G_CALLBACK (cb_playlists_right_click), NULL);
@@ -900,12 +900,19 @@ cb_current_playlist_double_click (GtkTreeView *treeview)
 
 /* This keeps multiple items selected in case of a right click */
 static bool
-cb_all_playlist_button_press (GtkTreeView *treeview, GdkEventButton *event)
+cb_all_playlist_button_press (GtkTreeView *treeview, GdkEventButton *event, gpointer data)
 {
-	GtkTreeSelection *selection;
+	GtkTreeSelection	*selection;
+	gboolean		current_playlist = (gboolean) data;
 	
 	if (event->button == 3)
 	{
+		/* check if it's a right click in current playlist treeview */
+		if (current_playlist)
+		{
+			/* if yes, then also show the popup */
+			gimmix_current_playlist_popup_menu ();
+		}
 		GtkTreePath *path;
 		
 		if (gtk_tree_view_get_path_at_pos(treeview, event->x, event->y, &path, NULL, NULL, NULL))
@@ -914,7 +921,7 @@ cb_all_playlist_button_press (GtkTreeView *treeview, GdkEventButton *event)
 			bool sel = gtk_tree_selection_path_is_selected (selection, path);
 			gtk_tree_path_free (path);
 			
-			if (sel)
+			if (sel && current_playlist)
 				return TRUE;
 		}
 	}
