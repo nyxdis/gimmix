@@ -214,7 +214,6 @@ static void		gimmix_display_total_playlist_time (MpdObj *);
 /* Callbacks */
 /* Current playlist callbacks */
 static void		cb_current_playlist_double_click (GtkTreeView *treeview);
-static void		cb_current_playlist_right_click (GtkTreeView *treeview, GdkEventButton *event);
 static void		cb_repeat_menu_toggled (GtkCheckMenuItem *item, gpointer data);
 static void		cb_shuffle_menu_toggled (GtkCheckMenuItem *item, gpointer data);
 static void		cb_current_playlist_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
@@ -442,9 +441,9 @@ gimmix_playlist_enable_controls (void)
 static void
 gimmix_search_init (void)
 {
-	if (strncasecmp(cfg_get_key_value(conf, "enable_search"), "true", 4) != 0)
+	if (!gimmix_config_get_bool("enable_search"))
 		gtk_widget_hide (search_box);
-		
+
 	return;
 }
 
@@ -469,7 +468,7 @@ gimmix_update_current_playlist (MpdObj *mo, MpdData *pdata)
 	gint		current_song_id = -1;
 	MpdData		*data = pdata;
 
-	if (mo!=NULL && mpd_check_connected(mo))
+	if (data!=NULL && mpd_check_connected(mo))
 	{
 		new = mpd_playlist_get_playlist_id (mo);
 		current_song_id = mpd_player_get_current_song_id (mo);
@@ -961,7 +960,7 @@ cb_library_dir_activated (gpointer data)
 		g_free (path);
 	}
 	
-	if ((strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0) && (added == true))
+	if (gimmix_config_get_bool("play_on_add") && (added == true))
 	{
 		/* If we're adding, there might already be a song playing. */
 		int state;
@@ -1033,7 +1032,7 @@ cb_library_popup_add_clicked (GtkWidget *widget, gpointer data)
 	}
 	
 	mpd_playlist_queue_commit (gmo);
-	if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
+	if (gimmix_config_get_bool("play_on_add"))
 	{
 		/* If we're adding, there might already be a song playing. */
 		int state;
@@ -1054,7 +1053,8 @@ cb_library_popup_add_clicked (GtkWidget *widget, gpointer data)
 	return;
 }
 
-static void cd_library_popup_replace_clicked (GtkWidget *widget, gpointer data)
+static void
+cd_library_popup_replace_clicked (GtkWidget *widget, gpointer data)
 {
 
 	GtkTreeModel 		*model;
@@ -1109,7 +1109,7 @@ static void cd_library_popup_replace_clicked (GtkWidget *widget, gpointer data)
 
 	mpd_playlist_queue_commit (gmo);
 	
-	if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
+	if (gimmix_config_get_bool("play_on_add"))
 	{
 		gimmix_play(gmo);
 	}
@@ -1291,17 +1291,6 @@ gimmix_update_library_with_dir (gchar *dir)
 	
 	g_object_unref (dir_pixbuf);
 	g_object_unref (song_pixbuf);
-	
-	return;
-}
-
-static void
-cb_current_playlist_right_click (GtkTreeView *treeview, GdkEventButton *event)
-{	
-	if (event->button == 3) /* If right click */
-	{
-		gimmix_current_playlist_popup_menu ();
-	}
 	
 	return;
 }
@@ -1504,8 +1493,7 @@ cb_gimmix_playlist_column_show_toggled (GtkCheckMenuItem *menu_item, gpointer da
 	gint		column = (gint) data;
 	gchar		*kval;
 	gboolean	value;
-	
-	g_print ("i was called\n");
+
 	if (gtk_check_menu_item_get_active(menu_item))
 	{
 		kval = "true";
@@ -1515,7 +1503,6 @@ cb_gimmix_playlist_column_show_toggled (GtkCheckMenuItem *menu_item, gpointer da
 	{
 		kval = "false";
 		value = FALSE;
-		g_print ("SBZ\n");
 	}
 	
 	switch (column)
@@ -1649,12 +1636,12 @@ gimmix_current_playlist_popup_menu (void)
 	
 	gtk_widget_show (menu);
 	gtk_menu_popup (GTK_MENU(menu),
-					NULL,
-					NULL,
-					NULL,
-					NULL,
-					0,
-					gtk_get_current_event_time());
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			0,
+			gtk_get_current_event_time());
 	
 	return;
 }
@@ -1662,10 +1649,10 @@ gimmix_current_playlist_popup_menu (void)
 static void
 gimmix_library_popup_menu (void)
 {
-	GtkWidget 			*menu;
-	GtkWidget 			*menu_item;
-	GtkWidget			*image;
-	GtkWidget			*replace_icon;
+	GtkWidget 	*menu;
+	GtkWidget 	*menu_item;
+	GtkWidget	*image;
+	GtkWidget	*replace_icon;
 
 	menu = gtk_menu_new ();
 	image = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_MENU);
@@ -1702,14 +1689,13 @@ gimmix_library_popup_menu (void)
 	
 	gtk_widget_show (menu);
 	gtk_menu_popup (GTK_MENU(menu),
-					NULL,
-					NULL,
-					NULL,
-					NULL,
-					3,
-					gtk_get_current_event_time());
-					
-	return;
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			3,
+			gtk_get_current_event_time());
+			return;
 }
 
 static void
@@ -1851,6 +1837,7 @@ gimmix_playlist_save_dialog_show (void)
                              "response", 
                              G_CALLBACK (cb_gimmix_playlist_save_response),
                              dialog);
+	g_signal_connect (dialog, "delete-event", G_CALLBACK(gtk_widget_destroy), dialog);
 	gtk_misc_set_padding (GTK_MISC(label), 5, 5);
 	gtk_dialog_set_has_separator (GTK_DIALOG(dialog), FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER((GTK_DIALOG(dialog))->vbox), 10);

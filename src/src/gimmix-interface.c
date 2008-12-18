@@ -104,12 +104,11 @@ static void 	cb_gimmix_progress_seek (GtkWidget *widget, GdkEvent *event);
 static void 	cb_volume_scale_changed (GtkWidget *widget, gpointer data);
 static void	cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event);
 static void 	cb_volume_button_clicked (GtkWidget *widget, gpointer data);
-static void		gimmix_reposition_volume_window (GtkWidget *volwindow);
+static void	gimmix_reposition_volume_window (GtkWidget *volwindow);
 static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata);
 
 /* mpd callbacks */
 static void 	gimmix_status_changed (MpdObj *mo, ChangedStatusType id);
-static int	gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata);
 
 static void
 gimmix_update_global_song_info (void)
@@ -228,26 +227,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 
 	return;
 }
-/*
-static int
-gimmix_mpd_error (MpdObj *mo, int id, char *msg, void *userdata)
-{
-	g_print ("error:%s\n", msg);
-	if (id & MPD_STATUS_FAILED)
-		return FALSE;
 
-	if (id&MPD_STATS_FAILED || id&MPD_SERVER_ERROR || id&MPD_FATAL_ERROR)
-	{
-		//mpd_free (gmo);
-		//gmo = gimmix_mpd_connect ();
-		//mpd_signal_connect_status_changed (gmo, (StatusChangedCallback)gimmix_status_changed, NULL);
-		//mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_mpd_error, NULL);
-		return TRUE;
-	}
-
-	return FALSE;
-}
-*/
 static void
 gimmix_toggle_playlist_show (gboolean show)
 {
@@ -534,7 +514,7 @@ gimmix_init (void)
 		gtk_adjustment_set_value (GTK_ADJUSTMENT(gtk_range_get_adjustment(GTK_RANGE(volume_scale))), mpd_status_get_volume (gmo));
 		gimmix_playlist_init ();
 		/* check if library needs to be updated on startup */
-		if (strncasecmp(cfg_get_key_value(conf, "update_on_startup"), "true", 4) == 0)
+		if (gimmix_config_get_bool("update_on_startup"))
 			gimmix_library_update ();
 		
 		g_object_unref (xml);
@@ -553,7 +533,7 @@ gimmix_init (void)
 	}
 	
 	#ifdef HAVE_COVER_PLUGIN
-	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
+	if (gimmix_config_get_bool("coverart_enable"))
 	{
 		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 				FALSE,

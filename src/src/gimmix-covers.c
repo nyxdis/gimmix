@@ -151,13 +151,13 @@ cb_gimmix_covers_plugin_set_cover_from_file (void)
 	artist = (song->artist != NULL) ? g_strdup (song->artist) : NULL;
 	album = (song->album != NULL) ? g_strdup (song->album) : NULL;
 	dialog = gtk_file_chooser_dialog_new ("Open File",
-					main_window,
+					GTK_WINDOW(main_window),
 					GTK_FILE_CHOOSER_ACTION_OPEN,
 					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 					NULL);
-	preview = gtk_image_new ();
-	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER(dialog), preview);
+	preview = (GtkImage*)gtk_image_new ();
+	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER(dialog), GTK_WIDGET(preview));
 	g_signal_connect (GTK_FILE_CHOOSER(dialog), "update-preview", G_CALLBACK (cb_gimmix_covers_plugin_cover_file_preview), preview);
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, "Images (.jpg)");

@@ -206,7 +206,7 @@ gimmix_about_show (void)
 				"Turkish (tr) - Yavuz Selim Burgu <turkalinux@gmail.com>\n";
 
 
-	gtk_show_about_dialog (main_window,
+	gtk_show_about_dialog (GTK_WINDOW(main_window),
                            "name", APPNAME,
                            "version", VERSION,
                            "copyright", _("\xC2\xA9 2006-2008 Priyank Gosalia  (GPL)"),
