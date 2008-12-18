@@ -49,6 +49,7 @@ static GtkWidget	*lyrics_textview = NULL;
 
 static gchar*		search_artist = NULL;
 static gchar*		search_title = NULL;
+static GMutex		*l_mutex = NULL;
 
 static gchar *lyrics_url_encode (const char *string);
 static gboolean lyrics_process_lyrics_node (LYRICS_NODE *ptr);
@@ -71,6 +72,9 @@ gimmix_lyrics_plugin_init (void)
 	cpath = cfg_get_path_to_config_file (LYRICS_DIR);
 	g_mkdir_with_parents (cpath, 00755);
 	g_free (cpath);
+	
+	/* initialize mutex */
+	l_mutex = g_mutex_new ();
 
 	return;
 }
@@ -368,7 +372,7 @@ gimmix_lyrics_plugin_update_lyrics (void)
 		#ifndef HAVE_COVER_PLUGIN
 		gimmix_metadata_set_song_details (s, NULL);
 		#else
-		if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"false",5))
+		if (!gimmix_config_get_bool("coverart_enable"))
 		{
 			gimmix_metadata_set_song_details (s, NULL);
 		}
