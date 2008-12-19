@@ -307,17 +307,6 @@ gimmix_interface_widgets_init (void)
 	/* connect the destroy signal */
 	g_signal_connect(G_OBJECT(main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
-	/* set icons for buttons */
-	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_prev")), "gtk-media-previous", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_play")), "gtk-media-play", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_next")), "gtk-media-next", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_stop")), "gtk-media-stop", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_info")), "gtk-info", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_prefs")), "gtk-preferences", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml, "image_fullmode")), "gtk-justify-fill", GTK_ICON_SIZE_MENU);
-	
-	gtk_image_set_from_icon_name (GTK_IMAGE(glade_xml_get_widget(xml, "image_shuffle")), "stock_shuffle", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_icon_name (GTK_IMAGE(glade_xml_get_widget(xml, "image_repeat")), "stock_repeat", GTK_ICON_SIZE_MENU);
 	gtk_image_set_from_icon_name (GTK_IMAGE(glade_xml_get_widget(xml, "image_volume")), "stock_volume", GTK_ICON_SIZE_MENU);
 	gtk_image_set_from_icon_name (GTK_IMAGE(glade_xml_get_widget(xml, "image_fmodevolume")), "stock_volume", GTK_ICON_SIZE_MENU);
 	
@@ -351,6 +340,17 @@ gimmix_interface_widgets_init (void)
 	pref_button = glade_xml_get_widget (xml, "pref_button");
 	info_button = glade_xml_get_widget (xml, "info_button");
 	stop_button = glade_xml_get_widget (xml, "stop_button");
+	
+	/* set icons for buttons */
+	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(prev_button))), "gtk-media-previous", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(play_button))), "gtk-media-play", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(next_button))), "gtk-media-next", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(stop_button))), "gtk-media-stop", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(info_button))), "gtk-info", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml,"image_prefs")), "gtk-preferences", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(playlist_button))), "gtk-justify-fill", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(shuffle_toggle_button))), "stock_shuffle", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(repeat_toggle_button))), "stock_repeat", GTK_ICON_SIZE_MENU);
 
 	g_signal_connect (G_OBJECT(playlist_button), "button-press-event", G_CALLBACK(cb_playlist_button_press), NULL);
 

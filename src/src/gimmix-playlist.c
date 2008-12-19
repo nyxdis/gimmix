@@ -728,6 +728,7 @@ gimmix_library_and_playlists_populate (void)
 			gchar *name;
 			
 			name = data->playlist;
+			g_print ("ADDING %s\n", name);
 			gtk_list_store_append (pls_store, &pls_iter);
 			gtk_list_store_set (pls_store, &pls_iter,
 								0, pls_pixbuf,
