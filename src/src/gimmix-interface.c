@@ -507,8 +507,8 @@ gimmix_init (void)
 		else if (status == MPD_PLAYER_STOP)
 		{
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
-			if (!strncasecmp(cfg_get_key_value(conf, "enable_systray"),"true",4))
-			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
+			if (gimmix_config_get_bool("enable_systray"))
+				gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
 			gimmix_show_ver_info ();
 		}
 		gtk_adjustment_set_value (GTK_ADJUSTMENT(gtk_range_get_adjustment(GTK_RANGE(volume_scale))), mpd_status_get_volume (gmo));
@@ -632,7 +632,7 @@ gimmix_timer (void)
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), "");
 		gimmix_show_ver_info ();
 		#ifdef HAVE_COVER_PLUGIN
-		if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
+		if (gimmix_config_get_bool("coverart_enable"))
 		{
 			g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 					(gpointer)TRUE, /* set default cover */
@@ -662,8 +662,8 @@ gimmix_timer (void)
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), time);
 			
 			/* Update the system tray tooltip progress bar */
-			if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
-				if (strncasecmp(cfg_get_key_value(conf, "enable_notification"), "true", 4) == 0)
+			if (gimmix_config_get_bool("enable_systray"))
+				if (gimmix_config_get_bool("enable_notification"))
 				{
 					if (fraction >= 0.0 && fraction <= 1.0)
 						gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), fraction);
@@ -989,14 +989,14 @@ gimmix_show_ver_info (void)
 static gboolean
 cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data)
 {
-	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
+	if (gimmix_config_get_bool("enable_systray"))
 	{
 		gimmix_window_visible_toggle ();
 		return TRUE;
 	}
 	
 	/* stop playback on exit */
-	if (strncasecmp(cfg_get_key_value(conf, "stop_on_exit"), "true", 4) == 0)
+	if (gimmix_config_get_bool("stop_on_exit"))
 		gimmix_stop (gmo);
 		
 	/* save window position and mode */
@@ -1070,4 +1070,4 @@ is_user_searching (void)
 	return FALSE;
 }
 
-	
+
