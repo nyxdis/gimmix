@@ -437,7 +437,7 @@ gimmix_interface_widgets_init (void)
 	gtk_widget_show (main_window);
 	
 	#ifdef HAVE_COVER_PLUGIN
-	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
+	if (gimmix_config_get_bool("coverart_enable"))
 	{
 		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 				(gpointer)TRUE,
@@ -962,7 +962,7 @@ gimmix_set_song_info (void)
 	
 	g_free (markup);
 
-	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
+	if (gimmix_config_get_bool("enable_systray"))
 		gimmix_update_systray_tooltip (song);
 	
 	return;
