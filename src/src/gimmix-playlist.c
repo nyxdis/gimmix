@@ -272,6 +272,7 @@ gimmix_playlist_setup_current_playlist_tvw (void)
 	library_window = glade_xml_get_widget (xml,"library_window");
 	
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
+	g_object_set (G_OBJECT(current_playlist_renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
 	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Title"),
 										current_playlist_renderer,
 										"markup", 0,
@@ -284,6 +285,7 @@ gimmix_playlist_setup_current_playlist_tvw (void)
 	cpl_tvw_title_column = (GtkWidget*)current_playlist_column;
 	
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
+	g_object_set (G_OBJECT(current_playlist_renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
 	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Artist"),
 										current_playlist_renderer,
 										"markup", 3,
@@ -296,6 +298,7 @@ gimmix_playlist_setup_current_playlist_tvw (void)
 	cpl_tvw_artist_column = (GtkWidget*)current_playlist_column;
 	
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
+	g_object_set (G_OBJECT(current_playlist_renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
 	current_playlist_column = gtk_tree_view_column_new_with_attributes (_("Album"),
 										current_playlist_renderer,
 										"markup", 4,
