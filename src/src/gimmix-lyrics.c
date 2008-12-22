@@ -49,6 +49,7 @@ static GtkWidget	*lyrics_textview = NULL;
 
 static gchar*		search_artist = NULL;
 static gchar*		search_title = NULL;
+static gchar*		lyrics_dir = NULL;
 static GMutex		*l_mutex = NULL;
 
 static gchar *lyrics_url_encode (const char *string);
@@ -72,6 +73,8 @@ gimmix_lyrics_plugin_init (void)
 	cpath = cfg_get_path_to_config_file (LYRICS_DIR);
 	g_mkdir_with_parents (cpath, 00755);
 	g_free (cpath);
+	
+	lyrics_dir = cfg_get_path_to_config_file (LYRICS_DIR);
 	
 	/* initialize mutex */
 	l_mutex = g_mutex_new ();
@@ -261,13 +264,19 @@ lyrics_search (void)
 	gchar		*url = NULL;
 	char		*path = NULL;
 	LYRICS_NODE	*ret = NULL;
+	gchar		*artist = NULL;
+	gchar		*title = NULL;
 
 	if (search_artist != NULL && search_title != NULL)
 	{
 		/* first check if the lyrics exist in ~/.lyrics/ */
-		char *temp_path = cfg_get_path_to_config_file (LYRICS_DIR);
-		path = g_strdup_printf ("%s/%s-%s.txt", temp_path, search_artist, search_title);
-		g_free (temp_path);
+		//char *temp_path = cfg_get_path_to_config_file (LYRICS_DIR);
+		g_print ("%s\n", lyrics_dir);
+		path = g_strdup_printf ("%s/%s-%s.txt", lyrics_dir, search_artist, search_title);
+		g_print ("path = %s\n", path);
+		artist = g_strdup (search_artist);
+		title = g_strdup (search_title);
+		//g_free (temp_path);
 		if (g_file_test(path,G_FILE_TEST_EXISTS))
 		{
 			GString	*str = g_string_new ("");
@@ -289,6 +298,8 @@ lyrics_search (void)
 				fclose (fp);
 			}
 			g_free (path);
+			g_free (artist);
+			g_free (title);
 			return ret;
 		}
 		g_free (path);
@@ -305,10 +316,13 @@ lyrics_search (void)
 			//g_print ("everything ok\n");
 			if (ret->lyrics != NULL)
 			{
+				path = g_strdup_printf ("%s/%s-%s.txt", lyrics_dir, artist, title);
+				
 				FILE *fp = fopen (path, "w");
 				if (fp)
 				{
 					fprintf (fp, "%s", ret->lyrics);
+					printf ("wrote lyrics to %s\n", path);
 					fclose (fp);
 				}
 				else
@@ -318,6 +332,8 @@ lyrics_search (void)
 			}
 		}
 	}
+	g_free (artist);
+	g_free (title);
 	
 	return ret;
 }
