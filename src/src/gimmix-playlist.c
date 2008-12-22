@@ -728,7 +728,7 @@ gimmix_library_and_playlists_populate (void)
 			gchar *name;
 			
 			name = data->playlist;
-			g_print ("ADDING %s\n", name);
+			//g_print ("ADDING %s\n", name);
 			gtk_list_store_append (pls_store, &pls_iter);
 			gtk_list_store_set (pls_store, &pls_iter,
 								0, pls_pixbuf,
@@ -1632,7 +1632,8 @@ gimmix_current_playlist_popup_menu (void)
 	g_signal_connect (G_OBJECT (menu_item), "toggled", G_CALLBACK (cb_gimmix_playlist_column_show_toggled), (gpointer)COLUMN_LENGTH);
 	gtk_widget_show (menu_item);
 	
-	menu_item = gtk_menu_item_new_with_label (_("Columns"));
+	menu_item = gtk_image_menu_item_new_with_label (_("Columns"));
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), GTK_WIDGET(get_image ("gtk-edit", GTK_ICON_SIZE_MENU)));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
