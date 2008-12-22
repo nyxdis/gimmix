@@ -276,13 +276,14 @@ lyrics_search (void)
 	gchar		*artist = NULL;
 	gchar		*title = NULL;
 
+	g_mutex_lock (l_mutex);
 	if (search_artist != NULL && search_title != NULL)
 	{
 		/* first check if the lyrics exist in ~/.lyrics/ */
 		//char *temp_path = cfg_get_path_to_config_file (LYRICS_DIR);
-		g_print ("%s\n", lyrics_dir);
+		//g_print ("%s\n", lyrics_dir);
 		path = g_strdup_printf ("%s/%s-%s.txt", lyrics_dir, search_artist, search_title);
-		g_print ("path = %s\n", path);
+		//g_print ("path = %s\n", path);
 		artist = g_strdup (search_artist);
 		title = g_strdup (search_title);
 		//g_free (temp_path);
@@ -309,6 +310,7 @@ lyrics_search (void)
 			g_free (path);
 			g_free (artist);
 			g_free (title);
+			g_mutex_unlock (l_mutex);
 			return ret;
 		}
 		g_free (path);
@@ -326,12 +328,12 @@ lyrics_search (void)
 			if (ret->lyrics != NULL)
 			{
 				path = g_strdup_printf ("%s/%s-%s.txt", lyrics_dir, artist, title);
-				
 				FILE *fp = fopen (path, "w");
 				if (fp)
 				{
 					fprintf (fp, "%s", ret->lyrics);
-					printf ("wrote lyrics to %s\n", path);
+					printf ("saving lyrics to %s\n", path);
+					g_free (path);
 					fclose (fp);
 				}
 				else
@@ -343,7 +345,7 @@ lyrics_search (void)
 	}
 	g_free (artist);
 	g_free (title);
-	
+	g_mutex_unlock (l_mutex);
 	return ret;
 }
 
