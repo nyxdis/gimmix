@@ -1057,6 +1057,10 @@ gimmix_interface_cleanup (void)
 	#if HAVE_COVERS_PLUGIN
 	gimmix_covers_plugin_cleanup ();
 	#endif
+	
+	#if HAVE_LYRICS_PLUGIN
+	gimmix_lyrics_plugin_cleanup ();
+	#endif
 
 	return;
 }

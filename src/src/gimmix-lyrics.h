@@ -21,6 +21,9 @@ typedef struct lnode
 /* Initialize the gimmix lyrics plugin */
 void gimmix_lyrics_plugin_init (void);
 
+/* Free memory used by lyrics plugin */
+void gimmix_lyrics_plugin_cleanup (void);
+
 /* update lyrics for current song */
 void gimmix_lyrics_plugin_update_lyrics (void);
 

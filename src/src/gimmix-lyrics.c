@@ -82,6 +82,15 @@ gimmix_lyrics_plugin_init (void)
 	return;
 }
 
+void
+gimmix_lyrics_plugin_cleanup (void)
+{
+	g_free (lyrics_dir);
+	g_mutex_free (l_mutex);
+	
+	return;
+}
+
 static void
 gimmix_lyrics_plugin_proxy_init (nxml_t *n)
 {
