@@ -380,7 +380,9 @@ gimmix_lyrics_plugin_update_lyrics (void)
 {
 	LYRICS_NODE	*node = NULL;
 	mpd_Song	*s = NULL;
+	mpd_Song	*sng = (mpd_Song*)malloc (sizeof(mpd_Song));
 	
+	memset (sng, 0, sizeof(mpd_Song));
 	sleep (2);
 	if (mpd_player_get_state(gmo)!=MPD_PLAYER_STOP)
 	{
@@ -392,16 +394,17 @@ gimmix_lyrics_plugin_update_lyrics (void)
 	
 	if (s)
 	{
-		if (s->artist)
-			gimmix_covers_plugin_set_artist (s->artist);
-		if (s->title)
-			gimmix_covers_plugin_set_songtitle (s->title);
+		memcpy (sng, s, sizeof(mpd_Song));
+		if (sng->artist)
+			gimmix_covers_plugin_set_artist (sng->artist);
+		if (sng->title)
+			gimmix_covers_plugin_set_songtitle (sng->title);
 		#ifndef HAVE_COVER_PLUGIN
-		gimmix_metadata_set_song_details (s, NULL);
+		gimmix_metadata_set_song_details (sng, NULL);
 		#else
 		if (!gimmix_config_get_bool("coverart_enable"))
 		{
-			gimmix_metadata_set_song_details (s, NULL);
+			gimmix_metadata_set_song_details (sng, NULL);
 		}
 		#endif
 	}
@@ -413,6 +416,10 @@ gimmix_lyrics_plugin_update_lyrics (void)
 		if (node->lyrics)
 		g_free (node->lyrics);
 		g_free (node);
+	}
+	if (sng)
+	{
+		free (sng);
 	}
 	
 	return;
