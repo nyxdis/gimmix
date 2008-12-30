@@ -858,9 +858,9 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 		pixbuf = gimmix_covers_plugin_get_default_cover (64, 64);
 		gimmix_covers_plugin_set_metadata_image (pixbuf);
 		g_object_unref (pixbuf);
-		if (!strncasecmp(cfg_get_key_value(conf,"enable_systray"),"true",4))
+		if (gimmix_config_get_bool("enable_systray"))
 		{
-			if (!strncasecmp(cfg_get_key_value(conf,"enable_notification"),"true",4))
+			if (gimmix_config_get_bool("enable_notification"))
 			{
 				pixbuf = gimmix_covers_plugin_get_default_cover (48, 48);
 				gimmix_tooltip_set_icon (tooltip, pixbuf);
