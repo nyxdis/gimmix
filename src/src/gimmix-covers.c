@@ -766,7 +766,9 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 		else
 		{
 			//g_print ("beginning to fetch \n");
-			temp = g_strdup_printf ("%s/temp.jpg", cfg_get_path_to_config_file(COVERS_DIR));
+			char *ptr = cfg_get_path_to_config_file (COVERS_DIR);
+			temp = g_strdup_printf ("%s/temp.jpg", ptr);
+			g_free (ptr);
 			node = gimmix_covers_plugin_get_metadata ("Artist", sartist, "Title", salbum);
 			if (node!=NULL)
 			{
