@@ -174,7 +174,6 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 				FALSE,
 				NULL);
 			#endif
-			
 		}
 		else
 		if (state == MPD_PLAYER_PAUSE)
@@ -724,17 +723,17 @@ cb_volume_button_clicked (GtkWidget *widget, gpointer data)
 static void
 gimmix_reposition_volume_window (GtkWidget *volwindow)
 {
-		if (volwindow == NULL || !GTK_WIDGET_VISIBLE(volwindow))
-		return;
+	if (volwindow == NULL || !GTK_WIDGET_VISIBLE(volwindow))
+	return;
+	
+	gint x, y;
+	gdk_window_get_origin (volume_button->window, &x, &y);
+	x += (volume_button->allocation.x);
+	y += (volume_button->allocation.y + volume_button->allocation.height);
+	gtk_window_resize (GTK_WINDOW(volwindow), volume_button->allocation.width, 1);
+	gtk_window_move (GTK_WINDOW(volwindow), x, y);
 		
-		gint x, y;
-		gdk_window_get_origin (volume_button->window, &x, &y);
-		x += (volume_button->allocation.x);
-		y += (volume_button->allocation.y + volume_button->allocation.height);
-		gtk_window_resize (GTK_WINDOW(volwindow), volume_button->allocation.width, 1);
-		gtk_window_move (GTK_WINDOW(volwindow), x, y);
-		
-		return;
+	return;
 }
 
 static void
