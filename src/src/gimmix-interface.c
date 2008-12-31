@@ -152,6 +152,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 
 	if (id&MPD_CST_STATE)
 	{
+		g_print ("state changed\n");
 		int state = mpd_player_get_state (gmo);
 		if (state == MPD_PLAYER_PLAY)
 		{
@@ -159,7 +160,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
 			
 			#ifdef HAVE_COVER_PLUGIN
-			if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
+			if (gimmix_config_get_bool("coverart_enable"))
 			{
 				g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 						FALSE,
@@ -188,14 +189,14 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			gimmix_show_ver_info ();
 			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
-			if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
+			if (gimmix_config_get_bool("enable_systray"))
 			{
 				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), 0.0);
 				gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
 			}
 			
 			#ifdef HAVE_COVER_PLUGIN
-			if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
+			if (gimmix_config_get_bool("coverart_enable"))
 			{
 				g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 						(gpointer)TRUE,
@@ -379,11 +380,11 @@ gimmix_interface_widgets_init (void)
 	
 	play_button_tooltip = gtk_tooltips_new ();
 	
-	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
+	if (gimmix_config_get_bool("enable_systray"))
 	{
 		gimmix_create_systray_icon ();
 	}
-	if (strncasecmp(cfg_get_key_value(conf, "full_view_mode"), "true", 4) == 0)
+	if (gimmix_config_get_bool("full_view_mode"))
 	{
 		gtk_widget_show (playlist_box);
 		gimmix_toggle_playlist_show (TRUE);

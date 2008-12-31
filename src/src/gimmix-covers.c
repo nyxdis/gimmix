@@ -404,7 +404,7 @@ gimmix_covers_plugin_download (const char *url, const char *file)
 			//g_print (path);
 			outfile = fopen (file, "w");
 			/* use a proxy if enabled */
-			if (!strncasecmp(cfg_get_key_value(conf,"proxy_enable"),"true",4))
+			if (gimmix_config_get_bool("proxy_enable"))
 			{
 				proxy = gimmix_config_get_proxy_string ();
 				curl_easy_setopt (curl, CURLOPT_PROXY, proxy);
@@ -444,7 +444,7 @@ gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *ar
 	
 	u_artist = gimmix_url_encode (arg1d);
 	u_title = gimmix_url_encode (arg2d);
-	location = cfg_get_key_value (conf,"coverart_location");
+	location = cfg_get_key_value (conf, "coverart_location");
 	if (!arg1 && !arg1d)
 	{
 		url = g_strdup_printf (AMAZON_URL1, location, AMAZON_KEY, arg2, u_title);
