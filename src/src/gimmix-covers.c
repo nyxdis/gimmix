@@ -576,7 +576,7 @@ gimmix_covers_plugin_save_albuminfo (char *artist, char *album, char *info)
 	album_e = gimmix_url_encode (album);
 	temp = cfg_get_path_to_config_file (COVERS_DIR);
 	path = g_strdup_printf ("%s/%s-%s.albuminfo", temp, artist_e, album_e);
-	if (fp = fopen(path, "w"))
+	if ((fp=fopen(path, "w")))
 	{
 		fprintf (fp, info);
 		fclose (fp);
