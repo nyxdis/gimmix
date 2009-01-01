@@ -1,10 +1,10 @@
 Note: Dates are in dd-mm-yyyy format
 
-Version 0.5.4 (31-12-2008)
+Version 0.5.4 (01-01-2009)
 * Bug #307527: Fix missing prototypes in some headers (patch from Christoph Mende)
 * Added support for columns in Current playlist
 * Fixed a bug where newly fetched lyrics were sometimes stored at odd locations
-* Lots of memleaks fixed
+* LOTS of memory leaks fixed
 * Fixed some crashes due to cover/lyrics plugins
 
 Version 0.5.3 (12-12-2008)
