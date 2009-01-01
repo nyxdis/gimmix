@@ -1,7 +1,7 @@
 /*
  * gimmix.c
  *
- * Copyright (C) 2006-2008 Priyank Gosalia
+ * Copyright (C) 2006-2009 Priyank Gosalia
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -209,7 +209,7 @@ gimmix_about_show (void)
 	gtk_show_about_dialog (GTK_WINDOW(main_window),
                            "name", APPNAME,
                            "version", VERSION,
-                           "copyright", _("\xC2\xA9 2006-2008 Priyank Gosalia  (GPL)"),
+                           "copyright", _("\xC2\xA9 2006-2009 Priyank Gosalia  (GPL)"),
                            "comments", _("Gimmix is a graphical music player daemon (MPD) client written in C."),
                            "license", license,
                            "authors", authors,
@@ -257,7 +257,7 @@ main (int argc, char *argv[])
 				vstr = g_strdup_printf ("%s %s\n%s\n",
 							g_ascii_strdown(APPNAME,strlen(APPNAME)),
 							VERSION,
-							"Copyright 2006, 2007, 2008 Priyank Gosalia");
+							"Copyright 2006, 2007, 2008, 2009 Priyank Gosalia");
 				fprintf (stdout, vstr);
 				g_free (vstr);
 				goto cleanup;
