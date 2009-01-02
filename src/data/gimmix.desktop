@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 Name=Gimmix
 Comment=Gimmix is a graphical music player daemon (MPD) client written in C.
 Exec=gimmix
