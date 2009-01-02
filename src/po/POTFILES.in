@@ -7,4 +7,6 @@ src/gimmix-firstrun.c
 src/gimmix-config.c
 src/gimmix-prefs.c
 src/gimmix-tagedit.c
+src/gimmix-covers.c
+src/gimmix-lyrics.c
 glade/gimmix.glade
