@@ -1,6 +1,6 @@
 Note: Dates are in dd-mm-yyyy format
 
-Version 0.5.5 (xx-xx-2009)
+Version 0.5.5 (02-01-2009)
 * Bug #313023: Fix missing entries in POTFILES
 * Bug #313018: gimmix.desktop contains encoding key (which is deprecated)
 
