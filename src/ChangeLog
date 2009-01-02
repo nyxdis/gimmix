@@ -1,5 +1,9 @@
 Note: Dates are in dd-mm-yyyy format
 
+Version 0.5.5 (xx-xx-2009)
+* Bug #313023: Fix missing entries in POTFILES
+* Bug #313018: gimmix.desktop contains encoding key (which is deprecated)
+
 Version 0.5.4 (01-01-2009)
 * Bug #307527: Fix missing prototypes in some headers (patch from Christoph Mende)
 * Added support for columns in Current playlist
