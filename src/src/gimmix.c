@@ -129,10 +129,16 @@ gimmix_connect (void)
 	
 	if (mpd_connect(gmo) == MPD_OK)
 	{
-		mpd_send_password (gmo);
-		printf ("connected to mpd\n");
-		mpd_signal_connect_connection_changed (gmo, (ConnectionChangedCallback)gimmix_mpd_connection_changed_callback, NULL);
-		return true;
+		if (mpd_send_password (gmo) != MPD_OK)
+		{
+			return false;
+		}
+		else
+		{
+			printf ("connected to mpd\n");
+			mpd_signal_connect_connection_changed (gmo, (ConnectionChangedCallback)gimmix_mpd_connection_changed_callback, NULL);
+			return true;
+		}
 	}
 	else
 	{

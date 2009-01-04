@@ -63,7 +63,7 @@ gimmix_tag_editor_widgets_init (void)
 	
 	tag_editor_window = glade_xml_get_widget (xml, "tag_editor_window");
 	tag_title = glade_xml_get_widget (xml,"entry_title");
-	tag_file = glade_xml_get_widget (xml,"label_filename");
+	tag_file = glade_xml_get_widget (xml,"entry_filename");
 	tag_artist = glade_xml_get_widget (xml,"entry_artist");
 	tag_album = glade_xml_get_widget (xml,"entry_album");
 	tag_comment = glade_xml_get_widget (xml,"entry_comment");
@@ -112,7 +112,7 @@ gimmix_tag_editor_populate (const gchar *song)
 	
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON(tag_year_spin), taglib_tag_year(tag));
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON(tag_track_spin), taglib_tag_track(tag));
-	gtk_label_set_text (GTK_LABEL(tag_file), song);
+	gtk_entry_set_text (GTK_ENTRY(tag_file), song);
 	gtk_entry_set_text (GTK_ENTRY(tag_title), g_strstrip(taglib_tag_title(tag)));
 	gtk_entry_set_text (GTK_ENTRY(tag_artist), g_strstrip(taglib_tag_artist(tag)));
 	gtk_entry_set_text (GTK_ENTRY(tag_album), g_strstrip(taglib_tag_album(tag)));

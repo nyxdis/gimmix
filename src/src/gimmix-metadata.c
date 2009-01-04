@@ -55,19 +55,6 @@ gimmix_metadata_init (void)
 	metadata_song_genrebox = glade_xml_get_widget (xml, "metadata_genre_box");
 	metadata_song_cover = glade_xml_get_widget (xml, "metadata_albumart");
 	metadata_container = glade_xml_get_widget (xml, "metadata_container");
-	
-	#ifndef HAVE_COVER_PLUGIN
-	gimmix_metadata_show_song_cover (FALSE);
-	#else
-	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
-	{
-		gimmix_metadata_show_song_cover (TRUE);
-	}
-	else
-	{
-		gimmix_metadata_show_song_cover (FALSE);
-	}
-	#endif
 
 	return;
 }
@@ -85,18 +72,6 @@ gimmix_metadata_enable_controls (void)
 {
 	gtk_widget_set_sensitive (metadata_container, TRUE);
 
-	return;
-}
-
-
-void
-gimmix_metadata_show_song_cover (gboolean show)
-{
-	if (show)
-		gtk_widget_show (metadata_song_cover);
-	else
-		gtk_widget_hide (metadata_song_cover);
-		
 	return;
 }
 

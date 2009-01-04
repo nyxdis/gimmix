@@ -79,9 +79,6 @@ static CoverNode* gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, ch
 /* Get the fallback cover image of specified size */
 static GdkPixbuf* gimmix_covers_plugin_get_default_cover (guint width, guint height);
 
-/* Set the cover image for metadata section */
-static void gimmix_covers_plugin_set_metadata_image (GdkPixbuf *pixbuf);
-
 static gboolean gimmix_covers_plugin_download (const char *url, const char *file);
 static CoverNode* gimmix_cover_node_new (void);
 static gchar *gimmix_url_encode (const char *string);
@@ -702,13 +699,7 @@ gimmix_covers_plugin_get_cover_image_of_size (guint width, guint height)
 	}
 	else
 	{
-		mpd_Song *s = NULL;
-		sleep (2);
-		s = mpd_playlist_get_current_song (gmo);
-		
-		gimmix_covers_plugin_find_cover (s);
-		
-		if (s == NULL || cover_image_path == NULL)
+		if (!cover_image_path)
 		{
 			/* set default image */
 			//g_print ("cover_image_path is NULL\n");
@@ -832,14 +823,6 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 	return;
 }
 
-static void
-gimmix_covers_plugin_set_metadata_image (GdkPixbuf *pixbuf)
-{
-	gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_metadata_image), pixbuf);
-	
-	return;
-}
-
 /* if default = TRUE, set the default cover */
 void
 gimmix_covers_plugin_update_cover (gboolean defaultc)
@@ -856,7 +839,6 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
 		g_object_unref (pixbuf);
 		pixbuf = gimmix_covers_plugin_get_default_cover (64, 64);
-		gimmix_covers_plugin_set_metadata_image (pixbuf);
 		g_object_unref (pixbuf);
 		if (gimmix_config_get_bool("enable_systray"))
 		{
@@ -872,10 +854,19 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 	}
 	else
 	{
+		mpd_Song *s = NULL;
+		//sleep (2);
+		s = mpd_playlist_get_current_song (gmo);
+		while (!s)
+		{
+			sleep (1);
+			s = mpd_playlist_get_current_song (gmo);
+		}
+		gimmix_covers_plugin_find_cover (s);
 		pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, height);
 	}
 	
-	sleep (2);
+	//sleep (2);
 	g_print ("sleep over\n");
 	if (mpd_player_get_state(gmo)!=MPD_PLAYER_STOP)
 	{
@@ -887,31 +878,32 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 
 	if (pixbuf != NULL)
 	{
-		char *areview = NULL;
-		
 		/* main window cover art */
 		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
 		g_object_unref (pixbuf);
 		
 		/* metadata cover art */
+		/*
 		if (s!=NULL)
 			pixbuf = gimmix_covers_plugin_get_cover_image_of_size (64, 64);
 		else
 			pixbuf = gimmix_covers_plugin_get_default_cover (64, 64);
 		gimmix_covers_plugin_set_metadata_image (pixbuf);
 		g_object_unref (pixbuf);
-		
+		*/
 		/* metadata albuminfo */
+		/*
+		char *areview = NULL;
 		s = mpd_playlist_get_current_song (gmo);
 		areview = gimmix_covers_plugin_get_albuminfo (s);
 		gimmix_metadata_set_song_details (s, areview);
 		if (areview)
 			g_free (areview);
-		
+		*/
 		/* also system tray tooltip image */
-		if (!strncasecmp(cfg_get_key_value(conf,"enable_systray"),"true",4))
+		if (gimmix_config_get_bool("enable_systray"))
 		{
-			if (!strncasecmp(cfg_get_key_value(conf,"enable_notification"),"true",4))
+			if (gimmix_config_get_bool("enable_notification"))
 			{
 				pixbuf = gimmix_covers_plugin_get_cover_image_of_size (48, 48);
 				gimmix_tooltip_set_icon (tooltip, pixbuf);

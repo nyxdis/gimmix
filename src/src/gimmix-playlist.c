@@ -28,6 +28,7 @@
 
 #define GIMMIX_MEDIA_ICON 	"gimmix_logo_small.png"
 #define GIMMIX_PLAYLIST_ICON 	"gimmix_playlist.png"
+#define LIBMPD_VER		(LIBMPD_VERSION * 10000)
 
 typedef enum {
 	COLUMN_TITLE = 0,
@@ -727,7 +728,9 @@ gimmix_library_and_playlists_populate (void)
 		{
 			gchar *name;
 			
-			name = data->playlist;
+			{
+				name = data->playlist;
+			}
 			//g_print ("ADDING %s\n", name);
 			gtk_list_store_append (pls_store, &pls_iter);
 			gtk_list_store_set (pls_store, &pls_iter,

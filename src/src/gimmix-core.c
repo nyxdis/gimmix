@@ -268,4 +268,13 @@ gimmix_strcrep (char *string, char c1, char c2)
 	return;
 }
 
+double
+gimmix_get_libmpd_version (void)
+{
+	double version = 0;
+
+	version = atof (libmpd_version);
+
+	return version;
+}
 

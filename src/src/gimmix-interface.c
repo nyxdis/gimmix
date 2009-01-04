@@ -146,7 +146,6 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 				FALSE,
 				NULL);
 		#endif
-		
 		return;
 	}
 
@@ -310,16 +309,6 @@ gimmix_interface_widgets_init (void)
 	gtk_image_set_from_icon_name (GTK_IMAGE(glade_xml_get_widget(xml, "image_volume")), "stock_volume", GTK_ICON_SIZE_MENU);
 	gtk_image_set_from_icon_name (GTK_IMAGE(glade_xml_get_widget(xml, "image_fmodevolume")), "stock_volume", GTK_ICON_SIZE_MENU);
 	
-	g_signal_connect (G_OBJECT(glade_xml_get_widget (xml, "prev_button")), "clicked", G_CALLBACK(cb_prev_button_clicked), NULL);
-
-	g_signal_connect (G_OBJECT(glade_xml_get_widget (xml, "play_button")), "clicked", G_CALLBACK(cb_play_button_clicked), NULL);
-	
-	g_signal_connect (G_OBJECT(glade_xml_get_widget (xml, "next_button")), "clicked", G_CALLBACK(cb_next_button_clicked), NULL);
-	
-	g_signal_connect (G_OBJECT(glade_xml_get_widget (xml, "stop_button")), "clicked", G_CALLBACK(cb_stop_button_clicked), NULL);
-	
-	g_signal_connect (G_OBJECT(glade_xml_get_widget (xml, "pref_button")), "clicked", G_CALLBACK(cb_pref_button_clicked), NULL);
-	
 	shuffle_toggle_button = glade_xml_get_widget (xml, "shuffle_toggle");
 	repeat_toggle_button = glade_xml_get_widget (xml, "repeat_toggle");
 	volume_window = glade_xml_get_widget (xml, "volume_window");
@@ -340,6 +329,12 @@ gimmix_interface_widgets_init (void)
 	pref_button = glade_xml_get_widget (xml, "pref_button");
 	info_button = glade_xml_get_widget (xml, "info_button");
 	stop_button = glade_xml_get_widget (xml, "stop_button");
+	
+	g_signal_connect (G_OBJECT(prev_button), "clicked", G_CALLBACK(cb_prev_button_clicked), NULL);
+	g_signal_connect (G_OBJECT(play_button), "clicked", G_CALLBACK(cb_play_button_clicked), NULL);
+	g_signal_connect (G_OBJECT(next_button), "clicked", G_CALLBACK(cb_next_button_clicked), NULL);
+	g_signal_connect (G_OBJECT(stop_button), "clicked", G_CALLBACK(cb_stop_button_clicked), NULL);
+	g_signal_connect (G_OBJECT(pref_button), "clicked", G_CALLBACK(cb_pref_button_clicked), NULL);
 	
 	/* set icons for buttons */
 	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(prev_button))), "gtk-media-previous", GTK_ICON_SIZE_MENU);

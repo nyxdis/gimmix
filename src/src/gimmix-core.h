@@ -49,4 +49,7 @@ void gimmix_strip_file_ext (char *string);
 /* replace character c1 by c2 in string */
 void gimmix_strcrep (char *string, char c1, char c2);
 
+/* get libmpd version as double */
+double gimmix_get_libmpd_version (void);
+
 #endif
