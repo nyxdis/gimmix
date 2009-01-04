@@ -832,26 +832,7 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 
 	g_mutex_lock (mutex);
 	height = h3_size;
-	if (defaultc)
-	{
-		pixbuf = gimmix_covers_plugin_get_default_cover (96, height);
-		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
-		g_object_unref (pixbuf);
-		pixbuf = gimmix_covers_plugin_get_default_cover (64, 64);
-		g_object_unref (pixbuf);
-		if (gimmix_config_get_bool("enable_systray"))
-		{
-			if (gimmix_config_get_bool("enable_notification"))
-			{
-				pixbuf = gimmix_covers_plugin_get_default_cover (48, 48);
-				gimmix_tooltip_set_icon (tooltip, pixbuf);
-				g_object_unref (pixbuf);
-			}
-		}
-		g_mutex_unlock (mutex);
-		goto ret;
-	}
-	else
+	if (!defaultc)
 	{
 		mpd_Song *s = NULL;
 		mpd_Song *sng = (mpd_Song*) g_malloc0 (sizeof(mpd_Song));
@@ -860,35 +841,35 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 		memcpy (sng, s, sizeof(mpd_Song));
 		gimmix_covers_plugin_find_cover (sng);
 		pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, height);
-		
-		if (pixbuf != NULL)
-		{
-			/* main window cover art */
-			gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
-			g_object_unref (pixbuf);
-		
-			/* metadata albuminfo */
-			// gimmix_metadata_set_song_details (s, areview);
-		
-			/* also system tray tooltip image */
-			if (gimmix_config_get_bool("enable_systray"))
-			{
-				if (gimmix_config_get_bool("enable_notification"))
-				{
-					pixbuf = gimmix_covers_plugin_get_cover_image_of_size (48, 48);
-					gimmix_tooltip_set_icon (tooltip, pixbuf);
-					g_object_unref (pixbuf);
-				}
-			}
-		}
 		if (sng) g_free (sng);
 	}
-
-	g_mutex_unlock (mutex);
+	else
+	{
+		pixbuf = gimmix_covers_plugin_get_default_cover (96, height);
+	}
 	
-	ret:
-	/*while (gtk_events_pending())
-		gtk_main_iteration ();*/
+	if (pixbuf != NULL)
+	{
+		/* main window cover art */
+		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
+		g_object_unref (pixbuf);
+		
+		/* metadata albuminfo */
+		// gimmix_metadata_set_song_details (s, areview);
+	
+		/* also system tray tooltip image */
+		if (gimmix_config_get_bool("enable_systray"))
+		{
+			if (gimmix_config_get_bool("enable_notification"))
+			{
+				pixbuf = gimmix_covers_plugin_get_cover_image_of_size (48, 48);
+				gimmix_tooltip_set_icon (tooltip, pixbuf);
+				g_object_unref (pixbuf);
+			}
+		}
+	}
+	g_mutex_unlock (mutex);
+
 	return;
 }
 
