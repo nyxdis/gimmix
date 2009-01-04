@@ -133,6 +133,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 	{
 		gimmix_update_current_playlist (mo, mpd_playlist_get_changes(mo,0));
 		#ifdef HAVE_COVER_PLUGIN
+		
 		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
 				FALSE,
 				FALSE,
@@ -431,6 +432,7 @@ gimmix_interface_widgets_init (void)
 	/* show the main window */
 	gtk_widget_show (main_window);
 	
+	/*
 	#ifdef HAVE_COVER_PLUGIN
 	if (gimmix_config_get_bool("coverart_enable"))
 	{
@@ -440,6 +442,7 @@ gimmix_interface_widgets_init (void)
 				NULL);
 	}
 	#endif
+	*/
 }
 
 void
@@ -526,7 +529,7 @@ gimmix_init (void)
 	{
 		gimmix_set_song_info ();
 	}
-	
+	/*
 	#ifdef HAVE_COVER_PLUGIN
 	if (gimmix_config_get_bool("coverart_enable"))
 	{
@@ -536,7 +539,7 @@ gimmix_init (void)
 				NULL);
 	}
 	
-	#endif
+	#endif*/
 	#ifdef HAVE_LYRICS
 	if (status == MPD_PLAYER_PLAY || status == MPD_PLAYER_PAUSE)
 	{
