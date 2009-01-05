@@ -22,6 +22,27 @@ AC_PROG_CC
 AC_HEADER_STDC
 AC_CHECK_HEADERS([locale.h stdlib.h string.h sys/ioctl.h unistd.h])
 
+
+AC_ARG_ENABLE(	tageditor,
+		AC_HELP_STRING([--disable-tageditor], [Disable id3 tag editing support]),
+		[tageditor=${enableval}],
+		[tageditor="yes"])
+dnl Check for id3 tag editing support
+AC_MSG_CHECKING(whether id3 tag editing support is enabled)
+if test "$tageditor" = "yes"; then
+	enable_tageditor=yes
+	AC_MSG_RESULT(yes)
+	pkg_modules="taglib >= 1.4"
+	CFLAGS="${CFLAGS} -DHAVE_TAGEDITOR"
+	AC_DEFINE(HAVE_TAGEDITOR, 1, [building gimmix with id3 tag editing support])
+else
+	pkg_modules=""
+	enable_tageditor=no
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(HAVE_TAGEDITOR, test "x$enable_tageditor" = "xyes")
+
+dnl Lyrics support
 AC_ARG_ENABLE(	lyrics,
 		AC_HELP_STRING([--disable-lyrics], [Disable lyrics plugin]),
 		[lyrics=${enableval}],
@@ -31,15 +52,13 @@ AC_MSG_CHECKING(whether lyrics plugin is enabled)
 if test "$lyrics" = "yes"; then
 	enable_lyrics=yes
 	AC_MSG_RESULT(yes)
-	pkg_modules="nxml libcurl"
+	pkg_modules="${pkg_modules} nxml libcurl"
 	CFLAGS="${CFLAGS} -DHAVE_LYRICS"
 	AC_DEFINE(HAVE_LYRICS, 1, [building gimmix with lyrics support])
 else
-	pkg_modules=""
 	enable_lyrics=no
 	AC_MSG_RESULT(no)
 fi
-AC_SUBST([GFPM_LYRICS])
 AM_CONDITIONAL(HAVE_LYRICS, test "x$enable_lyrics" = "xyes")
 
 AC_ARG_ENABLE(	cover,
@@ -52,7 +71,7 @@ if test "$cover" = "yes"; then
 	enable_cover=yes
 	AC_MSG_RESULT(yes)
 	if test "x$enable_lyrics" = "xno" ; then
-		pkg_modules="nxml libcurl"
+		pkg_modules="${pkg_modules} nxml libcurl"
 	fi
 	CFLAGS="${CFLAGS} -DHAVE_COVER_PLUGIN"
 	AC_DEFINE(HAVE_COVER_PLUGIN, 1, [building gimmix with cover plugin support])
@@ -60,7 +79,6 @@ else
 	enable_cover=no
 	AC_MSG_RESULT(no)
 fi
-AC_SUBST([GFPM_COVER])
 AM_CONDITIONAL(HAVE_COVER_PLUGIN, test "x$enable_cover" = "xyes")
 
 
@@ -83,7 +101,6 @@ AC_MSG_RESULT([ooh, there's one!])
 pkg_modules="${pkg_modules} gtk+-2.0 >= 2.6.0 \
 			 libmpd >= 0.12.0 \
 			 libglade-2.0 >= 2.6.0 \
-			 taglib >= 1.4 \
 			 gthread-2.0"
 			 
 PKG_CHECK_MODULES([GIMMIX], [$pkg_modules])
@@ -109,4 +126,5 @@ gimmix $VERSION configuration summary:
         compiler flags           : ${CFLAGS}
 	lyrics support		 : ${enable_lyrics}
 	covers support		 : ${enable_cover}
+	id3 tag editing support  : ${enable_tageditor}
 "

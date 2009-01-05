@@ -5,6 +5,25 @@
 #include <stdbool.h>
 #include "wejpconfig.h"
 
+typedef struct _conf {
+	/* connection info */
+	char		mpd_hostname[256];
+	char		mpd_password[256];
+	unsigned int	mpd_port;
+	
+	/* proxy server stuff */
+	bool		proxy_enable;
+	char		proxy_host[256];
+	unsigned int	proxy_port;
+	
+	/* tag editor */
+	char		music_directory[256];
+	
+	/* systray & notification */
+	
+	
+} GimmixConfig;
+
 /* Returns true if file exists otherwise false */
 bool gimmix_config_exists (void);
 

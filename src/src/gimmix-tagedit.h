@@ -2,7 +2,11 @@
 #define GIMMIX_TAGEDIT_H
 
 #include <gtk/gtk.h>
+
+#ifdef HAVE_TAGEDITOR
 #include <tag_c.h>
+#endif
+
 #include <libmpd/libmpd.h>
 #include <libmpd/libmpdclient.h>
 #include "gimmix-prefs.h"
@@ -11,7 +15,7 @@
 void gimmix_tag_editor_widgets_init (void);
 
 /* populate the tag editor window */
-gboolean gimmix_tag_editor_populate (const gchar *);
+gboolean gimmix_tag_editor_populate (const void *);
 
 /* Display the tag editor window */
 void gimmix_tag_editor_show (void);
