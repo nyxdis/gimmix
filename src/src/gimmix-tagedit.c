@@ -194,11 +194,16 @@ gimmix_tag_editor_populate (const void *song)
 	guint sec = taglib_audioproperties_length(properties) % 60;
     	guint min = (taglib_audioproperties_length(properties) - sec) / 60;
 	info = g_strdup_printf ("%02i:%02i", min, sec);
-	#else
-	info = (char*) malloc (sizeof(char)*32);
-	gimmix_get_progress_status (gmo, NULL, info);
-	#endif
 	gtk_label_set_text (GTK_LABEL(tag_info_length), info);
+	#else
+	char *tok = NULL;
+	info = (char*) g_malloc0 (sizeof(char)*32);
+	gimmix_get_progress_status (gmo, NULL, info);
+	tok = strtok (info, "/");
+	tok = strtok (NULL, "/");
+	g_strstrip (tok);
+	gtk_label_set_text (GTK_LABEL(tag_info_length), tok);
+	#endif
 	g_free (info);
 
 	#ifdef HAVE_TAGEDITOR
