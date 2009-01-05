@@ -1381,16 +1381,28 @@ gimmix_current_playlist_song_info (void)
 	gtk_tree_model_get_iter (model, &iter, list->data);
 	gtk_tree_model_get (model, &iter, 1, &path, -1);
 	
+	#ifdef HAVE_TAGEDITOR
 	song_path = g_strdup_printf ("%s/%s", cfg_get_key_value(conf, "music_directory"), path);
 	if (gimmix_tag_editor_populate (song_path))
 	{	
 		gtk_widget_show (tag_editor_window);
 	}
 	else
+	{
 		gimmix_tag_editor_error (invalid_dir_error);
-		
-	g_free (path);
+	}
 	g_free (song_path);
+	#else
+	if (gimmix_tag_editor_populate (mpd_playlist_get_current_song(gmo)))
+	{
+		gtk_widget_show (tag_editor_window);
+	}
+	else
+	{
+		gimmix_tag_editor_error (_("An error occurred while trying to get song information. Please try again."));
+	}
+	#endif	
+	g_free (path);
 	
 	/* free the list */
 	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
