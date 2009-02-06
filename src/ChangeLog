@@ -1,31 +1,31 @@
 Note: Dates are in dd-mm-yyyy format
 
-Version 0.5.6 (xx-02-2009)
+Version 0.5.6 (February 07, 2009)
 * Gimmix requires libmpd version to be atleast 0.17.0 or higher
 * Fixed lots of crashes/lockups due to cover/lyrics plugins.
 * Tag editing support is now optional.
 * Revamped tag editor and now it also shows album cover.
 * Speed improvements and fixed some memory leaks.
 
-Version 0.5.5 (02-01-2009)
+Version 0.5.5 (January 02, 2009)
 * Bug #313023: Fix missing entries in POTFILES
 * Bug #313018: gimmix.desktop contains encoding key (which is deprecated)
 
-Version 0.5.4 (01-01-2009)
+Version 0.5.4 (January 01, 2009)
 * Bug #307527: Fix missing prototypes in some headers (patch from Christoph Mende)
 * Added support for columns in Current playlist
 * Fixed a bug where newly fetched lyrics were sometimes stored at odd locations
 * LOTS of memory leaks fixed
 * Fixed some crashes due to cover/lyrics plugins
 
-Version 0.5.3 (12-12-2008)
+Version 0.5.3 (December 12, 2008)
 * Bug #293908: Segfaults when disabling coverart plugin
 * Bug #305662: Segfault with accents and long filename
 * Added support for manually setting cover images from files
 * Added support for connection through proxy servers
 * Fixed random crashes because of cover and lyrics plugins
 
-Version 0.5.2 (11-10-2008)
+Version 0.5.2 (October 11, 2008)
 * Improved connection handling and fixed almost all crashes
 * Fix random crashes occurring because of cover and lyrics plugins
 * Fixed a bug that caused Gimmix to freeze sometimes when the user clicked "Get Lyrics" button
@@ -36,7 +36,7 @@ Version 0.5.2 (11-10-2008)
 * Fixed a crash when saving newly fetched album covers whose album name(s) contained trailing whitespaces
 * The system tray tooltip is too close to the panel. make it display a little away from the panel.
 
-Version 0.5.1 (02-10-2008)
+Version 0.5.1 (October 02, 2008)
 * Gimmix is now compatible with libmpd >= v0.16.0
 * Improved cover art search function
 * Numerous crash fixes
@@ -47,7 +47,7 @@ Version 0.5.1 (02-10-2008)
 * Fixed a bug where "Germany" was not being displayed in cover art location in preferences
 * Minor tweaks
 
-Version 0.5.0 (26-09-2008) Happy 2nd Birthday GIMMIX! \o/
+Version 0.5.0 (September 26, 2008) Happy 2nd Birthday GIMMIX! \o/
 * Bug #234739: Progress bar shows garbage next to time (in case of songs of length over 99 minutes)
 * Bug #253140: Gimmix sometimes displays "assertion `percentage >= 0 && percentage <= 1.0' failed"
 * Bug #263975: Window becomes too large if the song title is very long. This bug also fixes an issue
@@ -60,13 +60,13 @@ Version 0.5.0 (26-09-2008) Happy 2nd Birthday GIMMIX! \o/
 * Added support for changing audio output device in Preferences
 * Some user interface enhancements
 
-Version 0.4.3 (2-2-2008)
+Version 0.4.3 (February 02, 2008)
 * Bug #14583: Set the default permission of .gimmixrc to 600
 * Bug #127330: Don't enable notification bubble if systray icon is disabled.
 * Bug #157703: Entries in the song info dialog shouldn't be cropped
 * Bug #178604: Right click "Load" in playlist manager crashes gimmix.
 
-Version 0.4.2 (3-10-2007) (Gimmix is still alive)
+Version 0.4.2 (October 03, 2007) (Gimmix is still alive)
 * Added Turkish translation (Thanks to Yavuz Selim Burgu)
 * Added some new features (Thanks to Asaf Karagila for the patches)
   * Replace song(s) function in library browser
@@ -79,12 +79,12 @@ Version 0.4.2 (3-10-2007) (Gimmix is still alive)
 a random crash when gimmix is run in a different locale other than english.
 * Other minor fixes
 
-Version 0.4.1 (27-02-2007)
+Version 0.4.1 (February 27, 2007)
 * This is a bugfix release to 0.4.0. (No new features are added)
 * Bug #87633: Fixed wrong placing of tooltip on some systems.
 * Bug #88027: Fixed compile errors.
 
-Version 0.4.0 (23-02-2007)
+Version 0.4.0 (February 23, 2007)
 * Brand new interface. Gimmix is much more cleaner than before and the
 ui is a lot more compact.
 * Revamped the first run dialog.
@@ -101,7 +101,7 @@ user tried to delete multiple items from the current playlist.
 * New translation: zh_TW (Thanks to Cheng-Wei Chien)
 * Many more fixes.
 
-Version 0.3.1 (26-12-2006)
+Version 0.3.1 (December 26, 2006)
 * Added Autoconf 2.5 support (Thanks to Alex Smith)
 * Added a new status bar at the bottom of the player window, which displays the current player status.
 * Fixed the window resize bug. Users can now resize the player window.
@@ -123,7 +123,7 @@ GTK+. Gimmix can now be compiled with gtk+-2.6.x.
 * Improved startup time.
 * Minor fixes and improvements.
 
-Version 0.3 (10-12-2006)
+Version 0.3 (December 10, 2006)
 * Replaced the old libconfuse based config system with wejpconfig (written by Johannes Heimansberg)
 * Configuration file layout is changed completely.
 * Fixed a bad bad bug on x86_64 where gimmix crashed if compiled with -O2 flags.
@@ -150,7 +150,7 @@ quits.
 * Lots of other fixes and improvements.
 * Better error handling.
 
-Version 0.2 (16-11-2006)
+Version 0.2 (November 16, 2006)
 * A l33t-new logo.
 * Fixed several memory leaks.
 * Lots of bugfixes.
@@ -173,13 +173,13 @@ Version 0.2 (16-11-2006)
 * Display '*' instead of actual text in password entries.
 * Added a .desktop file with the source.
 
-Version 0.1 (3-11-2006)
+Version 0.1 (November 03, 2006)
 * Made the ui more cleaner and compact.
 * File browser is now separated from the main playlist window.
 * Another bunch of bug fixes.
 * Fixed a random crash on x86_64 systems.
 
-Version 0.1beta2 (31-10-2006)
+Version 0.1beta2 (October 31, 2006)
 * Applied a patch to fix the hardcoded CFLAGS. Gimmix can now be built with x86_64 flags. (Patch by Alex Smith).
 * Fixed a LOT of bugs and memory leaks.
 * Gimmix now also displays the bitrate of the currently playing song in info window.
@@ -189,5 +189,5 @@ Version 0.1beta2 (31-10-2006)
 * Improved cpu and memory usage.
 * Lots of small fixes.
 
-Version 0.1-beta (27-10-2006)
+Version 0.1-beta (October 27, 2006)
 * Initial public release.
