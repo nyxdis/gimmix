@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <libmpd/libmpd.h>
-#include <libmpd/libmpdclient.h>
+#include "gimmix.h"
 #include "gimmix-config.h"
 
 typedef enum { 	PLAY = 1,

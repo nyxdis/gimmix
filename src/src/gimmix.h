@@ -9,8 +9,8 @@
 #include <locale.h>
 #include <libintl.h>
 #define _(String) gettext (String)
-#include <libmpd/libmpd.h>
-#include <libmpd/libmpdclient.h>
+#include <libmpd-1.0/libmpd/libmpd.h>
+#include <libmpd-1.0/libmpd/libmpdclient.h>
 #include <glade/glade.h>
 #include "wejpconfig.h"
 #include "gimmix-config.h"

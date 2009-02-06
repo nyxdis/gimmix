@@ -716,27 +716,26 @@ gimmix_library_and_playlists_populate (void)
 				title = g_path_get_basename (data->song->file);
 				gimmix_strip_file_ext (title);
 			}
-			gtk_list_store_set (dir_store, &dir_iter,
-								0, song_pixbuf,
-								1, title,
-								2, data->song->file,
-								3, SONG,
-								-1);
+			gtk_list_store_set (dir_store,
+						&dir_iter,
+						0, song_pixbuf,
+						1, title,
+						2, data->song->file,
+						3, SONG,
+						-1);
 			g_free (title);
 		}
 		else if (data->type == MPD_DATA_TYPE_PLAYLIST)
 		{
-			gchar *name;
-			
-			{
-				name = data->playlist;
-			}
+			gchar *name = NULL;
+			name = ((mpd_PlaylistFile*)data->playlist)->path;
 			//g_print ("ADDING %s\n", name);
 			gtk_list_store_append (pls_store, &pls_iter);
-			gtk_list_store_set (pls_store, &pls_iter,
-								0, pls_pixbuf,
-								1, name,
-								-1);
+			gtk_list_store_set (pls_store,
+						&pls_iter,
+						0, pls_pixbuf,
+						1, name,
+						-1);
 		}
 	}
 

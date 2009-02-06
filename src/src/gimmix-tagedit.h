@@ -7,8 +7,7 @@
 #include <tag_c.h>
 #endif
 
-#include <libmpd/libmpd.h>
-#include <libmpd/libmpdclient.h>
+#include "gimmix.h"
 #include "gimmix-prefs.h"
 
 /* Initialize the tag editor signals */

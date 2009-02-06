@@ -837,13 +837,13 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 	if (!defaultc)
 	{
 		mpd_Song *s = NULL;
-		mpd_Song *sng = (mpd_Song*) g_malloc0 (sizeof(mpd_Song));
+		mpd_Song *sng = mpd_newSong ();
 		while (!(s=mpd_playlist_get_current_song(gmo)))
 			sleep (1);
-		memcpy (sng, s, sizeof(mpd_Song));
+		sng = mpd_songDup (s);
 		gimmix_covers_plugin_find_cover (sng);
 		pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, height);
-		if (sng) g_free (sng);
+		mpd_freeSong (sng);
 	}
 	else
 	{

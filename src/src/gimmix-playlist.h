@@ -2,11 +2,9 @@
 #define GIMMIX_PLAYLIST_H
 
 #include "gimmix-core.h"
-#include "gimmix.h"
+
 #include <string.h>
 #include <stdbool.h>
-#include <libmpd/libmpd.h>
-#include <libmpd/libmpdclient.h>
 #include <gtk/gtk.h>
 
 /* Initialize the playlist widgets and setup signals */
