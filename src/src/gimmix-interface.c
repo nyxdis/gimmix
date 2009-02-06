@@ -394,6 +394,9 @@ gimmix_interface_widgets_init (void)
 	/* initialize metadata */
 	gimmix_metadata_init ();
 	
+	/* tag editor widgets */
+	gimmix_tag_editor_widgets_init ();
+	
 	#ifdef HAVE_COVER_PLUGIN
 	gimmix_covers_plugin_init ();
 	#else
@@ -422,9 +425,6 @@ gimmix_interface_widgets_init (void)
 	
 	/* playlist widgets */
 	gimmix_playlist_widgets_init ();
-	
-	/* tag editor widgets */
-	gimmix_tag_editor_widgets_init ();
 	
 	/* show version info */
 	gimmix_show_ver_info ();

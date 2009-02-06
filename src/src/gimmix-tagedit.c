@@ -34,18 +34,19 @@ TagLib_File 	*file = NULL;
 TagLib_Tag 	*tag = NULL;
 #endif
 
-GtkWidget	*tag_title;
-GtkWidget	*tag_file;
-GtkWidget	*tag_artist;
-GtkWidget	*tag_album;
-GtkWidget	*tag_comment;
-GtkWidget	*tag_track_spin;
-GtkWidget	*tag_year_spin;
-GtkWidget	*tag_genre;
-GtkWidget	*tag_info_bitrate;
-GtkWidget	*tag_info_channels;
-GtkWidget	*tag_info_length;
+static GtkWidget	*tag_title;
+static GtkWidget	*tag_file;
+static GtkWidget	*tag_artist;
+static GtkWidget	*tag_album;
+static GtkWidget	*tag_comment;
+static GtkWidget	*tag_track_spin;
+static GtkWidget	*tag_year_spin;
+static GtkWidget	*tag_genre;
+static GtkWidget	*tag_info_bitrate;
+static GtkWidget	*tag_info_channels;
+static GtkWidget	*tag_info_length;
 GtkWidget	*tag_editor_window;
+static GtkWidget	*tag_editor_cover_image;
 
 #ifdef HAVE_TAGEDITOR
 /* Save action */
@@ -79,17 +80,24 @@ gimmix_tag_editor_widgets_init (void)
 	tag_info_length = glade_xml_get_widget (xml, "info_length");
 	tag_info_channels = glade_xml_get_widget (xml, "info_channels");
 	tag_info_bitrate = glade_xml_get_widget (xml, "info_bitrate");
+	tag_editor_cover_image = glade_xml_get_widget (xml, "gimmix_tagedit_cover_image");
 	
 	widget = glade_xml_get_widget (xml, "tag_editor_save");
 	#ifdef HAVE_TAGEDITOR
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(gimmix_tag_editor_save), NULL);
 	#else
-	gtk_widget_show (widget);
+	gtk_widget_set_sensitive (widget, FALSE);
 	#endif
 
 	widget = glade_xml_get_widget (xml, "tag_editor_close");
-	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(gimmix_tag_editor_close), NULL);
-	g_signal_connect (G_OBJECT(tag_editor_window), "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+	g_signal_connect (G_OBJECT(widget),
+				"clicked",
+				G_CALLBACK(gimmix_tag_editor_close),
+				NULL);
+	g_signal_connect (G_OBJECT(tag_editor_window),
+				"delete-event",
+				G_CALLBACK(gtk_widget_hide_on_delete),
+				NULL);
 	
 	return;
 }
@@ -326,6 +334,13 @@ gimmix_tag_editor_show (void)
 		g_free (song);
 	}
 	
+	return;
+}
+
+void
+gimmix_tag_editor_set_cover_image (GdkPixbuf *image)
+{
+	gtk_image_set_from_pixbuf (GTK_IMAGE(tag_editor_cover_image), image);
 	return;
 }
 

@@ -364,7 +364,10 @@ gimmix_lyrics_populate_textview (LYRICS_NODE *node)
 	if (node && node->lyrics)
 	{
 		g_print ("setting lyrics\n");
+		gdk_threads_enter ();
 		gtk_text_buffer_set_text (buffer, node->lyrics, -1);
+		gdk_flush ();
+		gdk_threads_leave ();
 		g_print ("done setting lyrics\n");
 	}
 	else

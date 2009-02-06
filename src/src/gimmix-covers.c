@@ -853,12 +853,23 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 	if (pixbuf != NULL)
 	{
 		/* main window cover art */
+		gdk_threads_enter ();
 		gtk_image_set_from_pixbuf (GTK_IMAGE(gimmix_plcbox_image), pixbuf);
+		gdk_flush ();
+		gdk_threads_leave ();
 		g_object_unref (pixbuf);
 		
 		/* metadata albuminfo */
 		// gimmix_metadata_set_song_details (s, areview);
-	
+
+		/* tag editor cover image */
+		pixbuf = gimmix_covers_plugin_get_cover_image_of_size (96, 96);
+		gdk_threads_enter ();
+		gimmix_tag_editor_set_cover_image (pixbuf);
+		gdk_flush ();
+		gdk_threads_leave ();
+		g_object_unref (pixbuf);
+
 		/* also system tray tooltip image */
 		if (gimmix_config_get_bool("enable_systray"))
 		{
