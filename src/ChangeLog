@@ -6,6 +6,7 @@ Version 0.5.6 (February 07, 2009)
 * Tag editing support is now optional.
 * Revamped tag editor and now it also shows album cover.
 * Speed improvements and fixed some memory leaks.
+* Added Swedish translation (Thanks to Niklas Grahn)
 
 Version 0.5.5 (January 02, 2009)
 * Bug #313023: Fix missing entries in POTFILES
