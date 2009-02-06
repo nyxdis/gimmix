@@ -1,5 +1,10 @@
 Note: Dates are in dd-mm-yyyy format
 
+Version 0.5.6.1 (February 07, 2009)
+* Fix location of libmpd headers in gimmix.h [thanks to Qball]
+* Check for libmpd>=0.17.0 in configure script [thanks to Qball]
+* Set default cover when gimmix starts.
+
 Version 0.5.6 (February 07, 2009)
 * Gimmix requires libmpd version to be atleast 0.17.0 or higher
 * Fixed lots of crashes/lockups due to cover/lyrics plugins.
