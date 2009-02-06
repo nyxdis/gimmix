@@ -1,0 +1,746 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: gimmix-0.5.5\n"
+"POT-Creation-Date: 2006-12-30 22:35+0530\n"
+"PO-Revision-Date: 2009-01-21 19:00+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+
+#: ../src/gimmix-systray.c:358
+msgid "by"
+msgstr "av"
+
+#: ../src/gimmix-core.c:176
+msgid "Error"
+msgstr "Fel"
+
+#: ../src/gimmix-core.c:176
+msgid "Status Failed."
+msgstr "Status misslyckades."
+
+#: ../src/gimmix-tagedit.c:60
+#: ../src/gimmix-playlist.c:42
+msgid "You have specified an invalid music directory. Do you want to specify the correct music directory now ?"
+msgstr "Du har angett en ogiltig musikkatalog. Vill du ange den rätta musikkatalogen nu?"
+
+#: ../src/gimmix-tagedit.c:237
+msgid "Invalid music directory."
+msgstr "Ogiltig musikkatalog."
+
+#: ../src/gimmix-tagedit.c:257
+#: ../src/gimmix.c:73
+msgid "ERROR"
+msgstr "FEL"
+
+#: ../src/gimmix-interface.c:107
+#: ../src/gimmix-interface.c:297
+msgid "Pause <x or c>"
+msgstr "Pausa <x eller c>"
+
+#: ../src/gimmix-interface.c:113
+#: ../src/gimmix-interface.c:127
+msgid "Play <x or c>"
+msgstr "Spela <x eller c>"
+
+#: ../src/gimmix-interface.c:118
+#: ../src/gimmix-interface.c:122
+#: ../src/gimmix-interface.c:305
+#: ../src/gimmix-interface.c:307
+msgid "Stopped"
+msgstr "Stoppad"
+
+#: ../src/eggtrayicon.c:115
+msgid "Orientation"
+msgstr "Position"
+
+#: ../src/eggtrayicon.c:116
+msgid "The orientation of the tray."
+msgstr "Brickans position."
+
+#: ../src/gimmix-playlist.c:122
+msgid "Title"
+msgstr "Titel"
+
+#: ../src/gimmix-playlist.c:131
+msgid "Length"
+msgstr "Speltid"
+
+#: ../src/gimmix-playlist.c:307
+msgid "Items"
+msgstr "Objekt"
+
+#: ../src/gimmix-playlist.c:307
+msgid "Total Duration: "
+msgstr "Total varaktighet:"
+
+#: ../src/gimmix-playlist.c:307
+msgid "minutes"
+msgstr "minuter"
+
+#: ../src/gimmix-playlist.c:512
+msgid "No Result"
+msgstr "Inget resultat"
+
+#: ../src/gimmix-playlist.c:1105
+msgid "Repeat"
+msgstr "Upprepa"
+
+#: ../src/gimmix-playlist.c:1112
+msgid "Shuffle"
+msgstr "Blanda"
+
+#: ../src/gimmix-playlist.c:1123
+#: ../glade/gimmix.glade:732
+msgid "Save Playlist"
+msgstr "Spara spellista "
+
+#: ../src/gimmix-playlist.c:1168
+#: ../glade/gimmix.glade:893
+msgid "Update Library"
+msgstr "Uppdatera bibliotek"
+
+#: ../src/gimmix-playlist.c:1193
+msgid "Load"
+msgstr "Läs in"
+
+#: ../src/gimmix-playlist.c:1199
+msgid "Delete"
+msgstr "Ta bort"
+
+#: ../src/gimmix-playlist.c:1257
+msgid "Updating Library..."
+msgstr "Uppdaterar bibliotek..."
+
+#: ../src/gimmix-playlist.c:1307
+msgid "Save playlist"
+msgstr "Spara spellista"
+
+#: ../src/gimmix-playlist.c:1345
+#: ../src/gimmix-playlist.c:1356
+msgid "playlist already exists.\n"
+msgstr "spellista finns redan.\n"
+
+#: ../src/gimmix.c:66
+msgid ""
+"Gimmix couldn't connect to mpd. \n"
+"\n"
+"Check whether mpd is running.\n"
+"Also check that you have specified the proper hostname, port and password in ~/.gimmixrc"
+msgstr ""
+"Gimmix kunde inte ansluta till mpd. \n"
+"\n"
+"Kontrollera om mpd körs.\n"
+"Kontrollera också att du har angett det rätta värdnamnet, porten och lösenordet i ~/.gimmixrc"
+
+#: ../src/gimmix.c:121
+msgid "A part of the song seek code borrowed from Pygmy."
+msgstr "En del av koden för låtsökning är lånad av Pygmy."
+
+#: ../src/gimmix.c:130
+msgid "Â© 2006-2007 Priyank Gosalia  (GPL)"
+msgstr "Â© 2006-2007 Priyank Gosalia  (GPL)"
+
+#: ../src/gimmix.c:131
+msgid "Gimmix is a graphical music player daemon (MPD) client written in C."
+msgstr ""
+"Gimmix är en grafisk musik- \n"
+"spelardemonklient (MPD) skriven i C."
+
+#: ../src/gimmix.c:134
+msgid "Traditional Chinese (zh_TW) - Cheng-Wei Chien <e.cwchien@gmail.com>"
+msgstr "Traditionell kinesiska (zh_TW) - Cheng-Wei Chien <e.cwchien@gmail.com> "
+
+#: ../src/gimmix.c:167
+msgid "Failed to initialize interface."
+msgstr "MIsslyckades med att initiera gränssnitt."
+
+#: ../glade/gimmix.glade:7
+#: ../glade/gimmix.glade:233
+#: ../glade/gimmix.glade:3001
+msgid "Gimmix"
+msgstr "Gimmix"
+
+#: ../glade/gimmix.glade:49
+msgid "Prev <z>"
+msgstr "Föregående <z>"
+
+#: ../glade/gimmix.glade:98
+msgid "Stop <v>"
+msgstr "Stoppa <v>"
+
+#: ../glade/gimmix.glade:123
+msgid "Next <b>"
+msgstr "Nästa <b>"
+
+#: ../glade/gimmix.glade:148
+msgid "Volume"
+msgstr "Volym"
+
+#: ../glade/gimmix.glade:258
+msgid "http://gimmix.berlios.de/"
+msgstr "http://gimmix.berlios.de/"
+
+#: ../glade/gimmix.glade:309
+msgid "Song Info <i>"
+msgstr "Låtinformation <i>"
+
+#: ../glade/gimmix.glade:431
+msgid "<b>Current Playlist</b>"
+msgstr "<b>Aktuell spellista</b>"
+
+#: ../glade/gimmix.glade:530
+msgid "<b>Playlist Manager</b>"
+msgstr "<b>Spellistehanterare</b>"
+
+#: ../glade/gimmix.glade:622
+msgid "Add"
+msgstr "Lägg till"
+
+#: ../glade/gimmix.glade:649
+msgid "Remove"
+msgstr "Ta bort"
+
+#: ../glade/gimmix.glade:676
+msgid "Clear"
+msgstr "Töm"
+
+#: ../glade/gimmix.glade:703
+msgid "Playlist Manager"
+msgstr "Spellistehanterare"
+
+#: ../glade/gimmix.glade:770
+msgid "Shuffle <s>"
+msgstr "Blanda <s>"
+
+#: ../glade/gimmix.glade:799
+msgid "Repeat <r>"
+msgstr "Upprepa <r>"
+
+#: ../glade/gimmix.glade:839
+msgid "Configure Gimmix"
+msgstr "Konfigurera Gimmix"
+
+#: ../glade/gimmix.glade:944
+msgid "Player status goes here"
+msgstr "Spelarens status visas här"
+
+#: ../glade/gimmix.glade:993
+msgid "Library"
+msgstr "Bibliotek"
+
+#: ../glade/gimmix.glade:1061
+msgid "<b> Search </b>"
+msgstr "<b> Sök </b>"
+
+#: ../glade/gimmix.glade:1095
+msgid ""
+"Artist\n"
+"Album\n"
+"Title\n"
+"Filename\n"
+msgstr ""
+"Artist\n"
+"Album\n"
+"Titel\n"
+"Filnamn\n"
+
+#: ../glade/gimmix.glade:1177
+msgid "Close"
+msgstr "Stäng"
+
+#: ../glade/gimmix.glade:1230
+msgid "Preferences"
+msgstr "Inställningar"
+
+#: ../glade/gimmix.glade:1276
+msgid "<b>Preferences</b>"
+msgstr "<b>Inställningar</b>"
+
+#: ../glade/gimmix.glade:1329
+msgid "Hostname"
+msgstr "Värdnamn"
+
+#: ../glade/gimmix.glade:1357
+#: ../glade/gimmix.glade:3103
+msgid "Port"
+msgstr "Port"
+
+#: ../glade/gimmix.glade:1385
+#: ../glade/gimmix.glade:3131
+msgid "Password"
+msgstr "Lösenord"
+
+#: ../glade/gimmix.glade:1482
+msgid "Connection"
+msgstr "Anslutning"
+
+#: ../glade/gimmix.glade:1513
+msgid "Immediately play songs when i add them to playlist."
+msgstr "Spela genast upp låtar när jag lägger till dem till spellistan."
+
+#: ../glade/gimmix.glade:1532
+msgid "Stop playback when Gimmix exits."
+msgstr "Stoppa uppspelning när Gimmix avslutas."
+
+#: ../glade/gimmix.glade:1551
+msgid "Update the mpd database on startup."
+msgstr "Uppdatera mpd-databasen vid uppstart."
+
+#: ../glade/gimmix.glade:1576
+msgid "Enable Crossfade"
+msgstr "Aktivera korstoning."
+
+#: ../glade/gimmix.glade:1594
+msgid "Fade Time:"
+msgstr "Toningstid:"
+
+#: ../glade/gimmix.glade:1655
+msgid "Behavior"
+msgstr "Beteende"
+
+#: ../glade/gimmix.glade:1691
+msgid "<b>Music Directory : </b>"
+msgstr "<b>Musikkatalog : </b>"
+
+#: ../glade/gimmix.glade:1717
+msgid "Select the directory"
+msgstr "Markera katalogen"
+
+#: ../glade/gimmix.glade:1741
+msgid ""
+"Select the directory where your music is stored. \n"
+"<b>Note: </b> The directory should be same as what you specified in your mpd settings. \n"
+"If you're not sure, check your mpd configuration file mpd.conf"
+msgstr ""
+"Markera katalogen där din musik är sparad i. \n"
+"<b>Observera: </b> Katalogen bör vara den samma som den du angav i dina mpd-inställningar. \n"
+"Om du är osäker, kontrollera din mpd-konfigurationsfil mpd.conf"
+
+#: ../glade/gimmix.glade:1774
+msgid "Directories"
+msgstr "Kataloger"
+
+#: ../glade/gimmix.glade:1819
+msgid "Enable system tray icon"
+msgstr "Aktivera ikon i systembricka"
+
+#: ../glade/gimmix.glade:1839
+msgid "Enable system tray tooltip"
+msgstr "Aktivera vertygstips för systembricka"
+
+#: ../glade/gimmix.glade:1859
+msgid "<b>System Tray</b>"
+msgstr "<b>Systembricka</b>"
+
+#: ../glade/gimmix.glade:1899
+msgid "Enable Library Search"
+msgstr "Aktivera bibliotekssökning"
+
+#: ../glade/gimmix.glade:1912
+msgid "<b>Search</b>"
+msgstr "<b>Sök</b>"
+
+#: ../glade/gimmix.glade:1952
+msgid "Interface"
+msgstr "Gränssnitt"
+
+#: ../glade/gimmix.glade:2054
+msgid "+"
+msgstr "+"
+
+#: ../glade/gimmix.glade:2098
+msgid "-"
+msgstr "-"
+
+#: ../glade/gimmix.glade:2126
+msgid "Information"
+msgstr "Information"
+
+#: ../glade/gimmix.glade:2171
+msgid "<b>Track :</b>"
+msgstr "<b>Spår :</b>"
+
+#: ../glade/gimmix.glade:2228
+msgid "<b>Year :</b>"
+msgstr "<b>År :</b>"
+
+#: ../glade/gimmix.glade:2296
+msgid "<b>Comment :   </b>"
+msgstr "<b>Kommentar :   </b>"
+
+#: ../glade/gimmix.glade:2345
+msgid ""
+"A Cappella\n"
+"Acid\n"
+"Acid Jazz\n"
+"Acid Punk\n"
+"Acoustic\n"
+"Alt. Rock\n"
+"Alternative\n"
+"Ambient\n"
+"Anime\n"
+"Avantgarde\n"
+"Ballad\n"
+"Bass\n"
+"Beat\n"
+"Bebob\n"
+"Big Band\n"
+"Black Metal\n"
+"Bluegrass\n"
+"Blues\n"
+"Booty Bass\n"
+"BritPop\n"
+"Cabaret\n"
+"Celtic\n"
+"Chamber music\n"
+"Chanson\n"
+"Chorus\n"
+"Christian Gangsta Rap\n"
+"Christian Rap\n"
+"Christian Rock\n"
+"Classic Rock\n"
+"Classical\n"
+"Club\n"
+"Club-House\n"
+"Comedy\n"
+"Contemporary Christian\n"
+"Country\n"
+"Crossover\n"
+"Cult\n"
+"Dance\n"
+"Dance Hall\n"
+"Darkwave\n"
+"Death Metal\n"
+"Disco\n"
+"Dream\n"
+"Drum & Bass\n"
+"Drum Solo\n"
+"Duet\n"
+"Easy Listening\n"
+"Electronic\n"
+"Ethnic\n"
+"Euro-House\n"
+"Euro-Techno\n"
+"Eurodance\n"
+"Fast Fusion\n"
+"Folk\n"
+"Folk-Rock\n"
+"Folklore\n"
+"Freestyle\n"
+"Funk\n"
+"Fusion\n"
+"Game\n"
+"Gangsta\n"
+"Goa\n"
+"Gospel\n"
+"Gothic\n"
+"Gothic Rock\n"
+"Grunge\n"
+"Hard Rock\n"
+"Hardcore\n"
+"Heavy Metal\n"
+"Hip-Hop\n"
+"House\n"
+"Humour\n"
+"Indie\n"
+"Industrial\n"
+"Instrumental\n"
+"Instrumental pop\n"
+"Instrumental rock\n"
+"JPop\n"
+"Jazz\n"
+"Jazz+Funk\n"
+"Jungle\n"
+"Latin\n"
+"Lo-Fi\n"
+"Meditative\n"
+"Merengue\n"
+"Metal\n"
+"Musical\n"
+"National Folk\n"
+"Native American\n"
+"Negerpunk\n"
+"New Age\n"
+"New Wave\n"
+"Noise\n"
+"Oldies\n"
+"Opera\n"
+"Other\n"
+"Polka\n"
+"Polsk Punk\n"
+"Pop\n"
+"Pop-Folk\n"
+"Pop/Funk\n"
+"Porn Groove\n"
+"Power Ballad\n"
+"Pranks\n"
+"Primus\n"
+"Progressive Rock\n"
+"Psychedelic\n"
+"Psychedelic Rock\n"
+"Punk\n"
+"Punk Rock\n"
+"R&B\n"
+"Rap\n"
+"Rave\n"
+"Reggae\n"
+"Retro\n"
+"Revival\n"
+"Rhythmic soul\n"
+"Rock\n"
+"Rock & Roll\n"
+"Salsa\n"
+"Samba\n"
+"Satire\n"
+"Showtunes\n"
+"Ska\n"
+"Slow Jam\n"
+"Slow Rock\n"
+"Sonata\n"
+"Soul\n"
+"Sound Clip\n"
+"Soundtrack\n"
+"Southern Rock\n"
+"Space\n"
+"Speech\n"
+"Swing\n"
+"Symphonic Rock\n"
+"Symphony\n"
+"Synthpop\n"
+"Tango\n"
+"Techno\n"
+"Techno-Industrial\n"
+"Terror\n"
+"Thrash Metal\n"
+"Top 40\n"
+"Trailer\n"
+msgstr ""
+"A Cappella\n"
+"Acid\n"
+"Acid Jazz\n"
+"Acid Punk\n"
+"Acoustic\n"
+"Alt. Rock\n"
+"Alternative\n"
+"Ambient\n"
+"Anime\n"
+"Avantgarde\n"
+"Ballad\n"
+"Bass\n"
+"Beat\n"
+"Bebob\n"
+"Big Band\n"
+"Black Metal\n"
+"Bluegrass\n"
+"Blues\n"
+"Booty Bass\n"
+"BritPop\n"
+"Cabaret\n"
+"Celtic\n"
+"Chamber music\n"
+"Chanson\n"
+"Chorus\n"
+"Christian Gangsta Rap\n"
+"Christian Rap\n"
+"Christian Rock\n"
+"Classic Rock\n"
+"Classical\n"
+"Club\n"
+"Club-House\n"
+"Comedy\n"
+"Contemporary Christian\n"
+"Country\n"
+"Crossover\n"
+"Cult\n"
+"Dance\n"
+"Dance Hall\n"
+"Darkwave\n"
+"Death Metal\n"
+"Disco\n"
+"Dream\n"
+"Drum & Bass\n"
+"Drum Solo\n"
+"Duet\n"
+"Easy Listening\n"
+"Electronic\n"
+"Ethnic\n"
+"Euro-House\n"
+"Euro-Techno\n"
+"Eurodance\n"
+"Fast Fusion\n"
+"Folk\n"
+"Folk-Rock\n"
+"Folklore\n"
+"Freestyle\n"
+"Funk\n"
+"Fusion\n"
+"Game\n"
+"Gangsta\n"
+"Goa\n"
+"Gospel\n"
+"Gothic\n"
+"Gothic Rock\n"
+"Grunge\n"
+"Hard Rock\n"
+"Hardcore\n"
+"Heavy Metal\n"
+"Hip-Hop\n"
+"House\n"
+"Humour\n"
+"Indie\n"
+"Industrial\n"
+"Instrumental\n"
+"Instrumental pop\n"
+"Instrumental rock\n"
+"JPop\n"
+"Jazz\n"
+"Jazz+Funk\n"
+"Jungle\n"
+"Latin\n"
+"Lo-Fi\n"
+"Meditative\n"
+"Merengue\n"
+"Metal\n"
+"Musical\n"
+"National Folk\n"
+"Native American\n"
+"Negerpunk\n"
+"New Age\n"
+"New Wave\n"
+"Noise\n"
+"Oldies\n"
+"Opera\n"
+"Other\n"
+"Polka\n"
+"Polsk Punk\n"
+"Pop\n"
+"Pop-Folk\n"
+"Pop/Funk\n"
+"Porn Groove\n"
+"Power Ballad\n"
+"Pranks\n"
+"Primus\n"
+"Progressive Rock\n"
+"Psychedelic\n"
+"Psychedelic Rock\n"
+"Punk\n"
+"Punk Rock\n"
+"R&B\n"
+"Rap\n"
+"Rave\n"
+"Reggae\n"
+"Retro\n"
+"Revival\n"
+"Rhythmic soul\n"
+"Rock\n"
+"Rock & Roll\n"
+"Salsa\n"
+"Samba\n"
+"Satire\n"
+"Showtunes\n"
+"Ska\n"
+"Slow Jam\n"
+"Slow Rock\n"
+"Sonata\n"
+"Soul\n"
+"Sound Clip\n"
+"Soundtrack\n"
+"Southern Rock\n"
+"Space\n"
+"Speech\n"
+"Swing\n"
+"Symphonic Rock\n"
+"Symphony\n"
+"Synthpop\n"
+"Tango\n"
+"Techno\n"
+"Techno-Industrial\n"
+"Terror\n"
+"Thrash Metal\n"
+"Top 40\n"
+"Trailer\n"
+
+#: ../glade/gimmix.glade:2506
+msgid "<b>Genre :</b>"
+msgstr "<b>Genre :</b>"
+
+#: ../glade/gimmix.glade:2555
+msgid "<b>Album :</b>"
+msgstr "<b>Album :</b>"
+
+#: ../glade/gimmix.glade:2604
+msgid "<b>Artist :</b>"
+msgstr "<b>Artist :</b>"
+
+#: ../glade/gimmix.glade:2632
+msgid "<b>Title :</b>"
+msgstr "<b>Titel :</b>"
+
+#: ../glade/gimmix.glade:2681
+msgid "<b>File :</b>"
+msgstr "<b>Fil :</b>"
+
+#: ../glade/gimmix.glade:2744
+msgid "<b>Audio Information </b>"
+msgstr "<b>Ljudinformation </b>"
+
+#: ../glade/gimmix.glade:2779
+msgid "Length :"
+msgstr "Speltid :"
+
+#: ../glade/gimmix.glade:2807
+msgid "Bitrate :"
+msgstr "Bihastighet :"
+
+#: ../glade/gimmix.glade:2835
+msgid "Channels :    "
+msgstr "Kanaler :"
+
+#: ../glade/gimmix.glade:3040
+msgid ""
+"Gimmix is running for the first time. \n"
+"Please enter your username, password and other options and hit the Apply button."
+msgstr ""
+"Gimmix körs för första gången. \n"
+"Var god skriv in ditt användarnamn, lösenord och andra alternativ och tryck på knappen Verkställ."
+
+#: ../glade/gimmix.glade:3075
+msgid "Host"
+msgstr "Värd"
+
+#: ../glade/gimmix.glade:3222
+msgid "(Leave blank for no password)"
+msgstr "(Lämna tomt för inget lösenord)"
+
+#: ../glade/gimmix.glade:3275
+msgid "Enable system tray icon."
+msgstr "Aktivera ikon i systembricka."
+
+#: ../glade/gimmix.glade:3294
+msgid "Enable system tray tooltips."
+msgstr "Aktivera verktygstips för systembricka."
+
+#: ../glade/gimmix.glade:3342
+msgid "<b>Music Directory :</b>"
+msgstr "<b>Musikkatalog :</b>"
+
+#: ../glade/gimmix.glade:3367
+msgid "Select A Directory"
+msgstr "Markera en katalog"
+
+#: ../glade/gimmix.glade:3391
+msgid ""
+"Please select the directory where your music is stored. This is required for gimmix to function properly.\n"
+"Note: The directory should be same as what you specified in your mpd settings. If you're not sure,\n"
+"Check your mpd configuration file (/etc/mpd.conf on most systems)."
+msgstr ""
+"Var god markera katalogen där din musik ska sparas i. Detta krävs för att Gimmix ska fungera ordentligt.\n"
+"Observera: Katalogen bör vara den samma som den du angav i dina mpd-inställningar. \n"
+"Om du är osäker, kontrollera din mpd-konfigurationsfil (/etc/mpd.conf på de flesta system)."
+
