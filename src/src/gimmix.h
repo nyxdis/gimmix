@@ -14,7 +14,6 @@
 #include <glade/glade.h>
 #include "wejpconfig.h"
 #include "gimmix-config.h"
-#include "gimmix-core.h"
 #include "gimmix-interface.h"
 #include "gimmix-firstrun.h"
 

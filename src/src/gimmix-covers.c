@@ -36,6 +36,7 @@
 #include "wejpconfig.h"
 #include "gimmix-metadata.h"
 #include "gimmix-covers.h"
+#include "gimmix-tagedit.h"
 
 #define DEFAULT_COVER	"gimmix-album.png"
 #define COVERS_DIR	".gimmix/covers"

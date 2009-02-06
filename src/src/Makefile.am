@@ -23,5 +23,5 @@ gimmix_SOURCES=	wejpconfig.c \
 		gimmix.c
 
 
-gimmix_LDADD= @GIMMIX_LIBS@ -ltag_c
+gimmix_LDADD= @GIMMIX_LIBS@
 

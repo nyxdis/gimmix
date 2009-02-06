@@ -32,7 +32,7 @@ AC_MSG_CHECKING(whether id3 tag editing support is enabled)
 if test "$tageditor" = "yes"; then
 	enable_tageditor=yes
 	AC_MSG_RESULT(yes)
-	pkg_modules="taglib >= 1.4"
+	pkg_modules="taglib_c >= 1.4"
 	CFLAGS="${CFLAGS} -DHAVE_TAGEDITOR"
 	AC_DEFINE(HAVE_TAGEDITOR, 1, [building gimmix with id3 tag editing support])
 else
