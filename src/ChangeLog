@@ -1,5 +1,11 @@
 Note: Dates are in dd-mm-yyyy format
 
+Version 0.5.6 (xx-02-2009)
+* Fixed lots of crashes due to cover/lyrics plugins.
+* Tag editing support is now optional.
+* Revamped tag editor and now it also shows album cover.
+* Speed improvements and fixed some memory leaks.
+
 Version 0.5.5 (02-01-2009)
 * Bug #313023: Fix missing entries in POTFILES
 * Bug #313018: gimmix.desktop contains encoding key (which is deprecated)
