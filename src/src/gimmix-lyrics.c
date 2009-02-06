@@ -405,14 +405,8 @@ gimmix_lyrics_plugin_update_lyrics (void)
 			gimmix_covers_plugin_set_artist (sng->artist);
 		if (sng->title)
 			gimmix_covers_plugin_set_songtitle (sng->title);
-		#ifndef HAVE_COVER_PLUGIN
+		/* set metadata info */
 		gimmix_metadata_set_song_details (sng, NULL);
-		#else
-		if (!gimmix_config_get_bool("coverart_enable"))
-		{
-			gimmix_metadata_set_song_details (sng, NULL);
-		}
-		#endif
 	}
 
 	node = lyrics_search ();

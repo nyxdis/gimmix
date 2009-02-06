@@ -121,6 +121,7 @@ gimmix_metadata_set_song_details (mpd_Song *song, char* albumreview)
 	}
 	
 	gtk_label_set_text (GTK_LABEL(metadata_song_albumreview), "");
+	/*
 	if (albumreview!=NULL)
 	{
 		markup = g_markup_escape_text (albumreview, strlen(albumreview));
@@ -128,7 +129,7 @@ gimmix_metadata_set_song_details (mpd_Song *song, char* albumreview)
 		g_free (markup);
 		return;
 	}
-	
+	*/
 	return;
 }
 
