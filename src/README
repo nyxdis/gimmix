@@ -21,7 +21,7 @@ Features:
 Requirements:
 =============
 * gtk+ >= 2.8
-* libmpd >= 0.12 
+* libmpd >= 0.17.0
 * libglade-2.6.x
 * taglib-1.4 (C bindings)
 

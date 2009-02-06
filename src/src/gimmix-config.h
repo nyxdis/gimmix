@@ -20,7 +20,19 @@ typedef struct _conf {
 	char		music_directory[256];
 	
 	/* systray & notification */
+	bool		enable_systray;
+	bool		enable_notification;
 	
+	/* cover art plugin */
+	bool		coverart_enable;
+	char		*coverart_location;
+	
+	/* other stuff */
+	bool		play_on_add;
+	bool		stop_on_exit;
+	bool		full_view_mode;
+	bool		enable_search;
+	bool		update_on_startup;
 	
 } GimmixConfig;
 
