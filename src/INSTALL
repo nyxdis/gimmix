@@ -5,11 +5,13 @@ Requirements:
 =============
 
 Gimmix requires the following packages to be installed before compiling.
+(Following Gimmix-0.5.6, the minimum required version of libmpd is 0.17.0)
 
 * gtk+-2.6.x
-* libmpd-0.12
+* libmpd-0.17.0
 * libglade-2.6.x
 * taglib-1.4 (C bindings)
+
 
 The lyrics plugin requires the following two libraries:
 * libxml2-2.0
