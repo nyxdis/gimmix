@@ -431,8 +431,7 @@ gimmix_interface_widgets_init (void)
 	
 	/* show the main window */
 	gtk_widget_show (main_window);
-	
-	/*
+
 	#ifdef HAVE_COVER_PLUGIN
 	if (gimmix_config_get_bool("coverart_enable"))
 	{
@@ -442,7 +441,6 @@ gimmix_interface_widgets_init (void)
 				NULL);
 	}
 	#endif
-	*/
 }
 
 void
