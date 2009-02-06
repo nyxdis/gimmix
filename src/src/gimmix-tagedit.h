@@ -23,4 +23,7 @@ void gimmix_tag_editor_show (void);
 /* Display an error */
 void gimmix_tag_editor_error (const gchar *);
 
+/* Set cover image */
+void gimmix_tag_editor_set_cover_image (GdkPixbuf *);
+
 #endif
