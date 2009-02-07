@@ -1,5 +1,4 @@
 * Support markup for current playlist.
 * On closing gimmix, it should check if tray icon is visible, if not,
   then gimmix should quit. [suggested by qball]
-* Add an option to quit gimmix (Ctrl Q) [suggested by qball]
 

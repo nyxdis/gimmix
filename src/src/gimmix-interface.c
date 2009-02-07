@@ -612,6 +612,14 @@ cb_gimmix_key_press (GtkWidget   *widget,
 				cb_playlist_button_press (NULL, NULL, NULL);
 				break;
 		}
+		if	((event->keyval == GDK_q || event->keyval == GDK_Q) &&
+			(event->state||GDK_CONTROL_MASK))
+		{
+			gimmix_save_window_pos ();
+			if (strncasecmp(cfg_get_key_value(conf, "stop_on_exit"), "true", 4) == 0)
+				gimmix_stop (gmo);
+			gtk_main_quit ();
+		}
 	}
 	return result;
 }
