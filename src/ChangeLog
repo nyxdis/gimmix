@@ -1,5 +1,9 @@
 Note: Dates are in dd-mm-yyyy format
 
+Version 0.5.7 (November 14, 2009) Yeah, It's been a looong time! 
+* New Cover art provider (Freecovers.net)
+* Fix issues with the ID3 Tag Editor (Gentoo bug #264231)
+
 Version 0.5.6.1 (February 07, 2009)
 * Fix location of libmpd headers in gimmix.h [thanks to Qball]
 * Check for libmpd>=0.17.0 in configure script [thanks to Qball]
