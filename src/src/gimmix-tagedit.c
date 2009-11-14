@@ -21,6 +21,10 @@
  * Author: Priyank Gosalia <priyankmg@gmail.com>
  */
 
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include "gimmix.h"
 #include "gimmix-core.h"
 #include "gimmix-tagedit.h"
@@ -122,9 +126,9 @@ gimmix_tag_editor_populate (const void *song)
 	
 	#ifdef HAVE_TAGEDITOR
 	const TagLib_AudioProperties *properties;
-	if (!g_file_test (song, G_FILE_TEST_EXISTS))
+	if (!g_file_test(song,G_FILE_TEST_EXISTS))
 		return FALSE;
-		
+
 	file = taglib_file_new (song);
 	if (file == NULL)
 		return FALSE;
@@ -278,10 +282,22 @@ gimmix_tag_editor_save (GtkWidget *button, gpointer data)
 	comment = g_strdup (gtk_entry_get_text (GTK_ENTRY(tag_comment)));
 	genre = gtk_combo_box_get_active_text (GTK_COMBO_BOX(tag_genre));
 
-	taglib_tag_set_title (tag, g_strchomp(title));
-	taglib_tag_set_artist (tag, g_strchomp(artist));
-	taglib_tag_set_album (tag, g_strchomp(album));
-	taglib_tag_set_comment (tag, g_strchomp(comment));
+	if (title)
+	{
+		taglib_tag_set_title (tag, g_strchomp(title));
+	}
+	if (artist)
+	{
+		taglib_tag_set_artist (tag, g_strchomp(artist));
+	}
+	if (album)
+	{
+		taglib_tag_set_album (tag, g_strchomp(album));
+	}
+	if (comment)
+	{
+		taglib_tag_set_comment (tag, g_strchomp(comment));
+	}
 	taglib_tag_set_genre (tag, genre);
 	
 	/* update the mpd database */

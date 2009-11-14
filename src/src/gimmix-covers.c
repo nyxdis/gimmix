@@ -41,19 +41,8 @@
 #define DEFAULT_COVER	"gimmix-album.png"
 #define COVERS_DIR	".gimmix/covers"
 #define COVERS_DBF	".gimmix/covers/covers.db"
-#define AMAZON_KEY	"14TBPBEBTPCVM7BY0C02"
-#define AMAZON_URL1	"http://ecs.amazonaws.%s/onca/xml?Service=AWSECommerceService&Operation=ItemSearch&SearchIndex=Music&ResponseGroup=Images,EditorialReview&AWSAccessKeyId=%s&%s=%s"
-#define AMAZON_URL2	"http://ecs.amazonaws.%s/onca/xml?Service=AWSECommerceService&Operation=ItemSearch&SearchIndex=Music&ResponseGroup=Images,EditorialReview&AWSAccessKeyId=%s&%s=%s&%s=%s"
 
-char *cover_locations[6][2] = 
-{ 
-	{"com", "United States"},
-	{"co.uk", "United Kingdom"},
-	{"jp", "Japan"},
-	{"fr", "France"},
-	{"ca", "Canada"},
-	{"de", "Germany"}
-};
+#define FREECOVERS_URL	"http://www.freecovers.net/api/search/"
 
 static guint h3_size = 0;
 
@@ -75,7 +64,7 @@ GtkWidget		*gimmix_plcbox_frame;
 static GMutex		*mutex = NULL;
 
 /* Get metadata for the specified arguments */
-static CoverNode* gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *arg2d);
+static CoverNode* gimmix_covers_plugin_get_metadata (char *artist, char *album);
 
 /* Get the fallback cover image of specified size */
 static GdkPixbuf* gimmix_covers_plugin_get_default_cover (guint width, guint height);
@@ -428,95 +417,164 @@ gimmix_covers_plugin_download (const char *url, const char *file)
 }
 
 static CoverNode*
-gimmix_covers_plugin_get_metadata (char *arg1, char *arg1d, char *arg2, char *arg2d)
+gimmix_covers_plugin_get_metadata (char *artist, char *album)
 {
 	char		*url = NULL;
 	CoverNode	*node = NULL;
 	char		*u_artist = NULL;
-	char		*u_title = NULL;
+	char		*u_album = NULL;
 	nxml_t		*nxml = NULL;
 	nxml_data_t	*nroot = NULL;
 	nxml_data_t	*ndata = NULL;
 	nxml_data_t	*nndata = NULL;
-	char		*str = NULL;
-	char		*location = NULL;
-	nxml_error_t	e;
+	nxml_attr_t *nstatus = NULL;
 	
-	u_artist = gimmix_url_encode (arg1d);
-	u_title = gimmix_url_encode (arg2d);
-	location = cfg_get_key_value (conf, "coverart_location");
-	if (!arg1 && !arg1d)
+	(artist) && (u_artist = g_utf8_strdown (artist,-1));
+	(album) && (u_album = g_utf8_strdown (album,-1));
+
+	/* Initialize libnxml */
+	nxml_new (&nxml);
+	
+	/* Construct search url based on artist and/or album */
+	if (artist==NULL && album!=NULL)
+		url = g_strdup_printf ("%s%s", FREECOVERS_URL, gimmix_url_encode(u_album));
+	else
+	if (album==NULL && artist!=NULL)
+		url = g_strdup_printf ("%s%s", FREECOVERS_URL, gimmix_url_encode(u_artist));
+	else
 	{
-		url = g_strdup_printf (AMAZON_URL1, location, AMAZON_KEY, arg2, u_title);
+		url = g_strdup_printf ("%s%s-%s",FREECOVERS_URL,
+								gimmix_url_encode(u_artist),
+								gimmix_url_encode(u_album));	
+	}
+	g_print ("%s\n",url);
+
+	nxml_set_timeout (nxml, 20);
+	gimmix_covers_plugin_proxy_init (nxml);
+	/* Parse the results returned */
+	printf ("Returned: %d\n", nxml_parse_url (nxml, url));
+	g_free (url);
+
+	/* Get the root rsp element to check the status of the result */
+	nxml_find_element (nxml, NULL, "rsp", &ndata);
+	if (ndata)
+	{
+		/* check status of the result, if ok, continue */
+		nxml_find_attribute (ndata, "stat", &nstatus);
+		if (nstatus)
+		{
+			if (strcmp(nstatus->value,"ok"))
+			{
+				goto cleanup;
+			}
+		}
 	}
 	else
 	{
-		url = g_strdup_printf (AMAZON_URL2, location, AMAZON_KEY, arg1, u_artist, arg2, u_title);
+		goto cleanup;
 	}
-	//g_print ("%s\n", url);
-
-	e = nxml_new (&nxml);
-	nxml_set_timeout (nxml, 20);
-	gimmix_covers_plugin_proxy_init (nxml);
-	nxml_parse_url (nxml, url);
-	nxml_root_element (nxml, &nroot);
-	nxml_find_element (nxml, nroot, "Items", &ndata);
-	nxml_find_element (nxml, ndata, "Item", &nndata);
-	if (nndata)
+	
+	/* Good, we've got something... let's see if we get our desired cover */
+	nxml_find_element (nxml, ndata, "title", &nndata);
+	while (nndata)
 	{
-		nxml_data_t *child = NULL;
-		nxml_data_t *d = NULL;
-		nxml_data_t *t = NULL;
-		child = nndata;
-		node = gimmix_cover_node_new ();
+		nxml_data_t *n_name = NULL;
+		nxml_data_t *n_category = NULL;
+		char *name = NULL;
+		char *category = NULL;
 		
-		/* large image */
-		nxml_find_element (nxml, child, "LargeImage", &d);
-		nxml_find_element (nxml, d, "URL", &t);
-		nxml_get_string (t, &str);
-		if (str!=NULL)
+		nxml_find_element (nxml, nndata, "name", &n_name);
+		nxml_find_element (nxml, nndata, "category", &n_category);
+		nxml_get_string (n_name, &name);
+		nxml_get_string (n_category, &category);
+		
+		gboolean found = FALSE;
+		if (name)
 		{
-			node->img_large = g_strdup (str);
-			free (str);
+			name = g_utf8_strdown (name,-1);
+			printf ("name: %s\n", name);			
+			if (artist && !album)
+			{
+				if (g_strrstr(name,u_artist)) found = TRUE;
+			}
+			else
+			if (album && !artist)
+			{
+				if (g_strrstr(name,u_album)) found = TRUE;
+			}
+			else
+			{
+				if (g_strrstr(name,u_artist) || g_strrstr(name,u_album)) found = TRUE;
+			}
+			free (name);
 		}
 		
-		/* medium image */
-		nxml_find_element (nxml, child, "MediumImage", &d);
-		nxml_find_element (nxml, d, "URL", &t);
-		nxml_get_string (t, &str);
-		if (str!=NULL)
+		if (found)
 		{
-			node->img_medium = g_strdup (str);
-			free (str);
-			str = NULL;
+			nxml_data_t *n_covers = NULL;
+			nxml_find_element (nxml, nndata, "covers", &n_covers);
+			gboolean foundcover = FALSE;
+			
+			if (n_covers)
+			{
+				nxml_data_t *d;
+				nxml_find_element (nxml, n_covers, "cover", &d);
+				while (d)
+				{
+					char *cover_type;
+					char *cover_url;
+					char *cover_width;
+					char *cover_height;
+					
+					nxml_data_t *n_type;
+					nxml_data_t *n_url;
+					nxml_data_t *n_width;
+					nxml_data_t *n_height;
+					
+					nxml_find_element (nxml, d, "type", &n_type);
+					nxml_find_element (nxml, d, "preview", &n_url);
+					nxml_find_element (nxml, d, "width", &n_width);
+					nxml_find_element (nxml, d, "height", &n_height);
+					
+					nxml_get_string (n_url, &cover_url);
+					nxml_get_string (n_type, &cover_type);
+					nxml_get_string (n_width, &cover_width);
+					nxml_get_string (n_height, &cover_height);
+					
+					guint width = atoi (cover_width);
+					guint height = atoi (cover_height);
+
+					g_free (cover_width);
+					g_free (cover_height);
+					
+					guint diff = width-height;
+
+					if (cover_url && !strcmp(cover_type,"front") && diff<=100)
+					{
+						printf ("==== FOUND COVER =====\n");
+						printf ("downloading cover from: %s\n", cover_url);
+						node = gimmix_cover_node_new ();
+						node->img_large = g_strdup (cover_url);
+						g_free (cover_type);
+						g_free (cover_url);
+						foundcover = TRUE;
+						break;
+					}
+					
+					d = d->next;
+				}
+				if (foundcover)
+				break;
+			}
 		}
-				
-		/* small image */
-		nxml_find_element (nxml, child, "SmallImage", &d);
-		nxml_find_element (nxml, d, "URL", &t);
-		nxml_get_string (t, &str);
-		if (str!=NULL)
+		else
 		{
-			node->img_small = g_strdup (str);
-			free (str);
-			str = NULL;
+			g_print ("cover not found\n");
 		}
-		
-		/* editorial reviews */
-		nxml_find_element (nxml, child, "EditorialReviews", &d);
-		nxml_find_element (nxml, d, "EditorialReview", &t);
-		nxml_find_element (nxml, t, "Content", &d);
-		nxml_get_string (d, &str);
-		if (str!=NULL)
-		{
-			g_print ("%s\n", str);
-			node->album_info = g_strdup (str);
-			free (str);
-		}
-		
+		nndata = nndata->next;
 	}
+	cleanup:
 	nxml_free (nxml);
-	g_free (url);
 
 	return node;
 }
@@ -766,7 +824,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 			char *ptr = cfg_get_path_to_config_file (COVERS_DIR);
 			temp = g_strdup_printf ("%s/temp.jpg", ptr);
 			g_free (ptr);
-			node = gimmix_covers_plugin_get_metadata ("Artist", sartist, "Title", salbum);
+			node = gimmix_covers_plugin_get_metadata (sartist, salbum);
 			if (node!=NULL)
 			{
 				if (gimmix_covers_plugin_download(node->img_large,temp) ||
@@ -781,7 +839,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 				g_free (temp);
 				return;
 			}
-			node = gimmix_covers_plugin_get_metadata (NULL, NULL, "Title", salbum);
+			node = gimmix_covers_plugin_get_metadata (NULL, salbum);
 			if (node!=NULL)
 			{
 				if (gimmix_covers_plugin_download(node->img_large,temp) ||
@@ -798,7 +856,7 @@ gimmix_covers_plugin_find_cover (mpd_Song *s)
 			}
 			else
 			{
-				node = gimmix_covers_plugin_get_metadata ("Performer", sperformer, "Title", salbum);
+				node = gimmix_covers_plugin_get_metadata (sperformer, salbum);
 				if (node!=NULL)
 				{
 					if (gimmix_covers_plugin_download(node->img_large,temp) ||
