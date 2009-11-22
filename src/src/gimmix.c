@@ -209,7 +209,9 @@ gimmix_about_show (void)
 	static gchar translators[] = \
 				"Deutsch (de) - Martin Stromberger <mstromberger@aon.at>\n"
 				"Traditional Chinese (zh_TW) - Cheng-Wei Chien <e.cwchien@gmail.com>\n"
-				"Turkish (tr) - Yavuz Selim Burgu <turkalinux@gmail.com>\n";
+				"Turkish (tr) - Yavuz Selim Burgu <turkalinux@gmail.com>\n"
+				"French (fr) - Alois Halel <alois.halel@gmail.com>\n"
+				"Swedish (sv) - Niklas Grahn <terra.unknown@yahoo.com>\n";
 
 
 	gtk_show_about_dialog (GTK_WINDOW(main_window),
@@ -219,7 +221,7 @@ gimmix_about_show (void)
                            "comments", _("Gimmix is a graphical music player daemon (MPD) client written in C."),
                            "license", license,
                            "authors", authors,
-					  "translator-credits", translators,
+			   "translator-credits", translators,
                            "website", APPURL,
                            "website-label", APPURL,
                            "logo", about_pixbuf,
