@@ -101,7 +101,8 @@ AC_MSG_RESULT([ooh, there's one!])
 pkg_modules="${pkg_modules} gtk+-2.0 >= 2.6.0 \
 			 libmpd >= 0.17.0 \
 			 libglade-2.0 >= 2.6.0 \
-			 gthread-2.0"
+			 gthread-2.0 \
+			 x11"
 			 
 PKG_CHECK_MODULES([GIMMIX], [$pkg_modules])
     
