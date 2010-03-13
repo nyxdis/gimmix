@@ -2,9 +2,8 @@
  * Wejp's Config File Parser
  *
  * File: wejpconfig.c
- * Version: 061102
  *
- * Copyright (c) 2003-2006 Johannes Heimansberg
+ * Copyright (c) 2003-2009 Johannes Heimansberg
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -20,11 +19,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#define VERSION 20061102
+#define VERSION 20090801
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "wejpconfig.h"
+#define MAX_LINE_LENGTH 256
 
 /* Returns the complete path to ~/"filename" */
 char *cfg_get_path_to_config_file(char *filename)
@@ -64,32 +64,28 @@ int cfg_add_key(ConfigFile *cf, char *key, char *value)
 	int strsize = 0;
 	int i;
 	
-	if (cfg_get_key_value(*cf, key) != NULL) /* Key already exists->overwrite */
-	{
+	if (cfg_get_key_value(*cf, key) != NULL) { /* Key already exists->overwrite */
 		for (i = 0; i < cf->lastkey; i++)
-			if (strncmp(key, cf->key[i], 127) == 0)
-			{
+			if (strncmp(key, cf->key[i], MAX_LINE_LENGTH-1) == 0) {
 				free(cf->key[i]); /* Free allocated memory */
 				free(cf->value[i]);
 
 				/* Allocate memory for the new string and save it... */
-				strsize = (strlen(key) < 127 ? strlen(key) : 126) + 1;
+				strsize = (strlen(key) < MAX_LINE_LENGTH-1 ? strlen(key) : MAX_LINE_LENGTH-2) + 1;
 				cf->key[i] = (char*)malloc(strsize * sizeof(char));
-				sprintf(cf->key[i], "%s", key);
+				snprintf(cf->key[i], strsize, "%s", key);
 
-				strsize = (strlen(key) < 127 ? strlen(value) : 126) + 1;
+				strsize = (strlen(value) < MAX_LINE_LENGTH-1 ? strlen(value) : MAX_LINE_LENGTH-2) + 1;
 				cf->value[i] = (char*)malloc(strsize * sizeof(char));
-				sprintf(cf->value[i], "%s", value);
+				snprintf(cf->value[i], strsize, "%s", value);
 				break;
 			}
-	}
-	else if (cf->lastkey < MAXKEYS)
-	{
-		strsize = (strlen(key) < 127 ? strlen(key) : 126) + 1;
+	} else if (cf->lastkey < MAXKEYS) {
+		strsize = (strlen(key) < MAX_LINE_LENGTH-1 ? strlen(key) : MAX_LINE_LENGTH-2) + 1;
 		cf->key[cf->lastkey] = (char*)malloc(strsize * sizeof(char));
 		sprintf(cf->key[cf->lastkey], "%s", key);
 
-		strsize = (strlen(key) < 127 ? strlen(value) : 126) + 1;
+		strsize = (strlen(key) < MAX_LINE_LENGTH-1 ? strlen(value) : MAX_LINE_LENGTH-2) + 1;
 		cf->value[cf->lastkey] = (char*)malloc(strsize * sizeof(char));
 		sprintf(cf->value[cf->lastkey], "%s", value);
 		
@@ -104,8 +100,7 @@ int cfg_add_key(ConfigFile *cf, char *key, char *value)
 void cfg_free_config_file_struct(ConfigFile *cf)
 {
 	int i;
-	for (i = 0; i < cf->lastkey; i++)
-	{
+	for (i = 0; i < cf->lastkey; i++) {
 		free(cf->key[i]);
 		free(cf->value[i]);
 	}
@@ -118,14 +113,12 @@ int cfg_read_config_file(ConfigFile *cf, char *filename)
 	FILE *file;
 	char ch;
 	int bufcnt;
-	char key_buffer[128] = "", value_buffer[128] = "";
+	char key_buffer[MAX_LINE_LENGTH] = "", value_buffer[MAX_LINE_LENGTH] = "";
 
 	/* parse config file and read keys+key values */
 	file = fopen(filename, "r");
-	if (file)
-	{
-		while(!feof(file))
-		{
+	if (file) {
+		while(!feof(file)) {
 			ch = fgetc(file);
 			/* Skip blanks... */
 			if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n')
@@ -143,16 +136,14 @@ int cfg_read_config_file(ConfigFile *cf, char *filename)
 			bufcnt = 0;
 			/* Read key name: */
 			while (ch != ' ' && ch != '\t' && ch != '\n' && ch != '\r' && 
-			       ch != '=' && !feof(file) && bufcnt < 126)
-			{
+			       ch != '=' && !feof(file) && bufcnt < MAX_LINE_LENGTH-2) {
 				key_buffer[bufcnt] = ch;
 				bufcnt++;
 				ch = fgetc(file);
 			}
 			key_buffer[bufcnt] = '\0';
 
-			while (ch != '=' && !feof(file))
-			{
+			while (ch != '=' && !feof(file)) {
 				ch = fgetc(file);
 			}
 			ch = fgetc(file);
@@ -164,8 +155,7 @@ int cfg_read_config_file(ConfigFile *cf, char *filename)
 			/* Read key value: */
 			bufcnt = 0;
 			while (ch != '\n' && ch != '\r' && !feof(file) && 
-			       !feof(file) && bufcnt < 126)
-			{
+			       !feof(file) && bufcnt < MAX_LINE_LENGTH-2) {
 				value_buffer[bufcnt] = ch;
 				bufcnt++;
 				ch = fgetc(file);
@@ -176,9 +166,7 @@ int cfg_read_config_file(ConfigFile *cf, char *filename)
 				cfg_add_key(cf, key_buffer, value_buffer);
 		}
 		fclose(file);
-	}
-	else
-	{
+	} else {
 		printf("config: Cannot open config file!\n");
 		return -2;
 	}
@@ -189,22 +177,19 @@ int cfg_read_config_file(ConfigFile *cf, char *filename)
 int cfg_write_config_file(ConfigFile *cf, char *filename)
 {
 	FILE *file;
-	int  i = 0, result = 0;
-	char buffer[256];
+	int   i = 0, result = 0;
+	char  buffer[MAX_LINE_LENGTH];
+
 	file = fopen(filename, "w");
-	if (file != NULL)
-	{
-		while (i < cf->lastkey)
-		{
-			snprintf(buffer, 255, "%s=%s\n", cf->key[i], cf->value[i]);
+	if (file != NULL) {
+		while (i < cf->lastkey) {
+			snprintf(buffer, MAX_LINE_LENGTH, "%s=%s\n", cf->key[i], cf->value[i]);
 			fwrite(buffer, strlen(buffer) * sizeof(char), 1, file);
 			i++;
 		}
 		fclose(file);
-	}
-	else
-	{
-		printf("config: failed opening %s\n", filename);
+	} else {
+		printf("config: Failed opening %s for write access.\n", filename);
 		result = -1;
 	}
 	return result;
@@ -214,11 +199,10 @@ int cfg_write_config_file(ConfigFile *cf, char *filename)
 char *cfg_get_key_value(ConfigFile cf, char *key)
 {
 	char *result = NULL;
-	int  i;
+	int   i;
 	
 	for (i = 0; i < cf.lastkey; i++)
-		if (strncmp(key, cf.key[i], 127) == 0)
-		{
+		if (strncmp(key, cf.key[i], MAX_LINE_LENGTH-1) == 0) {
 			result = cf.value[i];
 			break;
 		}
@@ -229,11 +213,21 @@ int cfg_is_key_available(ConfigFile cf, char *key)
 {
 	int result = FALSE;
 	int i;
+
 	for (i = 0; i < cf.lastkey; i++)
-		if (strncmp(key, cf.key[i], 127) == 0)
-		{
+		if (strncmp(key, cf.key[i], MAX_LINE_LENGTH-1) == 0) {
 			result = TRUE;
 			break;
 		}
 	return result;	
+}
+
+int cfg_add_key_if_not_present(ConfigFile *cf, char *key, char *value)
+{
+	int success = 0;
+
+	if (!cfg_is_key_available(*cf, key)) {
+		success = (cfg_add_key(cf, key, value) == 0 ? 1 : 0);
+	}
+	return success;
 }
