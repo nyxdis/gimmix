@@ -1,5 +1,8 @@
 Note: Dates are in dd-mm-yyyy format
 
+Version 0.5.7.2 (TBD)
+* New Translation - Czech (cs_CZ). Thanks to Tomáš Novák.
+
 Version 0.5.7.1 (November 22, 2009)
 * New translation French (fr_FR). Thanks to Alois Halel.
 * Applied a patch from Vincent Legout to make gimmix link against libx11. 
