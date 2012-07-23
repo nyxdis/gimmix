@@ -1,1 +1,210 @@
-Refer ChangeLog
+Note: Dates are in dd-mm-yyyy format
+
+Version 0.5.7.2 (TBD)
+* New Translation - Czech (cs_CZ). Thanks to Tomáš Novák.
+
+Version 0.5.7.1 (November 22, 2009)
+* New translation French (fr_FR). Thanks to Alois Halel.
+* Applied a patch from Vincent Legout to make gimmix link against libx11. 
+
+Version 0.5.7 (November 14, 2009) Yeah, It's been a looong time! 
+* New Cover art provider (Freecovers.net)
+* Fix issues with the ID3 Tag Editor (Gentoo bug #264231)
+
+Version 0.5.6.1 (February 07, 2009)
+* Fix location of libmpd headers in gimmix.h [thanks to Qball]
+* Check for libmpd>=0.17.0 in configure script [thanks to Qball]
+* Set default cover when gimmix starts.
+
+Version 0.5.6 (February 07, 2009)
+* Gimmix requires libmpd version to be atleast 0.17.0 or higher
+* Fixed lots of crashes/lockups due to cover/lyrics plugins.
+* Tag editing support is now optional.
+* Revamped tag editor and now it also shows album cover.
+* Speed improvements and fixed some memory leaks.
+* Added Swedish translation (Thanks to Niklas Grahn)
+
+Version 0.5.5 (January 02, 2009)
+* Bug #313023: Fix missing entries in POTFILES
+* Bug #313018: gimmix.desktop contains encoding key (which is deprecated)
+
+Version 0.5.4 (January 01, 2009)
+* Bug #307527: Fix missing prototypes in some headers (patch from Christoph Mende)
+* Added support for columns in Current playlist
+* Fixed a bug where newly fetched lyrics were sometimes stored at odd locations
+* LOTS of memory leaks fixed
+* Fixed some crashes due to cover/lyrics plugins
+
+Version 0.5.3 (December 12, 2008)
+* Bug #293908: Segfaults when disabling coverart plugin
+* Bug #305662: Segfault with accents and long filename
+* Added support for manually setting cover images from files
+* Added support for connection through proxy servers
+* Fixed random crashes because of cover and lyrics plugins
+
+Version 0.5.2 (October 11, 2008)
+* Improved connection handling and fixed almost all crashes
+* Fix random crashes occurring because of cover and lyrics plugins
+* Fixed a bug that caused Gimmix to freeze sometimes when the user clicked "Get Lyrics" button
+* Interface enhancement: Player control buttons made borderless
+* Fixed delays/problems while updating song info when user updates an ID3 tag
+* Wejpconfig updated to 20061102
+* Previously Gimmix could handle only 128 covers in the database. This is now fixed.
+* Fixed a crash when saving newly fetched album covers whose album name(s) contained trailing whitespaces
+* The system tray tooltip is too close to the panel. make it display a little away from the panel.
+
+Version 0.5.1 (October 02, 2008)
+* Gimmix is now compatible with libmpd >= v0.16.0
+* Improved cover art search function
+* Numerous crash fixes
+* Cover and Lyrics plugins are now enabled by default. use --disable-lyrics and --disable-cover to 
+  disable them.
+* Gimmix now continues to run even if mpd is not running. Users can reconnect to mpd from Gimmix by
+  clicking the "Connect" button
+* Fixed a bug where "Germany" was not being displayed in cover art location in preferences
+* Minor tweaks
+
+Version 0.5.0 (September 26, 2008) Happy 2nd Birthday GIMMIX! \o/
+* Bug #234739: Progress bar shows garbage next to time (in case of songs of length over 99 minutes)
+* Bug #253140: Gimmix sometimes displays "assertion `percentage >= 0 && percentage <= 1.0' failed"
+* Bug #263975: Window becomes too large if the song title is very long. This bug also fixes an issue
+  where strange trailing whitespaces appearead in the song title when the user modified the ID3 tag
+  information of a song.
+* Added support for command-line arguments using getopt. (currently only --version)
+* Added German translation (Thanks to Martin Stromberger)
+* Added support for fetching Lyrics from Leoslyrics.com
+* Added support for fetching Album cover art from Amazon.com
+* Added support for changing audio output device in Preferences
+* Some user interface enhancements
+
+Version 0.4.3 (February 02, 2008)
+* Bug #14583: Set the default permission of .gimmixrc to 600
+* Bug #127330: Don't enable notification bubble if systray icon is disabled.
+* Bug #157703: Entries in the song info dialog shouldn't be cropped
+* Bug #178604: Right click "Load" in playlist manager crashes gimmix.
+
+Version 0.4.2 (October 03, 2007) (Gimmix is still alive)
+* Added Turkish translation (Thanks to Yavuz Selim Burgu)
+* Added some new features (Thanks to Asaf Karagila for the patches)
+  * Replace song(s) function in library browser
+  * Crop function in current playlist
+  * Bugfix in play on add feature
+* Bug #99630: Missing mkinstalldirs file (Thanks to Avuton Olrich)
+* Bug #89991: Volume bar stays there even after gimmix is minimized (Thanks to Pyluyten)
+* Fixed a bug where the volume bar was detached from the main window when it was moved
+* Fixed a bug where the text was not rendered correctly in some languages. This even fixes 
+a random crash when gimmix is run in a different locale other than english.
+* Other minor fixes
+
+Version 0.4.1 (February 27, 2007)
+* This is a bugfix release to 0.4.0. (No new features are added)
+* Bug #87633: Fixed wrong placing of tooltip on some systems.
+* Bug #88027: Fixed compile errors.
+
+Version 0.4.0 (February 23, 2007)
+* Brand new interface. Gimmix is much more cleaner than before and the
+ui is a lot more compact.
+* Revamped the first run dialog.
+* Library is now separated from the main window.
+* Songs are now displayed in the format "Artist - Title" in Library as
+well as Current playlist.
+* A new libnotify-style tooltip with progress bar.
+* Fixed a problem with displaying long filenames having no ID3 information.
+* Fixed a randomly occuring bug which caused gimmix to segfault when
+user tried to delete multiple items from the current playlist.
+* Don't display the full path of a file in current playlist. Not even extension.
+* Don't display the file's extension in current playlist, song info and tooltip.
+* Gimmix gets its first translation.
+* New translation: zh_TW (Thanks to Cheng-Wei Chien)
+* Many more fixes.
+
+Version 0.3.1 (December 26, 2006)
+* Added Autoconf 2.5 support (Thanks to Alex Smith)
+* Added a new status bar at the bottom of the player window, which displays the current player status.
+* Fixed the window resize bug. Users can now resize the player window.
+* Made the UI a little more compact.
+* New configuration option to allow users to set whether gimmix should update mpd database on startup.
+* Highlight currently playlist song in the playlist.
+* Multiple selection of files or dirs is now possible in library.
+* Users can now add an entire directory to playlist.
+* Adding multiple files from library is now possible.
+* Allow users to view/edit song information even in library browser. (Requested by Roman Kyrylych)
+* Allow user to enable/disable search mode in library.
+* Replaced GtkStatusIcon by EggTrayIcon to maintain compatibility with older versions of
+GTK+. Gimmix can now be compiled with gtk+-2.6.x.
+* Gimmix can now remember the window geometry (width and height).
+* Added a new button for showing/hiding the playlist.
+* Users can now control volume by scrolling on the system tray icon.
+* Users can now select and delete multiple items from the current playlist.
+* Added support for internationalization. Gimmix needs translators now ;)
+* Improved startup time.
+* Minor fixes and improvements.
+
+Version 0.3 (December 10, 2006)
+* Replaced the old libconfuse based config system with wejpconfig (written by Johannes Heimansberg)
+* Configuration file layout is changed completely.
+* Fixed a bad bad bug on x86_64 where gimmix crashed if compiled with -O2 flags.
+* Dropped notification using libnotify. Song info is now displayed as a tooltip in the system tray icon.
+* Tooltip notifications are now enabled by default and not user-configurable.
+* Added key bindings for play/pause/stop/prev/next/info buttons.
+* Fixed a bug that caused blank entires to be displayed in filebrower.
+* Current playlist can now be saved.
+* Added support for managing mpd playlists. (load/save)
+* Added a new tab for playlists.
+* Added support for enabling/disabling Crossfade.
+* Gimmix now remembers the window position when the user quits.
+* Gimmix also remembers the window mode (full/compact) when gimmix
+quits.
+* Users can now select whether a song should be played immediately when he adds it to the playlist. (Requested by Kedar Desai)
+* Users can also set whether gimmix should stop playback when user quits gimmix.
+* Fixed a random bug that caused garbage values to be displayed in password entry of preferences.
+* Implemented ID3 Tag editor using taglib. Now users can edit ID3 information of songs.
+* Display Bitrate, Channels, and song length in the tag editor window.
+* Fixed a major race condition which caused gimmix to use too much of memory when gimmix is not playing any song.
+* Replaced old error dialogs with GtkMessageDialog.
+* Fixed major memory leaks in the playlist code.
+* Completely re-organized code and lots of code cleanups.
+* Lots of other fixes and improvements.
+* Better error handling.
+
+Version 0.2 (November 16, 2006)
+* A l33t-new logo.
+* Fixed several memory leaks.
+* Lots of bugfixes.
+* Display the currently playing song in a notification bubble in system tray.
+* Added a configuration option for disabling notifications.
+* Modified the First run dialog a bit.
+* Library browser is now integrated with the main window again.
+* Changed icon of files in library browser.
+* Added icons for current playlist and library tabs.
+* Added "Search-As-You-Type" support for searching songs in the mpd database.
+* Added a popup menu item for updating mpd library/database.
+* Songs can be deleted from the playlist by pressing the DEL key.
+* Gimmix is now minimised to systray (if systray icon is enabled) when user closes the player window. (Reported by Rohan Dhruva)
+* Fixed a small bug in Makefile (Thanks to Alex Smith)
+* Fixed a race condition in playlist repeat and shuffle code.
+* Fixed a bug where the status of repeat and shuffle buttons was not updated if other mpd client changed the status of repeat and shuffle. (Reported by Rohan Dhruva)
+* Fixed the buggy config code which caused random segfaults.
+* Fixed bugs with the confi system on x86_64.
+* Added tooltips for buttons.
+* Display '*' instead of actual text in password entries.
+* Added a .desktop file with the source.
+
+Version 0.1 (November 03, 2006)
+* Made the ui more cleaner and compact.
+* File browser is now separated from the main playlist window.
+* Another bunch of bug fixes.
+* Fixed a random crash on x86_64 systems.
+
+Version 0.1beta2 (October 31, 2006)
+* Applied a patch to fix the hardcoded CFLAGS. Gimmix can now be built with x86_64 flags. (Patch by Alex Smith).
+* Fixed a LOT of bugs and memory leaks.
+* Gimmix now also displays the bitrate of the currently playing song in info window.
+* Added support for "Repeat" and "Shuffle"
+* Playlist items can now be removed or cleared.
+* Added a new first run dialog which is displayed when gimmix is run for the first time.
+* Improved cpu and memory usage.
+* Lots of small fixes.
+
+Version 0.1-beta (October 27, 2006)
+* Initial public release.
