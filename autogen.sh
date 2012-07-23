@@ -1,9 +1,8 @@
-#!/bin/sh -e
+#!/bin/sh -x
 
-libtoolize -f -c
-aclocal --force
-autoheader -f
-autoconf -f
-cp -f $(dirname $(which automake))/../share/automake/mkinstalldirs ./
-cp -f $(dirname $(which automake))/../share/gettext/config.rpath ./
-automake -a -c --gnu --foreign
+glib-gettextize --copy --force
+intltoolize --automake --copy --force
+aclocal
+autoconf
+autoheader
+automake --force-missing --add-missing --copy --foreign

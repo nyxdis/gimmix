@@ -14,8 +14,8 @@ desktop_DATA = data/gimmix.desktop
 
 man_MANS = gimmix.1
 
-EXTRA_DIST =                            \
-        $(icon_DATA)                    \
-        $(share_DATA)                   \
-        $(desktop_DATA)					\
-		$(man_MANS)
+EXTRA_DIST =				\
+	$(icon_DATA)			\
+	$(share_DATA)			\
+	$(desktop_DATA)			\
+	$(man_MANS)
