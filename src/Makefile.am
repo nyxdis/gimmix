@@ -1,10 +1,7 @@
-INCLUDES=@GIMMIX_CFLAGS@ \
-	-DPREFIX=\"$(prefix)\" \
-	-fPIC
+DEFS += -DPREFIX=\"$(prefix)\"
 
 bin_PROGRAMS=gimmix
 
-## Gimmix
 gimmix_SOURCES = wejpconfig.c wejpconfig.h		\
 		 eggtrayicon.c eggtrayicon.h		\
 		 sexy-tooltip.c sexy-tooltip.h		\
@@ -23,5 +20,5 @@ gimmix_SOURCES = wejpconfig.c wejpconfig.h		\
 		 gimmix.c gimmix.h
 
 
-gimmix_LDADD= @GIMMIX_LIBS@
-
+gimmix_LDADD = $(GIMMIX_LIBS)
+gimmix_CFLAGS = $(GIMMIX_CFLAGS)
