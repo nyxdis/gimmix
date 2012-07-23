@@ -1,21 +1,27 @@
-SUBDIRS = src po
+INCLUDES=@GIMMIX_CFLAGS@ \
+	-DPREFIX=\"$(prefix)\" \
+	-fPIC
 
-sharedir   = $(pkgdatadir)
-share_DATA = glade/gimmix.glade data/gimmix_firstrun.png
+bin_PROGRAMS=gimmix
 
-icondir = $(datadir)/pixmaps
-icon_DATA = data/gimmix.png \
-			data/gimmix_logo_small.png \
-			data/gimmix_playlist.png \
-			data/gimmix-album.png
+## Gimmix
+gimmix_SOURCES=	wejpconfig.c \
+		eggtrayicon.c \
+		sexy-tooltip.c \
+		gimmix-config.c \
+		gimmix-core.c \
+		gimmix-playlist.c \
+		gimmix-tooltip.c \
+		gimmix-systray.c \
+		gimmix-prefs.c \
+		gimmix-metadata.c \
+		gimmix-interface.c \
+		gimmix-firstrun.c \
+		gimmix-tagedit.c \
+		gimmix-lyrics.c \
+		gimmix-covers.c \
+		gimmix.c
 
-desktopdir = $(datadir)/applications
-desktop_DATA = data/gimmix.desktop
 
-man_MANS = gimmix.1
+gimmix_LDADD= @GIMMIX_LIBS@
 
-EXTRA_DIST =                            \
-        $(icon_DATA)                    \
-        $(share_DATA)                   \
-        $(desktop_DATA)					\
-		$(man_MANS)
