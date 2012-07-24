@@ -1,4 +1,6 @@
 * Support markup for current playlist.
 * On closing gimmix, it should check if tray icon is visible, if not,
   then gimmix should quit. [suggested by qball]
-
+* port to gtkbuilder
+* port to gtk3
+* port to libmpdclient
