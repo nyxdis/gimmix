@@ -15,6 +15,7 @@ mkinstalldirs
 po/*.gmo
 po/Makefile.in.in
 po/POTFILES
+po/gimmix.pot
 po/stamp-it
 src/*.o
 src/gimmix
