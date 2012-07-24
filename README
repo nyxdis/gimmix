@@ -135,13 +135,13 @@ amazon's server location to fetch covers from
 
 Bugs:
 =====
-Report any bug(s) at the gimmix bug reports page at http://launchpad.net/products/gimmix
+Report any bug(s) at the gimmix bug reports page at https://github.com/cmende/gimmix/issues
 with a detailed description and steps to reproduce the bug. Also mention
 your version of gtk+2, libmpd etc.
 
 Website:
 ========
-http://gimmix.berlios.de/
+http://cmende.github.com/gimmix
 
 Author:
 =======

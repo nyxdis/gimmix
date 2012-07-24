@@ -18,7 +18,7 @@
 #include "gimmix-firstrun.h"
 
 #define APPNAME 		"Gimmix"
-#define APPURL			"http://gimmix.berlios.de/"
+#define APPURL			"http://cmende.github.com/gimmix"
 
 /* main connect function */
 bool gimmix_connect (void);
