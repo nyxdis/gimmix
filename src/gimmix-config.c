@@ -146,7 +146,7 @@ gimmix_config_get_proxy_string (void)
 		}
 		else
 		{
-			ret = g_strdup_printf (host);
+			ret = g_strdup (host);
 		}
 	}
 

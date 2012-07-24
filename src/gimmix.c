@@ -77,9 +77,7 @@ gimmix_mpd_connection_error_callback (MpdObj *mi, int error_id, char *msg, void 
 {
 	gchar	*error = NULL;
 
-	error = g_strdup_printf ("Error:(%d):%s\n", error_id, msg);
-	printf (error);
-	g_free (error);
+	printf ("Error:(%d):%s\n", error_id, msg);
 	if (last_error!=NULL)
 	{
 		g_free (last_error);
@@ -260,14 +258,10 @@ main (int argc, char *argv[])
 	{
 		switch (opt)
 		{
-			char *vstr = NULL;
 			case 'v':
-				vstr = g_strdup_printf ("%s %s\n%s\n",
-							g_ascii_strdown(APPNAME,strlen(APPNAME)),
-							VERSION,
-							"Copyright 2006, 2007, 2008, 2009 Priyank Gosalia");
-				fprintf (stdout, vstr);
-				g_free (vstr);
+				printf ("%s %s\n%s\n", g_ascii_strdown(APPNAME,strlen(APPNAME)),
+						VERSION,
+						"Copyright 2006, 2007, 2008, 2009 Priyank Gosalia");
 				goto cleanup;
 				break;
 			case 'h':

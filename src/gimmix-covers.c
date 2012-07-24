@@ -635,7 +635,7 @@ gimmix_covers_plugin_save_albuminfo (char *artist, char *album, char *info)
 	path = g_strdup_printf ("%s/%s-%s.albuminfo", temp, artist_e, album_e);
 	if ((fp=fopen(path, "w")))
 	{
-		fprintf (fp, info);
+		fprintf (fp, "%s", info);
 		fclose (fp);
 	}
 	g_free (temp);

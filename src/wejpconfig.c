@@ -184,7 +184,10 @@ int cfg_write_config_file(ConfigFile *cf, char *filename)
 	if (file != NULL) {
 		while (i < cf->lastkey) {
 			snprintf(buffer, MAX_LINE_LENGTH, "%s=%s\n", cf->key[i], cf->value[i]);
-			fwrite(buffer, strlen(buffer) * sizeof(char), 1, file);
+			if (fwrite(buffer, strlen(buffer) * sizeof(char), 1, file) == 0) {
+				printf("config: Error while writing to %s.\n", filename);
+				break;
+			}
 			i++;
 		}
 		fclose(file);

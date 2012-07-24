@@ -381,8 +381,7 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 		}
 		else
 		{
-			port = NULL;
-			port = g_strdup_printf ("%d", (gint)gtk_spin_button_get_value(GTK_SPIN_BUTTON(pref_proxy_port_spin)));
+			gchar *port = g_strdup_printf ("%d", (gint)gtk_spin_button_get_value(GTK_SPIN_BUTTON(pref_proxy_port_spin)));
 			cfg_add_key (&conf, "proxy_host", (char*) host);
 			cfg_add_key (&conf, "proxy_port", (char*) port);
 			g_free (port);

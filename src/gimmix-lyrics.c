@@ -168,8 +168,7 @@ lyrics_process_lyrics_node (LYRICS_NODE *ptr)
 	nxml_get_string (nndata, &str);
 	if (str)
 	{
-		node->lyrics = g_strdup_printf (str);
-		g_free (str);
+		node->lyrics = str;
 		ret = TRUE;
 	}
 	nxml_free (nxml);
