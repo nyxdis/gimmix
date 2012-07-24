@@ -246,10 +246,8 @@ gimmix_toggle_playlist_show (gboolean show)
 	}
 	else
 	{
-		gint w;
 		gtk_widget_hide (volume_hscalebox);
 		gtk_widget_show (volume_button);
-		w = main_window->allocation.width;
 		gtk_widget_hide (GTK_WIDGET(playlist_box));
 		gtk_window_get_size (GTK_WINDOW(main_window), &width, &height);
 		gtk_window_resize (GTK_WINDOW(main_window), 1, 1);
@@ -260,7 +258,9 @@ gimmix_toggle_playlist_show (gboolean show)
 }
 
 static gboolean
-cb_playlist_button_press (GtkWidget *widget, GdkEventButton *event, gpointer data)
+cb_playlist_button_press (G_GNUC_UNUSED GtkWidget *widget,
+			  GdkEventButton	  *event,
+			  G_GNUC_UNUSED gpointer   data)
 {	
 	if (event != NULL)
 	if (event->button != 1)
@@ -556,9 +556,9 @@ gimmix_init (void)
 }
 
 static gboolean
-cb_gimmix_key_press (GtkWidget   *widget,
-		GdkEventKey *event,
-		gpointer     userdata)
+cb_gimmix_key_press (G_GNUC_UNUSED GtkWidget   *widget,
+		     GdkEventKey	       *event,
+		     G_GNUC_UNUSED gpointer     userdata)
 {
 	gboolean result = FALSE;
 	gint state;
@@ -676,7 +676,8 @@ gimmix_timer (void)
 }
 
 static void
-cb_prev_button_clicked (GtkWidget *widget, gpointer data)
+cb_prev_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
+			G_GNUC_UNUSED gpointer	 data)
 {
 	gimmix_prev (gmo);
 
@@ -684,7 +685,8 @@ cb_prev_button_clicked (GtkWidget *widget, gpointer data)
 }
 
 static void
-cb_next_button_clicked (GtkWidget *widget, gpointer data)
+cb_next_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
+			G_GNUC_UNUSED gpointer	data)
 {
 	gimmix_next (gmo);
 	
@@ -692,14 +694,16 @@ cb_next_button_clicked (GtkWidget *widget, gpointer data)
 }
 
 static void
-cb_play_button_clicked (GtkWidget *widget, gpointer data)
+cb_play_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
+			G_GNUC_UNUSED gpointer	 data)
 {
 	gimmix_play (gmo);
 	return;
 }
 
 static void
-cb_stop_button_clicked (GtkWidget *widget, gpointer data)
+cb_stop_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
+			G_GNUC_UNUSED gpointer	 data)
 {
 	gimmix_stop (gmo);
 	
@@ -707,7 +711,8 @@ cb_stop_button_clicked (GtkWidget *widget, gpointer data)
 }
 
 static void
-cb_volume_button_clicked (GtkWidget *widget, gpointer data)
+cb_volume_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
+			  gpointer		   data)
 {
 	if (GTK_WIDGET_VISIBLE (data))
 		gtk_widget_hide (data);
@@ -734,7 +739,7 @@ gimmix_reposition_volume_window (GtkWidget *volwindow)
 }
 
 static void
-cb_repeat_button_toggled (GtkToggleButton *button, gpointer data)
+cb_repeat_button_toggled (GtkToggleButton *button, G_GNUC_UNUSED gpointer data)
 {
 	gboolean state;
 	
@@ -752,7 +757,7 @@ cb_repeat_button_toggled (GtkToggleButton *button, gpointer data)
 }
 
 static void
-cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data)
+cb_shuffle_button_toggled (GtkToggleButton *button, G_GNUC_UNUSED gpointer data)
 {
 	gboolean state;
 	
@@ -770,7 +775,8 @@ cb_shuffle_button_toggled (GtkToggleButton *button, gpointer data)
 }
 		
 static void
-cb_pref_button_clicked (GtkWidget *widget, gpointer data)
+cb_pref_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
+			G_GNUC_UNUSED gpointer	 data)
 {
 	gimmix_prefs_dialog_show ();
 	
@@ -778,7 +784,9 @@ cb_pref_button_clicked (GtkWidget *widget, gpointer data)
 }
 
 static gboolean
-cb_info_button_press (GtkWidget *widget, GdkEventButton *event, gpointer data)
+cb_info_button_press (G_GNUC_UNUSED GtkWidget *widget,
+		      GdkEventButton	      *event,
+		      G_GNUC_UNUSED gpointer   data)
 {
 	if (event != NULL)
 	if (event->button != 1)
@@ -790,7 +798,7 @@ cb_info_button_press (GtkWidget *widget, GdkEventButton *event, gpointer data)
 }
 
 static void
-cb_volume_scale_changed (GtkWidget *widget, gpointer data)
+cb_volume_scale_changed (GtkWidget *widget, G_GNUC_UNUSED gpointer data)
 {
 	GtkAdjustment *volume_adj;
 	gint value;
@@ -804,7 +812,7 @@ cb_volume_scale_changed (GtkWidget *widget, gpointer data)
 }
 
 static void
-cb_volume_slider_scroll (GtkWidget *widget, GdkEventScroll *event)
+cb_volume_slider_scroll (G_GNUC_UNUSED GtkWidget *widget, GdkEventScroll *event)
 {
 	gint volume;
 	GtkAdjustment *volume_adj;
@@ -983,7 +991,9 @@ gimmix_show_ver_info (void)
 }
 
 static gboolean
-cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data)
+cb_gimmix_main_window_delete_event (G_GNUC_UNUSED GtkWidget *widget, 
+				    G_GNUC_UNUSED GdkEvent  *event,
+				    G_GNUC_UNUSED gpointer   data)
 {
 	if (gimmix_config_get_bool("enable_systray"))
 	{
@@ -1001,7 +1011,10 @@ cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer
 	return FALSE;
 }
 
-static gboolean cb_gimmix_main_window_configure_event (GtkWidget *widget, GdkEventConfigure *event, gpointer data)
+static gboolean cb_gimmix_main_window_configure_event (
+		G_GNUC_UNUSED GtkWidget		*widget,
+		G_GNUC_UNUSED GdkEventConfigure *event,
+		gpointer			 data)
 {
 	if (!GTK_WIDGET_VISIBLE(data))
 		return FALSE;

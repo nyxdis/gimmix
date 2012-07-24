@@ -83,7 +83,8 @@ gimmix_show_firstrun_dialog (void)
 }
 
 static void
-on_fr_close_clicked (GtkWidget *widget, gpointer data)
+on_fr_close_clicked (G_GNUC_UNUSED GtkWidget *widget,
+		     gpointer		      data)
 {
 	gtk_widget_destroy (data);
 	
@@ -106,7 +107,8 @@ on_fr_close_clicked (GtkWidget *widget, gpointer data)
 }
 
 static void
-on_fr_apply_clicked (GtkWidget *widget, gpointer data)
+on_fr_apply_clicked (G_GNUC_UNUSED GtkWidget *widget,
+		     G_GNUC_UNUSED gpointer   data)
 {
 	GtkWidget 	*entry;
 	GtkWidget	*s_checkbox;

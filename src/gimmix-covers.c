@@ -77,7 +77,9 @@ static void gimmix_covers_plugin_find_cover (mpd_Song *s);
 static void gimmix_cover_plugin_save_cover (char *artist, char *album);
 
 static void
-cb_gimmix_covers_plugin_plcbox_size_allocated (GtkWidget *widget, GtkAllocation *a, gpointer data)
+cb_gimmix_covers_plugin_plcbox_size_allocated (G_GNUC_UNUSED GtkWidget *widget,
+					       GtkAllocation	       *a,
+					       G_GNUC_UNUSED gpointer   data)
 {
 	if (!h3_size)
 	{
@@ -190,7 +192,9 @@ cb_gimmix_covers_plugin_set_cover_from_file (void)
 }
 
 static void
-cb_gimmix_covers_plugin_plc_popup (GtkWidget *widget, GdkEventButton *event, gpointer data)
+cb_gimmix_covers_plugin_plc_popup (G_GNUC_UNUSED GtkWidget *widget,
+				   GdkEventButton	   *event,
+				   G_GNUC_UNUSED gpointer   data)
 {
 	GtkWidget 	*menu = NULL;
 	GtkWidget 	*menu_item = NULL;
@@ -423,13 +427,14 @@ gimmix_covers_plugin_get_metadata (char *artist, char *album)
 	char		*u_artist = NULL;
 	char		*u_album = NULL;
 	nxml_t		*nxml = NULL;
-	nxml_data_t	*nroot = NULL;
 	nxml_data_t	*ndata = NULL;
 	nxml_data_t	*nndata = NULL;
 	nxml_attr_t *nstatus = NULL;
 	
-	(artist) && (u_artist = g_utf8_strdown (artist,-1));
-	(album) && (u_album = g_utf8_strdown (album,-1));
+	if (artist)
+		u_artist = g_utf8_strdown (artist,-1);
+	if (album)
+		u_album = g_utf8_strdown (album,-1);
 
 	/* Initialize libnxml */
 	nxml_new (&nxml);

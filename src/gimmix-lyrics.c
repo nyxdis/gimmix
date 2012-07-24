@@ -424,7 +424,8 @@ gimmix_lyrics_plugin_update_lyrics (void)
 }
 
 static void
-cb_gimmix_lyrics_get_btn_clicked (GtkWidget *widget, gpointer data)
+cb_gimmix_lyrics_get_btn_clicked (G_GNUC_UNUSED GtkWidget *widget,
+				  G_GNUC_UNUSED gpointer   data)
 {
 	g_thread_create ((GThreadFunc)gimmix_lyrics_plugin_update_lyrics ,
 				NULL,

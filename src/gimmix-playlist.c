@@ -92,9 +92,14 @@ extern GtkWidget	*tag_editor_window;
 gchar			*loaded_playlist;
 
 static void
-on_drag_data_received (GtkWidget *widget, GdkDragContext *context, gint x, gint y, 
-	GtkSelectionData *selection_data, guint target_type, guint time, 
-	gpointer data)
+on_drag_data_received (G_GNUC_UNUSED GtkWidget *widget,
+		       GdkDragContext	       *context,
+		       G_GNUC_UNUSED gint	x,
+		       G_GNUC_UNUSED gint	y, 
+		       GtkSelectionData	       *selection_data,
+		       guint			target_type,
+		       guint			time, 
+		       G_GNUC_UNUSED gpointer	data)
 {
 	gchar		*path;
 	gboolean	dnd_success = FALSE;
@@ -130,8 +135,12 @@ on_drag_data_received (GtkWidget *widget, GdkDragContext *context, gint x, gint 
 }
 
 static void
-on_drag_data_get (GtkWidget *widget, GdkDragContext *context, GtkSelectionData *selection_data,
-	guint target_type, guint time, gpointer user_data)
+on_drag_data_get (G_GNUC_UNUSED GtkWidget      *widget,
+		  G_GNUC_UNUSED GdkDragContext *context,
+		  GtkSelectionData	       *selection_data,
+		  guint				target_type,
+		  G_GNUC_UNUSED guint		time,
+		  G_GNUC_UNUSED gpointer	user_data)
 {
 	GtkTreeSelection	*selection = NULL;
 	GtkTreeModel		*model = NULL;
@@ -179,8 +188,12 @@ on_drag_data_get (GtkWidget *widget, GdkDragContext *context, GtkSelectionData *
 }
 
 static gboolean
-on_drag_drop (GtkWidget *widget, GdkDragContext *context, gint x, gint y, guint time,
-	gpointer user_data)
+on_drag_drop (GtkWidget		    *widget,
+	      GdkDragContext	    *context,
+	      G_GNUC_UNUSED gint     x,
+	      G_GNUC_UNUSED gint     y,
+	      guint		     time,
+	      G_GNUC_UNUSED gpointer user_data)
 {
 	gboolean ret = TRUE;
 
@@ -854,7 +867,9 @@ gimmix_library_search (gint type, gchar *text)
 }
 
 static void
-cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data)
+cb_search_keypress (G_GNUC_UNUSED GtkWidget   *widget,
+		    G_GNUC_UNUSED GdkEventKey *event,
+		    G_GNUC_UNUSED gpointer     data)
 {
 	gint		index;
 	gchar		text[20];
@@ -872,7 +887,9 @@ cb_search_keypress (GtkWidget *widget, GdkEventKey *event, gpointer data)
 }
 
 static void
-cb_current_playlist_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
+cb_current_playlist_delete_press (G_GNUC_UNUSED GtkWidget *widget,
+				  GdkEventKey		  *event,
+				  G_GNUC_UNUSED gpointer   data)
 {
 	if (event->keyval != GDK_Delete)
 		return;
@@ -936,7 +953,7 @@ cb_all_playlist_button_press (GtkTreeView *treeview, GdkEventButton *event, gpoi
 }
 
 static void
-cb_library_dir_activated (gpointer data)
+cb_library_dir_activated (G_GNUC_UNUSED gpointer data)
 {
 	GtkTreeModel 			*model;
 	GtkTreeIter 			iter;
@@ -989,7 +1006,8 @@ cb_library_dir_activated (gpointer data)
 }
 
 static void
-cb_library_popup_add_clicked (GtkWidget *widget, gpointer data)
+cb_library_popup_add_clicked (G_GNUC_UNUSED GtkWidget *widget,
+			      G_GNUC_UNUSED gpointer   data)
 {
 	GtkTreeModel 		*model;
 	GtkTreeIter 		iter;
@@ -1061,7 +1079,8 @@ cb_library_popup_add_clicked (GtkWidget *widget, gpointer data)
 }
 
 static void
-cd_library_popup_replace_clicked (GtkWidget *widget, gpointer data)
+cd_library_popup_replace_clicked (G_GNUC_UNUSED GtkWidget *widget,
+				  G_GNUC_UNUSED gpointer   data)
 {
 
 	GtkTreeModel 		*model;
@@ -1304,7 +1323,8 @@ gimmix_update_library_with_dir (gchar *dir)
 }
 
 static void
-cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event)
+cb_library_right_click (G_GNUC_UNUSED GtkTreeView *treeview,
+			GdkEventButton		  *event)
 {	
 	if (event->button == 3) /* If right click */
 	{
@@ -1315,7 +1335,8 @@ cb_library_right_click (GtkTreeView *treeview, GdkEventButton *event)
 }
 
 static void
-cb_playlists_right_click (GtkTreeView *treeview, GdkEventButton *event)
+cb_playlists_right_click (G_GNUC_UNUSED GtkTreeView *treeview,
+			  GdkEventButton	    *event)
 {
 	if (event->button == 3) /* If right click */
 	{
@@ -1763,7 +1784,7 @@ gimmix_playlists_popup_menu (void)
 }
 
 static void
-cb_repeat_menu_toggled (GtkCheckMenuItem *item, gpointer data)
+cb_repeat_menu_toggled (GtkCheckMenuItem *item, G_GNUC_UNUSED gpointer data)
 {
 	gboolean state;
 	
@@ -1781,7 +1802,7 @@ cb_repeat_menu_toggled (GtkCheckMenuItem *item, gpointer data)
 }
 
 static void
-cb_shuffle_menu_toggled (GtkCheckMenuItem *item, gpointer data)
+cb_shuffle_menu_toggled (GtkCheckMenuItem *item, G_GNUC_UNUSED gpointer data)
 {
 	gboolean state;
 	
@@ -1812,7 +1833,7 @@ gimmix_library_update (void)
 }
 
 static gboolean
-gimmix_update_player_status (gpointer data)
+gimmix_update_player_status (G_GNUC_UNUSED gpointer data)
 {
 	if (mpd_status_db_is_updating (gmo))
 		return TRUE;
@@ -1974,7 +1995,9 @@ cb_gimmix_playlist_load ()
 }
 
 static void
-cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
+cb_playlists_delete_press (G_GNUC_UNUSED GtkWidget *widget,
+			   GdkEventKey		   *event,
+			   G_GNUC_UNUSED gpointer   data)
 {
 	if (event->keyval != GDK_Delete)
 		return;
@@ -1985,7 +2008,7 @@ cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
 }
 
 static void
-cb_add_button_clicked (GtkWidget *widget, gpointer data)
+cb_add_button_clicked (G_GNUC_UNUSED GtkWidget *widget, gpointer data)
 {
 	if (!GTK_WIDGET_VISIBLE(GTK_WINDOW(data)))
 		gtk_widget_show (GTK_WIDGET(data));

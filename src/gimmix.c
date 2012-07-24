@@ -73,7 +73,10 @@ gimmix_error (const char *error_str)
 }
 
 static int
-gimmix_mpd_connection_error_callback (MpdObj *mi, int error_id, char *msg, void *data)
+gimmix_mpd_connection_error_callback (G_GNUC_UNUSED MpdObj *mi,
+				      int		    error_id,
+				      char		    *msg,
+				      G_GNUC_UNUSED void    *data)
 {
 	gchar	*error = NULL;
 
@@ -92,7 +95,9 @@ gimmix_mpd_connection_error_callback (MpdObj *mi, int error_id, char *msg, void 
 }
 
 static void
-gimmix_mpd_connection_changed_callback (MpdObj *mo, int connect, void *userdata)
+gimmix_mpd_connection_changed_callback (G_GNUC_UNUSED MpdObj *mo,
+					int		      connect,
+					G_GNUC_UNUSED void   *userdata)
 {
 	if (!connect) /* disconnected */
 	{
@@ -148,7 +153,8 @@ gimmix_connect (void)
 }
 
 static void
-cb_gimmix_connect_button_clicked (GtkWidget *widget, gpointer data)
+cb_gimmix_connect_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
+				  G_GNUC_UNUSED gpointer   data)
 {
 	if (gimmix_connect())
 	{
@@ -161,7 +167,8 @@ cb_gimmix_connect_button_clicked (GtkWidget *widget, gpointer data)
 }
 
 static void
-cb_gimmix_error_details_button_clicked (GtkWidget *widget, gpointer data)
+cb_gimmix_error_details_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
+					G_GNUC_UNUSED gpointer   data)
 {
 	if (last_error)
 	{

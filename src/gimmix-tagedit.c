@@ -244,7 +244,8 @@ gimmix_tag_editor_populate (const void *song)
 }
 
 static void
-gimmix_tag_editor_close (GtkWidget *widget, gpointer data)
+gimmix_tag_editor_close (G_GNUC_UNUSED GtkWidget *widget,
+			 G_GNUC_UNUSED gpointer	  data)
 {
 	#ifdef HAVE_TAGEDITOR
 	taglib_tag_free_strings ();
@@ -260,7 +261,8 @@ gimmix_tag_editor_close (GtkWidget *widget, gpointer data)
 
 #ifdef HAVE_TAGEDITOR
 static void
-gimmix_tag_editor_save (GtkWidget *button, gpointer data)
+gimmix_tag_editor_save (G_GNUC_UNUSED GtkWidget *button,
+			G_GNUC_UNUSED gpointer	 data)
 {
 	gint		year;
 	gint		track;
@@ -384,7 +386,9 @@ gimmix_tag_editor_error (const gchar *error_text)
 }
 
 static void
-cb_gimmix_tag_editor_error_response (GtkDialog *dialog, gint arg1, gpointer data)
+cb_gimmix_tag_editor_error_response (GtkDialog		   *dialog,
+				     gint		    arg1,
+				     G_GNUC_UNUSED gpointer data)
 {
 	if (arg1 == GTK_RESPONSE_YES)
 	{

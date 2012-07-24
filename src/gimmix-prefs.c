@@ -304,7 +304,9 @@ gimmix_prefs_dialog_show (void)
 }
 
 static void
-cb_pref_outputdev_enable_toggled (GtkCellRendererToggle *toggle, gchar *path_str, gpointer data)
+cb_pref_outputdev_enable_toggled (G_GNUC_UNUSED GtkCellRendererToggle *toggle,
+				  gchar				      *path_str,
+				  gpointer			       data)
 {
 	GtkTreeModel	*model = NULL;
 	GtkTreeIter	iter;
@@ -326,7 +328,8 @@ cb_pref_outputdev_enable_toggled (GtkCellRendererToggle *toggle, gchar *path_str
 }
 
 static void
-cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
+cb_pref_apply_clicked (G_GNUC_UNUSED GtkWidget *widget,
+		       G_GNUC_UNUSED gpointer	data)
 {
 	const gchar *host;
 	const gchar *port;
@@ -394,7 +397,7 @@ cb_pref_apply_clicked (GtkWidget *widget, gpointer data)
 }
 
 static void
-cb_pref_use_proxy_toggled (GtkToggleButton *button, gpointer data)
+cb_pref_use_proxy_toggled (GtkToggleButton *button, G_GNUC_UNUSED gpointer data)
 {
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{
@@ -445,7 +448,8 @@ cb_pref_systray_toggled (GtkToggleButton *button, gpointer data)
 }
 
 static void
-cb_pref_notification_toggled (GtkToggleButton *button, gpointer data)
+cb_pref_notification_toggled (GtkToggleButton	    *button,
+			      G_GNUC_UNUSED gpointer data)
 {
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{
@@ -463,7 +467,7 @@ cb_pref_notification_toggled (GtkToggleButton *button, gpointer data)
 }
 
 static void
-cb_pref_search_toggled (GtkToggleButton *button, gpointer data)
+cb_pref_search_toggled (GtkToggleButton *button, G_GNUC_UNUSED gpointer data)
 {
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{
@@ -482,7 +486,8 @@ cb_pref_search_toggled (GtkToggleButton *button, gpointer data)
 
 #ifdef HAVE_COVER_PLUGIN
 static void
-cb_pref_coverart_disp_toggled (GtkToggleButton *button, gpointer data)
+cb_pref_coverart_disp_toggled (GtkToggleButton	     *button,
+			       G_GNUC_UNUSED gpointer data)
 {
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{

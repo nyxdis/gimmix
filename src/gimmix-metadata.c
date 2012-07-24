@@ -76,7 +76,8 @@ gimmix_metadata_enable_controls (void)
 }
 
 void
-gimmix_metadata_set_song_details (mpd_Song *song, char* albumreview)
+gimmix_metadata_set_song_details (mpd_Song	     *song,
+				  G_GNUC_UNUSED char *albumreview)
 {
 	gchar *markup = NULL;
 	

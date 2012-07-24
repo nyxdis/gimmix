@@ -185,8 +185,9 @@ static void egg_tray_icon_get_orientation_property(EggTrayIcon * icon)
 }
 
 static GdkFilterReturn
-egg_tray_icon_manager_filter(GdkXEvent * xevent, GdkEvent * event,
-   gpointer user_data)
+egg_tray_icon_manager_filter(GdkXEvent		    *xevent,
+			     G_GNUC_UNUSED GdkEvent *event,
+			     gpointer		     user_data)
 {
    EggTrayIcon *icon = user_data;
    XEvent *xev = (XEvent *) xevent;

@@ -196,7 +196,9 @@ gimmix_get_progress_status (MpdObj *mo, float *fraction, char *time)
 }
 
 void
-gimmix_get_total_time_for_song (MpdObj *mo, mpd_Song *song, char *time)
+gimmix_get_total_time_for_song (G_GNUC_UNUSED MpdObj *mo,
+				mpd_Song	     *song,
+				char		     *time)
 {
 	if (!song)
 	{

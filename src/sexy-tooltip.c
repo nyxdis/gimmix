@@ -58,10 +58,7 @@ sexy_tooltip_class_init(SexyTooltipClass *klass)
 static void
 sexy_tooltip_init(SexyTooltip *tooltip)
 {
-	GtkWindow *window;
 	tooltip->priv = g_new0(SexyTooltipPriv, 1);
-
-	window = GTK_WINDOW(tooltip);
 
 	gtk_widget_set_app_paintable(GTK_WIDGET(tooltip), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW(tooltip), FALSE);

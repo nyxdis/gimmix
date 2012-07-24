@@ -108,7 +108,9 @@ gimmix_create_systray_icon (void)
 }
 
 static gboolean
-cb_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data)
+cb_systray_enter_notify (G_GNUC_UNUSED GtkWidget	*widget,
+			 G_GNUC_UNUSED GdkEventCrossing *event,
+			 G_GNUC_UNUSED gpointer		 data)
 {
 	GdkScreen *screen = NULL;
 	GdkScreen *def_screen = NULL;
@@ -160,7 +162,9 @@ cb_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer da
 }
 
 static gboolean
-cb_systray_leave_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data)
+cb_systray_leave_notify (G_GNUC_UNUSED GtkWidget	*widget,
+			 G_GNUC_UNUSED GdkEventCrossing *event,
+			 G_GNUC_UNUSED gpointer		 data)
 {
 	gimmix_tooltip_hide (tooltip);
 	gtk_widget_hide (stooltip);
@@ -169,7 +173,9 @@ cb_systray_leave_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer da
 }
 
 static gboolean
-cb_gimmix_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data)
+cb_gimmix_systray_icon_clicked (G_GNUC_UNUSED GtkWidget *widget,
+				GdkEventButton		*event,
+				G_GNUC_UNUSED gpointer	 data)
 {
 	switch (event->button)
 	{
@@ -184,7 +190,8 @@ cb_gimmix_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpoint
 }
 
 static void
-cb_systray_volume_scroll (GtkWidget *widget, GdkEventScroll *event)
+cb_systray_volume_scroll (G_GNUC_UNUSED GtkWidget *widget,
+			  GdkEventScroll	  *event)
 {
 	gint volume;
 	GtkAdjustment *volume_adj;
@@ -269,7 +276,8 @@ gimmix_systray_display_popup_menu (void)
 
 
 static void
-cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data)
+cb_systray_popup_play_clicked (G_GNUC_UNUSED GtkMenuItem *menuitem,
+			       G_GNUC_UNUSED gpointer	  data)
 {
 	gimmix_play (gmo);
 	
@@ -277,7 +285,8 @@ cb_systray_popup_play_clicked (GtkMenuItem *menuitem, gpointer data)
 }
 
 static void
-cb_systray_popup_stop_clicked (GtkMenuItem *menuitem, gpointer data)
+cb_systray_popup_stop_clicked (G_GNUC_UNUSED GtkMenuItem *menuitem,
+			       G_GNUC_UNUSED gpointer	  data)
 {
 	gimmix_stop (gmo);
 	
@@ -285,7 +294,8 @@ cb_systray_popup_stop_clicked (GtkMenuItem *menuitem, gpointer data)
 }
 
 static void
-cb_systray_popup_prev_clicked (GtkMenuItem *menuitem, gpointer data)
+cb_systray_popup_prev_clicked (G_GNUC_UNUSED GtkMenuItem *menuitem,
+			       G_GNUC_UNUSED gpointer	  data)
 {
 	gimmix_prev (gmo);
 
@@ -293,7 +303,8 @@ cb_systray_popup_prev_clicked (GtkMenuItem *menuitem, gpointer data)
 }
 
 static void
-cb_systray_popup_next_clicked (GtkMenuItem *menuitem, gpointer data)
+cb_systray_popup_next_clicked (G_GNUC_UNUSED GtkMenuItem *menuitem,
+			       G_GNUC_UNUSED gpointer	  data)
 {
 	gimmix_next (gmo);
 
@@ -301,7 +312,8 @@ cb_systray_popup_next_clicked (GtkMenuItem *menuitem, gpointer data)
 }
 
 static void
-cb_systray_popup_quit_clicked (GtkMenuItem *menuitem, gpointer data)
+cb_systray_popup_quit_clicked (G_GNUC_UNUSED GtkMenuItem *menuitem,
+			       G_GNUC_UNUSED gpointer	  data)
 {
 	gimmix_save_window_pos ();
 	if (strncasecmp(cfg_get_key_value(conf, "stop_on_exit"), "true", 4) == 0)
