@@ -45,7 +45,7 @@
 
 static guint h3_size = 0;
 
-extern GladeXML		*xml;
+extern GtkBuilder	*xml;
 extern ConfigFile	conf;
 extern MpdObj		*gmo;
 extern mpd_Song		*glob_song_info;
@@ -274,16 +274,16 @@ gimmix_covers_plugin_init (void)
 	gimmix_covers_plugin_cover_db_init ();
 	
 	/* initialize metadata widgets */
-	gimmix_plcbox_eventbox = glade_xml_get_widget (xml, "cover_event_box");
-	gimmix_plcbox_image = glade_xml_get_widget (xml, "gimmix_plcbox_image");
-	gimmix_metadata_image = glade_xml_get_widget (xml, "gimmix_metadata_image");
-	gimmix_plcbox_frame = glade_xml_get_widget (xml, "gimmix_plc_image_frame");
+	gimmix_plcbox_eventbox = GTK_WIDGET (gtk_builder_get_object (xml, "cover_event_box"));
+	gimmix_plcbox_image = GTK_WIDGET (gtk_builder_get_object (xml, "gimmix_plcbox_image"));
+	gimmix_metadata_image = GTK_WIDGET (gtk_builder_get_object (xml, "gimmix_metadata_image"));
+	gimmix_plcbox_frame = GTK_WIDGET (gtk_builder_get_object (xml, "gimmix_plc_image_frame"));
 	
 	/* some signals */
 	g_signal_connect (gimmix_plcbox_eventbox, "button_press_event", G_CALLBACK(cb_gimmix_covers_plugin_plc_popup), NULL);
 	
 	/* an ugly way to calculate size of the album picture placeholder */
-	widget = glade_xml_get_widget (xml,"plcvbox");
+	widget = GTK_WIDGET (gtk_builder_get_object (xml,"plcvbox"));
 	g_signal_connect (widget, "size-allocate", G_CALLBACK(cb_gimmix_covers_plugin_plcbox_size_allocated), NULL);
 	
 	/* configuration init */

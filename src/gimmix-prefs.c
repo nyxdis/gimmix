@@ -28,7 +28,7 @@
 #include "gimmix.h"
 
 extern MpdObj		*gmo;
-extern GladeXML 	*xml;
+extern GtkBuilder	*xml;
 extern ConfigFile	conf;
 
 GtkWidget *pref_window;
@@ -79,32 +79,32 @@ gimmix_prefs_init (void)
 	GtkCellRenderer		*renderer = NULL;
 	GtkTreeViewColumn	*column = NULL;
 
-	pref_window = glade_xml_get_widget (xml, "prefs_window");
-	pref_host_entry = glade_xml_get_widget (xml, "host_entry");
-	pref_pass_entry = glade_xml_get_widget (xml, "password_entry");
-	pref_port_entry = glade_xml_get_widget (xml, "port_entry");
-	pref_systray_check = glade_xml_get_widget (xml, "systray_checkbutton");
-	pref_notification_check = glade_xml_get_widget (xml, "tooltip_checkbutton");
-	pref_play_immediate_check = glade_xml_get_widget (xml, "pref_play_immediate");
-	pref_stop_exit_check = glade_xml_get_widget (xml, "pref_stop_on_exit");
-	pref_crossfade_check = glade_xml_get_widget (xml, "pref_crossfade");
-	pref_upd_startup_check = glade_xml_get_widget (xml, "pref_upd_on_startup");
-	pref_crossfade_spin = glade_xml_get_widget (xml, "crossfade_spin");
-	pref_button_apply = glade_xml_get_widget (xml, "button_apply");
-	pref_button_close = glade_xml_get_widget (xml, "prefs_window");
-	pref_dir_chooser = glade_xml_get_widget (xml, "conf_dir_chooser");
-	pref_search_check = glade_xml_get_widget (xml, "search_checkbutton");
-	pref_notebook = glade_xml_get_widget (xml, "pref_notebook");
-	pref_outputdev_tvw = glade_xml_get_widget (xml, "pref_outputdev_tvw");
-	pref_use_proxy_check = glade_xml_get_widget (xml, "use_proxy_checkbtn");
-	pref_proxy_host_entry = glade_xml_get_widget (xml, "proxy_host_entry");
-	pref_proxy_port_spin = glade_xml_get_widget (xml, "proxy_port_spin");
+	pref_window = GTK_WIDGET (gtk_builder_get_object (xml, "prefs_window"));
+	pref_host_entry = GTK_WIDGET (gtk_builder_get_object (xml, "host_entry"));
+	pref_pass_entry = GTK_WIDGET (gtk_builder_get_object (xml, "password_entry"));
+	pref_port_entry = GTK_WIDGET (gtk_builder_get_object (xml, "port_entry"));
+	pref_systray_check = GTK_WIDGET (gtk_builder_get_object (xml, "systray_checkbutton"));
+	pref_notification_check = GTK_WIDGET (gtk_builder_get_object (xml, "tooltip_checkbutton"));
+	pref_play_immediate_check = GTK_WIDGET (gtk_builder_get_object (xml, "pref_play_immediate"));
+	pref_stop_exit_check = GTK_WIDGET (gtk_builder_get_object (xml, "pref_stop_on_exit"));
+	pref_crossfade_check = GTK_WIDGET (gtk_builder_get_object (xml, "pref_crossfade"));
+	pref_upd_startup_check = GTK_WIDGET (gtk_builder_get_object (xml, "pref_upd_on_startup"));
+	pref_crossfade_spin = GTK_WIDGET (gtk_builder_get_object (xml, "crossfade_spin"));
+	pref_button_apply = GTK_WIDGET (gtk_builder_get_object (xml, "button_apply"));
+	pref_button_close = GTK_WIDGET (gtk_builder_get_object (xml, "prefs_window"));
+	pref_dir_chooser = GTK_WIDGET (gtk_builder_get_object (xml, "conf_dir_chooser"));
+	pref_search_check = GTK_WIDGET (gtk_builder_get_object (xml, "search_checkbutton"));
+	pref_notebook = GTK_WIDGET (gtk_builder_get_object (xml, "pref_notebook"));
+	pref_outputdev_tvw = GTK_WIDGET (gtk_builder_get_object (xml, "pref_outputdev_tvw"));
+	pref_use_proxy_check = GTK_WIDGET (gtk_builder_get_object (xml, "use_proxy_checkbtn"));
+	pref_proxy_host_entry = GTK_WIDGET (gtk_builder_get_object (xml, "proxy_host_entry"));
+	pref_proxy_port_spin = GTK_WIDGET (gtk_builder_get_object (xml, "proxy_port_spin"));
 	#ifdef HAVE_COVER_PLUGIN
-	pref_coverart_check = glade_xml_get_widget (xml, "coverart_checkbutton");
-	pref_coverart_vbox = glade_xml_get_widget(xml,"pref_coverart_vbox");
+	pref_coverart_check = GTK_WIDGET (gtk_builder_get_object (xml, "coverart_checkbutton"));
+	pref_coverart_vbox = GTK_WIDGET (gtk_builder_get_object (xml,"pref_coverart_vbox"));
 	#else
-	gtk_widget_hide (glade_xml_get_widget(xml,"pref_interface_ifacebox"));
-	gtk_widget_hide (glade_xml_get_widget(xml,"pref_coverart_vbox"));
+	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (xml,"pref_interface_ifacebox")));
+	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (xml,"pref_coverart_vbox")));
 	#endif
 	
 	g_signal_connect (G_OBJECT(pref_use_proxy_check), "toggled", G_CALLBACK(cb_pref_use_proxy_toggled), NULL);

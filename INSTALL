@@ -9,7 +9,6 @@ Gimmix requires the following packages to be installed before compiling.
 
 * gtk+-2.6.x
 * libmpd-0.17.0
-* libglade-2.6.x
 * taglib-1.4 (C bindings)
 
 

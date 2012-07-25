@@ -40,7 +40,7 @@ GtkWidget		*stooltip;
 extern GtkWidget 	*progress;
 
 extern MpdObj		*gmo;
-extern GladeXML 	*xml;
+extern GtkBuilder	*xml;
 extern ConfigFile	conf;
 
 extern GtkWidget	*volume_scale;

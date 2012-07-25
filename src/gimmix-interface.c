@@ -22,7 +22,6 @@
  */
 
 #include <glib.h>
-#include <glade/glade.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 #include "gimmix-interface.h"
@@ -72,7 +71,7 @@ GtkWidget		*stop_button;
 GtkWidget		*plcontrolshbox;
 
 extern MpdObj 		*gmo;
-extern GladeXML 	*xml;
+extern GtkBuilder	*xml;
 extern ConfigFile	conf;
 extern GimmixTooltip 	*tooltip;
 extern GtkWidget	*current_playlist_treeview;
@@ -287,7 +286,7 @@ gimmix_interface_widgets_init (void)
 		return;
 	}
 	/* Set the application icon */
-	main_window = glade_xml_get_widget (xml, "main_window");
+	main_window = GTK_WIDGET (gtk_builder_get_object (xml, "main_window"));
 	g_signal_connect (G_OBJECT(main_window), "delete-event", G_CALLBACK(cb_gimmix_main_window_delete_event), NULL);
 	gtk_window_set_default_size (GTK_WINDOW(main_window), -1, 80);
 	gtk_window_resize (GTK_WINDOW(main_window), atoi(cfg_get_key_value(conf, "window_width")), atoi(cfg_get_key_value(conf, "window_height")));
@@ -301,34 +300,34 @@ gimmix_interface_widgets_init (void)
 	/* connect the key press signal */
 	g_signal_connect (G_OBJECT(main_window), "key-press-event", G_CALLBACK(cb_gimmix_key_press), NULL);
 	
-	g_signal_connect (G_OBJECT(main_window), "configure-event", G_CALLBACK(cb_gimmix_main_window_configure_event), (gpointer)glade_xml_get_widget(xml, "volume_window"));
+	g_signal_connect (G_OBJECT(main_window), "configure-event", G_CALLBACK(cb_gimmix_main_window_configure_event), GTK_WIDGET (gtk_builder_get_object (xml, "volume_window")));
 	
 	/* connect the destroy signal */
 	g_signal_connect(G_OBJECT(main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
-	gtk_image_set_from_icon_name (GTK_IMAGE(glade_xml_get_widget(xml, "image_volume")), "stock_volume", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_icon_name (GTK_IMAGE(glade_xml_get_widget(xml, "image_fmodevolume")), "stock_volume", GTK_ICON_SIZE_MENU);
-	
-	shuffle_toggle_button = glade_xml_get_widget (xml, "shuffle_toggle");
-	repeat_toggle_button = glade_xml_get_widget (xml, "repeat_toggle");
-	volume_window = glade_xml_get_widget (xml, "volume_window");
-	volume_scale = glade_xml_get_widget (xml, "volume_scale");
-	volume_hscalebox = glade_xml_get_widget (xml, "volume_hscalebox");
-	volume_hscale = glade_xml_get_widget (xml, "volume_hscale");
-	volume_button = glade_xml_get_widget (xml, "volume_button");
-	playlist_button = glade_xml_get_widget (xml, "playlist_button");
-	playlist_box = glade_xml_get_widget (xml, "playlistbox");
-	song_label = glade_xml_get_widget (xml, "song_label");
-	artist_label = glade_xml_get_widget (xml, "artist_label");
-	search_entry = glade_xml_get_widget (xml, "search_label");
-	play_button = glade_xml_get_widget (xml, "play_button");
-	image_play = glade_xml_get_widget (xml, "image_play");
-	plcontrolshbox = glade_xml_get_widget (xml, "plcontrolshbox");
-	next_button = glade_xml_get_widget (xml, "next_button");
-	prev_button = glade_xml_get_widget (xml, "prev_button");
-	pref_button = glade_xml_get_widget (xml, "pref_button");
-	info_button = glade_xml_get_widget (xml, "info_button");
-	stop_button = glade_xml_get_widget (xml, "stop_button");
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_builder_get_object (xml, "image_volume")), "stock_volume", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_builder_get_object (xml, "image_fmodevolume")), "stock_volume", GTK_ICON_SIZE_MENU);
+
+	shuffle_toggle_button = GTK_WIDGET (gtk_builder_get_object (xml, "shuffle_toggle"));
+	repeat_toggle_button = GTK_WIDGET (gtk_builder_get_object (xml, "repeat_toggle"));
+	volume_window = GTK_WIDGET (gtk_builder_get_object (xml, "volume_window"));
+	volume_scale = GTK_WIDGET (gtk_builder_get_object (xml, "volume_scale"));
+	volume_hscalebox = GTK_WIDGET (gtk_builder_get_object (xml, "volume_hscalebox"));
+	volume_hscale = GTK_WIDGET (gtk_builder_get_object (xml, "volume_hscale"));
+	volume_button = GTK_WIDGET (gtk_builder_get_object (xml, "volume_button"));
+	playlist_button = GTK_WIDGET (gtk_builder_get_object (xml, "playlist_button"));
+	playlist_box = GTK_WIDGET (gtk_builder_get_object (xml, "playlistbox"));
+	song_label = GTK_WIDGET (gtk_builder_get_object (xml, "song_label"));
+	artist_label = GTK_WIDGET (gtk_builder_get_object (xml, "artist_label"));
+	search_entry = GTK_WIDGET (gtk_builder_get_object (xml, "search_label"));
+	play_button = GTK_WIDGET (gtk_builder_get_object (xml, "play_button"));
+	image_play = GTK_WIDGET (gtk_builder_get_object (xml, "image_play"));
+	plcontrolshbox = GTK_WIDGET (gtk_builder_get_object (xml, "plcontrolshbox"));
+	next_button = GTK_WIDGET (gtk_builder_get_object (xml, "next_button"));
+	prev_button = GTK_WIDGET (gtk_builder_get_object (xml, "prev_button"));
+	pref_button = GTK_WIDGET (gtk_builder_get_object (xml, "pref_button"));
+	info_button = GTK_WIDGET (gtk_builder_get_object (xml, "info_button"));
+	stop_button = GTK_WIDGET (gtk_builder_get_object (xml, "stop_button"));
 	
 	g_signal_connect (G_OBJECT(prev_button), "clicked", G_CALLBACK(cb_prev_button_clicked), NULL);
 	g_signal_connect (G_OBJECT(play_button), "clicked", G_CALLBACK(cb_play_button_clicked), NULL);
@@ -342,7 +341,7 @@ gimmix_interface_widgets_init (void)
 	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(next_button))), "gtk-media-next", GTK_ICON_SIZE_MENU);
 	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(stop_button))), "gtk-media-stop", GTK_ICON_SIZE_MENU);
 	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(info_button))), "gtk-info", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_stock (GTK_IMAGE(glade_xml_get_widget(xml,"image_prefs")), "gtk-preferences", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_stock (GTK_IMAGE(gtk_builder_get_object (xml,"image_prefs")), "gtk-preferences", GTK_ICON_SIZE_MENU);
 	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(playlist_button))), "gtk-justify-fill", GTK_ICON_SIZE_MENU);
 	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(shuffle_toggle_button))), "stock_shuffle", GTK_ICON_SIZE_MENU);
 	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(repeat_toggle_button))), "stock_repeat", GTK_ICON_SIZE_MENU);
@@ -357,7 +356,7 @@ gimmix_interface_widgets_init (void)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(shuffle_toggle_button), TRUE);
 	g_signal_connect (G_OBJECT(shuffle_toggle_button), "toggled", G_CALLBACK(cb_shuffle_button_toggled), NULL);
 
-	widget = glade_xml_get_widget (xml, "info_button");
+	widget = GTK_WIDGET (gtk_builder_get_object (xml, "info_button"));
 	g_signal_connect (G_OBJECT(widget), "button-release-event", G_CALLBACK(cb_info_button_press), NULL);
 
 	g_signal_connect (G_OBJECT(volume_scale), "value_changed", G_CALLBACK(cb_volume_scale_changed), NULL);
@@ -369,8 +368,8 @@ gimmix_interface_widgets_init (void)
 	g_signal_connect (G_OBJECT(volume_button), "clicked", G_CALLBACK(cb_volume_button_clicked), volume_window);
 	g_signal_connect (G_OBJECT(volume_button), "scroll_event", G_CALLBACK(cb_volume_slider_scroll), NULL);
 
-	progress = glade_xml_get_widget (xml,"progress");
-	progressbox = glade_xml_get_widget (xml,"progress_event_box");
+	progress = GTK_WIDGET (gtk_builder_get_object (xml,"progress"));
+	progressbox = GTK_WIDGET (gtk_builder_get_object (xml,"progress_event_box"));
 	g_signal_connect (G_OBJECT(progressbox), "button_press_event", G_CALLBACK(cb_gimmix_progress_seek), NULL);
 	
 	if (gimmix_config_get_bool("enable_systray"))
@@ -397,18 +396,18 @@ gimmix_interface_widgets_init (void)
 	#ifdef HAVE_COVER_PLUGIN
 	gimmix_covers_plugin_init ();
 	#else
-	widget = glade_xml_get_widget (xml, "gimmix_plc_image_frame");
+	widget = GTK_WIDGET (gtk_builder_get_object (xml, "gimmix_plc_image_frame"));
 	gtk_widget_hide (widget);
 	#endif
 	
 	#ifdef HAVE_LYRICS
 	gimmix_lyrics_plugin_init ();
 	#else
-	widget = glade_xml_get_widget (xml, "lyrics_container");
+	widget = GTK_WIDGET (gtk_builder_get_object (xml, "lyrics_container"));
 	gtk_widget_hide (widget);
 	#endif
 	
-	widget = glade_xml_get_widget (xml, "metadata_container");
+	widget = GTK_WIDGET (gtk_builder_get_object (xml, "metadata_container"));
 	#ifdef HAVE_COVER_PLUGIN
 	gtk_widget_show (widget);
 	#elif defined(HAVE_LYRICS)

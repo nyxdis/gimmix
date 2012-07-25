@@ -30,7 +30,7 @@
 #include "gimmix-tagedit.h"
 
 extern MpdObj 		*gmo;
-extern GladeXML 	*xml;
+extern GtkBuilder	*xml;
 extern ConfigFile	conf;
 
 #ifdef HAVE_TAGEDITOR
@@ -72,28 +72,28 @@ gimmix_tag_editor_widgets_init (void)
 {
 	GtkWidget *widget;
 	
-	tag_editor_window = glade_xml_get_widget (xml, "tag_editor_window");
-	tag_title = glade_xml_get_widget (xml,"entry_title");
-	tag_file = glade_xml_get_widget (xml,"entry_filename");
-	tag_artist = glade_xml_get_widget (xml,"entry_artist");
-	tag_album = glade_xml_get_widget (xml,"entry_album");
-	tag_comment = glade_xml_get_widget (xml,"entry_comment");
-	tag_year_spin = glade_xml_get_widget (xml, "tag_year");
-	tag_track_spin = glade_xml_get_widget (xml, "tag_track");
-	tag_genre = glade_xml_get_widget (xml,"combo_genre");
-	tag_info_length = glade_xml_get_widget (xml, "info_length");
-	tag_info_channels = glade_xml_get_widget (xml, "info_channels");
-	tag_info_bitrate = glade_xml_get_widget (xml, "info_bitrate");
-	tag_editor_cover_image = glade_xml_get_widget (xml, "gimmix_tagedit_cover_image");
+	tag_editor_window = GTK_WIDGET (gtk_builder_get_object (xml, "tag_editor_window"));
+	tag_title = GTK_WIDGET (gtk_builder_get_object (xml,"entry_title"));
+	tag_file = GTK_WIDGET (gtk_builder_get_object (xml,"entry_filename"));
+	tag_artist = GTK_WIDGET (gtk_builder_get_object (xml,"entry_artist"));
+	tag_album = GTK_WIDGET (gtk_builder_get_object (xml,"entry_album"));
+	tag_comment = GTK_WIDGET (gtk_builder_get_object (xml,"entry_comment"));
+	tag_year_spin = GTK_WIDGET (gtk_builder_get_object (xml, "tag_year"));
+	tag_track_spin = GTK_WIDGET (gtk_builder_get_object (xml, "tag_track"));
+	tag_genre = GTK_WIDGET (gtk_builder_get_object (xml,"combo_genre"));
+	tag_info_length = GTK_WIDGET (gtk_builder_get_object (xml, "info_length"));
+	tag_info_channels = GTK_WIDGET (gtk_builder_get_object (xml, "info_channels"));
+	tag_info_bitrate = GTK_WIDGET (gtk_builder_get_object (xml, "info_bitrate"));
+	tag_editor_cover_image = GTK_WIDGET (gtk_builder_get_object (xml, "gimmix_tagedit_cover_image"));
 	
-	widget = glade_xml_get_widget (xml, "tag_editor_save");
+	widget = GTK_WIDGET (gtk_builder_get_object (xml, "tag_editor_save"));
 	#ifdef HAVE_TAGEDITOR
 	g_signal_connect (G_OBJECT(widget), "clicked", G_CALLBACK(gimmix_tag_editor_save), NULL);
 	#else
 	gtk_widget_set_sensitive (widget, FALSE);
 	#endif
 
-	widget = glade_xml_get_widget (xml, "tag_editor_close");
+	widget = GTK_WIDGET (gtk_builder_get_object (xml, "tag_editor_close"));
 	g_signal_connect (G_OBJECT(widget),
 				"clicked",
 				G_CALLBACK(gimmix_tag_editor_close),

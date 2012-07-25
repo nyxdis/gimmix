@@ -1,7 +1,7 @@
 SUBDIRS = src po
 
 sharedir   = $(pkgdatadir)
-share_DATA = glade/gimmix.glade data/gimmix_firstrun.png
+share_DATA = glade/gimmix.ui data/gimmix_firstrun.png
 
 icondir = $(datadir)/pixmaps
 icon_DATA = data/gimmix.png \

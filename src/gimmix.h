@@ -11,7 +11,6 @@
 #define _(String) gettext (String)
 #include <libmpd/libmpd.h>
 #include <libmpd/libmpdclient.h>
-#include <glade/glade.h>
 #include "wejpconfig.h"
 #include "gimmix-config.h"
 #include "gimmix-interface.h"

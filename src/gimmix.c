@@ -35,12 +35,12 @@
 #include "gimmix-interface.h"
 #include "gimmix-playlist.h"
 
-#define GLADE_FILE	"/share/gimmix/gimmix.glade"
+#define UI_FILE		"share/gimmix/gimmix.ui"
 #define GIMMIX_ICON	"gimmix.png"
 
 MpdObj 		*gmo = NULL;
 gchar		*last_error = NULL;
-GladeXML 	*xml = NULL;
+GtkBuilder	*xml = NULL;
 GtkWidget	*error_label = NULL;
 GtkWidget	*connection_box = NULL;
 
@@ -285,25 +285,25 @@ main (int argc, char *argv[])
 
 	gtk_init (&argc, &argv);
 	
-	path = g_strdup_printf ("%s%s", PREFIX, GLADE_FILE);
-	xml = glade_xml_new (path, NULL, NULL);
-	g_free (path);
-	
-	if (xml == NULL)
-	{	
-		g_error (_("Failed to initialize interface."));
+	path = g_strdup_printf ("%s/%s", PREFIX, UI_FILE);
+	xml = gtk_builder_new ();
+	GError* error;
+	if (!gtk_builder_add_from_file (xml, path, &error)) {
+		g_error (_("Failed to initialize interface: %s"), error->message);
+		g_error_free(error);
 		exit_cleanup ();
 	}
+	g_free (path);
 	
-	glade_xml_signal_autoconnect (xml);
-	connection_box = glade_xml_get_widget (xml, "gimmix_connectionbox");
-	main_window = glade_xml_get_widget (xml, "main_window");
-	error_label = glade_xml_get_widget (xml, "gimmix_error_label");
-	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"gimmix_connect_button")),
+	gtk_builder_connect_signals (xml, NULL);
+	connection_box = GTK_WIDGET (gtk_builder_get_object (xml, "gimmix_connectionbox"));
+	main_window = GTK_WIDGET (gtk_builder_get_object (xml, "main_window"));
+	error_label = GTK_WIDGET (gtk_builder_get_object (xml, "gimmix_error_label"));
+	g_signal_connect (gtk_builder_get_object(xml,"gimmix_connect_button"),
 			"clicked",
 			G_CALLBACK(cb_gimmix_connect_button_clicked),
 			NULL);
-	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"gimmix_error_details_button")),
+	g_signal_connect (gtk_builder_get_object(xml,"gimmix_error_details_button"),
 			"clicked",
 			G_CALLBACK(cb_gimmix_error_details_button_clicked),
 			NULL);

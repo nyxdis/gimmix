@@ -28,7 +28,7 @@
 
 #define CONFIG_FILE ".gimmixrc"
 
-extern GladeXML 	*xml;
+extern GtkBuilder	*xml;
 extern GtkWidget	*connection_box;
 
 /* config file object */
@@ -60,22 +60,22 @@ gimmix_show_firstrun_dialog (void)
 	cfg_add_key (&cf, "enable_search",		"true");
 	cfg_add_key (&cf, "update_on_startup",	"false");
 			
-	window = glade_xml_get_widget (xml, "first_run_dialog");
-	button = glade_xml_get_widget (xml, "fr_apply");
+	window = GTK_WIDGET (gtk_builder_get_object (xml, "first_run_dialog"));
+	button = GTK_WIDGET (gtk_builder_get_object (xml, "fr_apply"));
 	g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK(on_fr_apply_clicked), NULL);
 	g_signal_connect (G_OBJECT(window), "delete_event", G_CALLBACK(gtk_main_quit), NULL);
-	button = glade_xml_get_widget (xml, "fr_close");
+	button = GTK_WIDGET (gtk_builder_get_object (xml, "fr_close"));
 	g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK(on_fr_close_clicked), window);
 	
-	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget(xml, "fr_hostname")), "localhost");
-	gtk_entry_set_text (GTK_ENTRY(glade_xml_get_widget(xml, "fr_port")), "6600");
+	gtk_entry_set_text (GTK_ENTRY(gtk_builder_get_object (xml, "fr_hostname")), "localhost");
+	gtk_entry_set_text (GTK_ENTRY(gtk_builder_get_object (xml, "fr_port")), "6600");
 	
-	entry = glade_xml_get_widget (xml, "fr_password");
+	entry = GTK_WIDGET (gtk_builder_get_object (xml, "fr_password"));
 	gtk_entry_set_visibility (GTK_ENTRY(entry), FALSE);
 	gtk_entry_set_invisible_char (GTK_ENTRY(entry), g_utf8_get_char("*"));
 
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(glade_xml_get_widget (xml, "fr_systray_toggle")), TRUE);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(glade_xml_get_widget (xml, "fr_notify_toggle")), TRUE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(gtk_builder_get_object (xml, "fr_systray_toggle")), TRUE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(gtk_builder_get_object (xml, "fr_notify_toggle")), TRUE);
 		
 	gtk_widget_show (window);
 		
@@ -118,30 +118,30 @@ on_fr_apply_clicked (G_GNUC_UNUSED GtkWidget *widget,
 	const gchar *dir;
 	gchar 		*rcfile;
 	
-	entry = glade_xml_get_widget (xml,"fr_hostname");
+	entry = GTK_WIDGET (gtk_builder_get_object (xml,"fr_hostname"));
 	host = gtk_entry_get_text (GTK_ENTRY(entry));
 	cfg_add_key (&cf, "mpd_hostname", (char *)host);
 	
-	entry = glade_xml_get_widget (xml,"fr_port");
+	entry = GTK_WIDGET (gtk_builder_get_object (xml,"fr_port"));
 	port = gtk_entry_get_text (GTK_ENTRY(entry));
 	cfg_add_key (&cf, "mpd_port", (char *)port);
 	
-	entry = glade_xml_get_widget (xml,"fr_password");
+	entry = GTK_WIDGET (gtk_builder_get_object (xml,"fr_password"));
 	password = gtk_entry_get_text (GTK_ENTRY(entry));
 	cfg_add_key (&cf, "mpd_password", (char *)password);
 	
-	entry = glade_xml_get_widget (xml, "fst_music_dir");
+	entry = GTK_WIDGET (gtk_builder_get_object (xml, "fst_music_dir"));
 	dir = gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER(entry));
 	cfg_add_key (&cf, "music_directory", (char *)dir);
 	
-	s_checkbox = glade_xml_get_widget (xml, "fr_systray_toggle");
+	s_checkbox = GTK_WIDGET (gtk_builder_get_object (xml, "fr_systray_toggle"));
 
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(s_checkbox)))
 	cfg_add_key (&cf, "enable_systray", "true");
 	else
 	cfg_add_key (&cf, "enable_systray", "false");
 	
-	s_checkbox = glade_xml_get_widget (xml, "fr_notify_toggle");
+	s_checkbox = GTK_WIDGET (gtk_builder_get_object (xml, "fr_notify_toggle"));
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(s_checkbox)))
 	cfg_add_key (&cf, "enable_notification", "true");
 	else

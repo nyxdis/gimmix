@@ -27,7 +27,7 @@
 #include <glib.h>
 #include "gimmix-metadata.h"
 
-extern GladeXML		*xml;
+extern GtkBuilder	*xml;
 extern MpdObj		*gmo;
 extern ConfigFile	conf;
 
@@ -45,16 +45,16 @@ static GtkWidget *metadata_container;
 void
 gimmix_metadata_init (void)
 {
-	metadata_song_title = glade_xml_get_widget (xml, "metadata_song_label");
-	metadata_song_artist = glade_xml_get_widget (xml, "metadata_artist_label");
-	metadata_song_album = glade_xml_get_widget (xml, "metadata_album_label");
-	metadata_song_genre = glade_xml_get_widget (xml, "metadata_genre_label");
-	metadata_song_albumreview = glade_xml_get_widget (xml, "metadata_albuminfo");
-	metadata_song_albumbox = glade_xml_get_widget (xml, "metadata_album_box");
-	metadata_song_artistbox = glade_xml_get_widget (xml, "metadata_artist_box");
-	metadata_song_genrebox = glade_xml_get_widget (xml, "metadata_genre_box");
-	metadata_song_cover = glade_xml_get_widget (xml, "metadata_albumart");
-	metadata_container = glade_xml_get_widget (xml, "metadata_container");
+	metadata_song_title = GTK_WIDGET (gtk_builder_get_object (xml, "metadata_song_label"));
+	metadata_song_artist = GTK_WIDGET (gtk_builder_get_object (xml, "metadata_artist_label"));
+	metadata_song_album = GTK_WIDGET (gtk_builder_get_object (xml, "metadata_album_label"));
+	metadata_song_genre = GTK_WIDGET (gtk_builder_get_object (xml, "metadata_genre_label"));
+	metadata_song_albumreview = GTK_WIDGET (gtk_builder_get_object (xml, "metadata_albuminfo"));
+	metadata_song_albumbox = GTK_WIDGET (gtk_builder_get_object (xml, "metadata_album_box"));
+	metadata_song_artistbox = GTK_WIDGET (gtk_builder_get_object (xml, "metadata_artist_box"));
+	metadata_song_genrebox = GTK_WIDGET (gtk_builder_get_object (xml, "metadata_genre_box"));
+	metadata_song_cover = GTK_WIDGET (gtk_builder_get_object (xml, "metadata_albumart"));
+	metadata_container = GTK_WIDGET (gtk_builder_get_object (xml, "metadata_container"));
 
 	return;
 }

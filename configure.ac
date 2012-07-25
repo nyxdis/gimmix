@@ -51,7 +51,7 @@ AC_MSG_CHECKING(whether lyrics plugin is enabled)
 if test "$lyrics" = "yes"; then
 	enable_lyrics=yes
 	AC_MSG_RESULT(yes)
-	pkg_modules="${pkg_modules} nxml libcurl"
+	pkg_modules="${pkg_modules} nxml libcurl libxml-2.0"
 	CFLAGS="${CFLAGS} -DHAVE_LYRICS"
 	AC_DEFINE(HAVE_LYRICS, 1, [building gimmix with lyrics support])
 else
@@ -70,7 +70,7 @@ if test "$cover" = "yes"; then
 	enable_cover=yes
 	AC_MSG_RESULT(yes)
 	if test "x$enable_lyrics" = "xno" ; then
-		pkg_modules="${pkg_modules} nxml libcurl"
+		pkg_modules="${pkg_modules} nxml libcurl libxml-2.0"
 	fi
 	CFLAGS="${CFLAGS} -DHAVE_COVER_PLUGIN"
 	AC_DEFINE(HAVE_COVER_PLUGIN, 1, [building gimmix with cover plugin support])
@@ -84,9 +84,9 @@ AM_CONDITIONAL(HAVE_COVER_PLUGIN, test "x$enable_cover" = "xyes")
 AC_MSG_CHECKING(for flying pigs)
 AC_MSG_RESULT([ooh, there is one!])
 
-pkg_modules="${pkg_modules} gtk+-2.0 >= 2.24 \
+pkg_modules="${pkg_modules} \
+	gtk+-2.0 >= 2.24 \
 	libmpd >= 0.17.0 \
-	libglade-2.0 >= 2.6.0 \
 	gthread-2.0 \
 	x11"
 

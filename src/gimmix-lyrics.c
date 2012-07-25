@@ -40,7 +40,7 @@
 #define SEARCH		1
 #define FETCHL		0
 
-extern GladeXML		*xml;
+extern GtkBuilder	*xml;
 extern MpdObj		*gmo;
 extern ConfigFile	conf;
 
@@ -61,9 +61,9 @@ gimmix_lyrics_plugin_init (void)
 {
 	char		*cpath = NULL;
 	
-	lyrics_textview = glade_xml_get_widget (xml, "lyrics_textview");
+	lyrics_textview = GTK_WIDGET (gtk_builder_get_object (xml, "lyrics_textview"));
 	
-	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"lyrics_get_btn")),
+	g_signal_connect (gtk_builder_get_object (xml,"lyrics_get_btn"),
 				"clicked",
 				G_CALLBACK(cb_gimmix_lyrics_get_btn_clicked),
 				NULL);

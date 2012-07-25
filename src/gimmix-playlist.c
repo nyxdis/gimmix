@@ -52,7 +52,7 @@ enum { TARGET_STRING, TARGET_ROOTWIN };
 	guint n_targets = sizeof(targetentries) / sizeof(targetentries[0]);
 	
 extern MpdObj		*gmo;
-extern GladeXML 	*xml;
+extern GtkBuilder	*xml;
 extern ConfigFile	conf;
 extern GtkWidget	*main_window;
 
@@ -262,9 +262,9 @@ static void		cb_playlists_delete_press (GtkWidget *widget, GdkEventKey *event, g
 static void
 gimmix_playlist_search_widgets_init (void)
 {
-	search_box = glade_xml_get_widget (xml, "search_box");
-	search_combo = glade_xml_get_widget (xml, "search_combo");
-	search_entry = glade_xml_get_widget (xml, "search_entry");
+	search_box = GTK_WIDGET (gtk_builder_get_object (xml, "search_box"));
+	search_combo = GTK_WIDGET (gtk_builder_get_object (xml, "search_combo"));
+	search_entry = GTK_WIDGET (gtk_builder_get_object (xml, "search_entry"));
 	
 	gtk_combo_box_set_active (GTK_COMBO_BOX(search_combo), 0);
 	g_signal_connect (G_OBJECT(search_entry), "key_release_event", G_CALLBACK(cb_search_keypress), NULL);
@@ -280,10 +280,10 @@ gimmix_playlist_setup_current_playlist_tvw (void)
 	GtkCellRenderer		*current_playlist_renderer;
 	GtkTreeViewColumn	*current_playlist_column;
 	
-	current_playlist_treeview = glade_xml_get_widget (xml, "current_playlist_treeview");
-	playlists_treeview = glade_xml_get_widget (xml, "playlists_treeview");
-	library_treeview = glade_xml_get_widget (xml, "album");
-	library_window = glade_xml_get_widget (xml,"library_window");
+	current_playlist_treeview = GTK_WIDGET (gtk_builder_get_object (xml, "current_playlist_treeview"));
+	playlists_treeview = GTK_WIDGET (gtk_builder_get_object (xml, "playlists_treeview"));
+	library_treeview = GTK_WIDGET (gtk_builder_get_object (xml, "album"));
+	library_window = GTK_WIDGET (gtk_builder_get_object (xml,"library_window"));
 	
 	current_playlist_renderer = gtk_cell_renderer_text_new ();
 	g_object_set (G_OBJECT(current_playlist_renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
@@ -386,8 +386,8 @@ gimmix_playlist_widgets_init (void)
 {
 	gimmix_playlist_setup_current_playlist_tvw ();
 	
-	gimmix_statusbar = glade_xml_get_widget (xml, "gimmix_status");
-	gimmix_statusbox = glade_xml_get_widget (xml, "gimmix_statusbox");
+	gimmix_statusbar = GTK_WIDGET (gtk_builder_get_object (xml, "gimmix_status"));
+	gimmix_statusbox = GTK_WIDGET (gtk_builder_get_object (xml, "gimmix_statusbox"));
 	
 	g_signal_connect (current_playlist_treeview, "row-activated", G_CALLBACK(cb_current_playlist_double_click), NULL);
 	g_signal_connect (current_playlist_treeview, "button-press-event", G_CALLBACK(cb_all_playlist_button_press), GINT_TO_POINTER (TRUE));
@@ -399,30 +399,30 @@ gimmix_playlist_widgets_init (void)
 	
 	/* initialize playlist toolbar */
 	/* Add button */
-	pls_button_add = glade_xml_get_widget (xml, "button_add");
-	g_signal_connect (G_OBJECT(pls_button_add), "clicked", G_CALLBACK(cb_add_button_clicked), (gpointer)glade_xml_get_widget(xml, "library_window"));
+	pls_button_add = GTK_WIDGET (gtk_builder_get_object (xml, "button_add"));
+	g_signal_connect (G_OBJECT(pls_button_add), "clicked", G_CALLBACK(cb_add_button_clicked), gtk_builder_get_object (xml, "library_window"));
 	
 	/* Remove button */
-	pls_button_del = glade_xml_get_widget (xml, "button_remove");
+	pls_button_del = GTK_WIDGET (gtk_builder_get_object (xml, "button_remove"));
 	g_signal_connect (G_OBJECT(pls_button_del), "clicked", G_CALLBACK(gimmix_current_playlist_remove_song), NULL);
 	
 	/* Clear button */
-	pls_button_clear = glade_xml_get_widget (xml, "button_clear");
+	pls_button_clear = GTK_WIDGET (gtk_builder_get_object (xml, "button_clear"));
 	g_signal_connect (G_OBJECT(pls_button_clear), "clicked", G_CALLBACK(gimmix_current_playlist_clear), NULL);
 	
 	/* Update button */
-	button_update = glade_xml_get_widget (xml, "button_update");
+	button_update = GTK_WIDGET (gtk_builder_get_object (xml, "button_update"));
 	g_signal_connect (G_OBJECT(button_update), "clicked", G_CALLBACK(gimmix_library_update), NULL);
 	
 	/* Save button */
-	pls_button_save = glade_xml_get_widget(xml, "button_save");
+	pls_button_save = GTK_WIDGET (gtk_builder_get_object (xml, "button_save"));
 	g_signal_connect (G_OBJECT (pls_button_save), "clicked", G_CALLBACK(gimmix_playlist_save_dialog_show), NULL);
 	
-	pls_playlists_box =  glade_xml_get_widget (xml, "pls_playlist_window");
+	pls_playlists_box = GTK_WIDGET (gtk_builder_get_object (xml, "pls_playlist_window"));
 	
 	/* Playlist toggle button */
-	current_pl_window = glade_xml_get_widget (xml, "current_pl_window");
-	pls_playlist_window = glade_xml_get_widget (xml, "pls_playlist_window");
+	current_pl_window = GTK_WIDGET (gtk_builder_get_object (xml, "current_pl_window"));
+	pls_playlist_window = GTK_WIDGET (gtk_builder_get_object (xml, "pls_playlist_window"));
 
 	
 
