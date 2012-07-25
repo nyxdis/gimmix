@@ -891,7 +891,7 @@ cb_current_playlist_delete_press (G_GNUC_UNUSED GtkWidget *widget,
 				  GdkEventKey		  *event,
 				  G_GNUC_UNUSED gpointer   data)
 {
-	if (event->keyval != GDK_Delete)
+	if (event->keyval != GDK_KEY_Delete)
 		return;
 	
 	gimmix_current_playlist_remove_song ();
@@ -1893,7 +1893,6 @@ gimmix_playlist_save_dialog_show (void)
                              dialog);
 	g_signal_connect (dialog, "delete-event", G_CALLBACK(gtk_widget_destroy), dialog);
 	gtk_misc_set_padding (GTK_MISC(label), 5, 5);
-	gtk_dialog_set_has_separator (GTK_DIALOG(dialog), FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER((GTK_DIALOG(dialog))->vbox), 10);
 	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), label);
 	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), entry);
@@ -1999,7 +1998,7 @@ cb_playlists_delete_press (G_GNUC_UNUSED GtkWidget *widget,
 			   GdkEventKey		   *event,
 			   G_GNUC_UNUSED gpointer   data)
 {
-	if (event->keyval != GDK_Delete)
+	if (event->keyval != GDK_KEY_Delete)
 		return;
 	
 	cb_gimmix_playlist_remove ();
@@ -2010,7 +2009,7 @@ cb_playlists_delete_press (G_GNUC_UNUSED GtkWidget *widget,
 static void
 cb_add_button_clicked (G_GNUC_UNUSED GtkWidget *widget, gpointer data)
 {
-	if (!GTK_WIDGET_VISIBLE(GTK_WINDOW(data)))
+	if (!gtk_widget_get_visible (GTK_WIDGET(data)))
 		gtk_widget_show (GTK_WIDGET(data));
 		
 	gtk_window_present (GTK_WINDOW(data));

@@ -23,6 +23,7 @@
 
 #include <glib.h>
 #include <glade/glade.h>
+#include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 #include "gimmix-interface.h"
 #include "gimmix-tooltip.h"
@@ -69,7 +70,6 @@ GtkWidget		*next_button;
 GtkWidget		*pref_button;
 GtkWidget		*stop_button;
 GtkWidget		*plcontrolshbox;
-GtkTooltips 		*play_button_tooltip = NULL;
 
 extern MpdObj 		*gmo;
 extern GladeXML 	*xml;
@@ -157,7 +157,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		if (state == MPD_PLAYER_PLAY)
 		{
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_MENU);
-			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
+			gtk_widget_set_tooltip_text (play_button, _("Pause <x or c>"));
 			
 			#ifdef HAVE_COVER_PLUGIN
 			if (gimmix_config_get_bool("coverart_enable"))
@@ -180,7 +180,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		if (state == MPD_PLAYER_PAUSE)
 		{
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_MENU);
-			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Play <x or c>"), NULL);
+			gtk_widget_set_tooltip_text (play_button, _("Play <x or c>"));
 		}
 		else
 		if (state == MPD_PLAYER_STOP)
@@ -205,11 +205,10 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			}
 			#endif
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_MENU);
-			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Play <x or c>"), NULL);
+			gtk_widget_set_tooltip_text (play_button, _("Play <x or c>"));
 			gimmix_update_current_playlist (mo, mpd_playlist_get_changes(mo,0));
 			return;
 		}
-		g_object_ref_sink (play_button_tooltip);
 		gimmix_update_current_playlist (mo, mpd_playlist_get_changes(mo,0));
 	}
 	
@@ -266,7 +265,7 @@ cb_playlist_button_press (G_GNUC_UNUSED GtkWidget *widget,
 	if (event->button != 1)
 		return FALSE;
 	
-	if (!GTK_WIDGET_VISIBLE(playlist_box))
+	if (!gtk_widget_get_visible(playlist_box))
 		gimmix_toggle_playlist_show (TRUE);
 	else
 		gimmix_toggle_playlist_show (FALSE);
@@ -373,8 +372,6 @@ gimmix_interface_widgets_init (void)
 	progress = glade_xml_get_widget (xml,"progress");
 	progressbox = glade_xml_get_widget (xml,"progress_event_box");
 	g_signal_connect (G_OBJECT(progressbox), "button_press_event", G_CALLBACK(cb_gimmix_progress_seek), NULL);
-	
-	play_button_tooltip = gtk_tooltips_new ();
 	
 	if (gimmix_config_get_bool("enable_systray"))
 	{
@@ -494,7 +491,7 @@ gimmix_init (void)
 			gimmix_set_song_info ();
 			status = -1;
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_MENU);
-			gtk_tooltips_set_tip (play_button_tooltip, play_button, _("Pause <x or c>"), NULL);
+			gtk_widget_set_tooltip_text (play_button, _("Pause <x or c>"));
 		}
 		else if (status == MPD_PLAYER_PAUSE)
 		{
@@ -568,31 +565,31 @@ cb_gimmix_key_press (G_GNUC_UNUSED GtkWidget   *widget,
 
 	if (event->type == GDK_KEY_PRESS) {
 		switch (event->keyval) {
-			case GDK_b: /* NEXT */
+			case GDK_KEY_b: /* NEXT */
 				cb_next_button_clicked (NULL, NULL);
 				result = TRUE;
 				break;
-			case GDK_v: /* STOP */
+			case GDK_KEY_v: /* STOP */
 				cb_stop_button_clicked (NULL, NULL);
 				result = TRUE;
 				break;
-			case GDK_c: /* PLAY/PAUSE */
+			case GDK_KEY_c: /* PLAY/PAUSE */
 				cb_play_button_clicked (NULL, NULL);
 				result = TRUE;
 				break;
-			case GDK_x: /* PLAY/PAUSE */
+			case GDK_KEY_x: /* PLAY/PAUSE */
 				cb_play_button_clicked (NULL, NULL);
 				result = TRUE;
 				break;
-			case GDK_z: /* PREV */
+			case GDK_KEY_z: /* PREV */
 				cb_prev_button_clicked (NULL, NULL);
 				result = TRUE;
 				break;
-			case GDK_i: /* INFO */
+			case GDK_KEY_i: /* INFO */
 				cb_info_button_press (NULL, NULL, NULL);
 				result = TRUE;
 				break;
-			case GDK_r: /* REPEAT */
+			case GDK_KEY_r: /* REPEAT */
 				state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(repeat_toggle_button));
 				if (state == TRUE)
 					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(repeat_toggle_button), FALSE);
@@ -600,7 +597,7 @@ cb_gimmix_key_press (G_GNUC_UNUSED GtkWidget   *widget,
 					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(repeat_toggle_button), TRUE);
 				result = TRUE;
 				break;
-			case GDK_s: /* SHUFFLE */
+			case GDK_KEY_s: /* SHUFFLE */
 				state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(shuffle_toggle_button));
 				if (state == TRUE)
 					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(shuffle_toggle_button), FALSE);
@@ -608,7 +605,7 @@ cb_gimmix_key_press (G_GNUC_UNUSED GtkWidget   *widget,
 					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(shuffle_toggle_button), TRUE);
 				result = TRUE;
 				break;
-			case GDK_l: /* TOGGLE DISPLAY PLAYLIST */
+			case GDK_KEY_l: /* TOGGLE DISPLAY PLAYLIST */
 				cb_playlist_button_press (NULL, NULL, NULL);
 				break;
 		}
@@ -714,7 +711,7 @@ static void
 cb_volume_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 			  gpointer		   data)
 {
-	if (GTK_WIDGET_VISIBLE (data))
+	if (gtk_widget_get_visible (data))
 		gtk_widget_hide (data);
 	else
 		gtk_widget_show (data);
@@ -725,7 +722,7 @@ cb_volume_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 static void
 gimmix_reposition_volume_window (GtkWidget *volwindow)
 {
-	if (volwindow == NULL || !GTK_WIDGET_VISIBLE(volwindow))
+	if (volwindow == NULL || !gtk_widget_get_visible(volwindow))
 	return;
 	
 	gint x, y;
@@ -896,7 +893,7 @@ gimmix_window_visible_toggle (void)
 	static int x;
 	static int y;
 
-	if( !GTK_WIDGET_VISIBLE (main_window) )
+	if( !gtk_widget_get_visible (main_window) )
 	{	
 		gtk_window_move (GTK_WINDOW(main_window), x, y);
 		gtk_widget_show (GTK_WIDGET(main_window));
@@ -1016,7 +1013,7 @@ static gboolean cb_gimmix_main_window_configure_event (
 		G_GNUC_UNUSED GdkEventConfigure *event,
 		gpointer			 data)
 {
-	if (!GTK_WIDGET_VISIBLE(data))
+	if (!gtk_widget_get_visible(data))
 		return FALSE;
 	
 	gimmix_reposition_volume_window (data);
@@ -1047,7 +1044,7 @@ gimmix_save_window_pos (void)
 	cfg_add_key (&conf, "window_height", height);
 	
 	/* save mode */
-	if (GTK_WIDGET_VISIBLE (GTK_WIDGET(playlist_box)))
+	if (gtk_widget_get_visible (GTK_WIDGET(playlist_box)))
 		cfg_add_key (&conf, "full_view_mode", "true");
 	else
 		cfg_add_key (&conf, "full_view_mode", "false");
@@ -1077,7 +1074,7 @@ gimmix_interface_cleanup (void)
 static gboolean
 is_user_searching (void)
 {
-	if (GTK_WIDGET_HAS_FOCUS(search_entry))
+	if (gtk_widget_has_focus (search_entry))
 		return TRUE;
 	
 	return FALSE;

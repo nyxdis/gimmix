@@ -84,7 +84,7 @@ AM_CONDITIONAL(HAVE_COVER_PLUGIN, test "x$enable_cover" = "xyes")
 AC_MSG_CHECKING(for flying pigs)
 AC_MSG_RESULT([ooh, there is one!])
 
-pkg_modules="${pkg_modules} gtk+-2.0 >= 2.6.0 \
+pkg_modules="${pkg_modules} gtk+-2.0 >= 2.24 \
 	libmpd >= 0.17.0 \
 	libglade-2.0 >= 2.6.0 \
 	gthread-2.0 \

@@ -99,10 +99,10 @@ gimmix_create_systray_icon (void)
 	gtk_widget_show (GTK_WIDGET(systray_icon));
 	gtk_widget_show (GTK_WIDGET(icon));
 	
-	gtk_widget_ref (tooltip->hbox);
+	g_object_ref (tooltip->hbox);
 	gtk_container_remove (GTK_CONTAINER(tooltip->window), tooltip->hbox);
 	gtk_container_add (GTK_CONTAINER(stooltip), tooltip->hbox);
-	gtk_widget_unref (tooltip->hbox);
+	g_object_unref (tooltip->hbox);
 	
 	return;
 }
