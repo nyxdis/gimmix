@@ -2,6 +2,7 @@
  * gimmix-playlist.c
  *
  * Copyright (C) 2006-2009 Priyank Gosalia
+ * Copyright (C) 2012-2013 Christoph Mende
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
