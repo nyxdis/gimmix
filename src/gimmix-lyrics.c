@@ -147,7 +147,6 @@ lyrics_process_lyrics_node (LYRICS_NODE *ptr)
 	nxml_data_t	*nroot = NULL;
 	nxml_data_t	*ndata = NULL;
 	nxml_data_t	*nndata = NULL;
-	nxml_error_t	e;
 
 	if (node == NULL)
 		return ret;
@@ -155,7 +154,7 @@ lyrics_process_lyrics_node (LYRICS_NODE *ptr)
 	url = g_strdup_printf ("%s%s", LYRICS_URL, node->hid);
 	//printf ("%s\n", url);
 	
-	e = nxml_new (&nxml);
+	nxml_new (&nxml);
 	nxml_set_timeout (nxml, 20);
 	gimmix_lyrics_plugin_proxy_init (nxml);
 	nxml_parse_url (nxml, url);
@@ -181,10 +180,9 @@ lyrics_perform_search (const char *url)
 	nxml_t		*nxml = NULL;
 	nxml_data_t	*nroot = NULL;
 	nxml_data_t	*child = NULL;
-	nxml_error_t	e;
 	LYRICS_NODE	*lnode = NULL;
 	
-	e = nxml_new (&nxml);
+	nxml_new (&nxml);
 	nxml_set_timeout (nxml, 20);
 	gimmix_lyrics_plugin_proxy_init (nxml);
 	nxml_parse_url (nxml, (char*)url);

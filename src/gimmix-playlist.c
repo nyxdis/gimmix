@@ -143,7 +143,6 @@ on_drag_data_get (G_GNUC_UNUSED GtkWidget      *widget,
 		  G_GNUC_UNUSED guint		time,
 		  G_GNUC_UNUSED gpointer	user_data)
 {
-	GtkTreeSelection	*selection = NULL;
 	GtkTreeModel		*model = NULL;
 	GList			*list = NULL;
 	GimmixFileType		type = -1;
@@ -152,7 +151,6 @@ on_drag_data_get (G_GNUC_UNUSED GtkWidget      *widget,
 
         g_assert (selection_data != NULL);
         
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(library_treeview));
 	list = gtk_tree_selection_get_selected_rows (library_selection, &model);
 	while (list != NULL)
 	{
@@ -482,13 +480,11 @@ gimmix_update_current_playlist (MpdObj *mo, MpdData *pdata)
 {
 	GtkListStore	*current_playlist_store;
 	GtkTreeIter	current_playlist_iter;
-	gint 		new;
 	gint		current_song_id = -1;
 	MpdData		*data = pdata;
 
 	if (data!=NULL && mpd_check_connected(mo))
 	{
-		new = mpd_playlist_get_playlist_id (mo);
 		current_song_id = mpd_player_get_current_song_id (mo);
 	}
 	else

@@ -366,19 +366,6 @@ gimmix_destroy_systray_icon (void)
 	return;
 }	
 
-#ifdef HAVE_COVER_PLUGIN
-static void
-gimmix_systray_update_tooltip_image (void)
-{
-	GdkPixbuf	*pixbuf = NULL;
-	
-	pixbuf = gimmix_covers_plugin_get_cover_image_of_size (48, 48);
-	gimmix_tooltip_set_icon (tooltip, pixbuf);
-	
-	return;
-}
-#endif
-
 void
 gimmix_update_systray_tooltip (mpd_Song *s)
 {
