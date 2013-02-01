@@ -492,10 +492,9 @@ cb_pref_coverart_disp_toggled (GtkToggleButton	     *button,
 {
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{
-		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-						NULL,
-						FALSE,
-						NULL);
+		g_thread_new ("covers_plugin_update_cover",
+				(GThreadFunc)gimmix_covers_plugin_update_cover,
+				NULL);
 		gtk_widget_show (gimmix_plcbox_frame);
 		cfg_add_key (&conf, "coverart_enable", "true");
 	}

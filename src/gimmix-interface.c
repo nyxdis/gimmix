@@ -134,17 +134,15 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		gimmix_update_current_playlist (mo, mpd_playlist_get_changes(mo,0));
 		#ifdef HAVE_COVER_PLUGIN
 		
-		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-				FALSE,
-				FALSE,
-				NULL);
+		g_thread_new ("covers_plugin_update_cover",
+				(GThreadFunc)gimmix_covers_plugin_update_cover,
+				FALSE);
 		
 		#endif
 		gimmix_set_song_info ();
 		#ifdef HAVE_LYRICS
-		g_thread_create ((GThreadFunc)gimmix_lyrics_plugin_update_lyrics,
-				NULL,
-				FALSE,
+		g_thread_new ("lyrics_plugin_update_lyrics",
+				(GThreadFunc)gimmix_lyrics_plugin_update_lyrics,
 				NULL);
 		#endif
 		return;
@@ -162,18 +160,16 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			#ifdef HAVE_COVER_PLUGIN
 			if (gimmix_config_get_bool("coverart_enable"))
 			{
-				g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-						FALSE,
-						FALSE,
-						NULL);
+				g_thread_new ("covers_plugin_update_cover",
+						(GThreadFunc)gimmix_covers_plugin_update_cover,
+						FALSE);
 			}
 			#endif
 			gimmix_set_song_info ();
 			#ifdef HAVE_LYRICS
-			g_thread_create ((GThreadFunc)gimmix_lyrics_plugin_update_lyrics ,
-				NULL,
-				FALSE,
-				NULL);
+			g_thread_new ("lyrics_plugin_update_lyrics",
+					(GThreadFunc)gimmix_lyrics_plugin_update_lyrics ,
+					NULL);
 			#endif
 		}
 		else
@@ -198,10 +194,9 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 			#ifdef HAVE_COVER_PLUGIN
 			if (gimmix_config_get_bool("coverart_enable"))
 			{
-				g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-						(gpointer)TRUE,
-						FALSE,
-						NULL);
+				g_thread_new ("covers_plugin_update_cover",
+						(GThreadFunc)gimmix_covers_plugin_update_cover,
+						(gpointer)TRUE);
 			}
 			#endif
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_MENU);
@@ -432,10 +427,9 @@ gimmix_interface_widgets_init (void)
 	#ifdef HAVE_COVER_PLUGIN
 	if (gimmix_config_get_bool("coverart_enable"))
 	{
-		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-				(gpointer)TRUE,
-				FALSE,
-				NULL);
+		g_thread_new ("covers_plugin_update_cover",
+				(GThreadFunc)gimmix_covers_plugin_update_cover,
+				(gpointer)TRUE);
 	}
 	#endif
 }
@@ -528,19 +522,17 @@ gimmix_init (void)
 	#ifdef HAVE_COVER_PLUGIN
 	if (gimmix_config_get_bool("coverart_enable"))
 	{
-		g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-				FALSE,
-				FALSE,
-				NULL);
+		g_thread_new ("covers_plugin_update_cover",
+				(GThreadFunc)gimmix_covers_plugin_update_cover,
+				FALSE);
 	}
 	
 	#endif*/
 	#ifdef HAVE_LYRICS
 	if (status == MPD_PLAYER_PLAY || status == MPD_PLAYER_PAUSE)
 	{
-		g_thread_create ((GThreadFunc)gimmix_lyrics_plugin_update_lyrics,
-				NULL,
-				FALSE,
+		g_thread_new ("lyrics_plugin_update_lyrics",
+				(GThreadFunc)gimmix_lyrics_plugin_update_lyrics,
 				NULL);
 	}
 	#endif
@@ -627,10 +619,9 @@ gimmix_timer (void)
 		#ifdef HAVE_COVER_PLUGIN
 		if (gimmix_config_get_bool("coverart_enable"))
 		{
-			g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-					(gpointer)TRUE, /* set default cover */
-					FALSE,
-					NULL);
+			g_thread_new ("covers_plugin_update_cover",
+					(GThreadFunc)gimmix_covers_plugin_update_cover,
+					(gpointer)TRUE); /* set default cover */
 		}
 		#endif
 		return FALSE;

@@ -84,6 +84,7 @@ AC_MSG_CHECKING(for flying pigs)
 AC_MSG_RESULT([ooh, there is one!])
 
 pkg_modules="${pkg_modules} \
+	glib-2.0 >= 2.32 \
 	gtk+-2.0 >= 2.24 \
 	libmpd >= 0.17.0 \
 	gthread-2.0 \

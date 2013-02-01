@@ -50,7 +50,7 @@ static GtkWidget	*lyrics_textview = NULL;
 static gchar*		search_artist = NULL;
 static gchar*		search_title = NULL;
 static gchar*		lyrics_dir = NULL;
-static GMutex		*l_mutex = NULL;
+static GMutex		l_mutex;
 
 static gchar *lyrics_url_encode (const char *string);
 static gboolean lyrics_process_lyrics_node (LYRICS_NODE *ptr);
@@ -75,9 +75,6 @@ gimmix_lyrics_plugin_init (void)
 	g_free (cpath);
 	
 	lyrics_dir = cfg_get_path_to_config_file (LYRICS_DIR);
-	
-	/* initialize mutex */
-	l_mutex = g_mutex_new ();
 
 	return;
 }
@@ -86,7 +83,6 @@ void
 gimmix_lyrics_plugin_cleanup (void)
 {
 	g_free (lyrics_dir);
-	g_mutex_free (l_mutex);
 	
 	return;
 }
@@ -275,7 +271,7 @@ lyrics_search (void)
 	gchar		*artist = NULL;
 	gchar		*title = NULL;
 
-	g_mutex_lock (l_mutex);
+	g_mutex_lock (&l_mutex);
 	if (search_artist != NULL && search_title != NULL)
 	{
 		/* first check if the lyrics exist in ~/.lyrics/ */
@@ -309,7 +305,7 @@ lyrics_search (void)
 			g_free (path);
 			g_free (artist);
 			g_free (title);
-			g_mutex_unlock (l_mutex);
+			g_mutex_unlock (&l_mutex);
 			return ret;
 		}
 		g_free (path);
@@ -344,7 +340,7 @@ lyrics_search (void)
 	}
 	g_free (artist);
 	g_free (title);
-	g_mutex_unlock (l_mutex);
+	g_mutex_unlock (&l_mutex);
 	return ret;
 }
 
@@ -428,10 +424,9 @@ static void
 cb_gimmix_lyrics_get_btn_clicked (G_GNUC_UNUSED GtkWidget *widget,
 				  G_GNUC_UNUSED gpointer   data)
 {
-	g_thread_create ((GThreadFunc)gimmix_lyrics_plugin_update_lyrics ,
-				NULL,
-				FALSE,
-				NULL);
+	g_thread_new ("lyrics_plugin_update_lyrics",
+			(GThreadFunc)gimmix_lyrics_plugin_update_lyrics ,
+			NULL);
 
 	return;
 }

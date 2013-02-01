@@ -61,7 +61,7 @@ static GtkWidget	*gimmix_plcbox_image;
 static GtkWidget	*gimmix_plcbox_eventbox;
 
 GtkWidget		*gimmix_plcbox_frame;
-static GMutex		*mutex = NULL;
+static GMutex		c_mutex;
 
 /* Get metadata for the specified arguments */
 static CoverNode* gimmix_covers_plugin_get_metadata (char *artist, char *album);
@@ -118,10 +118,9 @@ cb_gimmix_covers_plugin_cover_file_preview (GtkFileChooser *file_chooser, gpoint
 static void
 cb_gimmix_covers_plugin_refetch_cover (void)
 {
-	g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-				FALSE,
-				FALSE,
-				NULL);
+	g_thread_new ("covers_plugin_update_cover",
+			(GThreadFunc)gimmix_covers_plugin_update_cover,
+			FALSE);
 
 	return;
 }
@@ -171,10 +170,9 @@ cb_gimmix_covers_plugin_set_cover_from_file (void)
 				if (artist!=NULL && album!=NULL)
 				{
 					gimmix_cover_plugin_save_cover (artist, album);
-					g_thread_create ((GThreadFunc)gimmix_covers_plugin_update_cover,
-							FALSE,
-							FALSE,
-							NULL);
+					g_thread_new ("covers_plugin_update_cover",
+							(GThreadFunc)gimmix_covers_plugin_update_cover,
+							FALSE);
 					g_free (artist);
 					g_free (album);
 				}
@@ -268,9 +266,6 @@ gimmix_covers_plugin_init (void)
 	/* initialize curl */
 	curl = curl_easy_init ();
 	
-	/* initialize mutex */
-	mutex = g_mutex_new ();
-	
 	/* initialize cover database */
 	gimmix_covers_plugin_cover_db_init ();
 	
@@ -298,10 +293,6 @@ void
 gimmix_covers_plugin_cleanup (void)
 {
 	curl_easy_cleanup (curl);
-	if (mutex)
-	{
-		g_mutex_free (mutex);
-	}
 	
 	return;
 }
@@ -896,7 +887,7 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 	guint		height;
 	GdkPixbuf	*pixbuf = NULL;
 
-	g_mutex_lock (mutex);
+	g_mutex_lock (&c_mutex);
 	height = h3_size;
 	if (!defaultc)
 	{
@@ -945,7 +936,7 @@ gimmix_covers_plugin_update_cover (gboolean defaultc)
 			}
 		}
 	}
-	g_mutex_unlock (mutex);
+	g_mutex_unlock (&c_mutex);
 
 	return;
 }
