@@ -195,7 +195,7 @@ gimmix_tag_editor_populate (const void *song)
 	}
 	if (genre)
 	{
-		gtk_combo_box_append_text (GTK_COMBO_BOX(tag_genre), genre);
+		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT(tag_genre), genre);
 	}
 
 	genre_model = gtk_combo_box_get_model (GTK_COMBO_BOX(tag_genre));
@@ -283,7 +283,7 @@ gimmix_tag_editor_save (G_GNUC_UNUSED GtkWidget *button,
 	artist = g_strdup (gtk_entry_get_text (GTK_ENTRY(tag_artist)));
 	album = g_strdup (gtk_entry_get_text (GTK_ENTRY(tag_album)));
 	comment = g_strdup (gtk_entry_get_text (GTK_ENTRY(tag_comment)));
-	genre = gtk_combo_box_get_active_text (GTK_COMBO_BOX(tag_genre));
+	genre = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT(tag_genre));
 
 	if (title)
 	{
