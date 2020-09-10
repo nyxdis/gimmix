@@ -39,9 +39,9 @@ typedef enum {
 } GimmixColumnType;
 
 typedef enum {
-	SONG = 1,
-	DIR,
-	PLAYLIST
+	GIMMIX_FILE_SONG = 1,
+	GIMMIX_FILE_DIR,
+	GIMMIX_FILE_PLAYLIST
 } GimmixFileType;
 
 enum { TARGET_STRING, TARGET_ROOTWIN };
@@ -157,7 +157,7 @@ on_drag_data_get (G_GNUC_UNUSED GtkWidget      *widget,
 		gtk_tree_model_get_iter (model, &iter, list->data);
 		gtk_tree_model_get (model, &iter, 2, &path, 3, &type, -1);
 		
-		if (type == DIR || type == SONG)
+		if (type == GIMMIX_FILE_DIR || type == GIMMIX_FILE_SONG)
 		{
 			switch (target_type)
 			{
@@ -681,7 +681,7 @@ gimmix_library_and_playlists_populate (void)
 						GDK_TYPE_PIXBUF, 	/* icon (0) */
 						G_TYPE_STRING, 		/* name (1) */
 						G_TYPE_STRING,		/* path (2) */
-						G_TYPE_INT,			/* type DIR/SONG (3) */
+						G_TYPE_INT,			/* type GIMMIX_FILE_DIR/GIMMIX_FILE_SONG (3) */
 						G_TYPE_INT);		/* id (4) */
 	
 	pls_store 	= gtk_list_store_new (2, 
@@ -706,7 +706,7 @@ gimmix_library_and_playlists_populate (void)
 						0, dir_pixbuf,
 						1, path,
 						2, data->directory,
-						3, DIR,
+						3, GIMMIX_FILE_DIR,
 						-1);
 			g_free (path);
 		}
@@ -732,7 +732,7 @@ gimmix_library_and_playlists_populate (void)
 						0, song_pixbuf,
 						1, title,
 						2, data->song->file,
-						3, SONG,
+						3, GIMMIX_FILE_SONG,
 						-1);
 			g_free (title);
 		}
@@ -848,7 +848,7 @@ gimmix_library_search (gint type, gchar *text)
 								0, song_pixbuf,
 								1, title,
 								2, data->song->file,
-								3, SONG,
+								3, GIMMIX_FILE_SONG,
 								-1);
 			g_free (title);
 		}
@@ -968,11 +968,11 @@ cb_library_dir_activated (G_GNUC_UNUSED gpointer data)
 		gtk_tree_model_get_iter (model, &iter, list->data);
 		gtk_tree_model_get (model, &iter, 2, &path, 3, &type, -1);
 		
-		if (type == DIR)
+		if (type == GIMMIX_FILE_DIR)
 		{	
 			gimmix_update_library_with_dir (path);
 		}
-		else if (type == SONG)
+		else if (type == GIMMIX_FILE_SONG)
 		{
 			mpd_playlist_add (gmo, path);
 			added = true;
@@ -1020,11 +1020,11 @@ cb_library_popup_add_clicked (G_GNUC_UNUSED GtkWidget *widget,
 		gtk_tree_model_get_iter (model, &iter, list->data);
 		gtk_tree_model_get (model, &iter, 2, &path, 3, &type, -1);
 		
-		if (type == DIR)
+		if (type == GIMMIX_FILE_DIR)
 		{
 			mpd_playlist_queue_add (gmo, path);
 		}
-		else if (type == SONG)
+		else if (type == GIMMIX_FILE_SONG)
 		{
 			mpd_playlist_add (gmo, path);
 		}
@@ -1038,13 +1038,13 @@ cb_library_popup_add_clicked (G_GNUC_UNUSED GtkWidget *widget,
 		gtk_tree_model_get (model, &iter, 2, &path, 3, &type, -1);
 	
 		
-		if (type == DIR)
+		if (type == GIMMIX_FILE_DIR)
 		{	
 			mpd_playlist_queue_add (gmo, path);
 			g_free (path);
 		}
 		
-		if (type == SONG)
+		if (type == GIMMIX_FILE_SONG)
 		{
 			mpd_playlist_queue_add (gmo, path);
 			g_free (path);
@@ -1097,11 +1097,11 @@ cd_library_popup_replace_clicked (G_GNUC_UNUSED GtkWidget *widget,
 		gtk_tree_model_get_iter (model, &iter, list->data);
 		gtk_tree_model_get (model, &iter, 2, &path, 3, &type, -1);
 		
-		if (type == DIR)
+		if (type == GIMMIX_FILE_DIR)
 		{
 			mpd_playlist_queue_add (gmo, path);
 		}
-		else if (type == SONG)
+		else if (type == GIMMIX_FILE_SONG)
 		{
 			mpd_playlist_add (gmo, path);
 		}
@@ -1115,13 +1115,13 @@ cd_library_popup_replace_clicked (G_GNUC_UNUSED GtkWidget *widget,
 		gtk_tree_model_get (model, &iter, 2, &path, 3, &type, -1);
 	
 		
-		if (type == DIR)
+		if (type == GIMMIX_FILE_DIR)
 		{	
 			mpd_playlist_queue_add (gmo, path);
 			g_free (path);
 		}
 		
-		if (type == SONG)
+		if (type == GIMMIX_FILE_SONG)
 		{
 			mpd_playlist_queue_add (gmo, path);
 			g_free (path);
@@ -1261,7 +1261,7 @@ gimmix_update_library_with_dir (gchar *dir)
 					0, dir_pixbuf,
 					1, "..",
 					2, parent,
-					3, DIR,
+					3, GIMMIX_FILE_DIR,
 					-1);
 		g_free (parent);
 	}
@@ -1276,7 +1276,7 @@ gimmix_update_library_with_dir (gchar *dir)
 								0, dir_pixbuf,
 								1, directory,
 								2, data->directory,
-								3, DIR,
+								3, GIMMIX_FILE_DIR,
 								-1);
 			g_free (directory);
 		}
@@ -1301,7 +1301,7 @@ gimmix_update_library_with_dir (gchar *dir)
 								0, song_pixbuf,
 								1, title,
 								2, data->song->file,
-								3, SONG,
+								3, GIMMIX_FILE_SONG,
 								-1);
 			g_free (title);
 		}
@@ -1359,7 +1359,7 @@ gimmix_library_song_info (void)
 	gtk_tree_model_get_iter (model, &iter, list->data);
 	gtk_tree_model_get (model, &iter, 2, &path, 3, &type, 4, &id, -1);
 
-	if (type == DIR)
+	if (type == GIMMIX_FILE_DIR)
 	{
 		g_free (path);
 		return;
