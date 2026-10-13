@@ -1,13 +1,14 @@
-SUBDIRS = src po
+ACLOCAL_AMFLAGS = -I m4
 
-sharedir   = $(pkgdatadir)
-share_DATA = glade/gimmix.ui data/gimmix_firstrun.png
+SUBDIRS = po src
+
+pkgdata_DATA = glade/gimmix.ui data/gimmix_firstrun.png
 
 icondir = $(datadir)/pixmaps
 icon_DATA = data/gimmix.png \
-			data/gimmix_logo_small.png \
-			data/gimmix_playlist.png \
-			data/gimmix-album.png
+	    data/gimmix_logo_small.png \
+	    data/gimmix_playlist.png \
+	    data/gimmix-album.png
 
 desktopdir = $(datadir)/applications
 desktop_DATA = data/gimmix.desktop
@@ -16,6 +17,8 @@ man_MANS = gimmix.1
 
 EXTRA_DIST =				\
 	$(icon_DATA)			\
-	$(share_DATA)			\
+	$(pkgdata_DATA)			\
 	$(desktop_DATA)			\
-	$(man_MANS)
+	$(man_MANS)			\
+	autogen.sh			\
+	README NEWS TODO AUTHORS INSTALL

@@ -1,8 +1,8 @@
-#!/bin/sh -ex
+#!/bin/sh -e
 
-glib-gettextize --copy --force
-intltoolize --automake --copy --force
-aclocal
-autoconf
-autoheader
-automake --force-missing --add-missing --copy --foreign
+autopoint --force
+autoreconf -fiv
+
+if [ -z "${NOCONFIGURE}" ]; then
+	./configure "$@"
+fi

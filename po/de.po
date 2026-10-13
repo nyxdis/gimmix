@@ -8,776 +8,191 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-24 03:25+0200\n"
+"Report-Msgid-Bugs-To: https://github.com/nyxdis/gimmix/issues\n"
+"POT-Creation-Date: 2026-10-13 19:36+0200\n"
 "PO-Revision-Date: 2008-07-22 23:18+0200\n"
 "Last-Translator: Martin Stromberger <mstromberger@aon.at>\n"
 "Language-Team: deutsch <de@li.org>\n"
-"Language: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../src/gimmix.c:225
-#, fuzzy
-msgid "© 2006-2009 Priyank Gosalia  (GPL)"
-msgstr "© 2006-2007 Priyank Gosalia  (GPL)"
-
-#: ../src/gimmix.c:226
+#: src/gimmix.c:242
 msgid "Gimmix is a graphical music player daemon (MPD) client written in C."
 msgstr "Gimmix ist ein graphisches Frontend für den MPD, geschrieben in C."
 
-#: ../src/gimmix.c:294
-msgid "Failed to initialize interface."
+#: src/gimmix.c:300
+#, fuzzy, c-format
+msgid "Failed to initialize interface: %s"
 msgstr "Die Benutzerschnittstelle konnte nicht geladen werden."
 
-#: ../src/gimmix-core.c:158
+#: src/gimmix-core.c:159
 msgid "Error"
 msgstr "Fehler"
 
-#: ../src/gimmix-core.c:158
+#: src/gimmix-core.c:159
 msgid "Status Failed."
 msgstr "Fehlgeschlagen."
 
-#: ../src/gimmix-interface.c:160 ../src/gimmix-interface.c:497
+#: src/gimmix-interface.c:141 src/gimmix-interface.c:438
 msgid "Pause <x or c>"
 msgstr "Pause <x oder c>"
 
-#: ../src/gimmix-interface.c:183 ../src/gimmix-interface.c:208
+#: src/gimmix-interface.c:148 src/gimmix-interface.c:165
 msgid "Play <x or c>"
 msgstr "Play <x oder c>"
 
-#: ../src/gimmix-interface.c:191 ../src/gimmix-interface.c:195
-#: ../src/gimmix-interface.c:505 ../src/gimmix-interface.c:507
+#: src/gimmix-interface.c:155 src/gimmix-interface.c:159
+#: src/gimmix-interface.c:446 src/gimmix-interface.c:448
 msgid "Stopped"
 msgstr "Gestoppt"
 
-#: ../src/gimmix-systray.c:411
+#: src/gimmix-systray.c:296
 msgid "by"
 msgstr "von"
 
-#: ../src/gimmix-playlist.c:290 ../src/gimmix-playlist.c:1656
+#: src/gimmix-playlist.c:289 src/gimmix-playlist.c:1624 glade/gimmix.ui:397
 msgid "Title"
 msgstr "Titel"
 
-#: ../src/gimmix-playlist.c:303 ../src/gimmix-playlist.c:1663
+#: src/gimmix-playlist.c:302 src/gimmix-playlist.c:1631 glade/gimmix.ui:391
 msgid "Artist"
 msgstr ""
 
-#: ../src/gimmix-playlist.c:316 ../src/gimmix-playlist.c:1670
+#: src/gimmix-playlist.c:315 src/gimmix-playlist.c:1638 glade/gimmix.ui:394
 msgid "Album"
 msgstr ""
 
-#: ../src/gimmix-playlist.c:328 ../src/gimmix-playlist.c:1677
+#: src/gimmix-playlist.c:327 src/gimmix-playlist.c:1645
 msgid "Length"
 msgstr "Länge"
 
-#: ../src/gimmix-playlist.c:616
+#: src/gimmix-playlist.c:613
 msgid "Items"
 msgstr "Einträge"
 
-#: ../src/gimmix-playlist.c:616
+#: src/gimmix-playlist.c:613
 msgid "Total Duration: "
 msgstr "Gesamtzeit: "
 
-#: ../src/gimmix-playlist.c:616
+#: src/gimmix-playlist.c:613
 msgid "minutes"
 msgstr "Minuten"
 
-#: ../src/gimmix-playlist.c:828
+#: src/gimmix-playlist.c:825
 msgid "No Result"
 msgstr "Kein Ergebnis"
 
-#: ../src/gimmix-playlist.c:1388 ../src/gimmix-playlist.c:1436
-#: ../src/gimmix-tagedit.c:349
+#: src/gimmix-playlist.c:1364 src/gimmix-playlist.c:1411
+#: src/gimmix-tagedit.c:357
 msgid ""
 "An error occurred while trying to get song information. Please try again."
 msgstr ""
 
-#: ../src/gimmix-playlist.c:1607
+#: src/gimmix-playlist.c:1575
 msgid "Crop"
 msgstr ""
 
-#: ../src/gimmix-playlist.c:1631
+#: src/gimmix-playlist.c:1599
 msgid "Repeat"
 msgstr "Wiederholen"
 
-#: ../src/gimmix-playlist.c:1638
+#: src/gimmix-playlist.c:1606
 msgid "Shuffle"
 msgstr "Zufällig"
 
-#: ../src/gimmix-playlist.c:1649 ../glade/gimmix.glade.h:16
+#: src/gimmix-playlist.c:1617 glade/gimmix.ui:1625
 msgid "Save Playlist"
 msgstr "Wiedergabeliste speichern"
 
-#: ../src/gimmix-playlist.c:1684
+#: src/gimmix-playlist.c:1652
 #, fuzzy
 msgid "Columns"
 msgstr "Lautstärke"
 
-#: ../src/gimmix-playlist.c:1720
+#: src/gimmix-playlist.c:1688
 msgid "Replace"
 msgstr ""
 
-#: ../src/gimmix-playlist.c:1738 ../glade/gimmix.glade.h:17
+#: src/gimmix-playlist.c:1706 glade/gimmix.ui:1670 glade/gimmix.ui:1692
 msgid "Update Library"
 msgstr "Sammlung aktualisieren"
 
-#: ../src/gimmix-playlist.c:1762
+#: src/gimmix-playlist.c:1730
 msgid "Load"
 msgstr "Laden"
 
-#: ../src/gimmix-playlist.c:1768
+#: src/gimmix-playlist.c:1736
 msgid "Delete"
 msgstr "Löschen"
 
-#: ../src/gimmix-playlist.c:1826
+#: src/gimmix-playlist.c:1794
 msgid "Updating Library..."
 msgstr "Sammlung aktualisieren..."
 
-#: ../src/gimmix-playlist.c:1876
+#: src/gimmix-playlist.c:1846
 msgid "Save playlist"
 msgstr "Wiedergabeliste speichern"
 
-#: ../src/gimmix-playlist.c:1915 ../src/gimmix-playlist.c:1926
-#, c-format
+#: src/gimmix-playlist.c:1884 src/gimmix-playlist.c:1894
 msgid "playlist already exists.\n"
 msgstr "Wiedergabeliste ist bereits vorhanden.\n"
 
-#: ../src/gimmix-prefs.c:126
+#: src/gimmix-prefs.c:127
 #, fuzzy
 msgid "Enabled"
 msgstr "Überblendung aktivieren"
 
-#: ../src/gimmix-prefs.c:134
+#: src/gimmix-prefs.c:135
 msgid "Device"
 msgstr ""
 
-#: ../src/gimmix-tagedit.c:346
+#: src/gimmix-tagedit.c:354
 msgid "Invalid music directory."
 msgstr "Ungültiges Musikverzeichnis."
 
-#: ../src/gimmix-tagedit.c:375
+#: src/gimmix-tagedit.c:383
 msgid "ERROR"
 msgstr "Fehler"
 
-#: ../src/gimmix-covers.c:208
+#: src/gimmix-covers.c:166
+msgid ""
+"The current song has no artist or album tag, so the cover cannot be stored."
+msgstr ""
+
+#: src/gimmix-covers.c:172 src/gimmix-covers.c:229
 msgid "Set cover from file"
 msgstr ""
 
-#: ../src/gimmix-covers.c:215
+#: src/gimmix-covers.c:182
+msgid "Images"
+msgstr ""
+
+#: src/gimmix-covers.c:202
+msgid ""
+"There was an error while setting the album cover. Please try using a "
+"different image."
+msgstr ""
+
+#: src/gimmix-covers.c:236
 msgid "Re-fetch cover"
 msgstr ""
 
-#: ../src/gimmix-lyrics.c:371
+#: src/gimmix-lyrics.c:221 src/gimmix-lyrics.c:263
 msgid "Lyrics not found"
 msgstr ""
 
-#: ../glade/gimmix.glade.h:1
+#: src/gimmix-lyrics.c:278
+msgid "Fetching lyrics..."
+msgstr ""
+
+#: glade/gimmix.ui:39 glade/gimmix.ui:1018 glade/gimmix.ui:1083
 msgid "Gimmix"
 msgstr "Gimmix"
 
-#: ../glade/gimmix.glade.h:2
-#, fuzzy
-msgid "<b>Error</b>"
-msgstr "<b>Suchen</b>"
-
-#: ../glade/gimmix.glade.h:3
-msgid "Details"
-msgstr ""
-
-#: ../glade/gimmix.glade.h:4
-#, fuzzy
-msgid "Connect"
-msgstr "Verbindung"
-
-#: ../glade/gimmix.glade.h:5
-msgid "Prev <z>"
-msgstr "Zurück <z>"
-
-#: ../glade/gimmix.glade.h:6
-msgid "Stop <v>"
-msgstr "Stopp <v>"
-
-#: ../glade/gimmix.glade.h:7
-msgid "Next <b>"
-msgstr "Weiter <b>"
-
-#: ../glade/gimmix.glade.h:8
-msgid "Shuffle <s>"
-msgstr "Zufällig <s>"
-
-#: ../glade/gimmix.glade.h:9
-msgid "Repeat <r>"
-msgstr "Wiederholen <r>"
-
-#: ../glade/gimmix.glade.h:10
-msgid "Song Info <i>"
-msgstr "Lied Info <i>"
-
-#: ../glade/gimmix.glade.h:11
-msgid "Configure Gimmix"
-msgstr "Gimmix konfigurieren"
-
-#: ../glade/gimmix.glade.h:12
-msgid "Volume"
-msgstr "Lautstärke"
-
-#: ../glade/gimmix.glade.h:13
-msgid "Add"
-msgstr "Hinzufügen"
-
-#: ../glade/gimmix.glade.h:14
-msgid "Remove"
-msgstr "Entfernen"
-
-#: ../glade/gimmix.glade.h:15
-msgid "Clear"
-msgstr "Löschen"
-
-#: ../glade/gimmix.glade.h:18
-msgid "<b>Current Playlist</b>"
-msgstr "<b>Aktuelle Wiedergabeliste</b>"
-
-#: ../glade/gimmix.glade.h:19
-msgid "<b>Playlist Manager</b>"
-msgstr "<b>Wiedergabelisten</b>"
-
-#: ../glade/gimmix.glade.h:20
-#, fuzzy
-msgid "<b>Artist : </b>"
-msgstr "<b>Artist :</b>"
-
-#: ../glade/gimmix.glade.h:21
-#, fuzzy
-msgid "<b>Album : </b>"
-msgstr "<b>Album :</b>"
-
-#: ../glade/gimmix.glade.h:22
-#, fuzzy
-msgid "<b>Genre : </b>"
-msgstr "<b>Genre :</b>"
-
-#: ../glade/gimmix.glade.h:23
-msgid "Get Lyrics"
-msgstr ""
-
-#: ../glade/gimmix.glade.h:24
-#, fuzzy
-msgid "<b>Metadata</b>"
-msgstr "<b>Suchen</b>"
-
-#: ../glade/gimmix.glade.h:25
-msgid "Library"
-msgstr "Sammlung"
-
-#: ../glade/gimmix.glade.h:26
-msgid "<b> Search </b>"
-msgstr "<b> Suchen </b>"
-
-#: ../glade/gimmix.glade.h:27
-msgid ""
-"Artist\n"
-"Album\n"
-"Title\n"
-"Filename\n"
-msgstr ""
-"Artist\n"
-"Album\n"
-"Titel\n"
-"Dateiname\n"
-
-#: ../glade/gimmix.glade.h:32
-msgid "Close"
-msgstr "Schließen"
-
-#: ../glade/gimmix.glade.h:33
-msgid "Preferences"
-msgstr "Einstellungen"
-
-#: ../glade/gimmix.glade.h:34
-msgid "<b>Preferences</b>"
-msgstr "<b>Einstellungen</b>"
-
-#: ../glade/gimmix.glade.h:35
-msgid "Password"
-msgstr "Passwort"
-
-#: ../glade/gimmix.glade.h:36
-msgid "Port"
-msgstr "Port"
-
-#: ../glade/gimmix.glade.h:37
-#, fuzzy
-msgid "Hostname / IP"
-msgstr "Hostname"
-
-#: ../glade/gimmix.glade.h:38
-msgid "<b>MPD Settings</b>"
-msgstr ""
-
-#: ../glade/gimmix.glade.h:39
-msgid "Use a proxy server"
-msgstr ""
-
-#: ../glade/gimmix.glade.h:40
-#, fuzzy
-msgid "<b>Proxy Settings</b>"
-msgstr "<b>Einstellungen</b>"
-
-#: ../glade/gimmix.glade.h:41
-msgid "Connection"
-msgstr "Verbindung"
-
-#: ../glade/gimmix.glade.h:42
-msgid "Immediately play songs when i add them to playlist."
-msgstr "Lied abspielen wenn es zur Wiedergabeliste hinzugefügt wird."
-
-#: ../glade/gimmix.glade.h:43
-msgid "Stop playback when Gimmix exits."
-msgstr "Wiedergabe stoppen wenn Gimmix beendet wird."
-
-#: ../glade/gimmix.glade.h:44
-msgid "Update the mpd database on startup."
-msgstr "Die Sammlung beim Start aktualisieren."
-
-#: ../glade/gimmix.glade.h:45
-msgid "Enable Crossfade"
-msgstr "Überblendung aktivieren"
-
-#: ../glade/gimmix.glade.h:46
-msgid "Fade Time:"
-msgstr "Überblendung Dauer:"
-
-#: ../glade/gimmix.glade.h:47
-msgid "<b>Output Device</b>"
-msgstr ""
-
-#: ../glade/gimmix.glade.h:48
-msgid "Behavior"
-msgstr "Verhalten"
-
-#: ../glade/gimmix.glade.h:49
-msgid "<b>Music Directory : </b>"
-msgstr "<b>Musikverzeichnis : </b>"
-
-#: ../glade/gimmix.glade.h:50
-msgid "Select the directory"
-msgstr "Das Verzeichnis auswählen"
-
-#: ../glade/gimmix.glade.h:51
-msgid ""
-"Select the directory where your music is stored. \n"
-"<b>Note: </b> The directory should be same as what you specified in your mpd "
-"settings. \n"
-"If you're not sure, check your mpd configuration file mpd.conf"
-msgstr ""
-"Das Musikverzeichnis auswählen. \n"
-"<b>Hinweis: </b> Es sollte das gleiche Verzeichnis wie beim MPD angegeben "
-"werden. \n"
-"Wenn Sie sich nicht sicher sind können Sie den Eintrag aus der Datei \"mpd."
-"conf\" entnehmen."
-
-#: ../glade/gimmix.glade.h:54
-msgid "Directories"
-msgstr "Verzeichnisse"
-
-#: ../glade/gimmix.glade.h:55
-msgid "Enable Library Search"
-msgstr "Suche für Sammlung aktivieren"
-
-#: ../glade/gimmix.glade.h:56
-msgid "<b>Search</b>"
-msgstr "<b>Suchen</b>"
-
-#: ../glade/gimmix.glade.h:57
-msgid "Enable system tray icon"
-msgstr "Icon im Systemtray anzeigen"
-
-#: ../glade/gimmix.glade.h:58
-msgid "Enable system tray tooltip"
-msgstr "Tooltip im Systemtray anzeigen"
-
-#: ../glade/gimmix.glade.h:59
-msgid "<b>System Tray</b>"
-msgstr "<b>Systemtray</b>"
-
-#: ../glade/gimmix.glade.h:60
-msgid "Interface"
-msgstr "Benutzerschnittstelle"
-
-#: ../glade/gimmix.glade.h:61
-msgid "Enable cover art plugin"
-msgstr ""
-
-#: ../glade/gimmix.glade.h:62
-msgid "<b>Cover art provider:</b> http://www.freecovers.net."
-msgstr ""
-
-#: ../glade/gimmix.glade.h:63
-#, fuzzy
-msgid "<b>Cover Art</b>"
-msgstr "<b>Jahr :</b>"
-
-#: ../glade/gimmix.glade.h:64
-msgid "Cover Art"
-msgstr ""
-
-#: ../glade/gimmix.glade.h:65
-msgid "+"
-msgstr "+"
-
-#: ../glade/gimmix.glade.h:66
-msgid "-"
-msgstr "-"
-
-#: ../glade/gimmix.glade.h:67
-msgid "Information"
-msgstr "Information"
-
-#: ../glade/gimmix.glade.h:68
-msgid "<b>File :</b>"
-msgstr "<b>Datei :</b>"
-
-#: ../glade/gimmix.glade.h:69
-msgid "<b>Title :</b>"
-msgstr "<b>Titel :</b>"
-
-#: ../glade/gimmix.glade.h:70
-msgid "<b>Artist :</b>"
-msgstr "<b>Artist :</b>"
-
-#: ../glade/gimmix.glade.h:71
-msgid "<b>Album :</b>"
-msgstr "<b>Album :</b>"
-
-#: ../glade/gimmix.glade.h:72
-msgid ""
-"A Cappella\n"
-"Acid\n"
-"Acid Jazz\n"
-"Acid Punk\n"
-"Acoustic\n"
-"Alt. Rock\n"
-"Alternative\n"
-"Ambient\n"
-"Anime\n"
-"Avantgarde\n"
-"Ballad\n"
-"Bass\n"
-"Beat\n"
-"Bebob\n"
-"Big Band\n"
-"Black Metal\n"
-"Bluegrass\n"
-"Blues\n"
-"Booty Bass\n"
-"BritPop\n"
-"Cabaret\n"
-"Celtic\n"
-"Chamber music\n"
-"Chanson\n"
-"Chorus\n"
-"Christian Gangsta Rap\n"
-"Christian Rap\n"
-"Christian Rock\n"
-"Classic Rock\n"
-"Classical\n"
-"Club\n"
-"Club-House\n"
-"Comedy\n"
-"Contemporary Christian\n"
-"Country\n"
-"Crossover\n"
-"Cult\n"
-"Dance\n"
-"Dance Hall\n"
-"Darkwave\n"
-"Death Metal\n"
-"Disco\n"
-"Dream\n"
-"Drum & Bass\n"
-"Drum Solo\n"
-"Duet\n"
-"Easy Listening\n"
-"Electronic\n"
-"Ethnic\n"
-"Euro-House\n"
-"Euro-Techno\n"
-"Eurodance\n"
-"Fast Fusion\n"
-"Folk\n"
-"Folk-Rock\n"
-"Folklore\n"
-"Freestyle\n"
-"Funk\n"
-"Fusion\n"
-"Game\n"
-"Gangsta\n"
-"Goa\n"
-"Gospel\n"
-"Gothic\n"
-"Gothic Rock\n"
-"Grunge\n"
-"Hard Rock\n"
-"Hardcore\n"
-"Heavy Metal\n"
-"Hip-Hop\n"
-"House\n"
-"Humour\n"
-"Indie\n"
-"Industrial\n"
-"Instrumental\n"
-"Instrumental pop\n"
-"Instrumental rock\n"
-"JPop\n"
-"Jazz\n"
-"Jazz+Funk\n"
-"Jungle\n"
-"Latin\n"
-"Lo-Fi\n"
-"Meditative\n"
-"Merengue\n"
-"Metal\n"
-"Musical\n"
-"National Folk\n"
-"Native American\n"
-"Negerpunk\n"
-"New Age\n"
-"New Wave\n"
-"Noise\n"
-"Oldies\n"
-"Opera\n"
-"Other\n"
-"Polka\n"
-"Polsk Punk\n"
-"Pop\n"
-"Pop-Folk\n"
-"Pop/Funk\n"
-"Porn Groove\n"
-"Power Ballad\n"
-"Pranks\n"
-"Primus\n"
-"Progressive Rock\n"
-"Psychedelic\n"
-"Psychedelic Rock\n"
-"Punk\n"
-"Punk Rock\n"
-"R&B\n"
-"Rap\n"
-"Rave\n"
-"Reggae\n"
-"Retro\n"
-"Revival\n"
-"Rhythmic soul\n"
-"Rock\n"
-"Rock & Roll\n"
-"Salsa\n"
-"Samba\n"
-"Satire\n"
-"Showtunes\n"
-"Ska\n"
-"Slow Jam\n"
-"Slow Rock\n"
-"Sonata\n"
-"Soul\n"
-"Sound Clip\n"
-"Soundtrack\n"
-"Southern Rock\n"
-"Space\n"
-"Speech\n"
-"Swing\n"
-"Symphonic Rock\n"
-"Symphony\n"
-"Synthpop\n"
-"Tango\n"
-"Techno\n"
-"Techno-Industrial\n"
-"Terror\n"
-"Thrash Metal\n"
-"Top 40\n"
-"Trailer\n"
-msgstr ""
-"A Cappella\n"
-"Acid\n"
-"Acid Jazz\n"
-"Acid Punk\n"
-"Acoustic\n"
-"Alt. Rock\n"
-"Alternative\n"
-"Ambient\n"
-"Anime\n"
-"Avantgarde\n"
-"Ballad\n"
-"Bass\n"
-"Beat\n"
-"Bebob\n"
-"Big Band\n"
-"Black Metal\n"
-"Bluegrass\n"
-"Blues\n"
-"Booty Bass\n"
-"BritPop\n"
-"Cabaret\n"
-"Celtic\n"
-"Chamber music\n"
-"Chanson\n"
-"Chorus\n"
-"Christian Gangsta Rap\n"
-"Christian Rap\n"
-"Christian Rock\n"
-"Classic Rock\n"
-"Classical\n"
-"Club\n"
-"Club-House\n"
-"Comedy\n"
-"Contemporary Christian\n"
-"Country\n"
-"Crossover\n"
-"Cult\n"
-"Dance\n"
-"Dance Hall\n"
-"Darkwave\n"
-"Death Metal\n"
-"Disco\n"
-"Dream\n"
-"Drum & Bass\n"
-"Drum Solo\n"
-"Duet\n"
-"Easy Listening\n"
-"Electronic\n"
-"Ethnic\n"
-"Euro-House\n"
-"Euro-Techno\n"
-"Eurodance\n"
-"Fast Fusion\n"
-"Folk\n"
-"Folk-Rock\n"
-"Folklore\n"
-"Freestyle\n"
-"Funk\n"
-"Fusion\n"
-"Game\n"
-"Gangsta\n"
-"Goa\n"
-"Gospel\n"
-"Gothic\n"
-"Gothic Rock\n"
-"Grunge\n"
-"Hard Rock\n"
-"Hardcore\n"
-"Heavy Metal\n"
-"Hip-Hop\n"
-"House\n"
-"Humour\n"
-"Indie\n"
-"Industrial\n"
-"Instrumental\n"
-"Instrumental pop\n"
-"Instrumental rock\n"
-"JPop\n"
-"Jazz\n"
-"Jazz+Funk\n"
-"Jungle\n"
-"Latin\n"
-"Lo-Fi\n"
-"Meditative\n"
-"Merengue\n"
-"Metal\n"
-"Musical\n"
-"National Folk\n"
-"Native American\n"
-"Negerpunk\n"
-"New Age\n"
-"New Wave\n"
-"Noise\n"
-"Oldies\n"
-"Opera\n"
-"Other\n"
-"Polka\n"
-"Polsk Punk\n"
-"Pop\n"
-"Pop-Folk\n"
-"Pop/Funk\n"
-"Porn Groove\n"
-"Power Ballad\n"
-"Pranks\n"
-"Primus\n"
-"Progressive Rock\n"
-"Psychedelic\n"
-"Psychedelic Rock\n"
-"Punk\n"
-"Punk Rock\n"
-"R&B\n"
-"Rap\n"
-"Rave\n"
-"Reggae\n"
-"Retro\n"
-"Revival\n"
-"Rhythmic soul\n"
-"Rock\n"
-"Rock & Roll\n"
-"Salsa\n"
-"Samba\n"
-"Satire\n"
-"Showtunes\n"
-"Ska\n"
-"Slow Jam\n"
-"Slow Rock\n"
-"Sonata\n"
-"Soul\n"
-"Sound Clip\n"
-"Soundtrack\n"
-"Southern Rock\n"
-"Space\n"
-"Speech\n"
-"Swing\n"
-"Symphonic Rock\n"
-"Symphony\n"
-"Synthpop\n"
-"Tango\n"
-"Techno\n"
-"Techno-Industrial\n"
-"Terror\n"
-"Thrash Metal\n"
-"Top 40\n"
-"Trailer\n"
-
-#: ../glade/gimmix.glade.h:217
-msgid "<b>Genre :</b>"
-msgstr "<b>Genre :</b>"
-
-#: ../glade/gimmix.glade.h:218
-msgid "<b>Comment :   </b>"
-msgstr "<b>Kommentar :   </b>"
-
-#: ../glade/gimmix.glade.h:219
-msgid "<b>Track :</b>"
-msgstr "<b>Track :</b>"
-
-#: ../glade/gimmix.glade.h:220
-msgid "<b>Year :</b>"
-msgstr "<b>Jahr :</b>"
-
-#: ../glade/gimmix.glade.h:221
-msgid "Channels :    "
-msgstr "Kanäle :    "
-
-#: ../glade/gimmix.glade.h:222
-msgid "Bitrate :"
-msgstr "Bitrate :"
-
-#: ../glade/gimmix.glade.h:223
-msgid "Length :"
-msgstr "Länge :"
-
-#: ../glade/gimmix.glade.h:224
-#, fuzzy
-msgid "<b>Audio Information</b>"
-msgstr "<b>Audio Information </b>"
-
-#: ../glade/gimmix.glade.h:225
+#: glade/gimmix.ui:66
 msgid ""
 "Gimmix is running for the first time. \n"
 "Please enter your username, password and other options and hit the Apply "
@@ -787,31 +202,39 @@ msgstr ""
 "Bitte geben Sie den Benutzernamen, dass Passwort und die anderen Parameter "
 "an. Bestäigen Sie die Eingabe mit \"Apply\"."
 
-#: ../glade/gimmix.glade.h:227
+#: glade/gimmix.ui:92
 msgid "Host"
 msgstr "Host"
 
-#: ../glade/gimmix.glade.h:228
+#: glade/gimmix.ui:104 glade/gimmix.ui:2361 glade/gimmix.ui:2477
+msgid "Port"
+msgstr "Port"
+
+#: glade/gimmix.ui:118 glade/gimmix.ui:2347
+msgid "Password"
+msgstr "Passwort"
+
+#: glade/gimmix.ui:183
 msgid "(Leave blank for no password)"
 msgstr "(Eintrag leer lassen wenn kein Passwort notwendig ist)"
 
-#: ../glade/gimmix.glade.h:229
+#: glade/gimmix.ui:220
 msgid "Enable system tray icon."
 msgstr "Icon im Systemtray anzeigen."
 
-#: ../glade/gimmix.glade.h:230
+#: glade/gimmix.ui:236
 msgid "Enable system tray tooltips."
 msgstr "Tooltip im Systemtray anzeigen."
 
-#: ../glade/gimmix.glade.h:231
+#: glade/gimmix.ui:282
 msgid "<b>Music Directory :</b>"
 msgstr "<b>Musikverzeichnis :</b>"
 
-#: ../glade/gimmix.glade.h:232
+#: glade/gimmix.ui:296
 msgid "Select A Directory"
 msgstr "Ein Verzeichnis auswählen"
 
-#: ../glade/gimmix.glade.h:233
+#: glade/gimmix.ui:318
 msgid ""
 "Please select the directory where your music is stored. This is required for "
 "gimmix to function properly.\n"
@@ -822,8 +245,1182 @@ msgstr ""
 "Das Musikverzeichnis auswählen. \n"
 "<b>Hinweis: </b> Es sollte das gleiche Verzeichnis wie beim MPD angegeben "
 "werden. \n"
-"Wenn Sie sich nicht sicher sind können Sie den Eintrag aus der Datei \"mpd."
-"conf\" entnehmen."
+"Wenn Sie sich nicht sicher sind können Sie den Eintrag aus der Datei "
+"\"mpd.conf\" entnehmen."
+
+#: glade/gimmix.ui:400
+msgid "Filename"
+msgstr ""
+
+#: glade/gimmix.ui:408
+msgid "Library"
+msgstr "Sammlung"
+
+#: glade/gimmix.ui:453
+msgid "<b> Search </b>"
+msgstr "<b> Suchen </b>"
+
+#: glade/gimmix.ui:539
+msgid "Close"
+msgstr "Schließen"
+
+#: glade/gimmix.ui:583
+msgid "A Cappella"
+msgstr ""
+
+#: glade/gimmix.ui:586
+msgid "Acid"
+msgstr ""
+
+#: glade/gimmix.ui:589
+msgid "Acid Jazz"
+msgstr ""
+
+#: glade/gimmix.ui:592
+msgid "Acid Punk"
+msgstr ""
+
+#: glade/gimmix.ui:595
+msgid "Acoustic"
+msgstr ""
+
+#: glade/gimmix.ui:598
+msgid "Alt. Rock"
+msgstr ""
+
+#: glade/gimmix.ui:601
+msgid "Alternative"
+msgstr ""
+
+#: glade/gimmix.ui:604
+msgid "Ambient"
+msgstr ""
+
+#: glade/gimmix.ui:607
+msgid "Anime"
+msgstr ""
+
+#: glade/gimmix.ui:610
+msgid "Avantgarde"
+msgstr ""
+
+#: glade/gimmix.ui:613
+msgid "Ballad"
+msgstr ""
+
+#: glade/gimmix.ui:616
+msgid "Bass"
+msgstr ""
+
+#: glade/gimmix.ui:619
+msgid "Beat"
+msgstr ""
+
+#: glade/gimmix.ui:622
+msgid "Bebob"
+msgstr ""
+
+#: glade/gimmix.ui:625
+msgid "Big Band"
+msgstr ""
+
+#: glade/gimmix.ui:628
+msgid "Black Metal"
+msgstr ""
+
+#: glade/gimmix.ui:631
+msgid "Bluegrass"
+msgstr ""
+
+#: glade/gimmix.ui:634
+msgid "Blues"
+msgstr ""
+
+#: glade/gimmix.ui:637
+msgid "Booty Bass"
+msgstr ""
+
+#: glade/gimmix.ui:640
+msgid "BritPop"
+msgstr ""
+
+#: glade/gimmix.ui:643
+msgid "Cabaret"
+msgstr ""
+
+#: glade/gimmix.ui:646
+msgid "Celtic"
+msgstr ""
+
+#: glade/gimmix.ui:649
+msgid "Chamber music"
+msgstr ""
+
+#: glade/gimmix.ui:652
+msgid "Chanson"
+msgstr ""
+
+#: glade/gimmix.ui:655
+msgid "Chorus"
+msgstr ""
+
+#: glade/gimmix.ui:658
+msgid "Christian Gangsta Rap"
+msgstr ""
+
+#: glade/gimmix.ui:661
+msgid "Christian Rap"
+msgstr ""
+
+#: glade/gimmix.ui:664
+msgid "Christian Rock"
+msgstr ""
+
+#: glade/gimmix.ui:667
+msgid "Classic Rock"
+msgstr ""
+
+#: glade/gimmix.ui:670
+msgid "Classical"
+msgstr ""
+
+#: glade/gimmix.ui:673
+msgid "Club"
+msgstr ""
+
+#: glade/gimmix.ui:676
+msgid "Club-House"
+msgstr ""
+
+#: glade/gimmix.ui:679
+msgid "Comedy"
+msgstr ""
+
+#: glade/gimmix.ui:682
+msgid "Contemporary Christian"
+msgstr ""
+
+#: glade/gimmix.ui:685
+msgid "Country"
+msgstr ""
+
+#: glade/gimmix.ui:688
+msgid "Crossover"
+msgstr ""
+
+#: glade/gimmix.ui:691
+msgid "Cult"
+msgstr ""
+
+#: glade/gimmix.ui:694
+msgid "Dance"
+msgstr ""
+
+#: glade/gimmix.ui:697
+msgid "Dance Hall"
+msgstr ""
+
+#: glade/gimmix.ui:700
+msgid "Darkwave"
+msgstr ""
+
+#: glade/gimmix.ui:703
+msgid "Death Metal"
+msgstr ""
+
+#: glade/gimmix.ui:706
+msgid "Disco"
+msgstr ""
+
+#: glade/gimmix.ui:709
+msgid "Dream"
+msgstr ""
+
+#: glade/gimmix.ui:712
+msgid "Drum & Bass"
+msgstr ""
+
+#: glade/gimmix.ui:715
+msgid "Drum Solo"
+msgstr ""
+
+#: glade/gimmix.ui:718
+msgid "Duet"
+msgstr ""
+
+#: glade/gimmix.ui:721
+msgid "Easy Listening"
+msgstr ""
+
+#: glade/gimmix.ui:724
+msgid "Electronic"
+msgstr ""
+
+#: glade/gimmix.ui:727
+msgid "Ethnic"
+msgstr ""
+
+#: glade/gimmix.ui:730
+msgid "Euro-House"
+msgstr ""
+
+#: glade/gimmix.ui:733
+msgid "Euro-Techno"
+msgstr ""
+
+#: glade/gimmix.ui:736
+msgid "Eurodance"
+msgstr ""
+
+#: glade/gimmix.ui:739
+msgid "Fast Fusion"
+msgstr ""
+
+#: glade/gimmix.ui:742
+msgid "Folk"
+msgstr ""
+
+#: glade/gimmix.ui:745
+msgid "Folk-Rock"
+msgstr ""
+
+#: glade/gimmix.ui:748
+msgid "Folklore"
+msgstr ""
+
+#: glade/gimmix.ui:751
+msgid "Freestyle"
+msgstr ""
+
+#: glade/gimmix.ui:754
+msgid "Funk"
+msgstr ""
+
+#: glade/gimmix.ui:757
+msgid "Fusion"
+msgstr ""
+
+#: glade/gimmix.ui:760
+msgid "Game"
+msgstr ""
+
+#: glade/gimmix.ui:763
+msgid "Gangsta"
+msgstr ""
+
+#: glade/gimmix.ui:766
+msgid "Goa"
+msgstr ""
+
+#: glade/gimmix.ui:769
+msgid "Gospel"
+msgstr ""
+
+#: glade/gimmix.ui:772
+msgid "Gothic"
+msgstr ""
+
+#: glade/gimmix.ui:775
+msgid "Gothic Rock"
+msgstr ""
+
+#: glade/gimmix.ui:778
+msgid "Grunge"
+msgstr ""
+
+#: glade/gimmix.ui:781
+msgid "Hard Rock"
+msgstr ""
+
+#: glade/gimmix.ui:784
+msgid "Hardcore"
+msgstr ""
+
+#: glade/gimmix.ui:787
+msgid "Heavy Metal"
+msgstr ""
+
+#: glade/gimmix.ui:790
+msgid "Hip-Hop"
+msgstr ""
+
+#: glade/gimmix.ui:793
+msgid "House"
+msgstr ""
+
+#: glade/gimmix.ui:796
+msgid "Humour"
+msgstr ""
+
+#: glade/gimmix.ui:799
+msgid "Indie"
+msgstr ""
+
+#: glade/gimmix.ui:802
+msgid "Industrial"
+msgstr ""
+
+#: glade/gimmix.ui:805
+msgid "Instrumental"
+msgstr ""
+
+#: glade/gimmix.ui:808
+msgid "Instrumental pop"
+msgstr ""
+
+#: glade/gimmix.ui:811
+msgid "Instrumental rock"
+msgstr ""
+
+#: glade/gimmix.ui:814
+msgid "JPop"
+msgstr ""
+
+#: glade/gimmix.ui:817
+msgid "Jazz"
+msgstr ""
+
+#: glade/gimmix.ui:820
+msgid "Jazz+Funk"
+msgstr ""
+
+#: glade/gimmix.ui:823
+msgid "Jungle"
+msgstr ""
+
+#: glade/gimmix.ui:826
+msgid "Latin"
+msgstr ""
+
+#: glade/gimmix.ui:829
+msgid "Lo-Fi"
+msgstr ""
+
+#: glade/gimmix.ui:832
+msgid "Meditative"
+msgstr ""
+
+#: glade/gimmix.ui:835
+msgid "Merengue"
+msgstr ""
+
+#: glade/gimmix.ui:838
+msgid "Metal"
+msgstr ""
+
+#: glade/gimmix.ui:841
+msgid "Musical"
+msgstr ""
+
+#: glade/gimmix.ui:844
+msgid "National Folk"
+msgstr ""
+
+#: glade/gimmix.ui:847
+msgid "Native American"
+msgstr ""
+
+#: glade/gimmix.ui:850
+msgid "Negerpunk"
+msgstr ""
+
+#: glade/gimmix.ui:853
+msgid "New Age"
+msgstr ""
+
+#: glade/gimmix.ui:856
+msgid "New Wave"
+msgstr ""
+
+#: glade/gimmix.ui:859
+msgid "Noise"
+msgstr ""
+
+#: glade/gimmix.ui:862
+msgid "Oldies"
+msgstr ""
+
+#: glade/gimmix.ui:865
+msgid "Opera"
+msgstr ""
+
+#: glade/gimmix.ui:868
+msgid "Other"
+msgstr ""
+
+#: glade/gimmix.ui:871
+msgid "Polka"
+msgstr ""
+
+#: glade/gimmix.ui:874
+msgid "Polsk Punk"
+msgstr ""
+
+#: glade/gimmix.ui:877
+msgid "Pop"
+msgstr ""
+
+#: glade/gimmix.ui:880
+msgid "Pop-Folk"
+msgstr ""
+
+#: glade/gimmix.ui:883
+msgid "Pop/Funk"
+msgstr ""
+
+#: glade/gimmix.ui:886
+msgid "Porn Groove"
+msgstr ""
+
+#: glade/gimmix.ui:889
+msgid "Power Ballad"
+msgstr ""
+
+#: glade/gimmix.ui:892
+msgid "Pranks"
+msgstr ""
+
+#: glade/gimmix.ui:895
+msgid "Primus"
+msgstr ""
+
+#: glade/gimmix.ui:898
+msgid "Progressive Rock"
+msgstr ""
+
+#: glade/gimmix.ui:901
+msgid "Psychedelic"
+msgstr ""
+
+#: glade/gimmix.ui:904
+msgid "Psychedelic Rock"
+msgstr ""
+
+#: glade/gimmix.ui:907
+msgid "Punk"
+msgstr ""
+
+#: glade/gimmix.ui:910
+msgid "Punk Rock"
+msgstr ""
+
+#: glade/gimmix.ui:913
+msgid "R&B"
+msgstr ""
+
+#: glade/gimmix.ui:916
+msgid "Rap"
+msgstr ""
+
+#: glade/gimmix.ui:919
+msgid "Rave"
+msgstr ""
+
+#: glade/gimmix.ui:922
+msgid "Reggae"
+msgstr ""
+
+#: glade/gimmix.ui:925
+msgid "Retro"
+msgstr ""
+
+#: glade/gimmix.ui:928
+msgid "Revival"
+msgstr ""
+
+#: glade/gimmix.ui:931
+msgid "Rhythmic soul"
+msgstr ""
+
+#: glade/gimmix.ui:934
+msgid "Rock"
+msgstr ""
+
+#: glade/gimmix.ui:937
+msgid "Rock & Roll"
+msgstr ""
+
+#: glade/gimmix.ui:940
+msgid "Salsa"
+msgstr ""
+
+#: glade/gimmix.ui:943
+msgid "Samba"
+msgstr ""
+
+#: glade/gimmix.ui:946
+msgid "Satire"
+msgstr ""
+
+#: glade/gimmix.ui:949
+msgid "Showtunes"
+msgstr ""
+
+#: glade/gimmix.ui:952
+msgid "Ska"
+msgstr ""
+
+#: glade/gimmix.ui:955
+msgid "Slow Jam"
+msgstr ""
+
+#: glade/gimmix.ui:958
+msgid "Slow Rock"
+msgstr ""
+
+#: glade/gimmix.ui:961
+msgid "Sonata"
+msgstr ""
+
+#: glade/gimmix.ui:964
+msgid "Soul"
+msgstr ""
+
+#: glade/gimmix.ui:967
+msgid "Sound Clip"
+msgstr ""
+
+#: glade/gimmix.ui:970
+msgid "Soundtrack"
+msgstr ""
+
+#: glade/gimmix.ui:973
+msgid "Southern Rock"
+msgstr ""
+
+#: glade/gimmix.ui:976
+msgid "Space"
+msgstr ""
+
+#: glade/gimmix.ui:979
+msgid "Speech"
+msgstr ""
+
+#: glade/gimmix.ui:982
+msgid "Swing"
+msgstr ""
+
+#: glade/gimmix.ui:985
+msgid "Symphonic Rock"
+msgstr ""
+
+#: glade/gimmix.ui:988
+msgid "Symphony"
+msgstr ""
+
+#: glade/gimmix.ui:991
+msgid "Synthpop"
+msgstr ""
+
+#: glade/gimmix.ui:994
+msgid "Tango"
+msgstr ""
+
+#: glade/gimmix.ui:997
+msgid "Techno"
+msgstr ""
+
+#: glade/gimmix.ui:1000
+msgid "Techno-Industrial"
+msgstr ""
+
+#: glade/gimmix.ui:1003
+#, fuzzy
+msgid "Terror"
+msgstr "Fehler"
+
+#: glade/gimmix.ui:1006
+msgid "Thrash Metal"
+msgstr ""
+
+#: glade/gimmix.ui:1009
+msgid "Top 40"
+msgstr ""
+
+#: glade/gimmix.ui:1012
+msgid "Trailer"
+msgstr ""
+
+#: glade/gimmix.ui:1118
+#, fuzzy
+msgid "<b>Error</b>"
+msgstr "<b>Suchen</b>"
+
+#: glade/gimmix.ui:1130
+msgid "Details"
+msgstr ""
+
+#: glade/gimmix.ui:1144
+#, fuzzy
+msgid "Connect"
+msgstr "Verbindung"
+
+#: glade/gimmix.ui:1208
+msgid "Prev <z>"
+msgstr "Zurück <z>"
+
+#: glade/gimmix.ui:1251
+msgid "Stop <v>"
+msgstr "Stopp <v>"
+
+#: glade/gimmix.ui:1273
+msgid "Next <b>"
+msgstr "Weiter <b>"
+
+#: glade/gimmix.ui:1295
+msgid "Shuffle <s>"
+msgstr "Zufällig <s>"
+
+#: glade/gimmix.ui:1317
+msgid "Repeat <r>"
+msgstr "Wiederholen <r>"
+
+#: glade/gimmix.ui:1339
+msgid "Song Info <i>"
+msgstr "Lied Info <i>"
+
+#: glade/gimmix.ui:1361
+msgid "Configure Gimmix"
+msgstr "Gimmix konfigurieren"
+
+#: glade/gimmix.ui:1403
+msgid "Volume"
+msgstr "Lautstärke"
+
+#: glade/gimmix.ui:1562
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: glade/gimmix.ui:1583
+msgid "Remove"
+msgstr "Entfernen"
+
+#: glade/gimmix.ui:1604
+msgid "Clear"
+msgstr "Löschen"
+
+#: glade/gimmix.ui:1787
+msgid "<b>Current Playlist</b>"
+msgstr "<b>Aktuelle Wiedergabeliste</b>"
+
+#: glade/gimmix.ui:1861
+msgid "<b>Playlist Manager</b>"
+msgstr "<b>Wiedergabelisten</b>"
+
+#: glade/gimmix.ui:1919
+#, fuzzy
+msgid "<b>Artist : </b>"
+msgstr "<b>Artist :</b>"
+
+#: glade/gimmix.ui:1956
+#, fuzzy
+msgid "<b>Album : </b>"
+msgstr "<b>Album :</b>"
+
+#: glade/gimmix.ui:1993
+#, fuzzy
+msgid "<b>Genre : </b>"
+msgstr "<b>Genre :</b>"
+
+#: glade/gimmix.ui:2103
+msgid "Get Lyrics"
+msgstr ""
+
+#: glade/gimmix.ui:2162
+#, fuzzy
+msgid "<b>Metadata</b>"
+msgstr "<b>Suchen</b>"
+
+#: glade/gimmix.ui:2212
+msgid "Preferences"
+msgstr "Einstellungen"
+
+#: glade/gimmix.ui:2246
+msgid "<b>Preferences</b>"
+msgstr "<b>Einstellungen</b>"
+
+#: glade/gimmix.ui:2375 glade/gimmix.ui:2443
+#, fuzzy
+msgid "Hostname / IP"
+msgstr "Hostname"
+
+#: glade/gimmix.ui:2390
+msgid "<b>MPD Settings</b>"
+msgstr ""
+
+#: glade/gimmix.ui:2419
+msgid "Use a proxy server"
+msgstr ""
+
+#: glade/gimmix.ui:2523
+#, fuzzy
+msgid "<b>Proxy Settings</b>"
+msgstr "<b>Einstellungen</b>"
+
+#: glade/gimmix.ui:2543
+msgid "Connection"
+msgstr "Verbindung"
+
+#: glade/gimmix.ui:2557
+msgid "Immediately play songs when i add them to playlist."
+msgstr "Lied abspielen wenn es zur Wiedergabeliste hinzugefügt wird."
+
+#: glade/gimmix.ui:2573
+msgid "Stop playback when Gimmix exits."
+msgstr "Wiedergabe stoppen wenn Gimmix beendet wird."
+
+#: glade/gimmix.ui:2589
+msgid "Update the mpd database on startup."
+msgstr "Die Sammlung beim Start aktualisieren."
+
+#: glade/gimmix.ui:2610
+msgid "Enable Crossfade"
+msgstr "Überblendung aktivieren"
+
+#: glade/gimmix.ui:2628
+msgid "Fade Time:"
+msgstr "Überblendung Dauer:"
+
+#: glade/gimmix.ui:2689
+msgid "<b>Output Device</b>"
+msgstr ""
+
+#: glade/gimmix.ui:2712
+msgid "Behavior"
+msgstr "Verhalten"
+
+#: glade/gimmix.ui:2732
+msgid "<b>Music Directory : </b>"
+msgstr "<b>Musikverzeichnis : </b>"
+
+#: glade/gimmix.ui:2747
+msgid "Select the directory"
+msgstr "Das Verzeichnis auswählen"
+
+#: glade/gimmix.ui:2769
+msgid ""
+"Select the directory where your music is stored. \n"
+"<b>Note: </b> The directory should be same as what you specified in your mpd "
+"settings. \n"
+"If you're not sure, check your mpd configuration file mpd.conf"
+msgstr ""
+"Das Musikverzeichnis auswählen. \n"
+"<b>Hinweis: </b> Es sollte das gleiche Verzeichnis wie beim MPD angegeben "
+"werden. \n"
+"Wenn Sie sich nicht sicher sind können Sie den Eintrag aus der Datei "
+"\"mpd.conf\" entnehmen."
+
+#: glade/gimmix.ui:2791
+msgid "Directories"
+msgstr "Verzeichnisse"
+
+#: glade/gimmix.ui:2810
+msgid "Enable Library Search"
+msgstr "Suche für Sammlung aktivieren"
+
+#: glade/gimmix.ui:2824
+msgid "<b>Search</b>"
+msgstr "<b>Suchen</b>"
+
+#: glade/gimmix.ui:2848
+msgid "Enable system tray icon"
+msgstr "Icon im Systemtray anzeigen"
+
+#: glade/gimmix.ui:2865
+msgid "Enable system tray tooltip"
+msgstr "Tooltip im Systemtray anzeigen"
+
+#: glade/gimmix.ui:2887
+msgid "<b>System Tray</b>"
+msgstr "<b>Systemtray</b>"
+
+#: glade/gimmix.ui:2910
+msgid "Interface"
+msgstr "Benutzerschnittstelle"
+
+#: glade/gimmix.ui:2935
+msgid "Enable cover art plugin"
+msgstr ""
+
+#: glade/gimmix.ui:2954
+msgid "<b>Cover art provider:</b> http://www.freecovers.net."
+msgstr ""
+
+#: glade/gimmix.ui:2973
+#, fuzzy
+msgid "<b>Cover Art</b>"
+msgstr "<b>Jahr :</b>"
+
+#: glade/gimmix.ui:3013
+msgid "Cover Art"
+msgstr ""
+
+#: glade/gimmix.ui:3078
+msgid "Information"
+msgstr "Information"
+
+#: glade/gimmix.ui:3132
+msgid "<b>File :</b>"
+msgstr "<b>Datei :</b>"
+
+#: glade/gimmix.ui:3147
+msgid "<b>Title :</b>"
+msgstr "<b>Titel :</b>"
+
+#: glade/gimmix.ui:3179
+msgid "<b>Artist :</b>"
+msgstr "<b>Artist :</b>"
+
+#: glade/gimmix.ui:3211
+msgid "<b>Album :</b>"
+msgstr "<b>Album :</b>"
+
+#: glade/gimmix.ui:3263
+msgid "<b>Genre :</b>"
+msgstr "<b>Genre :</b>"
+
+#: glade/gimmix.ui:3278
+msgid "<b>Comment :   </b>"
+msgstr "<b>Kommentar :   </b>"
+
+#: glade/gimmix.ui:3310
+msgid "<b>Track :</b>"
+msgstr "<b>Track :</b>"
+
+#: glade/gimmix.ui:3343
+msgid "<b>Year :</b>"
+msgstr "<b>Jahr :</b>"
+
+#: glade/gimmix.ui:3468
+msgid "Channels :    "
+msgstr "Kanäle :    "
+
+#: glade/gimmix.ui:3483
+msgid "Bitrate :"
+msgstr "Bitrate :"
+
+#: glade/gimmix.ui:3498
+msgid "Length :"
+msgstr "Länge :"
+
+#: glade/gimmix.ui:3546
+#, fuzzy
+msgid "<b>Audio Information</b>"
+msgstr "<b>Audio Information </b>"
+
+#: glade/gimmix.ui:3646
+msgid "+"
+msgstr "+"
+
+#: glade/gimmix.ui:3673
+msgid "-"
+msgstr "-"
+
+#, fuzzy
+#~ msgid "© 2006-2009 Priyank Gosalia  (GPL)"
+#~ msgstr "© 2006-2007 Priyank Gosalia  (GPL)"
+
+#~ msgid ""
+#~ "Artist\n"
+#~ "Album\n"
+#~ "Title\n"
+#~ "Filename\n"
+#~ msgstr ""
+#~ "Artist\n"
+#~ "Album\n"
+#~ "Titel\n"
+#~ "Dateiname\n"
+
+#~ msgid ""
+#~ "A Cappella\n"
+#~ "Acid\n"
+#~ "Acid Jazz\n"
+#~ "Acid Punk\n"
+#~ "Acoustic\n"
+#~ "Alt. Rock\n"
+#~ "Alternative\n"
+#~ "Ambient\n"
+#~ "Anime\n"
+#~ "Avantgarde\n"
+#~ "Ballad\n"
+#~ "Bass\n"
+#~ "Beat\n"
+#~ "Bebob\n"
+#~ "Big Band\n"
+#~ "Black Metal\n"
+#~ "Bluegrass\n"
+#~ "Blues\n"
+#~ "Booty Bass\n"
+#~ "BritPop\n"
+#~ "Cabaret\n"
+#~ "Celtic\n"
+#~ "Chamber music\n"
+#~ "Chanson\n"
+#~ "Chorus\n"
+#~ "Christian Gangsta Rap\n"
+#~ "Christian Rap\n"
+#~ "Christian Rock\n"
+#~ "Classic Rock\n"
+#~ "Classical\n"
+#~ "Club\n"
+#~ "Club-House\n"
+#~ "Comedy\n"
+#~ "Contemporary Christian\n"
+#~ "Country\n"
+#~ "Crossover\n"
+#~ "Cult\n"
+#~ "Dance\n"
+#~ "Dance Hall\n"
+#~ "Darkwave\n"
+#~ "Death Metal\n"
+#~ "Disco\n"
+#~ "Dream\n"
+#~ "Drum & Bass\n"
+#~ "Drum Solo\n"
+#~ "Duet\n"
+#~ "Easy Listening\n"
+#~ "Electronic\n"
+#~ "Ethnic\n"
+#~ "Euro-House\n"
+#~ "Euro-Techno\n"
+#~ "Eurodance\n"
+#~ "Fast Fusion\n"
+#~ "Folk\n"
+#~ "Folk-Rock\n"
+#~ "Folklore\n"
+#~ "Freestyle\n"
+#~ "Funk\n"
+#~ "Fusion\n"
+#~ "Game\n"
+#~ "Gangsta\n"
+#~ "Goa\n"
+#~ "Gospel\n"
+#~ "Gothic\n"
+#~ "Gothic Rock\n"
+#~ "Grunge\n"
+#~ "Hard Rock\n"
+#~ "Hardcore\n"
+#~ "Heavy Metal\n"
+#~ "Hip-Hop\n"
+#~ "House\n"
+#~ "Humour\n"
+#~ "Indie\n"
+#~ "Industrial\n"
+#~ "Instrumental\n"
+#~ "Instrumental pop\n"
+#~ "Instrumental rock\n"
+#~ "JPop\n"
+#~ "Jazz\n"
+#~ "Jazz+Funk\n"
+#~ "Jungle\n"
+#~ "Latin\n"
+#~ "Lo-Fi\n"
+#~ "Meditative\n"
+#~ "Merengue\n"
+#~ "Metal\n"
+#~ "Musical\n"
+#~ "National Folk\n"
+#~ "Native American\n"
+#~ "Negerpunk\n"
+#~ "New Age\n"
+#~ "New Wave\n"
+#~ "Noise\n"
+#~ "Oldies\n"
+#~ "Opera\n"
+#~ "Other\n"
+#~ "Polka\n"
+#~ "Polsk Punk\n"
+#~ "Pop\n"
+#~ "Pop-Folk\n"
+#~ "Pop/Funk\n"
+#~ "Porn Groove\n"
+#~ "Power Ballad\n"
+#~ "Pranks\n"
+#~ "Primus\n"
+#~ "Progressive Rock\n"
+#~ "Psychedelic\n"
+#~ "Psychedelic Rock\n"
+#~ "Punk\n"
+#~ "Punk Rock\n"
+#~ "R&B\n"
+#~ "Rap\n"
+#~ "Rave\n"
+#~ "Reggae\n"
+#~ "Retro\n"
+#~ "Revival\n"
+#~ "Rhythmic soul\n"
+#~ "Rock\n"
+#~ "Rock & Roll\n"
+#~ "Salsa\n"
+#~ "Samba\n"
+#~ "Satire\n"
+#~ "Showtunes\n"
+#~ "Ska\n"
+#~ "Slow Jam\n"
+#~ "Slow Rock\n"
+#~ "Sonata\n"
+#~ "Soul\n"
+#~ "Sound Clip\n"
+#~ "Soundtrack\n"
+#~ "Southern Rock\n"
+#~ "Space\n"
+#~ "Speech\n"
+#~ "Swing\n"
+#~ "Symphonic Rock\n"
+#~ "Symphony\n"
+#~ "Synthpop\n"
+#~ "Tango\n"
+#~ "Techno\n"
+#~ "Techno-Industrial\n"
+#~ "Terror\n"
+#~ "Thrash Metal\n"
+#~ "Top 40\n"
+#~ "Trailer\n"
+#~ msgstr ""
+#~ "A Cappella\n"
+#~ "Acid\n"
+#~ "Acid Jazz\n"
+#~ "Acid Punk\n"
+#~ "Acoustic\n"
+#~ "Alt. Rock\n"
+#~ "Alternative\n"
+#~ "Ambient\n"
+#~ "Anime\n"
+#~ "Avantgarde\n"
+#~ "Ballad\n"
+#~ "Bass\n"
+#~ "Beat\n"
+#~ "Bebob\n"
+#~ "Big Band\n"
+#~ "Black Metal\n"
+#~ "Bluegrass\n"
+#~ "Blues\n"
+#~ "Booty Bass\n"
+#~ "BritPop\n"
+#~ "Cabaret\n"
+#~ "Celtic\n"
+#~ "Chamber music\n"
+#~ "Chanson\n"
+#~ "Chorus\n"
+#~ "Christian Gangsta Rap\n"
+#~ "Christian Rap\n"
+#~ "Christian Rock\n"
+#~ "Classic Rock\n"
+#~ "Classical\n"
+#~ "Club\n"
+#~ "Club-House\n"
+#~ "Comedy\n"
+#~ "Contemporary Christian\n"
+#~ "Country\n"
+#~ "Crossover\n"
+#~ "Cult\n"
+#~ "Dance\n"
+#~ "Dance Hall\n"
+#~ "Darkwave\n"
+#~ "Death Metal\n"
+#~ "Disco\n"
+#~ "Dream\n"
+#~ "Drum & Bass\n"
+#~ "Drum Solo\n"
+#~ "Duet\n"
+#~ "Easy Listening\n"
+#~ "Electronic\n"
+#~ "Ethnic\n"
+#~ "Euro-House\n"
+#~ "Euro-Techno\n"
+#~ "Eurodance\n"
+#~ "Fast Fusion\n"
+#~ "Folk\n"
+#~ "Folk-Rock\n"
+#~ "Folklore\n"
+#~ "Freestyle\n"
+#~ "Funk\n"
+#~ "Fusion\n"
+#~ "Game\n"
+#~ "Gangsta\n"
+#~ "Goa\n"
+#~ "Gospel\n"
+#~ "Gothic\n"
+#~ "Gothic Rock\n"
+#~ "Grunge\n"
+#~ "Hard Rock\n"
+#~ "Hardcore\n"
+#~ "Heavy Metal\n"
+#~ "Hip-Hop\n"
+#~ "House\n"
+#~ "Humour\n"
+#~ "Indie\n"
+#~ "Industrial\n"
+#~ "Instrumental\n"
+#~ "Instrumental pop\n"
+#~ "Instrumental rock\n"
+#~ "JPop\n"
+#~ "Jazz\n"
+#~ "Jazz+Funk\n"
+#~ "Jungle\n"
+#~ "Latin\n"
+#~ "Lo-Fi\n"
+#~ "Meditative\n"
+#~ "Merengue\n"
+#~ "Metal\n"
+#~ "Musical\n"
+#~ "National Folk\n"
+#~ "Native American\n"
+#~ "Negerpunk\n"
+#~ "New Age\n"
+#~ "New Wave\n"
+#~ "Noise\n"
+#~ "Oldies\n"
+#~ "Opera\n"
+#~ "Other\n"
+#~ "Polka\n"
+#~ "Polsk Punk\n"
+#~ "Pop\n"
+#~ "Pop-Folk\n"
+#~ "Pop/Funk\n"
+#~ "Porn Groove\n"
+#~ "Power Ballad\n"
+#~ "Pranks\n"
+#~ "Primus\n"
+#~ "Progressive Rock\n"
+#~ "Psychedelic\n"
+#~ "Psychedelic Rock\n"
+#~ "Punk\n"
+#~ "Punk Rock\n"
+#~ "R&B\n"
+#~ "Rap\n"
+#~ "Rave\n"
+#~ "Reggae\n"
+#~ "Retro\n"
+#~ "Revival\n"
+#~ "Rhythmic soul\n"
+#~ "Rock\n"
+#~ "Rock & Roll\n"
+#~ "Salsa\n"
+#~ "Samba\n"
+#~ "Satire\n"
+#~ "Showtunes\n"
+#~ "Ska\n"
+#~ "Slow Jam\n"
+#~ "Slow Rock\n"
+#~ "Sonata\n"
+#~ "Soul\n"
+#~ "Sound Clip\n"
+#~ "Soundtrack\n"
+#~ "Southern Rock\n"
+#~ "Space\n"
+#~ "Speech\n"
+#~ "Swing\n"
+#~ "Symphonic Rock\n"
+#~ "Symphony\n"
+#~ "Synthpop\n"
+#~ "Tango\n"
+#~ "Techno\n"
+#~ "Techno-Industrial\n"
+#~ "Terror\n"
+#~ "Thrash Metal\n"
+#~ "Top 40\n"
+#~ "Trailer\n"
 
 #~ msgid ""
 #~ "You have specified an invalid music directory. Do you want to specify the "

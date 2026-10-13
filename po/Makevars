@@ -1,0 +1,19 @@
+# Makefile variables for PO directory in any package using GNU gettext.
+
+DOMAIN = $(PACKAGE)
+subdir = po
+top_builddir = ..
+
+# Keyword list for xgettext; .ui files are extracted by file type.
+XGETTEXT_OPTIONS = --keyword=_ --keyword=N_ --from-code=UTF-8 \
+	--flag=g_strdup_printf:1:c-format --flag=g_markup_printf_escaped:1:c-format
+
+COPYRIGHT_HOLDER = Priyank Gosalia, Freydis Mende
+PACKAGE_GNU = no
+MSGID_BUGS_ADDRESS = https://github.com/nyxdis/gimmix/issues
+EXTRA_LOCALE_CATEGORIES =
+USE_MSGCTXT = no
+MSGMERGE_OPTIONS =
+MSGINIT_OPTIONS =
+PO_DEPENDS_ON_POT = yes
+DIST_DEPENDS_ON_UPDATE_PO = yes
