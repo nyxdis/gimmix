@@ -1,432 +1,307 @@
 /*
- * gimmix-lyrics.c
+ * gimmix-lyrics.c: lyrics plugin
  *
  * Copyright (C) 2008-2009 Priyank Gosalia
- * Copyright (C) 2012-2013 Christoph Mende
+ * Copyright (C) 2012-2026 Freydis Mende
  *
- * Gimmix is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * Gimmix is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
  * Gimmix is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public
- * License along with Gimmix; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with Gimmix; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * Author: Priyank Gosalia <priyankmg@gmail.com>
+ *
+ * Lyrics come from LRCLIB (https://lrclib.net) and are cached in
+ * ~/.gimmix/lyrics. Network and file work happens in a worker thread;
+ * everything that touches GTK or MPD runs in the main loop.
  */
- 
+
+#ifdef HAVE_CONFIG_H
+#	include "config.h"
+#endif
+
 #ifdef HAVE_LYRICS
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
-#include <nxml.h>
 #include <glib/gstdio.h>
-#include <curl/curl.h>
-#include <curl/easy.h>
-#include <libxml/xmlreader.h>
-#include "gimmix-lyrics.h"
+#include <json-glib/json-glib.h>
 
-#define LYRICS_DIR	".gimmix/lyrics/"
-#define SEARCH_URL	"http://api.leoslyrics.com/api_search.php?auth=Gimmix"
-#define LYRICS_URL	"http://api.leoslyrics.com/api_lyrics.php?auth=Gimmix&hid="
-#define SEARCH		1
-#define FETCHL		0
+#include "gimmix.h"
+#include "gimmix-core.h"
+#include "gimmix-config.h"
+#include "gimmix-http.h"
+#include "gimmix-metadata.h"
+#include "gimmix-lyrics.h"
+#include "wejpconfig.h"
+
+#define LYRICS_DIR	".gimmix/lyrics"
+#define LRCLIB_GET_URL	"https://lrclib.net/api/get?"
+#define LRCLIB_SEARCH_URL "https://lrclib.net/api/search?"
+
+/* a lyrics lookup running in a worker thread */
+typedef struct {
+	guint	generation;
+	gchar	*artist;
+	gchar	*title;
+	gchar	*album;
+	guint	duration;
+	gchar	*proxy;
+	gchar	*cache;		/* file the lyrics are stored in */
+	gchar	*lyrics;	/* the result, or NULL */
+} LyricsJob;
 
 extern GtkBuilder	*xml;
 extern MpdObj		*gmo;
 extern ConfigFile	conf;
 
 static GtkWidget	*lyrics_textview = NULL;
-
-static gchar*		search_artist = NULL;
-static gchar*		search_title = NULL;
-static gchar*		lyrics_dir = NULL;
-static GMutex		l_mutex;
-
-static gchar *lyrics_url_encode (const char *string);
-static gboolean lyrics_process_lyrics_node (LYRICS_NODE *ptr);
+static gchar		*lyrics_dir = NULL;
+static guint		generation = 0;
 
 static void cb_gimmix_lyrics_get_btn_clicked (GtkWidget *widget, gpointer data);
 
 void
 gimmix_lyrics_plugin_init (void)
 {
-	char		*cpath = NULL;
-	
+	gimmix_http_init ();
+
 	lyrics_textview = GTK_WIDGET (gtk_builder_get_object (xml, "lyrics_textview"));
-	
 	g_signal_connect (gtk_builder_get_object (xml,"lyrics_get_btn"),
 				"clicked",
 				G_CALLBACK(cb_gimmix_lyrics_get_btn_clicked),
 				NULL);
 
-	/* check if .gimmix/lyrics exists */
-	cpath = cfg_get_path_to_config_file (LYRICS_DIR);
-	g_mkdir_with_parents (cpath, 00755);
-	g_free (cpath);
-	
 	lyrics_dir = cfg_get_path_to_config_file (LYRICS_DIR);
-
-	return;
+	g_mkdir_with_parents (lyrics_dir, 0755);
 }
 
 void
 gimmix_lyrics_plugin_cleanup (void)
 {
+	generation++; /* results of running lookups are dropped */
 	g_free (lyrics_dir);
-	
-	return;
+	lyrics_dir = NULL;
 }
 
 static void
-gimmix_lyrics_plugin_proxy_init (nxml_t *n)
+gimmix_lyrics_set_text (const gchar *text)
 {
-	char	*proxy = NULL;
-	
-	if (!strncasecmp(cfg_get_key_value(conf,"proxy_enable"),"true",4))
-	{
-		proxy = gimmix_config_get_proxy_string ();
-		nxml_set_proxy (n, proxy, NULL);
-		g_free (proxy);
-	}
-	
-	return;
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW(lyrics_textview));
+
+	if (buffer != NULL)
+		gtk_text_buffer_set_text (buffer, text != NULL ? text : "", -1);
 }
 
-/* URL encodes a string */
+/* the cache file of a song; tags may contain anything, so keep it to one name */
 static gchar *
-lyrics_url_encode (const char *string)
+gimmix_lyrics_cache_file (const gchar *artist, const gchar *title)
 {
-	CURL	*curl = NULL;
-	gchar	*ret = NULL;
-	
-	curl = curl_easy_init ();
-	ret = curl_easy_escape (curl, string, 0);
-	curl_easy_cleanup (curl);
-	
-	return ret;
+	gchar *name = g_strdup_printf ("%s-%s.txt", artist, title);
+	gchar *path;
+
+	for (gchar *p = name; *p != '\0'; p++)
+		if (*p == '/' || *p == G_DIR_SEPARATOR)
+			*p = '_';
+	if (name[0] == '.')
+		name[0] = '_';
+	path = g_build_filename (lyrics_dir, name, NULL);
+	g_free (name);
+
+	return path;
 }
 
 static void
-gimmix_covers_plugin_set_artist (const char *artist)
+lyrics_job_free (LyricsJob *job)
 {
-	if (search_artist != NULL)
-		g_free (search_artist);
-	search_artist = g_strdup (artist);
-	
-	return;
+	g_free (job->artist);
+	g_free (job->title);
+	g_free (job->album);
+	g_free (job->proxy);
+	g_free (job->cache);
+	g_free (job->lyrics);
+	g_free (job);
 }
 
-static void
-gimmix_covers_plugin_set_songtitle (const char *title)
+/* the plain lyrics of a LRCLIB record, or NULL */
+static gchar *
+lrclib_plain_lyrics (JsonObject *record)
 {
-	if (search_title != NULL)
-		g_free (search_title);
-	search_title = g_strdup (title);
-	
-	return;
+	const gchar *text;
+
+	if (record == NULL || !json_object_has_member (record, "plainLyrics"))
+		return NULL;
+	if (json_node_is_null (json_object_get_member (record, "plainLyrics")))
+		return NULL;
+	text = json_object_get_string_member (record, "plainLyrics");
+
+	return (text != NULL && *text != '\0') ? g_strdup (text) : NULL;
+}
+
+static gchar *
+lyrics_job_fetch (LyricsJob *job)
+{
+	static const gchar *headers[] = {
+		"Accept: application/json",
+		"Lrclib-Client: gimmix/" VERSION " (https://github.com/nyxdis/gimmix)",
+		NULL
+	};
+	JsonParser	*parser;
+	JsonNode	*root;
+	gchar		*artist_e, *title_e, *album_e, *url, *body = NULL;
+	gchar		*lyrics = NULL;
+	gsize		length = 0;
+
+	artist_e = gimmix_http_escape (job->artist);
+	title_e = gimmix_http_escape (job->title);
+	album_e = gimmix_http_escape (job->album);
+	parser = json_parser_new ();
+
+	/* exact lookup first, it needs the album and the duration */
+	if (job->album != NULL && job->duration > 0)
+	{
+		url = g_strdup_printf ("%sartist_name=%s&track_name=%s&album_name=%s&duration=%u",
+				       LRCLIB_GET_URL, artist_e, title_e, album_e, job->duration);
+		if (gimmix_http_get (url, job->proxy, headers, &body, &length) &&
+		    json_parser_load_from_data (parser, body, length, NULL) &&
+		    (root = json_parser_get_root (parser)) != NULL && JSON_NODE_HOLDS_OBJECT (root))
+		{
+			lyrics = lrclib_plain_lyrics (json_node_get_object (root));
+		}
+		g_free (url);
+		g_free (body);
+		body = NULL;
+	}
+
+	/* otherwise search and take the first record that has lyrics */
+	if (lyrics == NULL)
+	{
+		url = g_strdup_printf ("%sartist_name=%s&track_name=%s", LRCLIB_SEARCH_URL, artist_e, title_e);
+		if (gimmix_http_get (url, job->proxy, headers, &body, &length) &&
+		    json_parser_load_from_data (parser, body, length, NULL) &&
+		    (root = json_parser_get_root (parser)) != NULL && JSON_NODE_HOLDS_ARRAY (root))
+		{
+			JsonArray *results = json_node_get_array (root);
+			for (guint i = 0; i < json_array_get_length (results) && lyrics == NULL; i++)
+				lyrics = lrclib_plain_lyrics (json_array_get_object_element (results, i));
+		}
+		g_free (url);
+		g_free (body);
+	}
+
+	g_object_unref (parser);
+	g_free (artist_e);
+	g_free (title_e);
+	g_free (album_e);
+
+	return lyrics;
 }
 
 static gboolean
-lyrics_process_lyrics_node (LYRICS_NODE *ptr)
+lyrics_job_done (gpointer data)
 {
-	LYRICS_NODE	*node = ptr;
-	char		*url = NULL;
-	char		*str = NULL;
-	gboolean	ret = FALSE;
-	nxml_t		*nxml = NULL;
-	nxml_data_t	*nroot = NULL;
-	nxml_data_t	*ndata = NULL;
-	nxml_data_t	*nndata = NULL;
+	LyricsJob *job = data;
 
-	if (node == NULL)
-		return ret;
-	
-	url = g_strdup_printf ("%s%s", LYRICS_URL, node->hid);
-	//printf ("%s\n", url);
-	
-	nxml_new (&nxml);
-	nxml_set_timeout (nxml, 20);
-	gimmix_lyrics_plugin_proxy_init (nxml);
-	nxml_parse_url (nxml, url);
-	nxml_root_element (nxml, &nroot);
-	nxml_find_element (nxml, nroot, "lyric", &ndata);
-	nxml_find_element (nxml, ndata, "text", &nndata);
-	nxml_get_string (nndata, &str);
-	if (str)
+	if (job->generation == generation)
 	{
-		node->lyrics = str;
-		ret = TRUE;
+		if (job->lyrics != NULL)
+			gimmix_lyrics_set_text (job->lyrics);
+		else
+			gimmix_lyrics_set_text (_("Lyrics not found"));
 	}
-	nxml_free (nxml);
-	g_free (url);
-	
-	return ret;
+	lyrics_job_free (job);
+
+	return FALSE;
 }
 
-static LYRICS_NODE*
-lyrics_perform_search (const char *url)
+static gpointer
+lyrics_job_run (gpointer data)
 {
-	char		*str = NULL;
-	nxml_t		*nxml = NULL;
-	nxml_data_t	*nroot = NULL;
-	nxml_data_t	*child = NULL;
-	LYRICS_NODE	*lnode = NULL;
-	
-	nxml_new (&nxml);
-	nxml_set_timeout (nxml, 20);
-	gimmix_lyrics_plugin_proxy_init (nxml);
-	nxml_parse_url (nxml, (char*)url);
-	nxml_root_element (nxml, &nroot);
-	nxml_find_element (nxml, nroot, "response", &child);
-	nxml_get_string (child, &str);
-	
-	if (str!=NULL)
-	{
-		lnode = (LYRICS_NODE*) malloc (sizeof(LYRICS_NODE));
-		memset (lnode, 0, sizeof(LYRICS_NODE));
-		if (!strcmp(str,"SUCCESS"))
-		{
-			nxml_data_t *temp = NULL;
-			nxml_attr_t *attr = NULL;
-			nxml_find_element (nxml, nroot, "searchResults", &child);
-			nxml_find_element (nxml, child, "result", &temp);
-			nxml_find_attribute (temp, "exactMatch", &attr);
-			if (attr)
-			{
-				if (!strcmp(attr->value,"true"))
-					lnode->match = TRUE;
-			}
-			nxml_find_attribute (temp, "hid", &attr);
-			if (attr)
-			{
-				strncpy (lnode->hid, attr->value, strlen(attr->value));
-			}
-			nxml_find_element (nxml, child, "title", &temp);
-			if (temp)
-			{
-				strncpy (lnode->title, temp->value, strlen(temp->value));
-			}
-			nxml_find_element (nxml, child, "artist", &temp);
-			if (temp)
-			{
-				nxml_data_t *ar = NULL;
-				nxml_find_element (nxml, temp, "name", &ar);
-				if (ar)
-				strncpy (lnode->title, ar->value, strlen(ar->value));
-			}
-			/* if match not found */
-			if (!lnode->match)
-			{
-				/* compare artist */
-				if (!g_ascii_strcasecmp(lnode->artist, search_artist) &&
-					!g_ascii_strcasecmp(lnode->title, search_title))
-				{
-					lnode->match = TRUE;
-				}
-				else
-				if (!g_ascii_strcasecmp(lnode->artist, search_artist))
-				{
-					/* try to match a part of song */
-					if (!g_ascii_strncasecmp(lnode->title, search_title, 5))
-					{
-						lnode->match = TRUE;
-					}
-				}
-			}
-			if (lnode->match)
-			{
-				lyrics_process_lyrics_node (lnode);
-			}
-			else
-			{
-				g_free (lnode);
-				lnode = NULL;
-			}
-		}
-		g_free (str);
-	}
-	nxml_free (nxml);
-	
-	return lnode;
+	LyricsJob *job = data;
+
+	job->lyrics = lyrics_job_fetch (job);
+	if (job->lyrics != NULL)
+		g_file_set_contents (job->cache, job->lyrics, -1, NULL);
+	g_idle_add (lyrics_job_done, job);
+
+	return NULL;
 }
 
-LYRICS_NODE*
-lyrics_search (void)
+static void
+gimmix_lyrics_plugin_fetch (gboolean refetch)
 {
-	gchar		*url = NULL;
-	char		*path = NULL;
-	LYRICS_NODE	*ret = NULL;
-	gchar		*artist = NULL;
-	gchar		*title = NULL;
+	mpd_Song	*song = NULL;
+	LyricsJob	*job;
+	GThread		*thread;
+	gchar		*cache, *cached = NULL;
 
-	g_mutex_lock (&l_mutex);
-	if (search_artist != NULL && search_title != NULL)
-	{
-		/* first check if the lyrics exist in ~/.lyrics/ */
-		//char *temp_path = cfg_get_path_to_config_file (LYRICS_DIR);
-		//g_print ("%s\n", lyrics_dir);
-		path = g_strdup_printf ("%s/%s-%s.txt", lyrics_dir, search_artist, search_title);
-		//g_print ("path = %s\n", path);
-		artist = g_strdup (search_artist);
-		title = g_strdup (search_title);
-		//g_free (temp_path);
-		if (g_file_test(path,G_FILE_TEST_EXISTS))
-		{
-			GString	*str = g_string_new ("");
-			FILE *fp = NULL;
-			char line[PATH_MAX+1] = "";
-			ret = (LYRICS_NODE*) malloc(sizeof(LYRICS_NODE));
-			memset (ret, 0, sizeof(LYRICS_NODE));
-			strncpy (ret->artist, search_artist, strlen(search_artist));
-			strncpy (ret->title, search_title, strlen(search_title));
-			fp = fopen (path, "r");
-			if (fp != NULL)
-			{
-				while (fgets(line, PATH_MAX, fp))
-				{
-					str = g_string_append (str, line);
-				}
-				ret->lyrics = g_strdup (str->str);
-				g_string_free (str, TRUE);
-				fclose (fp);
-			}
-			g_free (path);
-			g_free (artist);
-			g_free (title);
-			g_mutex_unlock (&l_mutex);
-			return ret;
-		}
-		g_free (path);
-		char *artist_e = lyrics_url_encode (search_artist);
-		char *title_e = lyrics_url_encode (search_title);
-		url = g_strdup_printf ("%s&artist=%s&songtitle=%s", SEARCH_URL, artist_e, title_e);
-		g_free (artist_e);
-		g_free (title_e);
-		//g_print ("%s\n", url);
-		ret = lyrics_perform_search (url);
-		g_free (url);
-		if (ret)
-		{
-			//g_print ("everything ok\n");
-			if (ret->lyrics != NULL)
-			{
-				path = g_strdup_printf ("%s/%s-%s.txt", lyrics_dir, artist, title);
-				FILE *fp = fopen (path, "w");
-				if (fp)
-				{
-					fprintf (fp, "%s", ret->lyrics);
-					printf ("saving lyrics to %s\n", path);
-					g_free (path);
-					fclose (fp);
-				}
-				else
-				{
-					g_print ("error fetching lyrics. please try again.\n");
-				}
-			}
-		}
-	}
-	g_free (artist);
-	g_free (title);
-	g_mutex_unlock (&l_mutex);
-	return ret;
-}
+	generation++;
 
-void
-gimmix_lyrics_populate_textview (LYRICS_NODE *node)
-{
-	GtkTextBuffer	*buffer = NULL;
-	GtkTextIter	iter;
-	
-	gdk_threads_enter ();
-	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW(lyrics_textview));
-	if (buffer == NULL)
-		goto ret;
-	gtk_text_buffer_set_text (buffer, "", 0);
-	gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
-		
-	/* display the lyrics */
-	if (node && node->lyrics)
+	if (mpd_player_get_state (gmo) != MPD_PLAYER_STOP && mpd_playlist_get_playlist_length (gmo))
+		song = mpd_playlist_get_current_song (gmo);
+	if (song == NULL)
 	{
-		/* clear the textview */
-		gtk_text_buffer_set_text (buffer, node->lyrics, -1);
-	}
-	else
-	{
-		gtk_text_buffer_insert (buffer, &iter, _("Lyrics not found"), -1);
+		gimmix_lyrics_set_text ("");
+		return;
 	}
 
-	ret:
-	gdk_flush ();
-	gdk_threads_leave ();
-	g_print ("done setting lyrics\n");
+	gimmix_metadata_set_song_details (song, NULL);
 
-	return;
+	if (song->artist == NULL || song->title == NULL)
+	{
+		gimmix_lyrics_set_text (_("Lyrics not found"));
+		return;
+	}
+
+	cache = gimmix_lyrics_cache_file (song->artist, song->title);
+	if (refetch)
+		g_unlink (cache);
+	if (g_file_get_contents (cache, &cached, NULL, NULL))
+	{
+		gimmix_lyrics_set_text (cached);
+		g_free (cached);
+		g_free (cache);
+		return;
+	}
+
+	gimmix_lyrics_set_text (_("Fetching lyrics..."));
+
+	job = g_new0 (LyricsJob, 1);
+	job->generation = generation;
+	job->artist = g_strdup (song->artist);
+	job->title = g_strdup (song->title);
+	job->album = g_strdup (song->album);
+	job->duration = song->time > 0 ? (guint) song->time : 0;
+	job->cache = cache;
+	if (gimmix_config_get_bool ("proxy_enable"))
+		job->proxy = gimmix_config_get_proxy_string ();
+
+	thread = g_thread_new ("gimmix-lyrics", lyrics_job_run, job);
+	g_thread_unref (thread);
 }
 
 void
 gimmix_lyrics_plugin_update_lyrics (void)
 {
-	LYRICS_NODE	*node = NULL;
-	mpd_Song	*s = NULL;
-	mpd_Song	*sng = (mpd_Song*)malloc (sizeof(mpd_Song));
-	
-	memset (sng, 0, sizeof(mpd_Song));
-	sleep (2);
-	if (mpd_player_get_state(gmo)!=MPD_PLAYER_STOP)
-	{
-		if (mpd_playlist_get_playlist_length(gmo))
-			s = mpd_playlist_get_current_song (gmo);
-		else
-			s = NULL;
-	}
-	
-	if (s)
-	{
-		memcpy (sng, s, sizeof(mpd_Song));
-		if (sng->artist)
-			gimmix_covers_plugin_set_artist (sng->artist);
-		if (sng->title)
-			gimmix_covers_plugin_set_songtitle (sng->title);
-		/* set metadata info */
-		gimmix_metadata_set_song_details (sng, NULL);
-	}
-
-	node = lyrics_search ();
-	gimmix_lyrics_populate_textview (node);
-	if (node)
-	{
-		if (node->lyrics)
-		g_free (node->lyrics);
-		g_free (node);
-	}
-	if (sng)
-	{
-		free (sng);
-	}
-	
-	return;
+	gimmix_lyrics_plugin_fetch (FALSE);
 }
 
 static void
 cb_gimmix_lyrics_get_btn_clicked (G_GNUC_UNUSED GtkWidget *widget,
 				  G_GNUC_UNUSED gpointer   data)
 {
-	g_thread_new ("lyrics_plugin_update_lyrics",
-			(GThreadFunc)gimmix_lyrics_plugin_update_lyrics ,
-			NULL);
-
-	return;
+	gimmix_lyrics_plugin_fetch (TRUE);
 }
 
 #endif

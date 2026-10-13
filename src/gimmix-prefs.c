@@ -2,7 +2,7 @@
  * gimmix-prefs.c
  *
  * Copyright (C) 2006-2009 Priyank Gosalia
- * Copyright (C) 2012-2013 Christoph Mende
+ * Copyright (C) 2012-2026 Freydis Mende
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -159,9 +159,9 @@ gimmix_prefs_dialog_show (void)
 	GtkTreeModel	*model = NULL;
 	gint		proxy_port;
 	
-	port = g_strdup_printf ("%s", cfg_get_key_value (conf, "mpd_port"));
+	port = g_strdup_printf ("%s", cfg_get_key_value (&conf, "mpd_port"));
 
-	gtk_entry_set_text (GTK_ENTRY(pref_host_entry), cfg_get_key_value (conf, "mpd_hostname"));
+	gtk_entry_set_text (GTK_ENTRY(pref_host_entry), cfg_get_key_value (&conf, "mpd_hostname"));
 
 	gtk_entry_set_text (GTK_ENTRY(pref_port_entry), port);
 	g_free (port);
@@ -170,11 +170,11 @@ gimmix_prefs_dialog_show (void)
 	gtk_entry_set_visibility (GTK_ENTRY(pref_pass_entry), FALSE);
 	gtk_entry_set_invisible_char (GTK_ENTRY(pref_pass_entry), g_utf8_get_char("*"));
 		
-	gtk_entry_set_text (GTK_ENTRY(pref_pass_entry), cfg_get_key_value (conf, "mpd_password"));
+	gtk_entry_set_text (GTK_ENTRY(pref_pass_entry), cfg_get_key_value (&conf, "mpd_password"));
 
-	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER(pref_dir_chooser), cfg_get_key_value(conf, "music_directory"));
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER(pref_dir_chooser), cfg_get_key_value (&conf, "music_directory"));
 	
-	if (strncasecmp(cfg_get_key_value(conf, "enable_systray"), "true", 4) == 0)
+	if (strncasecmp(cfg_get_key_value (&conf, "enable_systray"), "true", 4) == 0)
 	{	
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_systray_check), TRUE);
 		syst = TRUE;
@@ -187,7 +187,7 @@ gimmix_prefs_dialog_show (void)
 	
 	if (syst)
 	{
-		if (strncasecmp(cfg_get_key_value(conf, "enable_notification"), "true", 4) == 0)
+		if (strncasecmp(cfg_get_key_value (&conf, "enable_notification"), "true", 4) == 0)
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_notification_check), TRUE);
 		else
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_notification_check), FALSE);
@@ -198,17 +198,17 @@ gimmix_prefs_dialog_show (void)
 		gtk_widget_set_sensitive (GTK_WIDGET(pref_notification_check), FALSE);
 	}
 	
-	if (strncasecmp(cfg_get_key_value(conf, "play_on_add"), "true", 4) == 0)
+	if (strncasecmp(cfg_get_key_value (&conf, "play_on_add"), "true", 4) == 0)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_play_immediate_check), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_play_immediate_check), FALSE);
 	
-	if (strncasecmp(cfg_get_key_value(conf, "stop_on_exit"), "true", 4) == 0)
+	if (strncasecmp(cfg_get_key_value (&conf, "stop_on_exit"), "true", 4) == 0)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_stop_exit_check), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_stop_exit_check), FALSE);
 		
-	if (strncasecmp(cfg_get_key_value(conf, "update_on_startup"), "true", 4) == 0)
+	if (strncasecmp(cfg_get_key_value (&conf, "update_on_startup"), "true", 4) == 0)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_upd_startup_check), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_upd_startup_check), FALSE);
@@ -240,19 +240,19 @@ gimmix_prefs_dialog_show (void)
 		gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 		gtk_list_store_set (GTK_LIST_STORE(model), &iter,
 						0, enabled,
-						1, g_strdup(d->output_dev->name),
+						1, d->output_dev->name,
 						2, d->output_dev->id,
 						-1);
 		d = mpd_data_get_next (d);
 	}
 	
-	if (strncasecmp(cfg_get_key_value(conf, "enable_search"), "true", 4) == 0)
+	if (strncasecmp(cfg_get_key_value (&conf, "enable_search"), "true", 4) == 0)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_search_check), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_search_check), FALSE);
 	
 	/* proxy stuff */
-	if (!strncasecmp(cfg_get_key_value(conf,"proxy_enable"),"true",4))
+	if (!strncasecmp(cfg_get_key_value (&conf,"proxy_enable"),"true",4))
 	{
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_use_proxy_check), TRUE);
 		gtk_widget_set_sensitive (GTK_WIDGET(pref_proxy_host_entry), TRUE);
@@ -265,7 +265,7 @@ gimmix_prefs_dialog_show (void)
 		gtk_widget_set_sensitive (GTK_WIDGET(pref_proxy_host_entry), FALSE);
 		gtk_widget_set_sensitive (GTK_WIDGET(pref_proxy_port_spin), FALSE);
 	}
-	phost = cfg_get_key_value (conf, "proxy_host");
+	phost = cfg_get_key_value (&conf, "proxy_host");
 	if (phost != NULL)
 	{
 		gtk_entry_set_text (GTK_ENTRY(pref_proxy_host_entry), phost);
@@ -274,7 +274,7 @@ gimmix_prefs_dialog_show (void)
 	{
 		gtk_entry_set_text (GTK_ENTRY(pref_proxy_host_entry), "");
 	}
-	port = 	cfg_get_key_value (conf, "proxy_port");
+	port = 	cfg_get_key_value (&conf, "proxy_port");
 	if (port != NULL && strlen(port))
 	{
 		proxy_port = atoi (port);
@@ -288,7 +288,7 @@ gimmix_prefs_dialog_show (void)
 	
 	#ifdef HAVE_COVER_PLUGIN
 	/* cover art enable check */
-	if (!strncasecmp(cfg_get_key_value(conf,"coverart_enable"),"true",4))
+	if (!strncasecmp(cfg_get_key_value (&conf,"coverart_enable"),"true",4))
 	{
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(pref_coverart_check), TRUE);
 	}
@@ -336,18 +336,22 @@ cb_pref_apply_clicked (G_GNUC_UNUSED GtkWidget *widget,
 	const gchar *port;
 	const gchar *password;
 	const gchar *dir;
+	gboolean connection_changed = FALSE;
 
 	host = gtk_entry_get_text (GTK_ENTRY(pref_host_entry));
-	cfg_add_key (&conf, "mpd_hostname", (char *)host);
-	
 	port = gtk_entry_get_text (GTK_ENTRY(pref_port_entry));
-	cfg_add_key (&conf, "mpd_port", (char *)port);
-	
 	password = gtk_entry_get_text (GTK_ENTRY(pref_pass_entry));
+	if (g_strcmp0 (host, cfg_get_key_value (&conf, "mpd_hostname")) != 0 ||
+	    g_strcmp0 (port, cfg_get_key_value (&conf, "mpd_port")) != 0 ||
+	    g_strcmp0 (password, cfg_get_key_value (&conf, "mpd_password")) != 0)
+		connection_changed = TRUE;
+	cfg_add_key (&conf, "mpd_hostname", (char *)host);
+	cfg_add_key (&conf, "mpd_port", (char *)port);
 	cfg_add_key (&conf, "mpd_password", (char *)password);
 	
 	dir = gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER(pref_dir_chooser));
-	cfg_add_key (&conf, "music_directory", (char *)dir);
+	cfg_add_key (&conf, "music_directory", dir ? (char *)dir : "");
+	g_free ((gchar *)dir);
 		
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pref_play_immediate_check)))
 		cfg_add_key (&conf, "play_on_add", "true");
@@ -393,6 +397,9 @@ cb_pref_apply_clicked (G_GNUC_UNUSED GtkWidget *widget,
 	}
 	
 	gimmix_config_save ();
+
+	if (connection_changed)
+		gimmix_reconnect ();
 
 	return;
 }
@@ -492,11 +499,9 @@ cb_pref_coverart_disp_toggled (GtkToggleButton	     *button,
 {
 	if (gtk_toggle_button_get_active(button) == TRUE)
 	{
-		g_thread_new ("covers_plugin_update_cover",
-				(GThreadFunc)gimmix_covers_plugin_update_cover,
-				NULL);
-		gtk_widget_show (gimmix_plcbox_frame);
 		cfg_add_key (&conf, "coverart_enable", "true");
+		gtk_widget_show (gimmix_plcbox_frame);
+		gimmix_covers_plugin_update_cover ();
 	}
 	else
 	if (gtk_toggle_button_get_active(button) == FALSE)

@@ -17,10 +17,13 @@
 #include "gimmix-firstrun.h"
 
 #define APPNAME 		"Gimmix"
-#define APPURL			"http://cmende.github.com/gimmix"
+#define APPURL			"https://github.com/nyxdis/gimmix"
 
 /* main connect function */
 bool gimmix_connect (void);
+
+/* reconnect with the current settings */
+void gimmix_reconnect (void);
 
 /* display connection error */
 void gimmix_connect_error (void);

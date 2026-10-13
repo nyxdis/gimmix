@@ -2,7 +2,7 @@
  * gimmix.c
  *
  * Copyright (C) 2006-2009 Priyank Gosalia
- * Copyright (C) 2012-2013 Christoph Mende
+ * Copyright (C) 2012-2026 Freydis Mende
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -36,7 +36,7 @@
 #include "gimmix-interface.h"
 #include "gimmix-playlist.h"
 
-#define UI_FILE		"share/gimmix/gimmix.ui"
+#define UI_FILE		PKGDATADIR "/gimmix.ui"
 #define GIMMIX_ICON	"gimmix.png"
 
 MpdObj 		*gmo = NULL;
@@ -125,9 +125,9 @@ gimmix_connect (void)
 	char	*pass = NULL;
 	int	port;
 
-	host = cfg_get_key_value (conf, "mpd_hostname");
-	pass = cfg_get_key_value (conf, "mpd_password");
-	port = atoi (cfg_get_key_value (conf, "mpd_port"));
+	host = cfg_get_key_value (&conf, "mpd_hostname");
+	pass = cfg_get_key_value (&conf, "mpd_password");
+	port = atoi (cfg_get_key_value (&conf, "mpd_port"));
 	gmo = mpd_new (host, port, pass);
 	mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_mpd_connection_error_callback, NULL);
 	
@@ -167,6 +167,21 @@ cb_gimmix_connect_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 	return;
 }
 
+/* drop the connection and connect again with the current settings */
+void
+gimmix_reconnect (void)
+{
+	gimmix_interface_disable_controls ();
+	if (gmo != NULL)
+	{
+		gimmix_disconnect (gmo);
+		gmo = NULL;
+	}
+	cb_gimmix_connect_button_clicked (NULL, NULL);
+	if (gmo == NULL)
+		gtk_widget_show (connection_box);
+}
+
 static void
 cb_gimmix_error_details_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 					G_GNUC_UNUSED gpointer   data)
@@ -204,7 +219,7 @@ gimmix_about_show (void)
 	about_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
 	g_free (path);
 
-	gchar *authors[] = { "Author(s):\nPriyank M. Gosalia <priyankmg@gmail.com>",
+	gchar *authors[] = { "Author(s):\nPriyank M. Gosalia <priyankmg@gmail.com>\nFreydis Mende <freydis.mende@proton.me>",
 				"\nwejpconfig (Gimmix's configuration system)\nJohannes Heimansberg <wejpilot@gmail.com>",
 				"\nA part of the song seek code borrowed from Pygmy.",
 				"\nGimmix's Build system\nAlex Smith",
@@ -223,7 +238,7 @@ gimmix_about_show (void)
 	gtk_show_about_dialog (GTK_WINDOW(main_window),
                            "name", APPNAME,
                            "version", VERSION,
-                           "copyright", _("\xC2\xA9 2006-2009 Priyank Gosalia  (GPL)"),
+                           "copyright", "\xC2\xA9 2006-2009 Priyank Gosalia, 2012-2026 Freydis Mende (GPL)",
                            "comments", _("Gimmix is a graphical music player daemon (MPD) client written in C."),
                            "license", license,
                            "authors", authors,
@@ -242,16 +257,11 @@ int
 main (int argc, char *argv[])
 {
 	gchar 		*path;
-	char		*lang;
 	int		opt;
 	int		longopt_index;
 	bool		constatus = false;
 	
-	lang = getenv ("LC_ALL");
-	if (lang==NULL || lang[0]=='\0')
-		lang = getenv ("LANG");
-	
-	setlocale (LC_ALL, lang);
+	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
@@ -262,32 +272,30 @@ main (int argc, char *argv[])
 		{NULL, 0, NULL, 0}
 	};
 	
-	while ((opt = getopt_long(argc, argv, "h:v", long_options, &longopt_index)) > 0)
+	while ((opt = getopt_long(argc, argv, "hv", long_options, &longopt_index)) > 0)
 	{
 		switch (opt)
 		{
 			case 'v':
-				printf ("%s %s\n%s\n", g_ascii_strdown(APPNAME,strlen(APPNAME)),
-						VERSION,
-						"Copyright 2006, 2007, 2008, 2009 Priyank Gosalia");
-				goto cleanup;
-				break;
+				printf ("gimmix %s\n%s\n", VERSION,
+						"Copyright 2006-2009 Priyank Gosalia, 2012-2026 Freydis Mende");
+				return 0;
 			case 'h':
+				printf ("usage: %s [options]\n", basename(argv[0]));
+				printf ("  -h, --help			display this help\n");
+				printf ("  -v, --version			version information\n");
+				return 0;
 			default:
 				fprintf(stderr, "usage: %s [options]\n", basename(argv[0]));
-				fprintf(stderr, "  -h, --help			display this help\n");
-				fprintf(stderr, "  -v, --version			version information\n");
 				return 1;
 		}
 	}
 	
-	gdk_threads_init ();
-
 	gtk_init (&argc, &argv);
 	
-	path = g_strdup_printf ("%s/%s", PREFIX, UI_FILE);
+	path = g_strdup (UI_FILE);
 	xml = gtk_builder_new ();
-	GError* error;
+	GError* error = NULL;
 	if (!gtk_builder_add_from_file (xml, path, &error)) {
 		g_error (_("Failed to initialize interface: %s"), error->message);
 		g_error_free(error);
@@ -329,11 +337,8 @@ main (int argc, char *argv[])
 		/* display the first run dialog */
 		gimmix_show_firstrun_dialog (); 
 	}
-	gdk_threads_enter ();
 	gtk_main ();
-	gdk_threads_leave ();
 	
-	cleanup:
 	exit_cleanup ();
 	
 	return 0;

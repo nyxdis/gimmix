@@ -2,7 +2,7 @@
  * gimmix-interface.c
  *
  * Copyright (C) 2006-2009 Priyank Gosalia
- * Copyright (C) 2012-2013 Christoph Mende
+ * Copyright (C) 2012-2026 Freydis Mende
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -59,7 +59,6 @@ GtkWidget		*volume_hscalebox;
 GtkWidget		*volume_hscale;
 GtkWidget		*song_label;
 GtkWidget		*artist_label;
-GtkWidget		*search_entry;
 GtkWidget		*playlist_button;
 GtkWidget		*playlist_box;
 GtkWidget		*image_play;
@@ -76,8 +75,7 @@ extern GtkBuilder	*xml;
 extern ConfigFile	conf;
 extern GimmixTooltip 	*tooltip;
 extern GtkWidget	*current_playlist_treeview;
-
-mpd_Song		*glob_song_info;
+extern GtkWidget	*search_entry;
 
 static void		gimmix_update_volume (void);
 static void		gimmix_update_repeat (void);
@@ -85,7 +83,7 @@ static void		gimmix_update_shuffle (void);
 static gboolean		inited = FALSE;
 
 static gboolean		is_user_searching (void);
-static gboolean 	gimmix_timer (void);
+static gboolean 	gimmix_timer (gpointer data);
 
 /* Callbacks */
 static gboolean cb_gimmix_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data);
@@ -108,69 +106,40 @@ static void	gimmix_reposition_volume_window (GtkWidget *volwindow);
 static gboolean cb_gimmix_key_press(GtkWidget *widget, GdkEventKey *event, gpointer userdata);
 
 /* mpd callbacks */
-static void 	gimmix_status_changed (MpdObj *mo, ChangedStatusType id);
+static void 	gimmix_status_changed (MpdObj *mo, ChangedStatusType id, gpointer data);
 
+/* a new song is playing: song labels, cover and lyrics */
 static void
-gimmix_update_global_song_info (void)
+gimmix_song_changed (void)
 {
-	mpd_Song *tsi = NULL;
-
-	tsi = mpd_playlist_get_current_song (gmo);
-	if (tsi!=NULL)
-	{
-		glob_song_info = tsi;
-	}
-	
-	return;
+	gimmix_set_song_info ();
+	#ifdef HAVE_COVER_PLUGIN
+	gimmix_covers_plugin_update_cover ();
+	#endif
+	#ifdef HAVE_LYRICS
+	gimmix_lyrics_plugin_update_lyrics ();
+	#endif
 }
 
 static void
-gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
+gimmix_status_changed (MpdObj *mo, ChangedStatusType id, G_GNUC_UNUSED gpointer data)
 {
-	gimmix_update_global_song_info ();
-	
+	gboolean playlist_changed = FALSE;
+
 	if (!(id&MPD_CST_STATE) && (id&MPD_CST_SONGID || id&MPD_CST_DATABASE))
 	{
-		gimmix_update_current_playlist (mo, mpd_playlist_get_changes(mo,0));
-		#ifdef HAVE_COVER_PLUGIN
-		
-		g_thread_new ("covers_plugin_update_cover",
-				(GThreadFunc)gimmix_covers_plugin_update_cover,
-				FALSE);
-		
-		#endif
-		gimmix_set_song_info ();
-		#ifdef HAVE_LYRICS
-		g_thread_new ("lyrics_plugin_update_lyrics",
-				(GThreadFunc)gimmix_lyrics_plugin_update_lyrics,
-				NULL);
-		#endif
-		return;
+		playlist_changed = TRUE;
+		gimmix_song_changed ();
 	}
-
-	if (id&MPD_CST_STATE)
+	else if (id&MPD_CST_STATE)
 	{
-		g_print ("state changed\n");
 		int state = mpd_player_get_state (gmo);
+		playlist_changed = TRUE;
 		if (state == MPD_PLAYER_PLAY)
 		{
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_MENU);
 			gtk_widget_set_tooltip_text (play_button, _("Pause <x or c>"));
-			
-			#ifdef HAVE_COVER_PLUGIN
-			if (gimmix_config_get_bool("coverart_enable"))
-			{
-				g_thread_new ("covers_plugin_update_cover",
-						(GThreadFunc)gimmix_covers_plugin_update_cover,
-						FALSE);
-			}
-			#endif
-			gimmix_set_song_info ();
-			#ifdef HAVE_LYRICS
-			g_thread_new ("lyrics_plugin_update_lyrics",
-					(GThreadFunc)gimmix_lyrics_plugin_update_lyrics ,
-					NULL);
-			#endif
+			gimmix_song_changed ();
 		}
 		else
 		if (state == MPD_PLAYER_PAUSE)
@@ -181,33 +150,23 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 		else
 		if (state == MPD_PLAYER_STOP)
 		{
-			//g_print ("stopped\n");
 			gimmix_show_ver_info ();
 			gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
-			if (gimmix_config_get_bool("enable_systray"))
+			if (tooltip != NULL)
 			{
 				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(tooltip->progressbar), 0.0);
 				gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
 			}
-			
 			#ifdef HAVE_COVER_PLUGIN
-			if (gimmix_config_get_bool("coverart_enable"))
-			{
-				g_thread_new ("covers_plugin_update_cover",
-						(GThreadFunc)gimmix_covers_plugin_update_cover,
-						(gpointer)TRUE);
-			}
+			gimmix_covers_plugin_set_default_cover ();
 			#endif
 			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_MENU);
 			gtk_widget_set_tooltip_text (play_button, _("Play <x or c>"));
-			gimmix_update_current_playlist (mo, mpd_playlist_get_changes(mo,0));
-			return;
 		}
-		gimmix_update_current_playlist (mo, mpd_playlist_get_changes(mo,0));
 	}
-	
-	if (id&MPD_CST_PLAYLIST)
+
+	if (playlist_changed || (id&MPD_CST_PLAYLIST))
 		gimmix_update_current_playlist (mo, mpd_playlist_get_changes(mo,0));
 
 	if (id&MPD_CST_VOLUME)
@@ -218,8 +177,6 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id)
 
 	if (id&MPD_CST_REPEAT)
 		gimmix_update_repeat ();
-
-	return;
 }
 
 static void
@@ -285,8 +242,8 @@ gimmix_interface_widgets_init (void)
 	main_window = GTK_WIDGET (gtk_builder_get_object (xml, "main_window"));
 	g_signal_connect (G_OBJECT(main_window), "delete-event", G_CALLBACK(cb_gimmix_main_window_delete_event), NULL);
 	gtk_window_set_default_size (GTK_WINDOW(main_window), -1, 80);
-	gtk_window_resize (GTK_WINDOW(main_window), atoi(cfg_get_key_value(conf, "window_width")), atoi(cfg_get_key_value(conf, "window_height")));
-	gtk_window_move (GTK_WINDOW(main_window), atoi(cfg_get_key_value(conf, "window_xpos")), atoi(cfg_get_key_value(conf, "window_ypos")));
+	gtk_window_resize (GTK_WINDOW(main_window), atoi(cfg_get_key_value (&conf, "window_width")), atoi(cfg_get_key_value (&conf, "window_height")));
+	gtk_window_move (GTK_WINDOW(main_window), atoi(cfg_get_key_value (&conf, "window_xpos")), atoi(cfg_get_key_value (&conf, "window_ypos")));
 	path = gimmix_get_full_image_path (GIMMIX_APP_ICON);
 	app_icon = gdk_pixbuf_new_from_file_at_size (path, 48, 48, NULL);
 	gtk_window_set_icon (GTK_WINDOW(main_window), app_icon);
@@ -315,7 +272,6 @@ gimmix_interface_widgets_init (void)
 	playlist_box = GTK_WIDGET (gtk_builder_get_object (xml, "playlistbox"));
 	song_label = GTK_WIDGET (gtk_builder_get_object (xml, "song_label"));
 	artist_label = GTK_WIDGET (gtk_builder_get_object (xml, "artist_label"));
-	search_entry = GTK_WIDGET (gtk_builder_get_object (xml, "search_label"));
 	play_button = GTK_WIDGET (gtk_builder_get_object (xml, "play_button"));
 	image_play = GTK_WIDGET (gtk_builder_get_object (xml, "image_play"));
 	plcontrolshbox = GTK_WIDGET (gtk_builder_get_object (xml, "plcontrolshbox"));
@@ -425,12 +381,7 @@ gimmix_interface_widgets_init (void)
 	gtk_widget_show (main_window);
 
 	#ifdef HAVE_COVER_PLUGIN
-	if (gimmix_config_get_bool("coverart_enable"))
-	{
-		g_thread_new ("covers_plugin_update_cover",
-				(GThreadFunc)gimmix_covers_plugin_update_cover,
-				(gpointer)TRUE);
-	}
+	gimmix_covers_plugin_set_default_cover ();
 	#endif
 }
 
@@ -478,7 +429,6 @@ gimmix_init (void)
 		inited = TRUE;
 		mpd_status_update (gmo);
 		status = mpd_player_get_state (gmo);
-		gimmix_update_global_song_info ();
 		
 		if (status == MPD_PLAYER_PLAY)
 		{
@@ -494,7 +444,7 @@ gimmix_init (void)
 		else if (status == MPD_PLAYER_STOP)
 		{
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), _("Stopped"));
-			if (gimmix_config_get_bool("enable_systray"))
+			if (tooltip != NULL)
 				gtk_progress_bar_set_text (GTK_PROGRESS_BAR(tooltip->progressbar), _("Stopped"));
 			gimmix_show_ver_info ();
 		}
@@ -507,7 +457,7 @@ gimmix_init (void)
 		g_object_unref (xml);
 	}
 	
-	g_timeout_add (300, (GSourceFunc)gimmix_timer, NULL);
+	g_timeout_add (300, gimmix_timer, NULL);
 	
 	/* update current playlist */
 	gimmix_update_current_playlist (gmo, mpd_playlist_get_changes(gmo,0));
@@ -516,30 +466,11 @@ gimmix_init (void)
 	status = mpd_player_get_state (gmo);
 	if (status == MPD_PLAYER_PLAY || status == MPD_PLAYER_PAUSE)
 	{
-		gimmix_set_song_info ();
+		gimmix_song_changed ();
 	}
-	/*
-	#ifdef HAVE_COVER_PLUGIN
-	if (gimmix_config_get_bool("coverart_enable"))
-	{
-		g_thread_new ("covers_plugin_update_cover",
-				(GThreadFunc)gimmix_covers_plugin_update_cover,
-				FALSE);
-	}
-	
-	#endif*/
-	#ifdef HAVE_LYRICS
-	if (status == MPD_PLAYER_PLAY || status == MPD_PLAYER_PAUSE)
-	{
-		g_thread_new ("lyrics_plugin_update_lyrics",
-				(GThreadFunc)gimmix_lyrics_plugin_update_lyrics,
-				NULL);
-	}
-	#endif
 
 	/* connect the main mpd callbacks */
-	mpd_signal_connect_status_changed (gmo, (StatusChangedCallback)gimmix_status_changed, NULL);
-	//mpd_signal_connect_error (gmo, (ErrorCallback)gimmix_mpd_error, NULL);
+	mpd_signal_connect_status_changed (gmo, gimmix_status_changed, NULL);
 	
 	return;
 }
@@ -606,23 +537,18 @@ cb_gimmix_key_press (G_GNUC_UNUSED GtkWidget   *widget,
 }
 	
 static gboolean
-gimmix_timer (void)
+gimmix_timer (G_GNUC_UNUSED gpointer data)
 {
 	gchar 	time[32] = "";
 	int 	new_status;
-	float 	fraction;
-	if (mpd_check_connected(gmo)==FALSE)
+	float 	fraction = 0.0;
+	if (gmo == NULL || mpd_check_connected(gmo)==FALSE)
 	{
 		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), 0.0);
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), "");
 		gimmix_show_ver_info ();
 		#ifdef HAVE_COVER_PLUGIN
-		if (gimmix_config_get_bool("coverart_enable"))
-		{
-			g_thread_new ("covers_plugin_update_cover",
-					(GThreadFunc)gimmix_covers_plugin_update_cover,
-					(gpointer)TRUE); /* set default cover */
-		}
+		gimmix_covers_plugin_set_default_cover ();
 		#endif
 		return FALSE;
 	}
@@ -640,13 +566,13 @@ gimmix_timer (void)
 	{
 		if (status == MPD_PLAYER_PLAY || status == MPD_PLAYER_PAUSE)
 		{
-			gimmix_get_progress_status (gmo, &fraction, time);
+			gimmix_get_progress_status (gmo, &fraction, time, sizeof time);
 			if (fraction >= 0.0 && fraction <= 1.0)
 				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(progress), fraction);
 			gtk_progress_bar_set_text (GTK_PROGRESS_BAR(progress), time);
 			
 			/* Update the system tray tooltip progress bar */
-			if (gimmix_config_get_bool("enable_systray"))
+			if (tooltip != NULL)
 				if (gimmix_config_get_bool("enable_notification"))
 				{
 					if (fraction >= 0.0 && fraction <= 1.0)
@@ -703,10 +629,14 @@ cb_volume_button_clicked (G_GNUC_UNUSED GtkWidget *widget,
 			  gpointer		   data)
 {
 	if (gtk_widget_get_visible (data))
+	{
 		gtk_widget_hide (data);
+	}
 	else
+	{
 		gtk_widget_show (data);
 		gimmix_reposition_volume_window (data);
+	}
 	return;
 }
 
@@ -717,10 +647,12 @@ gimmix_reposition_volume_window (GtkWidget *volwindow)
 	return;
 	
 	gint x, y;
-	gdk_window_get_origin (volume_button->window, &x, &y);
-	x += (volume_button->allocation.x);
-	y += (volume_button->allocation.y + volume_button->allocation.height);
-	gtk_window_resize (GTK_WINDOW(volwindow), volume_button->allocation.width, 1);
+	GtkAllocation allocation;
+	gtk_widget_get_allocation (volume_button, &allocation);
+	gdk_window_get_origin (gtk_widget_get_window (volume_button), &x, &y);
+	x += allocation.x;
+	y += (allocation.y + allocation.height);
+	gtk_window_resize (GTK_WINDOW(volwindow), allocation.width, 1);
 	gtk_window_move (GTK_WINDOW(volwindow), x, y);
 		
 	return;
@@ -868,7 +800,7 @@ cb_gimmix_progress_seek (GtkWidget *progressbox, GdkEvent *event)
 	gdouble seektime;
 
 	x = event->button.x;
-	allocation = GTK_WIDGET (progressbox)->allocation;
+	gtk_widget_get_allocation (progressbox, &allocation);
 	totaltime = mpd_status_get_total_song_time (gmo);
 	seektime = (gdouble)x/allocation.width;
 	newtime = seektime * totaltime;
@@ -954,8 +886,7 @@ gimmix_set_song_info (void)
 	
 	g_free (markup);
 
-	if (gimmix_config_get_bool("enable_systray"))
-		gimmix_update_systray_tooltip (song);
+	gimmix_update_systray_tooltip (song);
 	
 	return;
 }
@@ -1016,23 +947,24 @@ void
 gimmix_save_window_pos (void)
 {
 	gint x,y;
-	gchar xpos[4];
-	gchar ypos[4];
-	gchar width[4];
-	gchar height[4];
+	gchar *xpos, *ypos, *width, *height;
 	
 	/* save position and geometry */
 	gtk_window_get_position (GTK_WINDOW(main_window), &x, &y);
-	sprintf (xpos, "%d", x);
-	sprintf (ypos, "%d", y);
+	xpos = g_strdup_printf ("%d", x);
+	ypos = g_strdup_printf ("%d", y);
 	gtk_window_get_size (GTK_WINDOW(main_window), &x, &y);
-	sprintf (width, "%d", x);
-	sprintf (height, "%d", y);
+	width = g_strdup_printf ("%d", x);
+	height = g_strdup_printf ("%d", y);
 	
 	cfg_add_key (&conf, "window_xpos", xpos);
 	cfg_add_key (&conf, "window_ypos", ypos);
 	cfg_add_key (&conf, "window_width", width);
 	cfg_add_key (&conf, "window_height", height);
+	g_free (xpos);
+	g_free (ypos);
+	g_free (width);
+	g_free (height);
 	
 	/* save mode */
 	if (gtk_widget_get_visible (GTK_WIDGET(playlist_box)))
@@ -1051,11 +983,11 @@ gimmix_interface_cleanup (void)
 	/* destroy system tray icon */
 	gimmix_destroy_systray_icon ();
 	
-	#if HAVE_COVERS_PLUGIN
+	#ifdef HAVE_COVER_PLUGIN
 	gimmix_covers_plugin_cleanup ();
 	#endif
 	
-	#if HAVE_LYRICS_PLUGIN
+	#ifdef HAVE_LYRICS
 	gimmix_lyrics_plugin_cleanup ();
 	#endif
 
