@@ -1,6 +1,6 @@
-Version 0.6.0 (TBD)
+Version 0.6.0 (October 13, 2026)
 * New Translation - Czech (cs_CZ). Thanks to Tomáš Novák.
-* Migrate to GtkBuilder; libglade is no longer needed
+* Ported to GTK 3; libglade is no longer needed
 * Builds with current compilers (GCC 10 and later, -fno-common) and
   autotools; translations use plain gettext instead of intltool
 * Covers come from image files next to the music and from the Cover Art
