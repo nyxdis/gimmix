@@ -2,7 +2,7 @@ Gimmix
 ======
 
 Gimmix is a graphical client for the Music Player Daemon (MPD), written in
-C with GTK+ 2.
+C with GTK 3.
 
 Features
 --------
@@ -20,7 +20,7 @@ Features
 
 Requirements
 ------------
-* GTK+ >= 2.24
+* GTK >= 3.22
 * GLib >= 2.32
 * libmpd >= 0.17.0
 * TagLib >= 1.4 (C bindings), for the tag editor; disable with
@@ -73,7 +73,7 @@ Bugs
 ----
 Please report bugs at https://github.com/nyxdis/gimmix/issues with a
 description, the steps to reproduce them and the versions of gimmix,
-GTK+, libmpd and MPD.
+GTK, libmpd and MPD.
 
 Authors
 -------

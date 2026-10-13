@@ -691,7 +691,7 @@ gimmix_library_and_playlists_populate (void)
 	path = gimmix_get_full_image_path (GIMMIX_MEDIA_ICON);
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 16, 16, NULL);
 	g_free (path);
-	dir_pixbuf	= gtk_widget_render_icon (GTK_WIDGET(library_treeview), GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_BUTTON, NULL);
+	dir_pixbuf	= gtk_icon_theme_load_icon (gtk_icon_theme_get_default (), "folder", 16, 0, NULL);
 	path = gimmix_get_full_image_path (GIMMIX_PLAYLIST_ICON);
 	pls_pixbuf	= gdk_pixbuf_new_from_file_at_size (path, 16, 16, NULL);
 	g_free (path);
@@ -767,9 +767,12 @@ gimmix_library_and_playlists_populate (void)
 	g_object_unref (dir_model);
 	g_object_unref (pls_model);
 	
-	g_object_unref (dir_pixbuf);
-	g_object_unref (song_pixbuf);
-	g_object_unref (pls_pixbuf);
+	if (dir_pixbuf)
+		g_object_unref (dir_pixbuf);
+	if (song_pixbuf)
+		g_object_unref (song_pixbuf);
+	if (pls_pixbuf)
+		g_object_unref (pls_pixbuf);
 	
 	return;
 }
@@ -816,9 +819,7 @@ gimmix_library_search (gint type, gchar *text)
 	
 	if (!data)
 	{
-		GdkPixbuf *icon	= gtk_widget_render_icon (GTK_WIDGET(library_treeview), "gtk-dialog-error",
-						GTK_ICON_SIZE_MENU,
-						NULL);
+		GdkPixbuf *icon	= gtk_icon_theme_load_icon (gtk_icon_theme_get_default (), "dialog-error", 16, 0, NULL);
 		gtk_list_store_append (dir_store, &dir_iter);
 		gtk_list_store_set (dir_store, &dir_iter,
 								0, icon,
@@ -828,7 +829,8 @@ gimmix_library_search (gint type, gchar *text)
 								-1);
 		directory_model = GTK_TREE_MODEL (dir_store);
 		gtk_tree_view_set_model (GTK_TREE_VIEW(library_treeview), directory_model);
-		g_object_unref (icon);
+		if (icon)
+			g_object_unref (icon);
 		return;
 	}
 
@@ -1224,10 +1226,7 @@ gimmix_update_library_with_dir (gchar *dir)
 	/* Clear the stores */
 	gtk_list_store_clear (dir_store);
 
-	dir_pixbuf 	= gtk_widget_render_icon (GTK_WIDGET(library_treeview),
-							GTK_STOCK_DIRECTORY,
-							GTK_ICON_SIZE_BUTTON,
-							NULL);
+	dir_pixbuf 	= gtk_icon_theme_load_icon (gtk_icon_theme_get_default (), "folder", 16, 0, NULL);
 	path = gimmix_get_full_image_path (GIMMIX_MEDIA_ICON);
 	song_pixbuf = gdk_pixbuf_new_from_file_at_size (path, 16, 16, NULL);
 	g_free (path);
@@ -1292,8 +1291,10 @@ gimmix_update_library_with_dir (gchar *dir)
 	directory_model = GTK_TREE_MODEL (dir_store);
 	gtk_tree_view_set_model (GTK_TREE_VIEW(library_treeview), directory_model);
 	
-	g_object_unref (dir_pixbuf);
-	g_object_unref (song_pixbuf);
+	if (dir_pixbuf)
+		g_object_unref (dir_pixbuf);
+	if (song_pixbuf)
+		g_object_unref (song_pixbuf);
 	
 	return;
 }
@@ -1561,24 +1562,21 @@ cb_gimmix_playlist_column_show_toggled (GtkCheckMenuItem *menu_item, gpointer da
 static void
 gimmix_current_playlist_popup_menu (void)
 {
-	GtkWidget *menu, *menu_item, *image;
+	GtkWidget *menu, *menu_item;
 	GtkWidget *submenu = NULL;
 
 	menu = gtk_menu_new ();
-	image = gtk_image_new_from_stock ("gtk-cut", GTK_ICON_SIZE_MENU); 
-
-	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_REMOVE, NULL);
+menu_item = gtk_menu_item_new_with_mnemonic (_("_Remove"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_current_playlist_remove_song), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
-	menu_item = gtk_image_menu_item_new_with_label (_("Crop"));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), image);
+	menu_item = gtk_menu_item_new_with_label (_("Crop"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_current_playlist_crop_song), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 
-	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_INFO, NULL);
+	menu_item = gtk_menu_item_new_with_mnemonic (_("_Information"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_current_playlist_song_info), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
@@ -1587,7 +1585,7 @@ gimmix_current_playlist_popup_menu (void)
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
-	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_CLEAR, NULL);
+	menu_item = gtk_menu_item_new_with_mnemonic (_("_Clear"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_current_playlist_clear), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
@@ -1614,8 +1612,7 @@ gimmix_current_playlist_popup_menu (void)
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
-	menu_item = gtk_image_menu_item_new_with_label (_("Save Playlist"));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), GTK_WIDGET(get_image ("gtk-save", GTK_ICON_SIZE_MENU)));
+	menu_item = gtk_menu_item_new_with_label (_("Save Playlist"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_playlist_save_dialog_show), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
@@ -1649,21 +1646,14 @@ gimmix_current_playlist_popup_menu (void)
 	g_signal_connect (G_OBJECT (menu_item), "toggled", G_CALLBACK (cb_gimmix_playlist_column_show_toggled), GINT_TO_POINTER (COLUMN_LENGTH));
 	gtk_widget_show (menu_item);
 	
-	menu_item = gtk_image_menu_item_new_with_label (_("Columns"));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), GTK_WIDGET(get_image ("gtk-edit", GTK_ICON_SIZE_MENU)));
+	menu_item = gtk_menu_item_new_with_label (_("Columns"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM(menu_item), submenu);
 	
 	gtk_widget_show (menu);
-	gtk_menu_popup (GTK_MENU(menu),
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			0,
-			gtk_get_current_event_time());
+	gtk_menu_popup_at_pointer (GTK_MENU(menu), NULL);
 	
 	return;
 }
@@ -1673,27 +1663,22 @@ gimmix_library_popup_menu (void)
 {
 	GtkWidget 	*menu;
 	GtkWidget 	*menu_item;
-	GtkWidget	*image;
-	GtkWidget	*replace_icon;
 
 	menu = gtk_menu_new ();
-	image = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_MENU);
-	replace_icon = gtk_image_new_from_stock ("gtk-convert", GTK_ICON_SIZE_MENU);
 	
-	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_ADD, NULL);
+	menu_item = gtk_menu_item_new_with_mnemonic (_("_Add"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_library_popup_add_clicked), (gpointer)1);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
-	menu_item = gtk_image_menu_item_new_with_label (_("Replace"));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), replace_icon);
+	menu_item = gtk_menu_item_new_with_label (_("Replace"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cd_library_popup_replace_clicked), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 
 	if (gtk_tree_selection_count_selected_rows(library_selection) == 1)
 	{
-		menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_INFO, NULL);
+		menu_item = gtk_menu_item_new_with_mnemonic (_("_Information"));
 		g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_library_song_info), NULL);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 		gtk_widget_show (menu_item);
@@ -1703,21 +1688,14 @@ gimmix_library_popup_menu (void)
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
-	menu_item = gtk_image_menu_item_new_with_label (_("Update Library"));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), image);
+	menu_item = gtk_menu_item_new_with_label (_("Update Library"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_library_update), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
 	gtk_widget_show (menu);
-	gtk_menu_popup (GTK_MENU(menu),
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			3,
-			gtk_get_current_event_time());
-			return;
+	gtk_menu_popup_at_pointer (GTK_MENU(menu), NULL);
+	return;
 }
 
 static void
@@ -1727,27 +1705,19 @@ gimmix_playlists_popup_menu (void)
 
 	menu = gtk_menu_new ();
 	
-	menu_item = gtk_image_menu_item_new_with_label (_("Load"));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), GTK_WIDGET(get_image ("gtk-open", GTK_ICON_SIZE_MENU)));
+	menu_item = gtk_menu_item_new_with_label (_("Load"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_gimmix_playlist_load), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
-	menu_item = gtk_image_menu_item_new_with_label (_("Delete"));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), GTK_WIDGET(get_image ("gtk-delete", GTK_ICON_SIZE_MENU)));
+	menu_item = gtk_menu_item_new_with_label (_("Delete"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_gimmix_playlist_remove), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 	
 	gtk_widget_show (menu);
-	gtk_menu_popup (GTK_MENU(menu),
-					NULL,
-					NULL,
-					NULL,
-					NULL,
-					3,
-					gtk_get_current_event_time());
-					
+	gtk_menu_popup_at_pointer (GTK_MENU(menu), NULL);
+	
 	return;
 }
 
@@ -1846,9 +1816,9 @@ gimmix_playlist_save_dialog_show (void)
 	dialog = gtk_dialog_new_with_buttons (_("Save playlist"),
                                          GTK_WINDOW(main_window),
                                          GTK_DIALOG_DESTROY_WITH_PARENT,
-                                         GTK_STOCK_OK,
+                                         _("_OK"),
                                          GTK_RESPONSE_ACCEPT,
-                                         GTK_STOCK_CANCEL,
+                                         _("_Cancel"),
                                          GTK_RESPONSE_REJECT,
                                          NULL);
 	gtk_window_set_resizable (GTK_WINDOW(dialog), FALSE);
@@ -1862,7 +1832,7 @@ gimmix_playlist_save_dialog_show (void)
                              G_CALLBACK (cb_gimmix_playlist_save_response),
                              dialog);
 	g_signal_connect (dialog, "delete-event", G_CALLBACK(gtk_widget_destroy), dialog);
-	gtk_misc_set_padding (GTK_MISC(label), 5, 5);
+	g_object_set (label, "margin", 5, NULL);
 	gtk_container_set_border_width (GTK_CONTAINER(gtk_dialog_get_content_area (GTK_DIALOG(dialog))), 10);
 	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG(dialog))), label);
 	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG(dialog))), entry);

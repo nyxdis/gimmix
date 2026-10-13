@@ -62,6 +62,7 @@ gimmix_show_firstrun_dialog (void)
 	cfg_add_key (&cf, "update_on_startup",	"false");
 			
 	window = GTK_WIDGET (gtk_builder_get_object (xml, "first_run_dialog"));
+	gtk_image_set_from_file (GTK_IMAGE (gtk_builder_get_object (xml, "image30")), PKGDATADIR "/gimmix_firstrun.png");
 	button = GTK_WIDGET (gtk_builder_get_object (xml, "fr_apply"));
 	g_signal_connect (G_OBJECT(button), "clicked", G_CALLBACK(on_fr_apply_clicked), NULL);
 	g_signal_connect (G_OBJECT(window), "delete_event", G_CALLBACK(gtk_main_quit), NULL);

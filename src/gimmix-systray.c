@@ -130,15 +130,17 @@ cb_systray_scroll (G_GNUC_UNUSED GtkStatusIcon *status_icon,
 	{
 		case GDK_SCROLL_UP:
 			volume = gtk_adjustment_get_value (volume_adj) + 2;
-			gtk_adjustment_set_value (volume_adj, volume);
 			break;
 		case GDK_SCROLL_DOWN:
 			volume = gtk_adjustment_get_value (volume_adj) - 2;
-			gtk_adjustment_set_value (volume_adj, volume);
+			break;
+		case GDK_SCROLL_SMOOTH:
+			volume = gtk_adjustment_get_value (volume_adj) - (event->delta_y > 0 ? 2 : (event->delta_y < 0 ? -2 : 0));
 			break;
 		default:
 			return FALSE;
 	}
+	gtk_adjustment_set_value (volume_adj, volume);
 
 	return TRUE;
 }
@@ -153,7 +155,7 @@ cb_systray_popup_menu (GtkStatusIcon *status_icon,
 
 	menu = gtk_menu_new();
 
-	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_ABOUT, NULL);
+	menu_item = gtk_menu_item_new_with_mnemonic (_("_About"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gimmix_about_show), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 
@@ -161,28 +163,28 @@ cb_systray_popup_menu (GtkStatusIcon *status_icon,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 
 	if (gimmix_get_status(gmo) == PLAY)
-		menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_MEDIA_PAUSE, NULL);
+		menu_item = gtk_menu_item_new_with_mnemonic (_("_Pause"));
 	else
-		menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_MEDIA_PLAY, NULL);
+		menu_item = gtk_menu_item_new_with_mnemonic (_("_Play"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_systray_popup_play_clicked), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 
-	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_MEDIA_STOP, NULL);
+	menu_item = gtk_menu_item_new_with_mnemonic (_("_Stop"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_systray_popup_stop_clicked), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 
-	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_MEDIA_PREVIOUS, NULL);
+	menu_item = gtk_menu_item_new_with_mnemonic (_("Pre_vious"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_systray_popup_prev_clicked), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 
-	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_MEDIA_NEXT, NULL);
+	menu_item = gtk_menu_item_new_with_mnemonic (_("_Next"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_systray_popup_next_clicked), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 
 	menu_item = gtk_separator_menu_item_new ();
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 
-	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_QUIT, NULL);
+	menu_item = gtk_menu_item_new_with_mnemonic (_("_Quit"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_systray_popup_quit_clicked), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 

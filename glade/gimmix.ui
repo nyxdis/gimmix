@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.24"/>
+  <requires lib="gtk+" version="3.22"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">100</property>
@@ -49,7 +49,6 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="xalign">0</property>
-            <property name="pixbuf">gimmix_firstrun.png</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -572,446 +571,6 @@ Check your mpd configuration file (/etc/mpd.conf on most systems).</property>
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkListStore" id="liststore2">
-    <columns>
-      <!-- column-name item -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">A Cappella</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Acid</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Acid Jazz</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Acid Punk</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Acoustic</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Alt. Rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Alternative</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Ambient</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Anime</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Avantgarde</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Ballad</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Bass</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Beat</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Bebob</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Big Band</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Black Metal</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Bluegrass</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Blues</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Booty Bass</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">BritPop</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Cabaret</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Celtic</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Chamber music</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Chanson</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Chorus</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Christian Gangsta Rap</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Christian Rap</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Christian Rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Classic Rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Classical</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Club</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Club-House</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Comedy</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Contemporary Christian</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Country</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Crossover</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Cult</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Dance</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Dance Hall</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Darkwave</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Death Metal</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Disco</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Dream</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Drum &amp; Bass</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Drum Solo</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Duet</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Easy Listening</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Electronic</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Ethnic</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Euro-House</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Euro-Techno</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Eurodance</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Fast Fusion</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Folk</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Folk-Rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Folklore</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Freestyle</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Funk</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Fusion</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Game</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Gangsta</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Goa</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Gospel</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Gothic</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Gothic Rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Grunge</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Hard Rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Hardcore</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Heavy Metal</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Hip-Hop</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">House</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Humour</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Indie</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Industrial</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Instrumental</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Instrumental pop</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Instrumental rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">JPop</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Jazz</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Jazz+Funk</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Jungle</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Latin</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Lo-Fi</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Meditative</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Merengue</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Metal</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Musical</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">National Folk</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Native American</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Negerpunk</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">New Age</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">New Wave</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Noise</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Oldies</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Opera</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Other</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Polka</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Polsk Punk</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Pop</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Pop-Folk</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Pop/Funk</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Porn Groove</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Power Ballad</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Pranks</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Primus</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Progressive Rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Psychedelic</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Psychedelic Rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Punk</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Punk Rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">R&amp;B</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Rap</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Rave</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Reggae</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Retro</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Revival</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Rhythmic soul</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Rock &amp; Roll</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Salsa</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Samba</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Satire</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Showtunes</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Ska</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Slow Jam</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Slow Rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Sonata</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Soul</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Sound Clip</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Soundtrack</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Southern Rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Space</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Speech</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Swing</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Symphonic Rock</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Symphony</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Synthpop</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Tango</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Techno</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Techno-Industrial</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Terror</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Thrash Metal</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Top 40</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Trailer</col>
-      </row>
-    </data>
   </object>
   <object class="GtkWindow" id="main_window">
     <property name="can_focus">False</property>
@@ -3236,16 +2795,155 @@ If you're not sure, check your mpd configuration file mpd.conf</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="combo_genre">
+                          <object class="GtkComboBoxText" id="combo_genre">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="model">liststore2</property>
-                            <child>
-                              <object class="GtkCellRendererText" id="cellrenderertext2"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
-                            </child>
+                            <items>
+                              <item translatable="yes">A Cappella</item>
+                              <item translatable="yes">Acid</item>
+                              <item translatable="yes">Acid Jazz</item>
+                              <item translatable="yes">Acid Punk</item>
+                              <item translatable="yes">Acoustic</item>
+                              <item translatable="yes">Alt. Rock</item>
+                              <item translatable="yes">Alternative</item>
+                              <item translatable="yes">Ambient</item>
+                              <item translatable="yes">Anime</item>
+                              <item translatable="yes">Avantgarde</item>
+                              <item translatable="yes">Ballad</item>
+                              <item translatable="yes">Bass</item>
+                              <item translatable="yes">Beat</item>
+                              <item translatable="yes">Bebob</item>
+                              <item translatable="yes">Big Band</item>
+                              <item translatable="yes">Black Metal</item>
+                              <item translatable="yes">Bluegrass</item>
+                              <item translatable="yes">Blues</item>
+                              <item translatable="yes">Booty Bass</item>
+                              <item translatable="yes">BritPop</item>
+                              <item translatable="yes">Cabaret</item>
+                              <item translatable="yes">Celtic</item>
+                              <item translatable="yes">Chamber music</item>
+                              <item translatable="yes">Chanson</item>
+                              <item translatable="yes">Chorus</item>
+                              <item translatable="yes">Christian Gangsta Rap</item>
+                              <item translatable="yes">Christian Rap</item>
+                              <item translatable="yes">Christian Rock</item>
+                              <item translatable="yes">Classic Rock</item>
+                              <item translatable="yes">Classical</item>
+                              <item translatable="yes">Club</item>
+                              <item translatable="yes">Club-House</item>
+                              <item translatable="yes">Comedy</item>
+                              <item translatable="yes">Contemporary Christian</item>
+                              <item translatable="yes">Country</item>
+                              <item translatable="yes">Crossover</item>
+                              <item translatable="yes">Cult</item>
+                              <item translatable="yes">Dance</item>
+                              <item translatable="yes">Dance Hall</item>
+                              <item translatable="yes">Darkwave</item>
+                              <item translatable="yes">Death Metal</item>
+                              <item translatable="yes">Disco</item>
+                              <item translatable="yes">Dream</item>
+                              <item translatable="yes">Drum &amp; Bass</item>
+                              <item translatable="yes">Drum Solo</item>
+                              <item translatable="yes">Duet</item>
+                              <item translatable="yes">Easy Listening</item>
+                              <item translatable="yes">Electronic</item>
+                              <item translatable="yes">Ethnic</item>
+                              <item translatable="yes">Euro-House</item>
+                              <item translatable="yes">Euro-Techno</item>
+                              <item translatable="yes">Eurodance</item>
+                              <item translatable="yes">Fast Fusion</item>
+                              <item translatable="yes">Folk</item>
+                              <item translatable="yes">Folk-Rock</item>
+                              <item translatable="yes">Folklore</item>
+                              <item translatable="yes">Freestyle</item>
+                              <item translatable="yes">Funk</item>
+                              <item translatable="yes">Fusion</item>
+                              <item translatable="yes">Game</item>
+                              <item translatable="yes">Gangsta</item>
+                              <item translatable="yes">Goa</item>
+                              <item translatable="yes">Gospel</item>
+                              <item translatable="yes">Gothic</item>
+                              <item translatable="yes">Gothic Rock</item>
+                              <item translatable="yes">Grunge</item>
+                              <item translatable="yes">Hard Rock</item>
+                              <item translatable="yes">Hardcore</item>
+                              <item translatable="yes">Heavy Metal</item>
+                              <item translatable="yes">Hip-Hop</item>
+                              <item translatable="yes">House</item>
+                              <item translatable="yes">Humour</item>
+                              <item translatable="yes">Indie</item>
+                              <item translatable="yes">Industrial</item>
+                              <item translatable="yes">Instrumental</item>
+                              <item translatable="yes">Instrumental pop</item>
+                              <item translatable="yes">Instrumental rock</item>
+                              <item translatable="yes">JPop</item>
+                              <item translatable="yes">Jazz</item>
+                              <item translatable="yes">Jazz+Funk</item>
+                              <item translatable="yes">Jungle</item>
+                              <item translatable="yes">Latin</item>
+                              <item translatable="yes">Lo-Fi</item>
+                              <item translatable="yes">Meditative</item>
+                              <item translatable="yes">Merengue</item>
+                              <item translatable="yes">Metal</item>
+                              <item translatable="yes">Musical</item>
+                              <item translatable="yes">National Folk</item>
+                              <item translatable="yes">Native American</item>
+                              <item translatable="yes">Negerpunk</item>
+                              <item translatable="yes">New Age</item>
+                              <item translatable="yes">New Wave</item>
+                              <item translatable="yes">Noise</item>
+                              <item translatable="yes">Oldies</item>
+                              <item translatable="yes">Opera</item>
+                              <item translatable="yes">Other</item>
+                              <item translatable="yes">Polka</item>
+                              <item translatable="yes">Polsk Punk</item>
+                              <item translatable="yes">Pop</item>
+                              <item translatable="yes">Pop-Folk</item>
+                              <item translatable="yes">Pop/Funk</item>
+                              <item translatable="yes">Porn Groove</item>
+                              <item translatable="yes">Power Ballad</item>
+                              <item translatable="yes">Pranks</item>
+                              <item translatable="yes">Primus</item>
+                              <item translatable="yes">Progressive Rock</item>
+                              <item translatable="yes">Psychedelic</item>
+                              <item translatable="yes">Psychedelic Rock</item>
+                              <item translatable="yes">Punk</item>
+                              <item translatable="yes">Punk Rock</item>
+                              <item translatable="yes">R&amp;B</item>
+                              <item translatable="yes">Rap</item>
+                              <item translatable="yes">Rave</item>
+                              <item translatable="yes">Reggae</item>
+                              <item translatable="yes">Retro</item>
+                              <item translatable="yes">Revival</item>
+                              <item translatable="yes">Rhythmic soul</item>
+                              <item translatable="yes">Rock</item>
+                              <item translatable="yes">Rock &amp; Roll</item>
+                              <item translatable="yes">Salsa</item>
+                              <item translatable="yes">Samba</item>
+                              <item translatable="yes">Satire</item>
+                              <item translatable="yes">Showtunes</item>
+                              <item translatable="yes">Ska</item>
+                              <item translatable="yes">Slow Jam</item>
+                              <item translatable="yes">Slow Rock</item>
+                              <item translatable="yes">Sonata</item>
+                              <item translatable="yes">Soul</item>
+                              <item translatable="yes">Sound Clip</item>
+                              <item translatable="yes">Soundtrack</item>
+                              <item translatable="yes">Southern Rock</item>
+                              <item translatable="yes">Space</item>
+                              <item translatable="yes">Speech</item>
+                              <item translatable="yes">Swing</item>
+                              <item translatable="yes">Symphonic Rock</item>
+                              <item translatable="yes">Symphony</item>
+                              <item translatable="yes">Synthpop</item>
+                              <item translatable="yes">Tango</item>
+                              <item translatable="yes">Techno</item>
+                              <item translatable="yes">Techno-Industrial</item>
+                              <item translatable="yes">Terror</item>
+                              <item translatable="yes">Thrash Metal</item>
+                              <item translatable="yes">Top 40</item>
+                              <item translatable="yes">Trailer</item>
+                            </items>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>

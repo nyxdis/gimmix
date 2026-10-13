@@ -1,5 +1,7 @@
-* Port to GTK 3 (or GTK 4). The code uses GTK 2.24 only through API that
-  still exists in GTK 3, but GtkStatusIcon has no GTK 4 replacement.
+* Port to GTK 4. GtkStatusIcon has no GTK 4 replacement, so the tray icon
+  would need an alternative such as a StatusNotifierItem.
+* Replace the deprecated GtkHBox, GtkVBox, GtkTable and GtkAlignment
+  widgets in gimmix.ui with GtkBox and GtkGrid.
 * Port to libmpdclient; libmpd is unmaintained and needs polling, MPD's
   idle command would make the 300 ms status timer unnecessary.
 * Fetch covers with MPD's albumart and readpicture commands once

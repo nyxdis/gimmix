@@ -34,14 +34,14 @@ gimmix_tooltip_new (void)
 
 	/* the box is handed to GtkTooltip whenever the tooltip is shown and
 	 * taken back when it hides, so it is kept alive here */
-	tooltip->hbox = gtk_hbox_new (FALSE, 4);
+	tooltip->hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
 	g_object_ref_sink (tooltip->hbox);
-	vbox = gtk_vbox_new (FALSE, 0);
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_end (GTK_BOX(tooltip->hbox), vbox, FALSE, FALSE, 2);
 
 	/* tooltip icon */
 	tooltip->icon = gtk_image_new_from_pixbuf (NULL);
-	gtk_misc_set_padding (GTK_MISC(tooltip->icon), 4, 4);
+	g_object_set (tooltip->icon, "margin", 4, NULL);
 	gtk_box_pack_start (GTK_BOX(tooltip->hbox), tooltip->icon, TRUE, TRUE, 0);
 
 	/* labels */
@@ -49,18 +49,19 @@ gimmix_tooltip_new (void)
 	gtk_label_set_use_markup (GTK_LABEL(tooltip->label1), TRUE);
 	gtk_label_set_ellipsize (GTK_LABEL(tooltip->label1), PANGO_ELLIPSIZE_END);
 	gtk_label_set_max_width_chars (GTK_LABEL(tooltip->label1), 25);
-	gtk_misc_set_alignment (GTK_MISC(tooltip->label1), 0, 0);
+	gtk_widget_set_halign (tooltip->label1, GTK_ALIGN_START);
 	gtk_box_pack_start (GTK_BOX(vbox), tooltip->label1, TRUE, FALSE, 1);
 
 	tooltip->label2 = gtk_label_new (NULL);
 	gtk_label_set_use_markup (GTK_LABEL(tooltip->label2), TRUE);
 	gtk_label_set_ellipsize (GTK_LABEL(tooltip->label2), PANGO_ELLIPSIZE_END);
 	gtk_label_set_max_width_chars (GTK_LABEL(tooltip->label2), 25);
-	gtk_misc_set_alignment (GTK_MISC(tooltip->label2), 0, 0);
+	gtk_widget_set_halign (tooltip->label2, GTK_ALIGN_START);
 	gtk_box_pack_start (GTK_BOX(vbox), tooltip->label2, TRUE, FALSE, 1);
 
 	/* And finally, the progress meter */
 	tooltip->progressbar = gtk_progress_bar_new ();
+	gtk_progress_bar_set_show_text (GTK_PROGRESS_BAR(tooltip->progressbar), TRUE);
 	gtk_widget_set_size_request (tooltip->progressbar, -1, 16);
 	gtk_box_pack_start (GTK_BOX(vbox), tooltip->progressbar, TRUE, FALSE, 2);
 

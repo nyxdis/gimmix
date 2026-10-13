@@ -137,14 +137,14 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id, G_GNUC_UNUSED gpointer 
 		playlist_changed = TRUE;
 		if (state == MPD_PLAYER_PLAY)
 		{
-			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_MENU);
+			gtk_image_set_from_icon_name (GTK_IMAGE(image_play), "media-playback-pause", GTK_ICON_SIZE_MENU);
 			gtk_widget_set_tooltip_text (play_button, _("Pause <x or c>"));
 			gimmix_song_changed ();
 		}
 		else
 		if (state == MPD_PLAYER_PAUSE)
 		{
-			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_MENU);
+			gtk_image_set_from_icon_name (GTK_IMAGE(image_play), "media-playback-start", GTK_ICON_SIZE_MENU);
 			gtk_widget_set_tooltip_text (play_button, _("Play <x or c>"));
 		}
 		else
@@ -161,7 +161,7 @@ gimmix_status_changed (MpdObj *mo, ChangedStatusType id, G_GNUC_UNUSED gpointer 
 			#ifdef HAVE_COVER_PLUGIN
 			gimmix_covers_plugin_set_default_cover ();
 			#endif
-			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-play", GTK_ICON_SIZE_MENU);
+			gtk_image_set_from_icon_name (GTK_IMAGE(image_play), "media-playback-start", GTK_ICON_SIZE_MENU);
 			gtk_widget_set_tooltip_text (play_button, _("Play <x or c>"));
 		}
 	}
@@ -258,8 +258,10 @@ gimmix_interface_widgets_init (void)
 	/* connect the destroy signal */
 	g_signal_connect(G_OBJECT(main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
-	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_builder_get_object (xml, "image_volume")), "stock_volume", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_builder_get_object (xml, "image_fmodevolume")), "stock_volume", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_builder_get_object (xml, "image_volume")), "audio-volume-high", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_builder_get_object (xml, "image_fmodevolume")), "audio-volume-high", GTK_ICON_SIZE_MENU);
+	/* GTK 3 shows a progress bar's text only when asked to */
+	gtk_progress_bar_set_show_text (GTK_PROGRESS_BAR(gtk_builder_get_object (xml, "progress")), TRUE);
 
 	shuffle_toggle_button = GTK_WIDGET (gtk_builder_get_object (xml, "shuffle_toggle"));
 	repeat_toggle_button = GTK_WIDGET (gtk_builder_get_object (xml, "repeat_toggle"));
@@ -288,15 +290,15 @@ gimmix_interface_widgets_init (void)
 	g_signal_connect (G_OBJECT(pref_button), "clicked", G_CALLBACK(cb_pref_button_clicked), NULL);
 	
 	/* set icons for buttons */
-	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(prev_button))), "gtk-media-previous", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(play_button))), "gtk-media-play", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(next_button))), "gtk-media-next", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(stop_button))), "gtk-media-stop", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(info_button))), "gtk-info", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_stock (GTK_IMAGE(gtk_builder_get_object (xml,"image_prefs")), "gtk-preferences", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_stock (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(playlist_button))), "gtk-justify-fill", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(shuffle_toggle_button))), "stock_shuffle", GTK_ICON_SIZE_MENU);
-	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(repeat_toggle_button))), "stock_repeat", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(prev_button))), "media-skip-backward", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(play_button))), "media-playback-start", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(next_button))), "media-skip-forward", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(stop_button))), "media-playback-stop", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(info_button))), "dialog-information", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_builder_get_object (xml,"image_prefs")), "preferences-system", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(playlist_button))), "view-list", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(shuffle_toggle_button))), "media-playlist-shuffle", GTK_ICON_SIZE_MENU);
+	gtk_image_set_from_icon_name (GTK_IMAGE(gtk_bin_get_child(GTK_BIN(repeat_toggle_button))), "media-playlist-repeat", GTK_ICON_SIZE_MENU);
 
 	g_signal_connect (G_OBJECT(playlist_button), "button-press-event", G_CALLBACK(cb_playlist_button_press), NULL);
 
@@ -434,7 +436,7 @@ gimmix_init (void)
 		{
 			gimmix_set_song_info ();
 			status = -1;
-			gtk_image_set_from_stock (GTK_IMAGE(image_play), "gtk-media-pause", GTK_ICON_SIZE_MENU);
+			gtk_image_set_from_icon_name (GTK_IMAGE(image_play), "media-playback-pause", GTK_ICON_SIZE_MENU);
 			gtk_widget_set_tooltip_text (play_button, _("Pause <x or c>"));
 		}
 		else if (status == MPD_PLAYER_PAUSE)
@@ -744,15 +746,17 @@ cb_volume_slider_scroll (G_GNUC_UNUSED GtkWidget *widget, GdkEventScroll *event)
 	{
 		case GDK_SCROLL_UP:
 			volume = gtk_adjustment_get_value (GTK_ADJUSTMENT(volume_adj)) + 2;
-			gtk_adjustment_set_value (GTK_ADJUSTMENT (volume_adj), volume);
 			break;
 		case GDK_SCROLL_DOWN:
 			volume = gtk_adjustment_get_value (GTK_ADJUSTMENT(volume_adj)) - 2;
-			gtk_adjustment_set_value (GTK_ADJUSTMENT(volume_adj), volume);
+			break;
+		case GDK_SCROLL_SMOOTH:
+			volume = gtk_adjustment_get_value (GTK_ADJUSTMENT(volume_adj)) - (event->delta_y > 0 ? 2 : (event->delta_y < 0 ? -2 : 0));
 			break;
 		default:
 			return;
 	}
+	gtk_adjustment_set_value (GTK_ADJUSTMENT(volume_adj), volume);
 	
 	return;
 }
@@ -838,7 +842,7 @@ get_image (const gchar *id, GtkIconSize size)
 {
 	GtkWidget *image;
 
-	image = gtk_image_new_from_stock (id, size);
+	image = gtk_image_new_from_icon_name (id, size);
 
 	return image;
 }

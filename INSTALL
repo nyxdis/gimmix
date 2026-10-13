@@ -3,7 +3,7 @@ Installing Gimmix
 
 Requirements
 ------------
-* GTK+ >= 2.24 and GLib >= 2.32
+* GTK >= 3.22 and GLib >= 2.32
 * libmpd >= 0.17.0
 * pkg-config
 * TagLib >= 1.4 with its C bindings (taglib_c), unless configured with
@@ -11,9 +11,9 @@ Requirements
 * libcurl >= 7.19.4 and json-glib >= 1.2, unless configured with both
   --disable-cover and --disable-lyrics
 
-On Debian and Ubuntu the packages are libgtk2.0-dev, libmpd-dev,
+On Debian and Ubuntu the packages are libgtk-3-dev, libmpd-dev,
 libtagc0-dev, libcurl4-openssl-dev and libjson-glib-dev. On Gentoo they
-are x11-libs/gtk+:2, media-libs/libmpd, media-libs/taglib, net-misc/curl
+are x11-libs/gtk+:3, media-libs/libmpd, media-libs/taglib, net-misc/curl
 and dev-libs/json-glib.
 
 Building a release

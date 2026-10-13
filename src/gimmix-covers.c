@@ -172,8 +172,8 @@ cb_gimmix_covers_plugin_set_cover_from_file (void)
 	dialog = gtk_file_chooser_dialog_new (_("Set cover from file"),
 					GTK_WINDOW(main_window),
 					GTK_FILE_CHOOSER_ACTION_OPEN,
-					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-					GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+					_("_Cancel"), GTK_RESPONSE_CANCEL,
+					_("_Open"), GTK_RESPONSE_ACCEPT,
 					NULL);
 	preview = gtk_image_new ();
 	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER(dialog), preview);
@@ -218,29 +218,24 @@ cb_gimmix_covers_plugin_plc_popup (G_GNUC_UNUSED GtkWidget *widget,
 {
 	GtkWidget 	*menu = NULL;
 	GtkWidget 	*menu_item = NULL;
-	GtkWidget	*image = NULL;
 
 	if (event->button != 3) /* only on right click */
 		return FALSE;
 
 	menu = gtk_menu_new ();
 
-	image = gtk_image_new_from_stock ("gtk-open", GTK_ICON_SIZE_MENU);
-	menu_item = gtk_image_menu_item_new_with_label (_("Set cover from file"));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), image);
+menu_item = gtk_menu_item_new_with_label (_("Set cover from file"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (cb_gimmix_covers_plugin_set_cover_from_file), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 
-	image = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_MENU);
-	menu_item = gtk_image_menu_item_new_with_label (_("Re-fetch cover"));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), image);
+menu_item = gtk_menu_item_new_with_label (_("Re-fetch cover"));
 	g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK(cb_gimmix_covers_plugin_refetch_cover), NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 
 	gtk_widget_show (menu);
-	gtk_menu_popup (GTK_MENU(menu), NULL, NULL, NULL, NULL, 3, gtk_get_current_event_time());
+	gtk_menu_popup_at_pointer (GTK_MENU(menu), (GdkEvent *) event);
 
 	return TRUE;
 }

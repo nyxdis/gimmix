@@ -55,7 +55,7 @@ AC_SUBST([FEATURE_CPPFLAGS])
 PKG_CHECK_MODULES([GIMMIX], [
 	glib-2.0 >= 2.32
 	gthread-2.0
-	gtk+-2.0 >= 2.24
+	gtk+-3.0 >= 3.22
 	libmpd >= 0.17.0
 ])
 

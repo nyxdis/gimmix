@@ -236,7 +236,7 @@ gimmix_about_show (void)
 
 
 	gtk_show_about_dialog (GTK_WINDOW(main_window),
-                           "name", APPNAME,
+                           "program-name", APPNAME,
                            "version", VERSION,
                            "copyright", "\xC2\xA9 2006-2009 Priyank Gosalia, 2012-2026 Freydis Mende (GPL)",
                            "comments", _("Gimmix is a graphical music player daemon (MPD) client written in C."),
