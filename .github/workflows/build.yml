@@ -1,0 +1,44 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.cc }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cc: [gcc, clang]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            autoconf automake autopoint gettext pkg-config clang \
+            libgtk2.0-dev libmpd-dev libtagc0-dev libcurl4-openssl-dev libjson-glib-dev \
+            desktop-file-utils
+
+      - name: Configure
+        run: |
+          NOCONFIGURE=1 ./autogen.sh
+          ./configure CC=${{ matrix.cc }} \
+            CFLAGS="-O2 -Wall -Wextra -Werror -Wno-deprecated-declarations -fno-common"
+
+      - name: Build
+        run: make -j"$(nproc)"
+
+      - name: Check desktop file and translations
+        run: |
+          desktop-file-validate data/gimmix.desktop
+          make -C po check
+
+      - name: Install
+        run: make DESTDIR="$PWD/dest" install && find dest -type f | sort
