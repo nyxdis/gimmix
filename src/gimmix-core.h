@@ -29,11 +29,11 @@ bool gimmix_seek (MpdObj *, int);
 /* get full image path (returned string should be freed) */
 char *gimmix_get_full_image_path (const char *);
 
-/* Get the "elapsed time / total time" as a string */
-void gimmix_get_progress_status (MpdObj *, float *, char *);
+/* Get the "elapsed time / total time" as a string of at most len bytes */
+void gimmix_get_progress_status (MpdObj *, float *, char *, gsize len);
 
 /* Get the total time in the format "mm:ss" as a string for a mpd_Song * */
-void gimmix_get_total_time_for_song (MpdObj *, mpd_Song *, char *);
+void gimmix_get_total_time_for_song (MpdObj *, mpd_Song *, char *, gsize len);
 
 /* Check mpd status for PLAY/PAUSE/STOP */
 GimmixStatus gimmix_get_status (MpdObj *);

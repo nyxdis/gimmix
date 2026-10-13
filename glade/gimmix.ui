@@ -399,9 +399,6 @@ Check your mpd configuration file (/etc/mpd.conf on most systems).</property>
       <row>
         <col id="0" translatable="yes">Filename</col>
       </row>
-      <row>
-        <col id="0" translatable="yes"/>
-      </row>
     </data>
   </object>
   <object class="GtkWindow" id="library_window">
@@ -469,9 +466,7 @@ Check your mpd configuration file (/etc/mpd.conf on most systems).</property>
                 <property name="border_width">3</property>
                 <property name="spacing">3</property>
                 <child>
-                  <object class="GtkComboBoxEntry" id="search_combo">
-                    <property name="width_request">108</property>
-                    <property name="height_request">16</property>
+                  <object class="GtkComboBox" id="search_combo">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="model">liststore1</property>
@@ -480,15 +475,6 @@ Check your mpd configuration file (/etc/mpd.conf on most systems).</property>
                       <attributes>
                         <attribute name="text">0</attribute>
                       </attributes>
-                    </child>
-                    <child internal-child="entry">
-                      <object class="GtkEntry" id="comboboxentry-entry2">
-                        <property name="can_focus">False</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
-                        <property name="primary_icon_sensitive">True</property>
-                        <property name="secondary_icon_sensitive">True</property>
-                      </object>
                     </child>
                   </object>
                   <packing>
@@ -1024,9 +1010,6 @@ Check your mpd configuration file (/etc/mpd.conf on most systems).</property>
       </row>
       <row>
         <col id="0" translatable="yes">Trailer</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes"/>
       </row>
     </data>
   </object>

@@ -2,7 +2,7 @@
  * gimmix-tagedit.c
  *
  * Copyright (C) 2006-2009 Priyank Gosalia
- * Copyright (C) 2012-2013 Christoph Mende
+ * Copyright (C) 2012-2026 Freydis Mende
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -130,11 +130,16 @@ gimmix_tag_editor_populate (const void *song)
 	if (!g_file_test(song,G_FILE_TEST_EXISTS))
 		return FALSE;
 
+	if (file != NULL)
+	{
+		taglib_file_free (file);
+	}
 	file = taglib_file_new (song);
 	if (file == NULL)
 		return FALSE;
 
-	taglib_set_strings_unicode (FALSE);
+	/* tags are handed to GTK as UTF-8 and written back as UTF-8 */
+	taglib_set_strings_unicode (TRUE);
 	
 	tag = taglib_file_tag (file);
 	properties = taglib_file_audioproperties (file);
@@ -211,7 +216,7 @@ gimmix_tag_editor_populate (const void *song)
 	#else
 	char *tok = NULL;
 	info = (char*) g_malloc0 (sizeof(char)*32);
-	gimmix_get_progress_status (gmo, NULL, info);
+	gimmix_get_progress_status (gmo, NULL, info, 32);
 	tok = strtok (info, "/");
 	tok = strtok (NULL, "/");
 	g_strstrip (tok);
@@ -253,6 +258,7 @@ gimmix_tag_editor_close (G_GNUC_UNUSED GtkWidget *widget,
 	if (file)
     	{
     		taglib_file_free (file);
+    		file = NULL;
     	}
 	#endif
 	gtk_widget_hide (tag_editor_window);
@@ -316,6 +322,7 @@ gimmix_tag_editor_save (G_GNUC_UNUSED GtkWidget *button,
 	g_free (artist);
 	g_free (album);
 	g_free (comment);
+	g_free (genre);
 	
 	return;
 }
@@ -334,7 +341,7 @@ gimmix_tag_editor_show (void)
 	{
 		info = mpd_playlist_get_current_song (gmo);
 		#if HAVE_TAGEDITOR
-		song = g_strdup_printf ("%s/%s", cfg_get_key_value(conf, "music_directory"), info->file);
+		song = g_strdup_printf ("%s/%s", cfg_get_key_value (&conf, "music_directory"), info->file);
 		if (gimmix_tag_editor_populate (song))
 			gtk_widget_show (GTK_WIDGET(tag_editor_window));
 		#else

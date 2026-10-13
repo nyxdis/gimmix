@@ -2,7 +2,7 @@
  * gimmix-firstrun.c
  *
  * Copyright (C) 2006-2009 Priyank Gosalia
- * Copyright (C) 2012-2013 Christoph Mende
+ * Copyright (C) 2012-2026 Freydis Mende
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -133,7 +133,8 @@ on_fr_apply_clicked (G_GNUC_UNUSED GtkWidget *widget,
 	
 	entry = GTK_WIDGET (gtk_builder_get_object (xml, "fst_music_dir"));
 	dir = gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER(entry));
-	cfg_add_key (&cf, "music_directory", (char *)dir);
+	cfg_add_key (&cf, "music_directory", dir ? (char *)dir : "");
+	g_free ((gchar *)dir);
 	
 	s_checkbox = GTK_WIDGET (gtk_builder_get_object (xml, "fr_systray_toggle"));
 

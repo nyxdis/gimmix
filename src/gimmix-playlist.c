@@ -2,7 +2,7 @@
  * gimmix-playlist.c
  *
  * Copyright (C) 2006-2009 Priyank Gosalia
- * Copyright (C) 2012-2013 Christoph Mende
+ * Copyright (C) 2012-2026 Freydis Mende
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -106,13 +106,13 @@ on_drag_data_received (G_GNUC_UNUSED GtkWidget *widget,
 	gboolean	dnd_success = FALSE;
 	gboolean	delete_selection_data = FALSE;
 
-	if((selection_data != NULL) && (selection_data->length >= 0))
+	if((selection_data != NULL) && (gtk_selection_data_get_length (selection_data) >= 0))
         {
 		switch (target_type)
 		{
 			case TARGET_STRING:
 			{
-				path = (gchar*) selection_data->data;
+				path = (gchar*) gtk_selection_data_get_data (selection_data);
 				mpd_playlist_queue_add (gmo, path);
 				mpd_playlist_queue_commit (gmo);
 				dnd_success = TRUE;
@@ -152,9 +152,9 @@ on_drag_data_get (G_GNUC_UNUSED GtkWidget      *widget,
         g_assert (selection_data != NULL);
         
 	list = gtk_tree_selection_get_selected_rows (library_selection, &model);
-	while (list != NULL)
+	for (GList *l = list; l != NULL; l = l->next)
 	{
-		gtk_tree_model_get_iter (model, &iter, list->data);
+		gtk_tree_model_get_iter (model, &iter, l->data);
 		gtk_tree_model_get (model, &iter, 2, &path, 3, &type, -1);
 		
 		if (type == GIMMIX_FILE_DIR || type == GIMMIX_FILE_SONG)
@@ -163,7 +163,7 @@ on_drag_data_get (G_GNUC_UNUSED GtkWidget      *widget,
 			{
 				case TARGET_STRING:	
 				{
-					gtk_selection_data_set (selection_data, selection_data-> target, 8, (guchar*) path, strlen (path));
+					gtk_selection_data_set (selection_data, gtk_selection_data_get_target (selection_data), 8, (guchar*) path, strlen (path));
 					break;
 				}
                 	
@@ -180,8 +180,8 @@ on_drag_data_get (G_GNUC_UNUSED GtkWidget      *widget,
 			}
 			g_free (path);
 		}
-		list = g_list_next (list);
 	}
+	g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
 
 	return;
 }
@@ -197,12 +197,12 @@ on_drag_drop (GtkWidget		    *widget,
 	gboolean ret = TRUE;
 
         /* If a target is offerred */
-        if (context->targets)
+        if (gdk_drag_context_list_targets (context))
         {
 		/* Request the data from the source. */
 		gtk_drag_get_data (widget,
 				context,
-				TARGET_STRING,
+				gdk_atom_intern_static_string ("text/plain"),
 				time);
         }
         else
@@ -528,7 +528,7 @@ gimmix_update_current_playlist (MpdObj *mo, MpdData *pdata)
 			{
 				album = g_markup_printf_escaped ("<span size=\"medium\"weight=\"bold\">%s</span>", data->song->album);
 			}
-			gimmix_get_total_time_for_song (mo, data->song, time);
+			gimmix_get_total_time_for_song (mo, data->song, time, sizeof time);
 			ti = g_markup_printf_escaped ("<span size=\"medium\" weight=\"bold\">%s</span>", time);
 		}
 		else
@@ -553,7 +553,7 @@ gimmix_update_current_playlist (MpdObj *mo, MpdData *pdata)
 			{
 				album = g_markup_printf_escaped ("%s", data->song->album);
 			}
-			gimmix_get_total_time_for_song (mo, data->song, time);
+			gimmix_get_total_time_for_song (mo, data->song, time, sizeof time);
 			ti = NULL;
 		}
 		
@@ -869,16 +869,16 @@ cb_search_keypress (G_GNUC_UNUSED GtkWidget   *widget,
 		    G_GNUC_UNUSED gpointer     data)
 {
 	gint		index;
-	gchar		text[20];
+	const gchar	*text;
 	
-	strcpy (text, gtk_entry_get_text (GTK_ENTRY(search_entry)));
+	text = gtk_entry_get_text (GTK_ENTRY(search_entry));
 	if ( (strlen (text)) <= 1 )
 	{
 		gimmix_update_library_with_dir ("/");
 		return;
 	}
 	index = gtk_combo_box_get_active (GTK_COMBO_BOX(search_combo));
-	gimmix_library_search (index, text);
+	gimmix_library_search (index, (gchar *) text);
 	
 	return;
 }
@@ -912,8 +912,7 @@ cb_current_playlist_double_click (GtkTreeView *treeview)
 	mpd_status_update (gmo);
 	
 	/* free the list */
-	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
-	g_list_free (list);
+	g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
 	
 	return;
 }
@@ -996,8 +995,7 @@ cb_library_dir_activated (G_GNUC_UNUSED gpointer data)
 	mpd_status_update (gmo);
 		
 	/* free the list */
-	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
-	g_list_free (list);
+	g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
 	
 	return;
 }
@@ -1032,25 +1030,16 @@ cb_library_popup_add_clicked (G_GNUC_UNUSED GtkWidget *widget,
 		g_free (path);
 	}
 	else
-	while (list != NULL)
+	for (GList *l = list; l != NULL; l = l->next)
 	{
-		gtk_tree_model_get_iter (model, &iter, list->data);
+		gtk_tree_model_get_iter (model, &iter, l->data);
 		gtk_tree_model_get (model, &iter, 2, &path, 3, &type, -1);
-	
 		
-		if (type == GIMMIX_FILE_DIR)
-		{	
-			mpd_playlist_queue_add (gmo, path);
-			g_free (path);
-		}
-		
-		if (type == GIMMIX_FILE_SONG)
+		if (type == GIMMIX_FILE_DIR || type == GIMMIX_FILE_SONG)
 		{
 			mpd_playlist_queue_add (gmo, path);
-			g_free (path);
 		}
-		
-		list = g_list_next (list);
+		g_free (path);
 	}
 	
 	mpd_playlist_queue_commit (gmo);
@@ -1069,8 +1058,7 @@ cb_library_popup_add_clicked (G_GNUC_UNUSED GtkWidget *widget,
 	mpd_status_update (gmo);
 		
 	/* free the list */
-	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
-	g_list_free (list);
+	g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
 	
 	return;
 }
@@ -1109,25 +1097,16 @@ cd_library_popup_replace_clicked (G_GNUC_UNUSED GtkWidget *widget,
 		g_free (path);
 	}
 	else
-	while (list != NULL)
+	for (GList *l = list; l != NULL; l = l->next)
 	{
-		gtk_tree_model_get_iter (model, &iter, list->data);
+		gtk_tree_model_get_iter (model, &iter, l->data);
 		gtk_tree_model_get (model, &iter, 2, &path, 3, &type, -1);
-	
 		
-		if (type == GIMMIX_FILE_DIR)
-		{	
-			mpd_playlist_queue_add (gmo, path);
-			g_free (path);
-		}
-		
-		if (type == GIMMIX_FILE_SONG)
+		if (type == GIMMIX_FILE_DIR || type == GIMMIX_FILE_SONG)
 		{
 			mpd_playlist_queue_add (gmo, path);
-			g_free (path);
 		}
-		
-		list = g_list_next (list);
+		g_free (path);
 	}
 
 	mpd_playlist_queue_commit (gmo);
@@ -1139,8 +1118,7 @@ cd_library_popup_replace_clicked (G_GNUC_UNUSED GtkWidget *widget,
 	mpd_status_update (gmo);
 		
 	/* free the list */
-	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
-	g_list_free (list);
+	g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
 	
 	return;
 }
@@ -1156,8 +1134,9 @@ cb_playlist_activated (GtkTreeView *treeview)
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview));
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
 
-	if ( gtk_tree_selection_get_selected (selection, &model, &iter) )
-		gtk_tree_model_get (model, &iter, 1, &pl_name, -1);
+	if ( !gtk_tree_selection_get_selected (selection, &model, &iter) )
+		return;
+	gtk_tree_model_get (model, &iter, 1, &pl_name, -1);
 	
 	mpd_playlist_queue_load (gmo, pl_name);
 	gimmix_current_playlist_clear ();
@@ -1303,9 +1282,9 @@ gimmix_update_library_with_dir (gchar *dir)
 								2, data->song->file,
 								3, GIMMIX_FILE_SONG,
 								-1);
+			gtk_list_store_set (dir_store, &dir_iter, 4, data->song->id, -1);
 			g_free (title);
 		}
-		gtk_list_store_set (dir_store, &dir_iter, 4, data->song->id, -1);
 	}
 	
 	mpd_data_free (data);
@@ -1365,7 +1344,7 @@ gimmix_library_song_info (void)
 		return;
 	}
 	#ifdef HAVE_TAGEDITOR
-	gchar *song_path = g_strdup_printf ("%s/%s", cfg_get_key_value(conf, "music_directory"), path);
+	gchar *song_path = g_strdup_printf ("%s/%s", cfg_get_key_value (&conf, "music_directory"), path);
 	if (gimmix_tag_editor_populate (song_path))
 	{	
 		gtk_widget_show (tag_editor_window);
@@ -1389,8 +1368,7 @@ gimmix_library_song_info (void)
 	
 	
 	/* free the list */
-	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
-	g_list_free (list);
+	g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
 	
 	return;
 }
@@ -1413,7 +1391,7 @@ gimmix_current_playlist_song_info (void)
 	gtk_tree_model_get (model, &iter, 1, &path, 2, &id, -1);
 	
 	#ifdef HAVE_TAGEDITOR
-	gchar *song_path = g_strdup_printf ("%s/%s", cfg_get_key_value(conf, "music_directory"), path);
+	gchar *song_path = g_strdup_printf ("%s/%s", cfg_get_key_value (&conf, "music_directory"), path);
 	if (gimmix_tag_editor_populate (song_path))
 	{	
 		gtk_widget_show (tag_editor_window);
@@ -1436,8 +1414,7 @@ gimmix_current_playlist_song_info (void)
 	g_free (path);
 	
 	/* free the list */
-	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
-	g_list_free (list);
+	g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
 	
 	return;
 }
@@ -1453,21 +1430,19 @@ gimmix_current_playlist_remove_song (void)
 	current_playlist_model = gtk_tree_view_get_model (GTK_TREE_VIEW(current_playlist_treeview));
 	list = gtk_tree_selection_get_selected_rows (current_playlist_selection, &current_playlist_model);
 	
-	while (list != NULL)
+	for (GList *l = list; l != NULL; l = l->next)
 	{
-		if (TRUE == gtk_tree_model_get_iter (current_playlist_model, &iter, list->data))
+		if (TRUE == gtk_tree_model_get_iter (current_playlist_model, &iter, l->data))
 		{
 			gtk_tree_model_get (current_playlist_model, &iter, 2, &id, -1);
 			mpd_playlist_queue_delete_id (gmo, id);
 		}
-		list = g_list_next (list);
 	}
 	mpd_playlist_queue_commit (gmo);
 	mpd_status_update (gmo);
 	
 	/* free the list */
-	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
-	g_list_free (list);
+	g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
 	
 	return;
 }	
@@ -1485,33 +1460,29 @@ gimmix_current_playlist_crop_song (void)
 	list = gtk_tree_selection_get_selected_rows (current_playlist_selection, &current_playlist_model);
 	gtk_tree_selection_select_all (current_playlist_selection);
 
-	while (list != NULL)
+	for (GList *l = list; l != NULL; l = l->next)
 	{
-		if (gtk_tree_model_get_iter (current_playlist_model, &iter, list->data))
+		if (gtk_tree_model_get_iter (current_playlist_model, &iter, l->data))
 		{
 			gtk_tree_selection_unselect_iter (current_playlist_selection, &iter);
 		}
-		list = g_list_next (list);
 	}
 
 	all = gtk_tree_selection_get_selected_rows (current_playlist_selection, &current_playlist_model);
-	while (all != NULL)
+	for (GList *l = all; l != NULL; l = l->next)
 	{
-		if (TRUE == gtk_tree_model_get_iter (current_playlist_model, &iter, all->data))
+		if (TRUE == gtk_tree_model_get_iter (current_playlist_model, &iter, l->data))
 		{
 			gtk_tree_model_get (current_playlist_model, &iter, 2, &id, -1);
 			mpd_playlist_queue_delete_id (gmo, id);
 		}
-		all = g_list_next (all);
 	}
 	mpd_playlist_queue_commit (gmo);
 	mpd_status_update (gmo);
 	
 	/* free the list */
-	g_list_foreach (list, (GFunc)gtk_tree_path_free, NULL);
-	g_list_free (list);
-	g_list_foreach (all, (GFunc)gtk_tree_path_free, NULL);
-	g_list_free (all);
+	g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
+	g_list_free_full (all, (GDestroyNotify) gtk_tree_path_free);
 	
 	return;
 }	
@@ -1846,18 +1817,20 @@ gimmix_update_player_status (G_GNUC_UNUSED gpointer data)
 static gchar *
 gimmix_path_get_parent_dir (gchar *path)
 {
-	gchar *p, buf[128];
+	gchar *p;
 	gchar *ret;
 
-	strcpy (buf, path);
-	p = strrchr (buf, '/');
+	ret = g_strdup (path);
+	p = strrchr (ret, '/');
 	if (p)
-	{	
+	{
 		*p = 0;
-		ret = g_strdup (buf);
- 	}
- 	else
- 	ret = g_strdup ("/");
+	}
+	else
+	{
+		g_free (ret);
+		ret = g_strdup ("/");
+	}
  	
  	return ret;
 }
@@ -1871,7 +1844,7 @@ gimmix_playlist_save_dialog_show (void)
 	static gchar *message = "Enter the name of the playlist: ";
    
 	dialog = gtk_dialog_new_with_buttons (_("Save playlist"),
-                                         NULL,
+                                         GTK_WINDOW(main_window),
                                          GTK_DIALOG_DESTROY_WITH_PARENT,
                                          GTK_STOCK_OK,
                                          GTK_RESPONSE_ACCEPT,
@@ -1890,9 +1863,9 @@ gimmix_playlist_save_dialog_show (void)
                              dialog);
 	g_signal_connect (dialog, "delete-event", G_CALLBACK(gtk_widget_destroy), dialog);
 	gtk_misc_set_padding (GTK_MISC(label), 5, 5);
-	gtk_container_set_border_width (GTK_CONTAINER((GTK_DIALOG(dialog))->vbox), 10);
-	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), label);
-	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), entry);
+	gtk_container_set_border_width (GTK_CONTAINER(gtk_dialog_get_content_area (GTK_DIALOG(dialog))), 10);
+	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG(dialog))), label);
+	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG(dialog))), entry);
    
 	gtk_widget_show_all (dialog);
    
@@ -1915,14 +1888,13 @@ cb_gimmix_playlist_save_response (GtkDialog *dlg, gint arg1, gpointer dialog)
 			GList *widget_list;
 			const gchar *text;
 			
-			widget_list = gtk_container_get_children (GTK_CONTAINER(GTK_DIALOG(dialog)->vbox));
-			widget_list = widget_list->next;
-			text = gtk_entry_get_text (GTK_ENTRY(widget_list->data));
+			widget_list = gtk_container_get_children (GTK_CONTAINER(gtk_dialog_get_content_area (GTK_DIALOG(dialog))));
+			text = gtk_entry_get_text (GTK_ENTRY(g_list_nth_data (widget_list, 1)));
 			if ((mpd_database_save_playlist (gmo, (char*)text)) == MPD_DATABASE_PLAYLIST_EXIST)
 				g_print (_("playlist already exists.\n"));
 			
-			g_list_free (widget_list);
 			gimmix_load_playlist ((char*)text);
+			g_list_free (widget_list);
 		}
 		gimmix_update_playlists_treeview ();
 	}	
@@ -1938,21 +1910,18 @@ cb_gimmix_playlist_remove ()
 	GtkTreeModel		*pls_treemodel;
 	GtkTreeSelection	*selection;
 	GtkTreeIter			iter;
-	gchar				*path;
+	gchar				*path = NULL;
 
 	pls_treemodel = gtk_tree_view_get_model (GTK_TREE_VIEW(playlists_treeview));
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(playlists_treeview));
 	
-	if (!selection)
-		return;	
+	if (!selection || !gtk_tree_selection_get_selected (selection, &pls_treemodel, &iter))
+		return;
 	
-	if ( gtk_tree_selection_get_selected (selection, &pls_treemodel, &iter) )
-	{
-		gtk_tree_model_get (pls_treemodel, &iter,
-							1, &path,
-							-1);
-		mpd_database_delete_playlist (gmo, path);
-	}
+	gtk_tree_model_get (pls_treemodel, &iter,
+						1, &path,
+						-1);
+	mpd_database_delete_playlist (gmo, path);
 	
 	if ((loaded_playlist != NULL) && (strcmp (path, loaded_playlist) == 0))
 			gimmix_current_playlist_clear ();

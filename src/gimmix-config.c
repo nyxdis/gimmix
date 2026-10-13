@@ -2,7 +2,7 @@
  * gimmix-config.c
  *
  * Copyright (C) 2006-2009 Priyank Gosalia
- * Copyright (C) 2012-2013 Christoph Mende
+ * Copyright (C) 2012-2026 Freydis Mende
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -89,15 +89,9 @@ gimmix_config_init (void)
 bool
 gimmix_config_get_bool (const char *key)
 {
-	bool ret = false;
-	//g_print ("%s:%s\n", key, cfg_get_key_value(conf,key));
-	int cmpval = strncasecmp (cfg_get_key_value(conf,(char*)key), "true", 4);
-	if (cmpval == 0)
-	{
-		ret = true;
-	}
+	const char *value = cfg_get_key_value (&conf, (char*)key);
 	
-	return ret;
+	return value != NULL && strncasecmp (value, "true", 4) == 0;
 }
 
 void
@@ -135,11 +129,11 @@ gimmix_config_get_proxy_string (void)
 	char	*ret = NULL;
 	char	*host = NULL;
 	
-	host = cfg_get_key_value (conf,"proxy_host");
+	host = cfg_get_key_value (&conf,"proxy_host");
 	if ((host != NULL) && strlen(host))
 	{
 		char *port = NULL;
-		port = cfg_get_key_value (conf,"proxy_port"); 
+		port = cfg_get_key_value (&conf,"proxy_port"); 
 		if (port && strlen(port))
 		{
 			ret = g_strdup_printf ("%s:%s", host, port);

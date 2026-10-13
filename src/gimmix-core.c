@@ -2,7 +2,7 @@
  * gimmix-core.c
  *
  * Copyright (C) 2006-2009 Priyank Gosalia
- * Copyright (C) 2012-2013 Christoph Mende
+ * Copyright (C) 2012-2026 Freydis Mende
  *
  * Gimmix is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -167,55 +167,47 @@ gimmix_seek (MpdObj *mo, int seektime)
 }
 
 void
-gimmix_get_progress_status (MpdObj *mo, float *fraction, char *time)
+gimmix_get_progress_status (MpdObj *mo, float *fraction, char *time, gsize len)
 {
 	int state;
 	int total, elapsed;
-		
-	state = mpd_player_get_state (mo);
-	
-	switch (state)
-	{
-		case MPD_PLAYER_PLAY:
-		case MPD_PLAYER_PAUSE:
-			total = mpd_status_get_total_song_time (mo);
-			elapsed = mpd_status_get_elapsed_song_time (mo);
-			snprintf (time, 20, "%02i:%02i / %02i:%02i", elapsed/60,
-					elapsed%60,
-					total/60,
-					total%60);
-			if (fraction!=NULL)
-			*fraction = (float)((float)elapsed/(float)total);
-			break;
+	gchar *str;
 
-		case MPD_PLAYER_STOP:
-		case MPD_PLAYER_UNKNOWN:
-			time = NULL;
-			return;
-	}
-	return;
+	state = mpd_player_get_state (mo);
+	if (state != MPD_PLAYER_PLAY && state != MPD_PLAYER_PAUSE)
+		return;
+
+	total = mpd_status_get_total_song_time (mo);
+	elapsed = mpd_status_get_elapsed_song_time (mo);
+	str = g_strdup_printf ("%02i:%02i / %02i:%02i", elapsed/60, elapsed%60, total/60, total%60);
+	g_strlcpy (time, str, len);
+	g_free (str);
+	if (fraction!=NULL)
+		*fraction = (total > 0) ? (float)((float)elapsed/(float)total) : 0.0f;
 }
 
 void
 gimmix_get_total_time_for_song (G_GNUC_UNUSED MpdObj *mo,
 				mpd_Song	     *song,
-				char		     *time)
+				char		     *time,
+				gsize		      len)
 {
+	gchar *str;
+
 	if (!song)
 	{
-		time = NULL;
+		g_strlcpy (time, "", len);
 		return;
 	}
-	snprintf (time, 15, "%02i:%02i",
-				song->time/60,
-				song->time%60);
-	return;
+	str = g_strdup_printf ("%02i:%02i", song->time/60, song->time%60);
+	g_strlcpy (time, str, len);
+	g_free (str);
 }
 
 void
 gimmix_disconnect (MpdObj *mo)
 {
-	if (mo != NULL || mpd_check_connected(mo))
+	if (mo != NULL && mpd_check_connected(mo))
 	{
 		mpd_free (mo);
 	}
@@ -226,12 +218,7 @@ gimmix_disconnect (MpdObj *mo)
 char *
 gimmix_get_full_image_path (const char *image_name)
 {
-	char *full_path;
-	
-	full_path = (char*)malloc((strlen(PREFIX) + strlen(image_name) + 16) * sizeof(char));
-	sprintf (full_path, "%s%s%s", PREFIX, "/share/pixmaps/", image_name);
-	
-	return full_path;
+	return g_build_filename (PIXMAPDIR, image_name, NULL);
 }
 
 void

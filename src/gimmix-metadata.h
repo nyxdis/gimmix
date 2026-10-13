@@ -1,5 +1,5 @@
 #ifndef GIMMIX_METADATA_H
-#define GIMMIX_METADAT_H
+#define GIMMIX_METADATA_H
 
 #include "gimmix-core.h"
 #include "gimmix.h"
