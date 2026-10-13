@@ -1,103 +1,125 @@
-.\"                                      Hey, EMACS: -*- nroff -*-
-.\" First parameter, NAME, should be all caps
-.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
-.\" other parameters are allowed: see man(7), man(1)
-.TH Gimmix 1 "July 20, 2008"
-.\" Please adjust this date whenever revising the manpage.
-.\"
-.\" Some roff macros, for reference:
-.\" .nh        disable hyphenation
-.\" .hy        enable hyphenation
-.\" .ad l      left justify
-.\" .ad b      justify to both left and right margins
-.\" .nf        disable filling
-.\" .fi        enable filling
-.\" .br        insert line break
-.\" .sp <n>    insert n+1 empty lines
-.\" for manpage-specific macros, see man(7)
+.TH GIMMIX 1 "October 2026" "gimmix 0.6.0" "User Commands"
 .SH NAME
-Gimmix \- a graphical music player daemon (MPD) client
+gimmix \- a graphical music player daemon (MPD) client
 .SH SYNOPSIS
 .B gimmix
+.RB [ \-h ]
+.RB [ \-v ]
 .SH DESCRIPTION
-This manual page documents briefly the
 .B gimmix
-command.
+is a graphical client for the Music Player Daemon (MPD), written in C using
+GTK+ 2. It has a compact mode with only the player controls and a full mode
+with the current playlist, a library browser, the stored playlists, album
+covers and lyrics.
+.SH OPTIONS
+.TP
+.B \-h, \-\-help
+Print a summary of the options and exit.
+.TP
+.B \-v, \-\-version
+Print the version and exit.
+.SH KEYS
+.TP
+.B z
+Previous song
+.TP
+.B x, c
+Play or pause
+.TP
+.B v
+Stop
+.TP
+.B b
+Next song
+.TP
+.B i
+Song information and tag editor
+.TP
+.B r
+Toggle repeat
+.TP
+.B s
+Toggle shuffle
+.TP
+.B l
+Show or hide the playlist
 .PP
-.\" TeX users may be more comfortable with the \fB<whatever>\fP and
-.\" \fI<whatever>\fP escape sequences to invode bold face and italics,
-.\" respectively.
-\fBgimmix\fR is a graphical music player daemon (MPD) client written in C using GTK+2.
-It's very simple and easy to use, yet offers many features to make your audio experience a pleasant one.
-
+The mouse wheel on the volume button or on the system tray icon changes the
+volume.
 .SH CONFIGURATION
-Default configuration file location is $HOME/.gimmixrc.
-.PP
-List of valid configuration options :
+The settings are stored in \fI$HOME/.gimmixrc\fR as \fIkey=value\fR lines
+and are normally changed from the preferences dialog. On the first start a
+dialog asks for the MPD connection.
 .TP
-\fBmpd_hostname (mandatory)\fR
-hostname
-
+\fBmpd_hostname\fR
+Host name, IP address or UNIX socket path of the MPD server (default
+localhost).
 .TP
-\fBmpd_port (mandatory)\fR
-port number
-
+\fBmpd_port\fR
+Port of the MPD server (default 6600).
 .TP
-\fBmpd_port (mandatory)\fR
-mpd password. Leave blank for no password
-
+\fBmpd_password\fR
+Password for the MPD server. Leave blank for no password.
 .TP
-\fBenable_systray (mandatory)\fR
-Enable/Disable the system tray icon. Enable is true, Disable is false.
-
+\fBmusic_directory\fR
+The directory MPD plays from, the same as in mpd.conf. The tag editor needs
+it to find the files, and the cover plugin looks there for images next to
+the music.
 .TP
-\fBenable_notification (mandatory)\fR
-Enable/Disable the notification tooltip. Enable is true, Disable is false.
-
+\fBenable_systray\fR
+Show a system tray icon (true or false, default true).
 .TP
-\fBmusic_directory (mandatory)\fR
-The absolute path to the directory where your music is stored. This is same as the one you specified in your mpd.conf. This setting is required for the tag editor to function properly.
-
+\fBenable_notification\fR
+Show the currently playing song in the tray icon's tooltip (true or false,
+default true).
 .TP
 \fBplay_on_add\fR
-If true, songs will automatically be played when you add them to the playlist. If false, songs will just be added to the playlist. Default value is false.
-
+Start playing when a song is added to the playlist (default false).
 .TP
 \fBstop_on_exit\fR
-If true, gimmix will stop playing when user quits gimmix. If false, gimmix will not stop playing when user quits gimmix. Default value is false.
-
+Stop playback when gimmix quits (default false).
 .TP
 \fBenable_search\fR
-If true, search mode is enabled in library browser. If false, search mode will be disabled. Default value is true.
-
+Show the search box in the library browser (default true).
 .TP
 \fBupdate_on_startup\fR
-If true, gimmix will update the mpd database everytime on startup. If false, gimmix won't update the mpd database on startup. Default value is false.
-
-.TP
-\fBfull_view_mode\fR
-If true, the playlist will be expanded by default when gimmix starts. If false, gimmix will start in compact mode (This is automatically set by gimmix, so, its not necessary to set this value always)
-
-.TP
-\fBwindow_xpos and window_ypos\fR
-x and y co-ordinates representing window position of gimmix (These values are automatically set, so, its not necessary to set these values)
-
-.TP
-\fBwindow_width and window_height\fR
-These represt the window geometry of gimmix (These values are automatically set, so, its not necessary to set these values)
-
+Update the MPD database when gimmix starts (default false).
 .TP
 \fBcoverart_enable\fR
-Enable/disable amazon cover art plugin
-
+Show album covers (default true). Covers are taken from image files next to
+the music or fetched from the Cover Art Archive and kept in
+\fI$HOME/.gimmix/covers\fR.
 .TP
-\fBcoverart_location\fR
-Amazon's server location to fetch covers from. Values : com | co.uk | jp | fr | ca | de
-
+\fBproxy_enable\fR, \fBproxy_host\fR, \fBproxy_port\fR
+Use an HTTP proxy for fetching covers and lyrics.
+.TP
+\fBpl_column_title_show\fR, \fBpl_column_artist_show\fR,
+\fBpl_column_album_show\fR, \fBpl_column_length_show\fR
+Which columns the current playlist shows. Also available from the playlist's
+context menu.
+.TP
+\fBfull_view_mode\fR, \fBwindow_xpos\fR, \fBwindow_ypos\fR,
+\fBwindow_width\fR, \fBwindow_height\fR
+The window mode, position and size. These are saved automatically when
+gimmix quits.
+.SH FILES
+.TP
+.I $HOME/.gimmixrc
+Configuration file.
+.TP
+.I $HOME/.gimmix/covers
+Fetched album covers and the cover database.
+.TP
+.I $HOME/.gimmix/lyrics
+Fetched lyrics.
 .SH SEE ALSO
-Website: http://cmende.github.com/gimmix
-.SH AUTHOR
-Gimmix was written by Priyank Gosalia <priyankmg@gmail.com>.
+.BR mpd (1),
+.BR mpd.conf (5)
 .PP
-This manual page was written by Vincent Legout <vincent@legout.info>,
-for the Debian project (but may be used by others).
+Website: https://github.com/nyxdis/gimmix
+.SH AUTHOR
+Gimmix was written by Priyank Gosalia <priyankmg@gmail.com> and is maintained
+by Freydis Mende <freydis.mende@proton.me>.
+.PP
+This manual page was originally written by Vincent Legout <vincent@legout.info>
+for the Debian project.

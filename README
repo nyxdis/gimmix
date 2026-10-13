@@ -1,149 +1,81 @@
-Gimmix README
-==============
+Gimmix
+======
 
-Gimmix is a graphical Music player daemon (MPD) client written in C
-using GTK+2.
+Gimmix is a graphical client for the Music Player Daemon (MPD), written in
+C with GTK+ 2.
 
-Features:
-=========
-* Simple and Clean Interface.
-* Library Browser.
-* Library search. (search by artist, album, filename, etc)
-* Playlist management (manage mpd playlists)
-* ID3v2 tag editing support.
-* Support for fetching Covers from Freecovers.net
-* Support for fetching Lyrics from Leoslyrics.com
-* System tray icon support.
-* Support for controlling Gimmix through Keyboard.
-* Notification support (Displays the currently playing song in systray).
-* Small memory footprint.
+Features
+--------
+* Simple and clean interface, with a compact mode that shows only the
+  player controls.
+* Library browser and library search (by artist, album, title or file name).
+* Playlist management (load, save and delete MPD playlists).
+* Album covers, from image files next to the music or from the Cover Art
+  Archive (https://coverartarchive.org).
+* Lyrics from LRCLIB (https://lrclib.net).
+* Tag editing with TagLib.
+* System tray icon with a notification tooltip, volume control by mouse
+  wheel and a playback menu.
+* Keyboard control.
 
-Requirements:
-=============
-* gtk+ >= 2.8
+Requirements
+------------
+* GTK+ >= 2.24
+* GLib >= 2.32
 * libmpd >= 0.17.0
-* libglade-2.6.x
-* taglib-1.4 (C bindings)
+* TagLib >= 1.4 (C bindings), for the tag editor; disable with
+  --disable-tageditor
+* libcurl >= 7.19.4 and json-glib >= 1.2, for the cover and lyrics
+  plugins; disable with --disable-cover and --disable-lyrics
 
-The lyrics/cover plugin(s) require the following two libraries:
-* libnxml
-* libcurl
+Gimmix works with MPD 0.16 or later.
 
-Installation:
-=============
-Read the INSTALL file for details on installation procedure.
+Installation
+------------
+From a release tarball:
 
-Configuration file:
-Gimmix stores its configuration settings in ~/.gimmixrc
-NOTE: The configuration file layout has changed in gimmix-0.3 and higher. Please
-delete your ~/.gimmixrc (in case you are upgrading from a version prior to 0.3) before running gimmix.
+    ./configure
+    make
+    make install
 
-Keybindings:
-============
-Gimmix keybindings are not yet configurable unless you manually edit the source.
+From a git checkout, run ./autogen.sh first. It needs autoconf, automake,
+gettext (autopoint) and pkg-config. See INSTALL for details.
 
-'z'			-> Previous song
-'x' / 'c'	-> Play/Pause (Toggle)
-'v'			-> Stop
-'b'			-> Next song
-'i'			-> Song information
-'r'			-> Toggle Repeat
-'s'			-> Toggle Shuffle
-'l'			-> Toggle display Playlist
+Configuration
+-------------
+Gimmix is configured from its preferences dialog. The settings are stored
+in ~/.gimmixrc; the first start shows a dialog that asks for the MPD
+connection. The valid settings are listed in the gimmix(1) manual page.
 
-You can also adjust volume by scrolling your mouse wheel on the system tray icon.
+Set music_directory to the directory MPD plays from. The tag editor needs
+it to find the files, and the cover plugin looks there for cover.jpg,
+folder.jpg and similar images next to the music.
 
-Configuration file options:
-===========================
+Covers and lyrics that were fetched are kept in ~/.gimmix/covers and
+~/.gimmix/lyrics. Right-click the cover to set one from a file or to
+fetch it again.
 
-Following is a list of valid configuration options for gimmix.
-As from version 0.3, the new config file layout will be followed.
+Keybindings
+-----------
+    z        Previous song
+    x, c     Play / pause
+    v        Stop
+    b        Next song
+    i        Song information and tag editor
+    r        Toggle repeat
+    s        Toggle shuffle
+    l        Show or hide the playlist
 
-mpd_hostname = your_hostname
-(default is localhost)
+The mouse wheel on the system tray icon or the volume button changes the
+volume.
 
-mpd_port = port_number
-(default is 6600)
+Bugs
+----
+Please report bugs at https://github.com/nyxdis/gimmix/issues with a
+description, the steps to reproduce them and the versions of gimmix,
+GTK+, libmpd and MPD.
 
-mpd_password = your_mpd_password
-leave blank for no password
-
-enable_systray = true or false
-Enable/Disable the system tray icon. Enable is true, Disable is false.
-
-enable_notification = true or false
-Enable/Disable the notification tooltip. Enable is true, Disable is false.
-
-music_directory = /foo/bar
-The absolute path to the directory where your music is stored.
-This is same as the one you specified in your mpd.conf. 
-This setting is required for the tag editor to function properly.
-
-Make sure your .gimmixrc has all these configuration values set.
-
-Other optional configuration file options:
-==========================================
-proxy_enable = true or false
-sets whether to use a proxy server to connect to the internet when
-downloading lyrics and/or covers
-
-proxy_host
-the hostname/ip address of the proxy server
-
-proxy_port
-proxy server port
-
-play_on_add = true or false
-if true, songs will automatically be played when you add them to the playlist.
-if false, songs will just be added to the playlist.
-default value is false.
-
-stop_on_exit = true or false
-if true, gimmix will stop playing when user quits gimmix.
-if false, gimmix will not stop playing when user quits gimmix.
-default value is false.
-
-enable_search = true or false
-if true, search mode is enabled in library browser.
-if false, search mode will be disabled.
-default value is true.
-
-update_on_startup = true or false
-if true, gimmix will update the mpd database everytime on startup.
-if false, gimmix won't update the mpd database on startup.
-defalt value is false.
-
-full_view_mode = true or false
-if true, the playlist will be expanded by default when gimmix starts.
-if false, gimmix will start in compact mode.
-(This is automatically set by gimmix, so, its not necessary to set this value always)
-
-window_xpos and window_ypos
-x and y co-ordinates representing window position of gimmix.
-(These values are automatically set, so, its not necessary to set these values)
-
-window_width and window_height
-these represt the window geometry of gimmix.
-(These values are automatically set, so, its not necessary to set these
-values)
-
-coverart_enable = true or false
-enable/disable amazon cover art plugin
-
-coverart_location = com | co.uk | jp | fr | ca | de
-amazon's server location to fetch covers from
-
-Bugs:
-=====
-Report any bug(s) at the gimmix bug reports page at https://github.com/cmende/gimmix/issues
-with a detailed description and steps to reproduce the bug. Also mention
-your version of gtk+2, libmpd etc.
-
-Website:
-========
-http://cmende.github.com/gimmix
-
-Author:
-=======
-Priyank M. Gosalia (http://priyank.one09.net/)
-
+Authors
+-------
+Gimmix was written by Priyank M. Gosalia and is maintained by Freydis
+Mende. See AUTHORS for everyone who contributed.

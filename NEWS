@@ -1,6 +1,32 @@
 Version 0.6.0 (TBD)
 * New Translation - Czech (cs_CZ). Thanks to Tomáš Novák.
-* Migrate to GtkBuilder
+* Migrate to GtkBuilder; libglade is no longer needed
+* Builds with current compilers (GCC 10 and later, -fno-common) and
+  autotools; translations use plain gettext instead of intltool
+* Covers come from image files next to the music and from the Cover Art
+  Archive (via MusicBrainz) instead of the defunct freecovers.net
+* Lyrics come from LRCLIB instead of the defunct leoslyrics.com
+* The plugins use json-glib instead of libnxml and libxml2
+* The system tray icon uses GtkStatusIcon instead of X11 specific code, so
+  gimmix no longer needs libX11 and works on Wayland and macOS
+* Covers and lyrics are fetched in the background without touching GTK or
+  MPD from other threads, which fixes random crashes and a hang when the
+  playlist is empty
+* Fixed stack buffer overflows: searching for more than 19 characters,
+  browsing directories with long paths, long artist and album tags, and
+  window positions or sizes of 1000 or more
+* Fixed a hang at startup when ~/.gimmixrc ends with a comment and no
+  newline
+* Fixed drag and drop from the library to the current playlist
+* Fixed crashes when pressing Delete or Load with no playlist selected and
+  when the tray icon is disabled while covers are enabled
+* The tag editor reads and writes tags as UTF-8; non-ASCII tags were
+  garbled before
+* Changed MPD connection settings take effect when they are applied
+* The search type combo box no longer has an empty entry
+* The installation respects --datadir; the data directory is no longer
+  derived from the prefix at compile time
+* Fixed memory leaks on most playlist operations
 * Fix compilation with current libcurl
 
 Version 0.5.7.1 (November 22, 2009)
@@ -29,7 +55,7 @@ Version 0.5.5 (January 02, 2009)
 * Bug #313018: gimmix.desktop contains encoding key (which is deprecated)
 
 Version 0.5.4 (January 01, 2009)
-* Bug #307527: Fix missing prototypes in some headers (patch from Christoph Mende)
+* Bug #307527: Fix missing prototypes in some headers (patch from Freydis Mende)
 * Added support for columns in Current playlist
 * Fixed a bug where newly fetched lyrics were sometimes stored at odd locations
 * LOTS of memory leaks fixed

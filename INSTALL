@@ -1,40 +1,42 @@
-Gimmix Install Instructions
-============================
+Installing Gimmix
+=================
 
-Requirements:
-=============
+Requirements
+------------
+* GTK+ >= 2.24 and GLib >= 2.32
+* libmpd >= 0.17.0
+* pkg-config
+* TagLib >= 1.4 with its C bindings (taglib_c), unless configured with
+  --disable-tageditor
+* libcurl >= 7.19.4 and json-glib >= 1.2, unless configured with both
+  --disable-cover and --disable-lyrics
 
-Gimmix requires the following packages to be installed before compiling.
-(Following Gimmix-0.5.6, the minimum required version of libmpd is 0.17.0)
+On Debian and Ubuntu the packages are libgtk2.0-dev, libmpd-dev,
+libtagc0-dev, libcurl4-openssl-dev and libjson-glib-dev. On Gentoo they
+are x11-libs/gtk+:2, media-libs/libmpd, media-libs/taglib, net-misc/curl
+and dev-libs/json-glib.
 
-* gtk+-2.6.x
-* libmpd-0.17.0
-* taglib-1.4 (C bindings)
+Building a release
+------------------
+    ./configure
+    make
+    make install
 
+Gimmix is installed to /usr/local by default. Pass --prefix to configure
+to change that, for example ./configure --prefix=/usr.
 
-The lyrics plugin requires the following two libraries:
-* libxml2-2.0
-* libcurl
+Building from git
+-----------------
+A git checkout has no configure script. Generate it with
 
-Installation procedure:
-=======================
+    ./autogen.sh
 
-Installing gimmix is very simple. Before installing, make sure 
-your system has all the required packages. After you unpack the source,
-just follow these steps to install gimmix.
+which needs autoconf, automake, gettext (for autopoint) and pkg-config,
+and then runs configure with any arguments you pass to it. Set
+NOCONFIGURE=1 to only generate the files.
 
-$ ./configure
-$ make
-$ make install (as root)
-
-Gimmix will be installed to /usr/local/bin. If you want, you can change
-the installation path by setting the --prefix argument to ./configure.
-like, ./configure --prefix=/usr to install gimmix to /usr.
-
-Note: gimmix stores its configuration settings in ~/.gimmixrc
-The configuration file layout has been changed in the new version,
-so, if you are upgrading from an older version of gimmix (0.1 or 0.2)
-then make sure you delete your old .gimmixrc before starting gimmix.
-For a complete list of configuration options and their use, refer the
-README file.
-
+Configuration
+-------------
+Gimmix stores its settings in ~/.gimmixrc and asks for the MPD connection
+on the first start. The settings are described in the gimmix(1) manual
+page and in README.
